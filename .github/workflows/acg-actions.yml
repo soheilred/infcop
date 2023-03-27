@@ -1,0 +1,20 @@
+name: ACG actions
+run-name: ${{ github.actor }} is deploying on dgx
+on: 
+  push: 
+    branches:
+      - 'dgx'
+jobs:
+  enqueue:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Sync the directory
+        run: |
+            echo ${{github.workspace}}/ib_dl
+            rsync -avzh ${{github.workspace}} ~/
+      - name: Execute script to enqueue job in cluster
+        run: |
+            cd ~/ib_dl/src
+            sbatch pytorch.slurm ~/ib_dl/src/experiments-efficiency.py
+      - run: echo "🍏 This job's status is ${{ job.status }}."
