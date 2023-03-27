@@ -1,0 +1,64 @@
+import torch
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+
+# from torchvision.transforms import ToTensor
+
+class Data:
+    def __init__(self, batch_size, data_dir, dataset, transform=None):
+        "Load the training DataLoader and the test DataLoader"
+        self.train_kwargs = {'batch_size': batch_size}
+        self.test_kwargs = {'batch_size': batch_size}
+
+        if torch.cuda.is_available():
+            cuda_kwargs = {'num_workers': 1,
+                           'pin_memory': True,
+                           'shuffle': True}
+            self.train_kwargs.update(cuda_kwargs)
+            self.test_kwargs.update(cuda_kwargs)
+
+        if transform is None:
+            self.transform = transforms.Compose([
+                    # transforms.ToPILImage(),
+                    transforms.Resize((224, 224)),
+                    # transforms.Resize(256),
+                    # transforms.CenterCrop(224),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[0.4914, 0.4822, 0.4465],
+                                         std=[0.2023, 0.1994, 0.2010]),
+                    # transforms.Normalize(mean=(0.5), std=(0.5)),
+                ])
+
+        else:
+            self.transform = transform
+        # preparing the training and test dataset
+        if dataset == "CIFAR10":
+            training_data = datasets.CIFAR10(
+                root=data_dir,
+                train=True,
+                download=True,
+                transform=self.transform
+                )
+
+            test_data = datasets.CIFAR10(
+                root=data_dir,
+                train=False,
+                download=True,
+                transform=self.transform
+                )
+        elif dataset == "MNIST":
+            training_data = datasets.MNIST(
+                root=data_dir,
+                train=True,
+                download=True,
+                transform=self.transform
+                )
+
+            test_data = datasets.MNIST(
+                root=data_dir,
+                train=False,
+                download=True,
+                transform=self.transform
+                )
+        self.train_dataloader = DataLoader(training_data, **self.train_kwargs)
+        self.test_dataloader = DataLoader(test_data, **self.test_kwargs)
