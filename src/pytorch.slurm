@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=compute_correlation  # Job name
-#SBATCH --partition=dgx                # Select partition
+#SBATCH --partition=dgx                # Select partition, grtx, dgx
 #SBATCH --cpus-per-task=1               # Run on a 4 cores per node
 #SBATCH --nodes=1                       # Run on a 1 node
 #SBATCH --ntasks=1                      # One process (shared-memory)
@@ -17,8 +17,6 @@ echo "====================================================="
 pwd; hostname; date
 echo "====================================================="
 
-# SBATCH --partition=grtx                # Select partition
-# SBATCH --partition=dgx                # Select partition
 # module load gnu8/8.3.0 mvapich2/2.3.2  /21.08
 echo "Loading modules"
 module load singularity nv/pytorch anaconda3 
