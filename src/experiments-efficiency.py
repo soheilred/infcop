@@ -147,7 +147,7 @@ def main():
             if (train_epoch[imp_iter] == control_at_epoch) and (imp_iter == control_at_iter):
                 # network.trained_enough(accuracy, train_dataloader, criterion,
                 #                        optimizer, num_epochs, device)
-                activations = Activations(model, test_dataloader, device, batch_size)
+                activations = Activations(model, train_dataloader, device, batch_size)
                 # control_corrs.append(activations.get_connectivity())
                 control_corrs.append(activations.get_correlations())
                 # pruning.apply_controller(control_corrs, [2])
@@ -161,7 +161,7 @@ def main():
         # Calculate the connectivity
         # network.trained_enough(accuracy, train_dataloader, criterion, optimizer,
         #                        num_epochs, device) 
-        activations = Activations(model, test_dataloader, device, batch_size)
+        activations = Activations(model, train_dataloader, device, batch_size)
         corr = activations.get_connectivity()
         corrs.append(corr)
         if imp_iter <= control_at_iter:

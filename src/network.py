@@ -3,9 +3,9 @@ import sys
 from torch import nn
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
-from torchvision import datasets, transforms
-from torchvision.models import resnet50, ResNet50_Weights, vgg11, vgg16,\
-    alexnet, VGG11_Weights, VGG16_Weights, AlexNet_Weights
+from torchvision import datasets, transforms, models
+# from torchvision.models import resnet50, ResNet50_Weights, vgg11, vgg16,\
+#     alexnet, VGG11_Weights, VGG16_Weights, AlexNet_Weights
 
 import logging
 # from EDGE_4_4_1 import EDGE
@@ -13,187 +13,64 @@ import logging
 # plt.style.use('ggplot')
 log = logging.getLogger("sampleLogger")
 
-class VGG16(nn.Module):
-    def __init__(self, num_channels=3, num_classes=10):
-        super(VGG16, self).__init__()
-        self.layer1 = nn.Sequential(
-            nn.Conv2d(num_channels, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(64),
-            nn.ReLU())
-        self.layer2 = nn.Sequential(
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(64),
-            nn.ReLU(), 
-            nn.MaxPool2d(kernel_size = 2, stride = 2))
-        self.layer3 = nn.Sequential(
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(128),
-            nn.ReLU())
-        self.layer4 = nn.Sequential(
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(128),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = 2, stride = 2))
-        self.layer5 = nn.Sequential(
-            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU())
-        self.layer6 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU())
-        self.layer7 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = 2, stride = 2))
-        self.layer8 = nn.Sequential(
-            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU())
-        self.layer9 = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU())
-        self.layer10 = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = 2, stride = 2))
-        self.layer11 = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU())
-        self.layer12 = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU())
-        self.layer13 = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = 2, stride = 2))
-        self.fc = nn.Sequential(
-            nn.Dropout(0.5),
-            nn.Linear(7*7*512, 4096),
-            nn.ReLU())
-        self.fc1 = nn.Sequential(
-            nn.Dropout(0.5),
-            nn.Linear(4096, 4096),
-            nn.ReLU())
-        self.fc2= nn.Sequential(
-            nn.Linear(4096, num_classes))
-        
-    def forward(self, x, control):
-        out = self.layer1(x)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = self.control_function(out, control)
-        out = self.layer5(out)
-        out = self.layer6(out)
-        out = self.layer7(out)
-        out = self.layer8(out)
-        out = self.layer9(out)
-        out = self.layer10(out)
-        out = self.layer11(out)
-        out = self.layer12(out)
-        out = self.layer13(out)
-        out = out.reshape(out.size(0), -1)
-        out = self.fc(out)
-        out = self.fc1(out)
-        out = self.fc2(out)
-        return out
-
-    def control_function(self, x, control):
-        return x
-
-
-class NeuralNetwork(nn.Module):
-    def __init__(self):
-        super(NeuralNetwork, self).__init__()
-        self.n_hidden = [128, 64, 32, 16, 10]
-        self.flatten = nn.Flatten()
-        self.fc0 = nn.Linear(28 * 28, self.n_hidden[0])
-        self.fc1 = nn.Linear(self.n_hidden[0], self.n_hidden[4])
-        # self.fc2 = nn.Linear(self.n_hidden[1], self.n_hidden[2])
-        # self.fc3 = nn.Linear(self.n_hidden[2], self.n_hidden[3])
-        # self.fc4 = nn.Linear(self.n_hidden[3], self.n_hidden[4])
-
-    def forward(self, x):
-        x = self.flatten(x) # flatten all dimensions except the batch
-        x = F.relu(self.fc0(x))
-        # x = F.relu(self.fc1(x))
-        # x = F.relu(self.fc2(x))
-        # x = F.relu(self.fc3(x))
-        x = self.fc1(x)
-        return x
-
-
 class Network():
-    def __init__(self, device, arch, pretrained=False):
-        "docstring"
+    def __init__(self, device, arch, pretrained=False, feature_extracting=False):
+        """Setup the network and adjust it to the dataset dimentions.
+        Parameters
+        ----------
+        device: str
+            "cpu" or "cuda"
+        arch: str
+            Network architecture we want to use, "vgg16", "resnet", "alexnet"
+        pretrained: bool
+            want the network to be pretrained or not
+        feature_extracting: bool()
+            Whether we want to only do feature extraction or network
+        finetuning. This is used for adjusting the layers requires_grad
+        attribute.
+        """
         self.preprocess = None
         self.model = None
         self.arch = arch
         self.pretrained = pretrained
         self.device = device
-
+    
     def set_model(self):
         if self.arch == "vgg11":
-            if self.pretrained:
-                weights = VGG11_Weights.IMAGENET1K_V1
-                self.preprocess = weights.transforms()
-                self.model = vgg11(weights=weights).to(self.device)
-                self.model.eval()
-            else:
-                self.model = vgg11().to(self.device)
+            self.model = models.vgg11(pretrained=self.pretrained)
+            self.set_parameter_requires_grad(model, feature_extracting)
+            num_ftrs = model.fc.in_features
+            self.model.fc = nn.Linear(num_ftrs, num_classes)
 
         elif self.arch == "vgg16":
-            if self.pretrained:
-                weights = VGG16_Weights.IMAGENET1K_V1
-                self.preprocess = weights.transforms()
-                self.model = vgg16(weights=weights).to(self.device)
-                self.model.eval()
-            else:
-                self.model = vgg16().to(self.device)
+            self.model = models.vgg16(pretrained=self.pretrained)
+            self.set_parameter_requires_grad(model, feature_extracting)
+            num_ftrs = model.fc.in_features
+            self.model.classifier[6] = nn.Linear(num_ftrs, num_classes)
 
         elif self.arch == "resnet":
-            if self.pretrained:
-                weights = ResNet50_Weights.DEFAULT
-                self.preprocess = weights.transforms()
-                self.model = resnet50(weights=weights).to(self.device)
-                self.model.eval()
-            else:
-                self.model = resnet50().to(self.device)
+            self.model = models.resnet18(pretrained=self.pretrained)
+            self.set_parameter_requires_grad(model, feature_extracting)
+            num_ftrs = model.fc.in_features
+            self.model.fc = nn.Linear(num_ftrs, num_classes)
 
         elif self.arch == "alexnet":
-            if self.pretrained:
-                weights = AlexNet_Weights.IMAGENET1K_V1
-                self.preprocess = weights.transforms()
-                self.model = alexnet(weights=weights).to(self.device)
-                self.model.eval()
-            else:
-                self.model = alexnet().to(self.device)
+            self.model = models.alexnet(pretrained=self.pretrained)
+            self.set_parameter_requires_grad(model, feature_extracting)
+            num_ftrs = model.fc.in_features
+            self.model.classifier[6] = nn.Linear(num_ftrs, num_classes)
+
         else:
             sys.exit("Wrong architecture")
 
+        self.model.eval()
         return self.model
 
-    # weights = ResNet50_Weights.DEFAULT
-    # preprocess = weights.transforms()
-    # weights = VGG16_Weights.IMAGENET1K_V1
-    # preprocess = VGG16_Weights.IMAGENET1K_V1.transforms
-    # model = VGG11(in_channels=3).to(device)
-    # model = VGG16(num_channels=3).to(device)
-    # model = ResNet(3, block=ResidualBlock, layers=[3, 4, 6, 3]).to(device)
-    # model = vgg11().to(device)
-    # model = vgg16().to(device)
-    # model = resnet50().to(device)
-    # model = alexnet().to(device)
-    # model = vgg16(weights=weights).to(device)
-    # model = resnet50(weights=weights).to(device)
-    # model.eval()
+
+    def set_parameter_requires_grad(self, model, feature_extracting):
+        if feature_extracting:
+            for param in model.parameters():
+                param.requires_grad = False
 
 
     def trained_enough(self, accuracy, dataloader, loss_fn, optimizer, epochs, device):
@@ -322,6 +199,21 @@ def main():
     # print(I)
 
 
+            # weights = VGG16_Weights.IMAGENET1K_V1
+            # self.preprocess = weights.transforms()
+            # self.model = vgg16(weights=weights).to(self.device)
+
+                # weights = VGG11_Weights.IMAGENET1K_V1
+                # self.preprocess = weights.transforms()
+                # self.model = vgg11(weights=weights).to(self.device)
+
+                # weights = ResNet50_Weights.DEFAULT
+                # self.preprocess = weights.transforms()
+                # self.model = resnet50(weights=weights).to(self.device)
+
+                # weights = AlexNet_Weights.IMAGENET1K_V1
+                # self.preprocess = weights.transforms()
+                # self.model = alexnet(weights=weights).to(self.device)
 
 if __name__ == '__main__':
     main()
