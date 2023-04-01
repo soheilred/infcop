@@ -1,6 +1,8 @@
 import os
 import torch
 import pickle
+import argparse
+import json
 from torch import nn
 import numpy as np
 import logging
@@ -8,6 +10,8 @@ import constants as C
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+import logging
+import logging.config
 log = logging.getLogger("sampleLogger")
 
 
@@ -85,16 +89,15 @@ def print_nonzeros(model):
     print(f'alive: {nonzero}, pruned : {total - nonzero}, total: {total}, Compression rate : {total/nonzero:10.2f}x  ({100 * (total-nonzero) / total:6.2f}% pruned)')
     return (round((nonzero / total) * 100, 1))
 
-def setup_logger():
-    import logging
-    import logging.config
-
+def setup_logger_dir():
     Path(C.RUN_DIR).mkdir(parents=True, exist_ok=True)
     logging.config.fileConfig(C.LOG_CONFIG_DIR,
                               defaults={'logfilename': C.LOG_FILENAME})
-    # create logger
+    return setup_logger()
+
+def setup_logger():
+    logging.config.fileConfig(C.LOG_CONFIG_DIR)
     logger = logging.getLogger("sampleLogger")
-    # 'application' code
     logger.debug("In " + os.uname()[1])
     return logger
 
@@ -133,41 +136,75 @@ def get_stability(in_measure):
                            in_measure[i]) for i in range(in_measure.shape[0] - 1)]
     return stability
 
-def plot_experiment(train_acc, ydata, filename):
-    import matplotlib
-    matplotlib.use('tkagg')
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--arch',
+                        choices=['vgg11', '1gg16', 'resnet18', 'densenet121'],
+                        default='resnet',
+                        help='Architectures')
+    parser.add_argument('--mode', choices=['t','c','p','e','all'], default='all',
+                        help='modes: train, calc. conns, prune, finetune, or eval')
+    parser.add_argument('--pretrained', type=bool, default=True,
+                        help='Start with a pretrained network?')
+    parser.add_argument('--dataset', type=str,
+                        choices=['CIFAR10', 'MNIST', 'pmnist', '6splitcifar', '11splitcifar'],
+                        default='CIFAR10', help='Name of dataset')
+    parser.add_argument('--single_task', action='store_true',
+                        default=False, help='Run only the current task')
+    parser.add_argument('--task_num', type=int, default=0,
+                        help='Current task number.')
+    parser.add_argument('--run_id', type=str, default="000",
+                        help='Id of current run.')
+    parser.add_argument('--num_outputs', type=int, default=-1,
+                        help='Num outputs for dataset')
+    parser.add_argument('--cuda', action='store_true', default=True,
+                        help='use CUDA')
+    parser.add_argument('--cores', type=int, default=4,
+                        help='Number of CPU cores.')
+    # Other.
+    # Paths.
+    parser.add_argument('--save_prefix', type=str, default='../checkpoints/',
+                      help='Location to save model')
+    parser.add_argument('--loadname', type=str, default='',
+                      help='Location to save model')
+    # Training options.
+    parser.add_argument('--train_epochs', type=int, default=2,
+                      help='Number of epochs to train for')
+    parser.add_argument('--lr', type=float, default=0.1,
+                      help='Learning rate')
+    parser.add_argument('--batch_size', type=int, default=256,
+                      help='Batch size')
+    parser.add_argument('--weight_decay', type=float, default=0.0,
+                      help='Weight decay')
+    parser.add_argument('--Milestones', nargs='+', type=float, default=[30,60,90])
+    parser.add_argument('--Gamma', type=float, default=0.1)   
+    # Pruning options.
+    parser.add_argument('--prune_method', type=str, default='sparse',
+                      choices=['sparse'], help='Pruning method to use')
+    parser.add_argument('--prune_perc_per_layer', type=float, default=0.1,
+                      help='% of neurons to prune per layer')
+    parser.add_argument('--finetune_epochs', type=int, default=2,
+                      help='Number of epochs to finetune for after pruning')
+    parser.add_argument('--freeze_perc', type=float, default=0.0)                   
+    parser.add_argument('--num_freeze_layers', type=int, default=0)     
+    parser.add_argument('--freeze_order', choices=['top','bottom', 'random'],
+                      default=['top'],
+                      help='Order of selection for layer freezing, by connectivity')
+    # controller
+    parser.add_argument('--control-at-iter', default=-1,
+                      help='Iteration at which the controller is applied')
 
-    # plt.rcParams["font.family"] = "sans-serif"
-    # fig, axs = plt.subplots(2, sharex=True)
-    # print(fm.get_font_names())
-    # print(fm.fontManager.findfont(fontext='ttf'))
-    # for f in fm.fontManager.get_font_names():
-    #     print(f)
-    filled_markers = ['o', 'v', '^', '<', '>', '8', 's', 'p',
-                      '*', 'h', 'H', 'D', 'd', 'P', 'X']
-    fig, axs = plt.subplots(2)
-    # axs.plot(xdata, color='blue')
-    discard = 0
-    xdata = np.arange(len(train_acc))
-    axs[0].scatter(xdata, train_acc, marker=(5, 0))
-    axs[0].set_title("Accuracy of network in training")
-    axs[0].set(xlabel="IMP Iteration", ylabel="Training accuracy")
-    axs[0].set_xticks(xdata)
-    # axs[0].legend(loc="upper right")
-    xdata = np.arange(discard, len(ydata[0]))
-    for i in range(len(ydata)):
-        axs[1].plot(xdata, ydata[i][discard:],
-                       # marker=(5, i),
-                       marker=filled_markers[i],
-                       label="Itr. " + str(i),
-                       alpha=.5)
-        # axs[1].set_yscale('log')
-    # axs.set_xlim([0, 1])
-    # axs.set_ylim([0, 1])
-    axs[1].set_title("Correlations between layers")
-    axs[1].set(xlabel="Layers", ylabel="Correlation")
-    # axs[1].set_xticks(xdata, labels=[str(i) + "-" + str(i + 1) for i in range(len(xdata))])
-    axs[1].legend(loc="lower right")
-    fig.tight_layout(pad=2.0)
-    plt.savefig(filename + ".png")
-    # plt.show()
+    parser.add_argument('--control-at-epoch', default=2,
+                      help='Epoch at which the controller is applied')
+
+    parser.add_argument('--acc_thrd', default=70,
+                      help='Threshold accuracy to stop the training loop')
+
+    parser.add_argument('--control_type', default=1,
+                      help='1: correlation, 2: connectivity, 3: prev weights')
+    args = parser.parse_args()
+
+    json.dump(args.__dict__, open("exper.json", 'w'), indent=2)
+    return args
+
+
