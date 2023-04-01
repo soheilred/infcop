@@ -1,4 +1,5 @@
 import torch
+import sys
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
@@ -60,5 +61,14 @@ class Data:
                 download=True,
                 transform=self.transform
                 )
+        else:
+            sys.exit("Wrong dataset name")
+
+        self.num_classes = len(training_data.classes)
+        self.train_dataloader = DataLoader(training_data, **self.train_kwargs)
+
         self.train_dataloader = DataLoader(training_data, **self.train_kwargs)
         self.test_dataloader = DataLoader(test_data, **self.test_kwargs)
+
+    def get_num_classes(self):
+        return self.num_classes
