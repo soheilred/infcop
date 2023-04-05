@@ -194,7 +194,7 @@ def get_args():
                       help='Number of epochs to train for')
     parser.add_argument('--lr', type=float, default=0.1,
                       help='Learning rate')
-    parser.add_argument('--batch_size', type=int, default=256,
+    parser.add_argument('--batch_size', type=int, default=64,
                       help='Batch size')
     parser.add_argument('--weight_decay', type=float, default=0.0,
                       help='Weight decay')
