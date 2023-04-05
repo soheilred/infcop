@@ -251,7 +251,6 @@ def main():
 
         utils.save_model(model, C.OUTPUT_DIR, args.arch + str(i) + '-model.pt')
         logger.debug('model is saved...!')
-        import ipdb; ipdb.set_trace()
 
         utils.save_vars([train_acc, corr])
 

@@ -28,16 +28,11 @@ def save_model(model, directory, name):
     checkdir(directory)
     torch.save(model, directory + name)
 
-def get_var_name(var):
-    var = dict(var)
-    return f'{var=}'.split('=')[0]
-
-def save_vars(*variables):
-    for var in variables:
+def save_vars(**variables):
+    for varname, value in variables.items():
         # print(nameof(var))
-        varname = get_var_name(var)
-        pickle.dump(var, open(C.OUTPUT_DIR + # arch +
-                                    "_" + nameof(var) + ".pkl", "wb"))
+        pickle.dump(value, open(C.OUTPUT_DIR + # arch +
+                                    "_" + varname + ".pkl", "wb"))
 
     
 def get_device():
