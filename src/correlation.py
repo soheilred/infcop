@@ -223,6 +223,7 @@ def main():
     # preparing the hardware
     device = utils.get_device()
     args = utils.get_args()
+    logger = utils.setup_logger()
     num_exper = 5
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
