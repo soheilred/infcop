@@ -5,32 +5,14 @@ import torch
 import pickle
 import numpy as np
 import pathlib
-import matplotlib.pyplot as plt
-# import matplotlib
-# matplotlib.use('tkagg')
-# from matplotlib import rc
-# import matplotlib.font_manager as fm
-from torch import nn
-from data_loader import Data
-# from torch.utils.data.sampler import SubsetRandomSampler
-# import torch.nn.functional as F
-# from torchvision.transforms import ToTensor
-# import torchvision.models as models
-from network import Network, train, test
-
-# from utils import Activations
-from models import ResidualBlock
-from torchvision.models.resnet import Bottleneck
-
 import logging
 import logging.config
-# from EDGE_4_4_1 import EDGE
-# torch.cuda.empty_cache()
-# from matplotlib.ticker import MaxNLocator
-# plt.style.use('ggplot')
-# rc('font',**{'family':'sans-serif','sans-serif':['DejaVu Sans']})
-# rc('text', usetex=True)
-
+from torch import nn
+from models import ResidualBlock
+from torchvision.models.resnet import Bottleneck
+from data_loader import Data
+import utils
+from network import Network, train, test
 
 log = logging.getLogger("sampleLogger")
 log.debug("In " + os.uname()[1])
@@ -125,11 +107,6 @@ class Activations:
                     corrs[i] += torch.matmul(f0, f1)
 
         return corrs
-
-    def get_np_correlation(self):
-        corrs = np.zeros(len(self.layers_dim))
-
-
 
     def get_connectivity(self):
         ds_size = len(self.dataloader.dataset)
@@ -237,134 +214,44 @@ class Activations:
 
 
 
+    def get_np_correlation(self):
+        corrs = np.zeros(len(self.layers_dim))
 
-def plot_experiment(train_acc, ydata, arch):
-    # plt.rcParams["font.family"] = "sans-serif"
-    # fig, axs = plt.subplots(2, sharex=True)
-    # print(fm.get_font_names())
-    # print(fm.fontManager.findfont(fontext='ttf'))
-    # for f in fm.fontManager.get_font_names():
-    #     print(f)
-    filled_markers = ['o', 'v', '^', '<', '>', '8', 's', 'p',
-                      '*', 'h', 'H', 'D', 'd', 'P', 'X']
-    fig, axs = plt.subplots(2)
-    # axs.plot(xdata, color='blue')
-    discard = 0
-    xdata = np.arange(len(train_acc))
-    axs[0].scatter(xdata, train_acc, marker=(5, 0))
-    axs[0].set_title("Accuracy of network in training")
-    axs[0].set(xlabel="Experiment number", ylabel="Training accuracy")
-    axs[0].set_xticks(xdata)
-    # axs[0].legend(loc="upper right")
-    xdata = np.arange(discard, len(ydata[0]))
-    for i in range(len(ydata)):
-        axs[1].plot(xdata, ydata[i][discard:],
-                       # marker=(5, i),
-                       marker=filled_markers[i],
-                       label="exp. " + str(i),
-                       alpha=.5)
-        # axs[1].set_yscale('log')
-    # axs.set_xlim([0, 1])
-    # axs.set_ylim([0, 1])
-    axs[1].set_title("Correlations between layers")
-    axs[1].set(xlabel="Layers", ylabel="Correlation")
-    # axs[1].set_xticks(xdata, labels=[str(i) + "-" + str(i + 1) for i in range(len(xdata))])
-    axs[1].legend(loc="lower right")
-    fig.tight_layout(pad=2.0)
-    plt.savefig(OUTPUT_DIR + arch + "-correlation.png")
-    # plt.show()
 
 
 def main():
     # preparing the hardware
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    logger.debug(f"Using {device} device")
-    if torch.cuda.is_available():
-        logger.debug("Name of the Cuda Device: " +
-                     torch.cuda.get_device_name())
-
-    # setting hyperparameters
-    learning_rate = 1e-3
-    batch_size = 64
-    num_epochs = 10
-
-    # arch = "vgg11"
-    arch = "vgg16"
-    # arch = "resnet"
-    # arch = "alexnet"
-    pretrained = True
-    # pretrained = False
-
-    network = Network(device, arch, pretrained)
-    preprocess = network.preprocess
-    data = Data(batch_size, DATA_DIR, transform=preprocess)
-    train_dataloader, test_dataloader = data.train_dataloader, data.test_dataloader
+    device = utils.get_device()
+    args = utils.get_args()
     num_exper = 5
+
+    data = Data(args.batch_size, C.DATA_DIR, args.dataset)
+    num_classes = data.get_num_classes()
+    train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    network = Network(device, args.arch, num_classes, args.pretrained)
+    preprocess = network.preprocess
+    model = network.set_model()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+
+
     corr = []
     train_acc = torch.zeros(num_exper)
-    mode = sys.argv[1]
-    torch.set_printoptions(precision=4)
 
     for i in range(num_exper):
-        torch.manual_seed(5 * i)
         logger.debug("=" * 10 + " experiment " + str(i + 1) + "=" * 10)
-        if mode == "train":
-            logger.debug('Training in correlation code for a ' + arch)
-            model = network.set_model()
+        train_acc[i], - = train(model, train_dl, loss_fn, optimizer,
+                             args.train_epochs, device)
 
-            loss_fn = nn.CrossEntropyLoss()
-            optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-            train_acc[i] = train(model, train_dataloader, loss_fn, optimizer,
-                                 num_epochs + i * 4, device)
-            activations = Activations(model, test_dataloader, device, batch_size)
-            corr.append(activations.get_correlation())
-            torch.save(model, MODEL_DIR + arch + str(i) + '-model.pt')
-            logger.debug('model is saved...!')
+        activations = Activations(model, test_dl, device, args.batch_size)
+        corr.append(activations.get_correlation())
 
-        elif mode == "correlation":
-            logger.debug('Calculating correlation')
-            model = torch.load(MODEL_DIR + arch + str(i) + '-model.pt')
-            model.to(device)
-            model.eval()
-            activations = Activations(model, test_dataloader, device, batch_size)
-            corr.append(activations.get_correlation())
-            # corr_w1.append(correlation(model, test_dataloader, device, w=1))
+        utils.save_model(model, MODEL_DIR, arch + str(i) + '-model.pt')
+        logger.debug('model is saved...!')
 
-        elif mode == "plot":
-            continue
-
-        else:
-            sys.exit("Wrong flag")
-
-    if mode == "train":
-        pickle.dump(train_acc, open(OUTPUT_DIR + arch + "_training_acc.pkl", "wb"))
-        pickle.dump(corr, open(OUTPUT_DIR + arch + "_correlation.pkl", "wb"))
-
-    elif mode == "correlation":
-        train_acc = pickle.load(open(OUTPUT_DIR + arch + "_training_acc.pkl", "rb"))
-        logger.debug(len(corr))
-        pickle.dump(corr, open(OUTPUT_DIR + arch + "_correlation.pkl", "wb"))
-
-    elif mode == "plot":
-        train_acc = pickle.load(open(OUTPUT_DIR + arch + "_training_acc.pkl", "rb"))
-        corr = pickle.load(open(OUTPUT_DIR + arch + "_correlation.pkl", "rb"))
+        utils.save_vars([train_acc, corr])
 
     plot_experiment(train_acc, corr, arch)
-
-    logger.debug(train_acc)
-    logger.debug(corr)
-
-    # if os.path.exists(MODEL_DIR + "model.pt"):
-    #     model = torch.jit.load(MODEL_DIR + "model.pt")
-    #     model.eval()
-    # torch.save(model.state_dict(), MODEL_DIR)
-    # model_scripted = torch.jit.script(model) # Export to TorchScript
-    # model_scripted.save(MODEL_DIR + 'model.pt') # Save
-    # layer = [model.linear_stack[2 * i].weight.cpu().detach().numpy() for i in range(5)]
-    # for i in range(5 - 1):
-    #     print("Computing I(X, Y) between layers", i, "and", i+1)
-    #     I[i] = EDGE(layer[i].flatten(), layer[i+1].flatten())
-    # print(I)
 
 
 if __name__ == '__main__':

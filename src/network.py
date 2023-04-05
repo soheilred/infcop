@@ -161,10 +161,7 @@ def main():
     logger = utils.setup_logger()
 
     # preparing the hardware
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"Using {device} device")
-
-    num_training_epochs = args.train_epochs // 2     # 100 is the default 
+    device = utils.get_device()
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
     num_classes = data.get_num_classes()
@@ -175,7 +172,7 @@ def main():
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
-    for i in range(args.train_epochs):
+    for i in range(3):
         train_acc = train(model, train_dl, loss_fn, optimizer,
                              args.train_epochs, device)
 
