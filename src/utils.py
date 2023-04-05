@@ -28,6 +28,11 @@ def save_model(model, directory, name):
     checkdir(directory)
     torch.save(model, directory + name)
 
+def retrieve_name(var):
+    import inspect
+    callers_local_vars = inspect.currentframe().f_back.f_locals.items()
+    return [var_name for var_name, var_val in callers_local_vars if var_val is var]
+
 def save_vars(**variables):
     for varname, value in variables.items():
         # print(nameof(var))

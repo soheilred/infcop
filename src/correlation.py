@@ -252,7 +252,7 @@ def main():
         utils.save_model(model, C.OUTPUT_DIR, args.arch + str(i) + '-model.pt')
         logger.debug('model is saved...!')
 
-        utils.save_vars([train_acc, corr])
+        utils.save_vars(train_acc=train_acc, corr=corr)
 
     plot_experiment(train_acc, corr, arch)
 
