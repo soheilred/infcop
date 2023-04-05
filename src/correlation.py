@@ -239,12 +239,13 @@ def main():
 
 
     corr = []
-    train_acc = torch.zeros(num_exper)
+    test_acc = torch.zeros(num_exper)
 
     for i in range(num_exper):
         logger.debug("=" * 10 + " experiment " + str(i + 1) + "=" * 10)
-        train_acc[i], _ = train(model, train_dl, loss_fn, optimizer,
+        train_acc, _ = train(model, train_dl, loss_fn, optimizer,
                              args.train_epochs, device)
+        test_acc[i] = test(model, test_dl, loss_fn, device)
 
         activations = Activations(model, test_dl, device, args.batch_size)
         corr.append(activations.get_correlations())
@@ -252,9 +253,9 @@ def main():
         utils.save_model(model, C.OUTPUT_DIR, args.arch + str(i) + '-model.pt')
         logger.debug('model is saved...!')
 
-        utils.save_vars(train_acc=train_acc, corr=corr)
+        utils.save_vars(test_acc=test_acc, corr=corr)
 
-    plot_experiment(train_acc, corr, arch)
+    plot_experiment(test_acc, corr, arch)
 
 
 if __name__ == '__main__':
