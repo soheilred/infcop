@@ -10,9 +10,11 @@ import logging.config
 from torch import nn
 from models import ResidualBlock
 from torchvision.models.resnet import Bottleneck
-from data_loader import Data
+
 import utils
+from data_loader import Data
 from network import Network, train, test
+import constants as C
 
 log = logging.getLogger("sampleLogger")
 log.debug("In " + os.uname()[1])
