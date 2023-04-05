@@ -9,10 +9,11 @@ import logging
 import constants as C
 import matplotlib.pyplot as plt
 from pathlib import Path
+from varname import nameof
 
 import logging
 import logging.config
-log = logging.getLogger("sampleLogger")
+logger = logging.getLogger("sampleLogger")
 
 
 # def get_activation(name):
@@ -26,6 +27,22 @@ def checkdir(directory):
 def save_model(model, directory, name):
     checkdir(directory)
     torch.save(model, directory + name)
+
+def save_vars(*variables):
+    for var in variables:
+        print(nameof(var))
+        pickle.dump(var, open(C.OUTPUT_DIR + # arch +
+                                    "_" + nameof(var) + ".pkl", "wb"))
+
+    
+def get_device():
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    logger.debug(f"Using {device} device")
+    if torch.cuda.is_available():
+        logger.debug("Name of the Cuda Device: " +
+                     torch.cuda.get_device_name())
+    return device
+
 
 def batch_mul(mat, v):
     in_shape = mat.shape[:2]
@@ -204,6 +221,8 @@ def get_args():
                       help='1: correlation, 2: connectivity, 3: prev weights')
     args = parser.parse_args()
 
+    # this line will be changed. The address of the file should match with the
+    # experiment 
     json.dump(args.__dict__, open("exper.json", 'w'), indent=2)
     return args
 
