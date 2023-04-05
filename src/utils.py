@@ -9,7 +9,7 @@ import logging
 import constants as C
 import matplotlib.pyplot as plt
 from pathlib import Path
-from varname import nameof
+# from varname import nameof
 
 import logging
 import logging.config
@@ -28,9 +28,14 @@ def save_model(model, directory, name):
     checkdir(directory)
     torch.save(model, directory + name)
 
+def get_var_name(var):
+    var = dict(var)
+    return f'{var=}'.split('=')[0]
+
 def save_vars(*variables):
     for var in variables:
-        print(nameof(var))
+        # print(nameof(var))
+        varname = get_var_name(var)
         pickle.dump(var, open(C.OUTPUT_DIR + # arch +
                                     "_" + nameof(var) + ".pkl", "wb"))
 
