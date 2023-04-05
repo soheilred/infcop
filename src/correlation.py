@@ -249,7 +249,7 @@ def main():
         activations = Activations(model, test_dl, device, args.batch_size)
         corr.append(activations.get_correlations())
 
-        utils.save_model(model, MODEL_DIR, arch + str(i) + '-model.pt')
+        utils.save_model(model, C.OUTPUT_DIR, arch + str(i) + '-model.pt')
         logger.debug('model is saved...!')
 
         utils.save_vars([train_acc, corr])
