@@ -240,7 +240,7 @@ def main():
 
     for i in range(num_exper):
         logger.debug("=" * 10 + " experiment " + str(i + 1) + "=" * 10)
-        train_acc[i], - = train(model, train_dl, loss_fn, optimizer,
+        train_acc[i], _ = train(model, train_dl, loss_fn, optimizer,
                              args.train_epochs, device)
 
         activations = Activations(model, test_dl, device, args.batch_size)
