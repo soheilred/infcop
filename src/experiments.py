@@ -36,7 +36,7 @@ def main():
     # NOTE First Pruning Iteration is of No Compression
     ITERATION = args.imp_total_iter               # 35 was the default
 
-    pruning = LTPruning(model, args.arch, args.prune_perc_per_layer, train_dl,
+    pruning = LTPruning(model, args.arch, args.prune_perc_per_layer*100, train_dl,
                         test_dl)
     init_state_dict = pruning.initialize_lth()
         
