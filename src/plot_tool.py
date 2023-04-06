@@ -27,7 +27,7 @@ plt.rcParams.update({
     #      ]
 })
 
-matplotlib.use('tkagg')
+# matplotlib.use('tkagg')
 
 filled_markers = ['o', 'v', '^', '<', '>', '8', 's', 'p',
                     '*', 'h', 'H', 'D', 'd', 'P', 'X']
