@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 *.pt.old
 *.pth.tar
+*.pt
 
 *.jpg
 *.png
