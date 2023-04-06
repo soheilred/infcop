@@ -36,8 +36,8 @@ def retrieve_name(var):
 def save_vars(**variables):
     for varname, value in variables.items():
         # print(nameof(var))
-        pickle.dump(value, open(C.OUTPUT_DIR + # arch +
-                                    "_" + varname + ".pkl", "wb"))
+        pickle.dump(value, open(C.OUTPUT_DIR + # arch + "_" + 
+                                    varname + ".pkl", "wb"))
 
     
 def get_device():
@@ -109,6 +109,9 @@ def print_nonzeros(model):
         total += total_params
         print(f'{name:20} | nonzeros = {nz_count:7} / {total_params:7} ({100 * nz_count / total_params:6.2f}%) | total_pruned = {total_params - nz_count :7} | shape = {tensor.shape}')
     print(f'alive: {nonzero}, pruned : {total - nonzero}, total: {total}, Compression rate : {total/nonzero:10.2f}x  ({100 * (total-nonzero) / total:6.2f}% pruned)')
+    # # Layer Looper
+    # for name, param in model.named_parameters():
+    #     print(name, param.size())
     return (round((nonzero / total) * 100, 1))
 
 def setup_logger_dir():
@@ -123,35 +126,6 @@ def setup_logger():
     logger.debug("In " + os.uname()[1])
     return logger
 
-def plot_pruning():
-    # Plotting Loss (Training), Accuracy (Testing), Iteration Curve
-    # NOTE Loss is computed for every iteration while Accuracy is computed
-    # only for every {args.valid_freq} iterations. Therefore Accuracy saved
-    # is constant during the uncomputed iterations.
-    # NOTE Normalized the accuracy to [0,100] for ease of plotting.
-    plt.plot(np.arange(1,(args.num_training_epochs)+1), 100*(all_loss - np.min(all_loss))/np.ptp(all_loss).astype(float), c="blue", label="Loss")
-    plt.plot(np.arange(1,(args.num_training_epochs)+1), all_accuracy, c="red", label="Accuracy")
-    # plt.title(f"Loss Vs Accuracy Vs Iterations ({args.dataset},{args.arch_type})")
-    # plt.xlabel("Iterations")
-    # plt.ylabel("Loss and Accuracy")
-    # plt.legend()
-    # plt.grid(color="gray")
-    # plt.savefig(f"{os.getcwd()}/plots/lt/{args.arch_type}/{args.dataset}/{args.prune_type}_LossVsAccuracy_{comp_level}.png", dpi=1200) 
-    # plt.close()
-    # Plotting
-    # a = np.arange(prune_iterations)
-    # plt.plot(a, bestacc, c="blue", label="Winning tickets")
-    # plt.title(f"Test Accuracy vs Unpruned Weights Percentage ({args.dataset},{args.arch_type})")
-    # plt.xlabel("Unpruned Weights Percentage")
-    # plt.ylabel("test accuracy")
-    # plt.xticks(a, comp, rotation ="vertical")
-    # plt.ylim(0,100)
-    # plt.legend()
-    # plt.grid(color="gray")
-    # utils.checkdir(f"{os.getcwd()}/plots/lt/{args.arch_type}/{args.dataset}/")
-    # plt.savefig(f"{os.getcwd()}/plots/lt/{args.arch_type}/{args.dataset}/{args.prune_type}_AccuracyVsWeights.png", dpi=1200) 
-    # plt.close()
-
 def get_stability(in_measure):
     in_measure = np.array(in_measure)
     stability = [np.divide(in_measure[i] - in_measure[i + 1],
@@ -161,12 +135,13 @@ def get_stability(in_measure):
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--arch',
-                        choices=['vgg11', '1gg16', 'resnet18', 'densenet121'],
+                        choices=['vgg11', 'vgg16', 'resnet18', 'densenet121'],
                         default='resnet',
                         help='Architectures')
     parser.add_argument('--mode', choices=['t','c','p','e','all'], default='all',
                         help='modes: train, calc. conns, prune, finetune, or eval')
-    parser.add_argument('--pretrained', type=bool, default=True,
+    parser.add_argument('--pretrained', type=str, default="True",
+                        choices=["False","True"],
                         help='Start with a pretrained network?')
     parser.add_argument('--dataset', type=str,
                         choices=['CIFAR10', 'MNIST', 'pmnist', '6splitcifar', '11splitcifar'],
@@ -183,8 +158,7 @@ def get_args():
                         help='use CUDA')
     parser.add_argument('--cores', type=int, default=4,
                         help='Number of CPU cores.')
-    # Other.
-    # Paths.
+
     parser.add_argument('--save_prefix', type=str, default='../checkpoints/',
                       help='Location to save model')
     parser.add_argument('--loadname', type=str, default='',
@@ -192,13 +166,22 @@ def get_args():
     # Training options.
     parser.add_argument('--train_epochs', type=int, default=2,
                       help='Number of epochs to train for')
+
+    parser.add_argument('--train_per_epoch', type=int, default=2,
+                      help='Number of epochs to train for')
+
     parser.add_argument('--lr', type=float, default=0.1,
                       help='Learning rate')
+
     parser.add_argument('--batch_size', type=int, default=64,
                       help='Batch size')
+
     parser.add_argument('--weight_decay', type=float, default=0.0,
                       help='Weight decay')
-    parser.add_argument('--Milestones', nargs='+', type=float, default=[30,60,90])
+
+    parser.add_argument('--Milestones', nargs='+', type=float,
+                        default=[30,60,90])
+    
     parser.add_argument('--Gamma', type=float, default=0.1)   
     # Pruning options.
     parser.add_argument('--prune_method', type=str, default='sparse',
@@ -216,7 +199,7 @@ def get_args():
     parser.add_argument('--control-at-iter', default=-1,
                       help='Iteration at which the controller is applied')
 
-    parser.add_argument('--control-at-epoch', default=2,
+    parser.add_argument('--control_at_epoch', default=2,
                       help='Epoch at which the controller is applied')
 
     parser.add_argument('--acc_thrd', default=70,
@@ -224,6 +207,9 @@ def get_args():
 
     parser.add_argument('--control_type', default=1,
                       help='1: correlation, 2: connectivity, 3: prev weights')
+
+    parser.add_argument('--imp_total_iter', default=10,
+                      help='Number of iteration at IMP')
     args = parser.parse_args()
 
     # this line will be changed. The address of the file should match with the

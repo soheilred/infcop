@@ -6,14 +6,7 @@ import numpy as np
 from tqdm import tqdm
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torchvision
-import torchvision.transforms as transforms
 import torchvision.datasets as datasets
-import matplotlib.pyplot as plt
-# from tensorboardX import SummaryWriter
-import torchvision.utils as vutils
-# import seaborn as sns
 import torch.nn.init as init
 import pickle
 
@@ -42,6 +35,7 @@ class LTPruning:
         self.prune_percent = prune_percent
         self.reinit = False
         self.num_layers = 0
+        self.init_state_dict = None
 
     def weight_init(self, m):
         '''Usage:
@@ -108,6 +102,25 @@ class LTPruning:
                     init.orthogonal_(param.data)
                 else:
                     init.normal_(param.data)
+
+    def initialize_lth(self):
+        """Prepare the lth object by:
+        1. initializing the network's weights
+        2. saving the initial state of the network into the object
+        3. saving the initial state model on the disk
+        4. initializing the masks according to the layers size
+        """
+
+        # Weight Initialization
+        self.model.apply(self.weight_init)
+
+        # Copying and Saving Initial State
+        self.init_state_dict = copy.deepcopy(self.model.state_dict())
+        utils.save_model(self.model, C.MODEL_ROOT_DIR, "/initial_model.pth.tar")
+
+        # Making Initial Mask
+        self.init_mask()
+        return self.init_state_dict
 
     def count_layers(self):
         step = 0
@@ -201,7 +214,6 @@ class LTPruning:
         #     log.debug(f"controller coef at layer {ind}: {coef}")
         #     contr_mask[ind] = (control_weights[ind] * coef).astype("float32")
 
-        import ipdb; ipdb.set_trace()
         # get the weights from previous iteration
         prev_iter_weights = self.get_prev_iter_weights(imp_iter, cont_layer_list)
 
@@ -288,194 +300,150 @@ class LTPruning:
 
 def main():
     # preparing the hardware
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    logger.debug(f"Using {device} device")
-    if torch.cuda.is_available():
-        logger.debug("Name of the Cuda Device: " +
-                     torch.cuda.get_device_name())
+    device = utils.get_device()
+    args = utils.get_args()
+    logger = utils.setup_logger()
+    num_exper = 5
 
-    # setting hyperparameters
-    batch_size = 256
-    num_epochs = 1
+    data = Data(args.batch_size, C.DATA_DIR, args.dataset)
+    num_classes = data.get_num_classes()
+    train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    network = Network(device, args.arch, num_classes, args.pretrained)
+    preprocess = network.preprocess
+    model = network.set_model()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
     # Pruning
     # NOTE First Pruning Iteration is of No Compression
-    bestacc = 0.0
-    best_accuracy = 0
-    ITERATION = 3               # 35 was the default
-    end_iter = 50               # 100 is the default
-    start_iter = 0
-    prune_percent = 10
-    prune_type = "lt"
-    lr = 1.2e-3
-    print_freq = 1
-    valid_freq = 1
-
-    # arch_type = "vgg11"
-    arch_type = "vgg16"
-    # arch_type = "resnet"
-    # arch_type = "alexnet"
-    pretrained = True
-    # pretrained = False
-    dataset = "CIFAR10"
-    MODEL_DIR = MODEL_ROOT_DIR + arch_type + "/" + dataset + "/"
+    ITERATION = args.imp_iter               # 35 was the default
+    MODEL_DIR = MODEL_ROOT_DIR + arch_type + "/" + args.dataset + "/"
 
     # Copying and Saving Initial State
-    network = Network(device, arch_type, pretrained)
-    preprocess = network.preprocess
-    data = Data(batch_size, DATA_DIR, transform=preprocess)
-    train_dataloader, test_dataloader = data.train_dataloader, data.test_dataloader
-    model = network.set_model()
-
     corr = []
 
-    pruning = LTPruning(model, arch_type, prune_percent, train_dataloader, test_dataloader)
+    pruning = LTPruning(model, args.arch, args.prune_perc_per_layer, train_dl,
+                        test_dl)
+
     # Weight Initialization
     model.apply(pruning.weight_init)
 
     # Copying and Saving Initial State
     initial_state_dict = copy.deepcopy(model.state_dict())
-    utils.save_model(model, MODEL_DIR, "initial_state_dict.pth.tar")
+    utils.save_model(model, MODEL_DIR, "/initial_state_dict.pth.tar")
 
     # Making Initial Mask
-    pruning.make_mask(model)
+    pruning.init_mask()
 
     # Optimizer and Loss
-    # TODO: why there are two criterion definitions?
-    # optimizer = torch.optim.Adam(model.parameters(), weight_decay=1e-4)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=1e-4)
 
-    # Layer Looper
-    for name, param in model.named_parameters():
-        print(name, param.size())
 
+    best_accuracy = 0
     comp = np.zeros(ITERATION, float)
     bestacc = np.zeros(ITERATION, float)
-    step = 0
-    all_loss = np.zeros(end_iter, float)
-    all_accuracy = np.zeros(end_iter, float)
-    reinit = False
+    all_loss = np.zeros([ITERATION, num_training_epochs], float)
+    all_accuracy = np.zeros([ITERATION, num_training_epochs], float)
 
     # Iterative Magnitude Pruning main loop
-    for _ite in range(start_iter, ITERATION):
+    for imp_iter in tqdm(range(ITERATION)):
+        best_accuracy = 0
         # except for the first iteration, cuz we don't prune in the first
         # iteration
-        if not _ite == 0:
-            pruning.prune_by_percentile()
-            # if the reinit option is activated
-            if reinit:
-                model.apply(pruning.weight_init)
-                step = 0
-                for name, param in model.named_parameters():
-                    if 'weight' in name:
-                        weight_dev = param.device
-                        param.data = torch.from_numpy(param.data.cpu().numpy()
-                                                      * pruning.mask[step]).to(weight_dev)
-                        step = step + 1
-                step = 0
-            else:
-                # todo: why do we need an initialization here?
-                pruning.original_initialization(initial_state_dict)
-            # optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
-        print(f"\n--- Pruning Level [{_ite}/{ITERATION}]: ---")
-        logger.debug(f"[{_ite}/{ITERATION}] " + "IMP loop")
+        if imp_iter != 0:
+            pruning.prune_once(initial_state_dict)
+            optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
 
-        ###################
-        # model = network.set_model()
-
-        # torch.save(model, MODEL_DIR + arch_type + str(_ite) + '-model.pt')
-        # logger.debug('model is saved...!')
-        ###################
+        logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop. Pruning level "
+                     f"{comp[imp_iter]}")
 
         # Print the table of Nonzeros in each layer
         comp_level = utils.print_nonzeros(model)
-        comp[_ite] = comp_level
-        pbar = tqdm(range(end_iter))
+        comp[imp_iter] = comp_level
+        logger.debug(f"Compression level: {comp_level}")
 
         # Training the network
-        for iter_ in pbar:
-            logger.debug(f"{iter_}/{end_iter}" + " inside training loop " + arch_type)
-
-            # Test and save the most accurate model
-            if iter_ % valid_freq == 0:
-                logger.debug("Testing...")
-                accuracy = test(model, test_dataloader, criterion, device)
-
-                # Save Weights
-                if accuracy > best_accuracy:
-                    best_accuracy = accuracy
-                    utils.save_model(model, MODEL_DIR, f"{_ite}_model_{prune_type}.pth.tar")
+        for train_iter in tqdm(range(num_training_epochs), leave=False):
 
             # Training
+            logger.debug(f"Training iteration {train_iter} / {num_training_epochs}")
             acc, loss = train(model, train_dataloader, criterion, optimizer,
                               epochs=num_epochs, device=device)
-            all_loss[iter_] = loss
-            all_accuracy[iter_] = accuracy
+
+            # Test and save the most accurate model
+            # logger.debug("Testing...")
+            accuracy = test(model, test_dataloader, criterion, device)
+
+            # Save Weights
+            if accuracy > best_accuracy:
+                best_accuracy = accuracy
+                utils.save_model(model, MODEL_DIR, f"{imp_iter + 1}_model.pth.tar")
+
+            # apply the controller after some epochs
+            if (train_iter == control_at_epoch) and (imp_iter == control_at_iter):
+                # network.trained_enough(accuracy, train_dataloader, criterion,
+                #                        optimizer, num_epochs, device)
+                activations = Activations(model, test_dataloader, device, batch_size)
+                # control_corrs.append(activations.get_connectivity())
+                control_corrs.append(activations.get_correlations())
+                # pruning.apply_controller(control_corrs, [2])
+                pruning.controller(control_corrs, activations.layers_dim, control_type, imp_iter, [2])
+                # pruning.apply_controller(3, control_corrs)
+                optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+
+
+            all_loss[imp_iter, train_iter] = loss
+            all_accuracy[imp_iter, train_iter] = accuracy
+
 
             # Frequency for Printing Accuracy and Loss
-            if iter_ % print_freq == 0:
-                pbar.set_description(
-                    f'Train Epoch: {iter_}/{end_iter} \n'
-                    f'Loss: {loss:.6f} Accuracy: {accuracy:.2f}% \n'
-                    f'Best Accuracy: {best_accuracy:.2f}%\n')
+            # if train_iter % print_freq == 0:
+            #     logger.debug(f'Train Epoch: {train_iter}/{num_training_epochs} \n'
+            #                  f'Loss: {loss:.6f} Accuracy: {accuracy:.2f}% \n'
+            #                  f'Best Accuracy: {best_accuracy:.2f}%\n')
 
         # Calculate the connectivity
+        # network.trained_enough(accuracy, train_dataloader, criterion, optimizer,
+        #                        num_epochs, device) 
         activations = Activations(model, test_dataloader, device, batch_size)
-        corr.append(activations.get_correlation())
-        # Save the activations
-        pickle.dump(corr, open(OUTPUT_DIR + arch_type + "_correlation.pkl", "wb"))
+        corr = activations.get_connectivity()
+        corrs.append(corr)
+        if imp_iter <= control_at_iter:
+            control_corrs.append(activations.get_correlations())
 
         # save the best model
-        # writer.add_scalar('Accuracy/test', best_accuracy, comp_level)
-        bestacc[_ite] = best_accuracy
-
-        # Plotting Loss (Training), Accuracy (Testing), Iteration Curve
-        # NOTE Loss is computed for every iteration while Accuracy is computed
-        # only for every {args.valid_freq} iterations. Therefore Accuracy saved
-        # is constant during the uncomputed iterations.
-        # NOTE Normalized the accuracy to [0,100] for ease of plotting.
-        # plt.plot(np.arange(1,(args.end_iter)+1), 100*(all_loss - np.min(all_loss))/np.ptp(all_loss).astype(float), c="blue", label="Loss")
-        # plt.plot(np.arange(1,(args.end_iter)+1), all_accuracy, c="red", label="Accuracy")
-        # plt.title(f"Loss Vs Accuracy Vs Iterations ({args.dataset},{args.arch_type})")
-        # plt.xlabel("Iterations")
-        # plt.ylabel("Loss and Accuracy")
-        # plt.legend()
-        # plt.grid(color="gray")
-        # plt.savefig(f"{os.getcwd()}/plots/lt/{args.arch_type}/{args.dataset}/{args.prune_type}_LossVsAccuracy_{comp_level}.png", dpi=1200) 
-        # plt.close()
+        bestacc[imp_iter] = best_accuracy
 
         # Dump Plot values
-        all_loss.dump(OUTPUT_DIR + f"{prune_type}_all_loss_{comp_level}.dat")
-        all_accuracy.dump(OUTPUT_DIR + f"{prune_type}_all_accuracy_{comp_level}.dat")
-
+        # all_loss.dump(C.RUN_DIR + f"{prune_type}_all_loss_{comp_level}.dat")
+        # all_accuracy.dump(C.RUN_DIR + f"{prune_type}_all_accuracy_{comp_level}.dat")
+        pickle.dump(corrs, open(C.RUN_DIR + arch_type + "_correlation.pkl", "wb"))
+        pickle.dump(all_accuracy, open(C.RUN_DIR + arch_type + "_all_accuracy.pkl", "wb"))
+        pickle.dump(all_loss, open(C.RUN_DIR + arch_type + "_all_loss.pkl", "wb"))
 
         # Dumping mask
-        with open(OUTPUT_DIR + f"{prune_type}_mask_{comp_level}.pkl", 'wb') as fp:
-            pickle.dump(pruning.mask, fp)
-
-        # Making variables into 0
-        best_accuracy = 0
-        all_loss = np.zeros(end_iter, float)
-        all_accuracy = np.zeros(end_iter, float)
+        # with open(C.RUN_DIR + f"{prune_type}_mask_{comp_level}.pkl", 'wb') as fp:
+        #     pickle.dump(pruning.mask, fp)
 
     # Dumping Values for Plotting
-    comp.dump(OUTPUT_DIR + f"{prune_type}_compression.dat")
-    bestacc.dump(OUTPUT_DIR + f"{prune_type}_bestaccuracy.dat")
+    pickle.dump(comp, open(C.RUN_DIR + arch_type + "_compression.pkl", "wb"))
+    # bestacc.dump(C.RUN_DIR + f"{prune_type}_bestaccuracy.dat")
+    pickle.dump(bestacc, open(C.RUN_DIR + arch_type + "_best_accuracy.pkl", "wb"))
+    con_stability = utils.get_stability(corrs)
+    print(con_stability)
+    pickle.dump(con_stability,
+                open(C.RUN_DIR + arch_type + "_connectivity_stability.pkl", "wb"))
+    perform_stability = utils.get_stability(all_loss)
+    print(perform_stability)
+    pickle.dump(perform_stability,
+                open(C.RUN_DIR + arch_type + "_performance_stability.pkl", "wb"))
+    utils.plot_experiment(bestacc, corrs, C.RUN_DIR + arch_type +
+                          "correlation")
+    utils.plot_experiment(bestacc, con_stability, C.RUN_DIR + arch_type +
+                          "connection-stability")
 
-    # Plotting
-    # a = np.arange(prune_iterations)
-    # plt.plot(a, bestacc, c="blue", label="Winning tickets")
-    # plt.title(f"Test Accuracy vs Unpruned Weights Percentage ({args.dataset},{args.arch_type})")
-    # plt.xlabel("Unpruned Weights Percentage")
-    # plt.ylabel("test accuracy")
-    # plt.xticks(a, comp, rotation ="vertical")
-    # plt.ylim(0,100)
-    # plt.legend()
-    # plt.grid(color="gray")
-    # utils.checkdir(f"{os.getcwd()}/plots/lt/{args.arch_type}/{args.dataset}/")
-    # plt.savefig(f"{os.getcwd()}/plots/lt/{args.arch_type}/{args.dataset}/{args.prune_type}_AccuracyVsWeights.png", dpi=1200) 
-    # plt.close()
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 {
   "arch": "resnet",
   "mode": "all",
-  "pretrained": true,
+  "pretrained": "True",
   "dataset": "CIFAR10",
   "single_task": false,
   "task_num": 0,
@@ -11,7 +11,8 @@
   "cores": 4,
   "save_prefix": "../checkpoints/",
   "loadname": "",
-  "train_epochs": 2,
+  "train_epochs": 1,
+  "train_per_epoch": 1,
   "lr": 0.1,
   "batch_size": 64,
   "weight_decay": 0.0,
@@ -32,5 +33,6 @@
   "control_at_iter": -1,
   "control_at_epoch": 2,
   "acc_thrd": 70,
-  "control_type": 1
+  "control_type": 1,
+  "imp_total_iter": 10
 }

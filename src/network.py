@@ -46,25 +46,25 @@ class Network():
     
     def set_model(self):
         if self.arch == "vgg11":
-            if self.pretrained:
+            if self.pretrained == "True":
                 self.model = models.vgg11(weights=VGG11_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
                 self.model = models.vgg11()
-            num_ftrs = self.model.fc.in_features
-            self.model.fc = nn.Linear(num_ftrs, self.num_classes)
+            num_ftrs = self.model.classifier[6].in_features
+            self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
         elif self.arch == "vgg16":
-            if self.pretrained:
+            if self.pretrained == "True":
                 self.model = models.vgg16(weights=VGG16_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
                 self.model = models.vgg16()
-            num_ftrs = self.model.fc.in_features
+            num_ftrs = self.model.classifier[6].in_features
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
         elif self.arch == "resnet":
-            if self.pretrained:
+            if self.pretrained == "True":
                 self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -73,7 +73,7 @@ class Network():
             self.model.fc = nn.Linear(num_ftrs, self.num_classes)
 
         elif self.arch == "alexnet":
-            if self.pretrained:
+            if self.pretrained == "True":
                 self.model = models.alexnet(weights=AlexNet_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -137,7 +137,7 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
 
 def test(model, dataloader, loss_fn, device):
     log.debug('Testing')
-    model.eval()
+    # model.eval()
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
     test_loss, correct = 0, 0

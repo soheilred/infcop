@@ -12,6 +12,7 @@ from models import ResidualBlock
 from torchvision.models.resnet import Bottleneck
 
 import utils
+import plot_tool
 from data_loader import Data
 from network import Network, train, test
 import constants as C
@@ -22,7 +23,18 @@ log.debug("In " + os.uname()[1])
 
 class Activations:
     def __init__(self, model, dataloader, device, batch_size):
-        "docstring"
+        """
+        Parameters
+        ----------
+        model: Network
+            The network we want to calculate the connectivity for.
+        dataloader: Data
+            The data we are drawing from, usuaully the test set.
+        device: string
+            "cpu" or "cuda"
+        batch_size: int
+            Batch size
+        """
         self.activation = {}
         self.model = model
         self.dataloader = dataloader
@@ -31,6 +43,19 @@ class Activations:
         self.layers_dim = []
 
     def hook_fn(self, m, i, o):
+        """Assign the activations/mean of activations to a matrix
+        Parameters
+        ----------
+        self: type
+            description
+        m: int
+            Layer number
+        i: type
+            description
+        o: torch tensor
+            the activation function output
+
+        """
         tmp = o.detach()
         if len(tmp.shape) > 2:
             self.activation[m] = torch.mean(tmp, axis=(2, 3))
@@ -39,21 +64,46 @@ class Activations:
             self.activation[m] = tmp
 
     def get_all_layers(self, net, layers_dim, hook_handles):
-        # If it is a sequential, don't register a hook on it
-        # but recursively register hook on all it's module children
-        for name, layer in net._modules.items():
-            if (isinstance(layer, nn.Sequential) or
-                    isinstance(layer, ResidualBlock) or
-                    isinstance(layer, Bottleneck)):
-                self.get_all_layers(layer, layers_dim, hook_handles)
-            elif (isinstance(layer, nn.Conv2d) or
-                  (isinstance(layer, nn.Linear))):
-                # it's a non sequential. Register a hook
-                hook_handles.append(layer.register_forward_hook(self.hook_fn))
-                layers_dim.append(layer.weight.shape)
+        """ Hook a handle to all layers that are interesting to us, such as
+        Linear or Conv2d.
+        Parameters
+        ----------
+        net: Network
+            The network we're looking at
+        layers_dim: list
+            List of layers that are registered for saving activations
+        hook_handles: type
+            description
+
+        If it is a sequential, don't register a hook on it but recursively
+        register hook on all it's module children
+        """
+        for module in self.model.named_modules():
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                hook_handles.append(module[1].register_forward_hook(self.hook_fn))
+                layers_dim.append(module[1].weight.shape)
+            
+        # Recursive version
+        # for name, layer in net._modules.items():
+        #     if (isinstance(layer, nn.Sequential) or
+        #             isinstance(layer, ResidualBlock) or
+        #             isinstance(layer, Bottleneck)):
+        #         self.get_all_layers(layer, layers_dim, hook_handles)
+        #     elif (isinstance(layer, nn.Conv2d) or
+        #           (isinstance(layer, nn.Linear))):
+        #         # it's a non sequential. Register a hook
+        #         hook_handles.append(layer.register_forward_hook(self.hook_fn))
+        #         layers_dim.append(layer.weight.shape)
 
 
     def get_correlations(self):
+        """ Compute the individual correlation
+        Returns
+        -------
+        List of 2d tensors, each representing the connectivity between two
+        consecutive layer.
+        """
         ds_size = len(self.dataloader.dataset)
         num_batch = len(self.dataloader)
         # params = list(self.model.parameters())
@@ -61,6 +111,7 @@ class Activations:
         layers_dim = self.layers_dim
         hook_handles = []
         self.get_all_layers(self.model, layers_dim, hook_handles)
+        import ipdb; ipdb.set_trace()
         num_layers = len(layers_dim)
         first_run = 1
         torch.set_printoptions(precision=4)
@@ -111,6 +162,8 @@ class Activations:
         return corrs
 
     def get_connectivity(self):
+        """Find the connectivity of each layer, the mean of correlation matrix.
+        """
         ds_size = len(self.dataloader.dataset)
         num_batch = len(self.dataloader)
         # params = list(self.model.parameters())
@@ -170,55 +223,22 @@ class Activations:
                 #     first_run = 0
                 for i in range(num_layers - 1):
                     # Normalized activations
-                    # f0 = torch.div((self.activation[act_keys[i]] -
-                    #                 activation_means[i]), activation_sd[i]).T
-                    # f1 = torch.div((self.activation[act_keys[i + 1]] -
-                    #                 activation_means[i + 1]), activation_sd[i + 1])
+                    f0 = torch.div((self.activation[act_keys[i]] -
+                                    activation_means[i]), activation_sd[i]).T
+                    f1 = torch.div((self.activation[act_keys[i + 1]] -
+                                    activation_means[i + 1]), activation_sd[i + 1])
 
                     # Zero-meaned activations
-                    f0 = (self.activation[act_keys[i]] - activation_means[i]).T
-                    f1 = (self.activation[act_keys[i + 1]] - activation_means[i + 1])
+                    # f0 = (self.activation[act_keys[i]] - activation_means[i]).T
+                    # f1 = (self.activation[act_keys[i + 1]] - activation_means[i + 1])
 
                     corrs[i] += torch.matmul(f0, f1)
-
-                    # corrs[i] += torch.matmul(torch.flatten(self.activation[act_keys[i]],
-                    #                                        start_dim=1).T,
-                    #                          torch.flatten(self.activation[act_keys[i + 1]],
-                    #                                        start_dim=1))
-
-            # for i in range(num_layers - 1):
-            #     if (torch.any(corrs[i] > 10e5)) or (torch.any(corrs[i] < -10e5)):
-            #         log.debug(f"Error in layer {i} in correlation")
-            #         log.debug(f"{torch.mean(corrs[i])}, {layers_dim[i]}")
-        # if w == 0:
-            # import ipdb; ipdb.set_trace()
-            # log.debug("-------------------------------")
-            #     corrs[i] += torch.matmul(torch.flatten(activation[str(i+1)],
-            #                                            start_dim=1).T,
-            #                              torch.flatten(activation[str(i+2)],
-            #                                            start_dim=1))
-        # if w == 0:
-        # weight_list = [torch.ones(corrs[i].shape).to(device) for i in range(num_layers)]
-        # if w == 1:
-        #     weight = model.fc1.weight.cpu().detach().T
-        # corrs_out = [torch.mean(
-        #             torch.mul(corrs[i] / ds_size, weight_list[i])).item()
-        #             for i in range(num_layers)]
-        # adj_corr = torch.mul(corrs[0], weight)
-        # return torch.mean(adj_corr).item()
-
         # Remove all hook handles
         for handle in hook_handles:
             handle.remove()
 
         return [torch.mean(corrs[i]).item()/(layers_dim[i][0] * layers_dim[i + 1][0])
                 for i in range(num_layers - 1)]
-
-
-
-    def get_np_correlation(self):
-        corrs = np.zeros(len(self.layers_dim))
-
 
 
 def main():
@@ -248,14 +268,14 @@ def main():
         test_acc[i] = test(model, test_dl, loss_fn, device)
 
         activations = Activations(model, test_dl, device, args.batch_size)
-        corr.append(activations.get_correlations())
+        corr.append(activations.get_connectivity())
 
-        utils.save_model(model, C.OUTPUT_DIR, args.arch + str(i) + '-model.pt')
+        utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
         logger.debug('model is saved...!')
 
         utils.save_vars(test_acc=test_acc, corr=corr)
 
-    plot_experiment(test_acc, corr, arch)
+    plot_tool.plot_connectivity(test_acc, corr)
 
 
 if __name__ == '__main__':

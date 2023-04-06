@@ -49,6 +49,7 @@ def plot_all_accuracy(accuracies, filename):
     plt.grid()
     plt.savefig(filename + ".png")
 
+
 def plot_multi_all_accuracy(accuracies, filename):
     accuracies_list = []
     for i in range(len(accuracies)):
@@ -67,6 +68,7 @@ def plot_multi_all_accuracy(accuracies, filename):
     axs.set_xlim([0, 2 * len(accuracies_list[0])])
     plt.grid()
     plt.savefig(filename + ".png")
+
 
 def plot_experiment(train_acc, ydata, filename):
     fig, axs = plt.subplots(2)
@@ -95,6 +97,7 @@ def plot_experiment(train_acc, ydata, filename):
     plt.savefig(filename + ".png")
     # plt.show()
 
+
 def plot_accuracy():
     # out_dir = "../output/05-02-21-28/"
     out_dir = sys.argv[1]
@@ -117,6 +120,7 @@ def plot_accuracy():
     plot_all_accuracy(all_accuracy, out_dir + "accuracies")
     print(np.round(corrs, 3))
     print(np.round(connect_stability, 3))
+
 
 def plot_max_accuracy(accuracies, labels, filename):
     fig, axs = plt.subplots(1, figsize=(5,5))
@@ -178,8 +182,7 @@ def plot_train_epochs(epochs, labels, filename):
     plt.savefig(filename + ".png")
 
 def plot_connectivity(test_acc, corrs):
-    import ipdb; ipdb.set_trace()
-    fig, axs = plt.subplots(2, figsize=(5,5))
+    fig, axs = plt.subplots(2, figsize=(12, 8))
     xdata = np.arange(1, len(test_acc) + 1)
     axs[0].scatter(xdata, test_acc, marker=(5, 0))
     axs[0].set_title("Accuracy of network in training")
@@ -188,16 +191,16 @@ def plot_connectivity(test_acc, corrs):
 
     xdata = np.arange(1, len(corrs[0]) + 1)
 
-    for i in range(len(epochs)):
+    for i in range(len(corrs)):
         axs[1].plot(xdata, corrs[i], marker=filled_markers[i],
                  linestyle=linestyles[i % len(linestyles)],
-                 label=labels[i],
+                 label=f"exper {i}",
                  alpha=.5) 
     fig.tight_layout(pad=2.0)
     plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
     major_ticks = np.arange(1, len(corrs[0]) + 1)
-    axs.set_xticks(major_ticks)
+    axs[1].set_xticks(major_ticks)
     # axs.set_xlim([1, len(epochs[0])])
     # plt.grid()
     filename = C.OUTPUT_DIR + "correlation"
