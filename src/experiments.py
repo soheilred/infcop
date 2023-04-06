@@ -81,7 +81,8 @@ def main():
             # Save Weights
             if accuracy > best_accuracy:
                 best_accuracy = accuracy
-                utils.save_model(model, MODEL_DIR, f"{imp_iter + 1}_model.pth.tar")
+                utils.save_model(model, MODEL_DIR,
+                                 f"{imp_iter + 1}_model.pth.tar")
 
             # apply the controller after some epochs
             if (train_iter == args.control_at_epoch) and \
@@ -111,33 +112,16 @@ def main():
         # save the best model
         bestacc[imp_iter] = best_accuracy
 
-        # Dump Plot values
-        # all_loss.dump(C.RUN_DIR + f"{prune_type}_all_loss_{comp_level}.dat")
-        # all_accuracy.dump(C.RUN_DIR + f"{prune_type}_all_accuracy_{comp_level}.dat")
-        pickle.dump(corrs, open(C.RUN_DIR + arch_type + "_correlation.pkl", "wb"))
-        pickle.dump(all_accuracy, open(C.RUN_DIR + arch_type + "_all_accuracy.pkl", "wb"))
-        pickle.dump(all_loss, open(C.RUN_DIR + arch_type + "_all_loss.pkl", "wb"))
-
+        utils.save_vars(corrs:corrs, all_accuracy:all_accuracy)
         # Dumping mask
-        # with open(C.RUN_DIR + f"{prune_type}_mask_{comp_level}.pkl", 'wb') as fp:
-        #     pickle.dump(pruning.mask, fp)
 
     # Dumping Values for Plotting
-    pickle.dump(comp, open(C.RUN_DIR + arch_type + "_compression.pkl", "wb"))
-    # bestacc.dump(C.RUN_DIR + f"{prune_type}_bestaccuracy.dat")
-    pickle.dump(bestacc, open(C.RUN_DIR + arch_type + "_best_accuracy.pkl", "wb"))
+    utils.save_vars(corrs:corrs, all_accuracy:all_accuracy)
+    utils.save_vars(comp:comp, bestacc:bestacc)
     con_stability = utils.get_stability(corrs)
     print(con_stability)
-    pickle.dump(con_stability,
-                open(C.RUN_DIR + arch_type + "_connectivity_stability.pkl", "wb"))
     perform_stability = utils.get_stability(all_loss)
     print(perform_stability)
-    pickle.dump(perform_stability,
-                open(C.RUN_DIR + arch_type + "_performance_stability.pkl", "wb"))
-    utils.plot_experiment(bestacc, corrs, C.RUN_DIR + arch_type +
-                          "correlation")
-    utils.plot_experiment(bestacc, con_stability, C.RUN_DIR + arch_type +
-                          "connection-stability")
 
 if __name__ == '__main__':
     main()
