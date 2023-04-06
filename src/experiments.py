@@ -112,12 +112,12 @@ def main():
         # save the best model
         bestacc[imp_iter] = best_accuracy
 
-        utils.save_vars(corrs:corrs, all_accuracy:all_accuracy)
+        utils.save_vars(corrs=corrs, all_accuracy=all_accuracy)
         # Dumping mask
 
     # Dumping Values for Plotting
-    utils.save_vars(corrs:corrs, all_accuracy:all_accuracy)
-    utils.save_vars(comp:comp, bestacc:bestacc)
+    utils.save_vars(corrs=corrs, all_accuracy=all_accuracy)
+    utils.save_vars(comp=comp, bestacc=bestacc)
     con_stability = utils.get_stability(corrs)
     print(con_stability)
     perform_stability = utils.get_stability(all_loss)
