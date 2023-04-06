@@ -105,7 +105,7 @@ def main():
         activations = Activations(model, test_dl, device, args.batch_size)
         corr = activations.get_connectivity()
         corrs.append(corr)
-        if imp_iter <= control_at_iter:
+        if imp_iter <= args.control_at_iter:
             control_corrs.append(activations.get_correlations())
 
         # save the best model
