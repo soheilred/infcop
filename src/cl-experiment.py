@@ -30,6 +30,7 @@ def main():
         data = Data(args.batch_size, C.DATA_DIR, dataset_list[task])
         num_classes = data.get_num_classes()
         train_dl, test_dl = data.train_dataloader, data.test_dataloader
+        import ipdb; ipdb.set_trace()
 
         # prepare the model for the task
         model.add_dataset(str(task), num_classes)

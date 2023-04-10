@@ -140,6 +140,10 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
             # Backpropagation
             optimizer.zero_grad()
             loss.backward()
+
+            # Set frozen param grads to 0.
+            pruner.make_grads_zero()
+
             optimizer.step()
 
             running_loss += loss.item()
