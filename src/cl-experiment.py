@@ -33,7 +33,7 @@ def main():
 
         # prepare the model for the task
         model.add_dataset(str(task), num_classes)
-        model.set_dataset(str(task))
+        model.set_dataset(str(task), device)
 
         optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
         train_acc, _ = train(model, train_dl, loss_fn, optimizer,
