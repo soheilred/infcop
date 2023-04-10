@@ -1,7 +1,4 @@
-import argparse
 import copy
-import os
-import sys
 import numpy as np
 from tqdm import tqdm
 import torch
@@ -20,7 +17,7 @@ import logging.config
 
 log = logging.getLogger("sampleLogger")
 
-class LTPruning:
+class Pruner:
     def __init__(self, model, arch_type, prune_percent, train_dataloader, test_dataloader):
         "docstring"
         self.model = model
@@ -36,6 +33,10 @@ class LTPruning:
         self.reinit = False
         self.num_layers = 0
         self.init_state_dict = None
+        # Weight Initialization
+        self.model.apply(self.weight_init)
+        # Making Initial Mask
+        self.init_mask()
 
     def weight_init(self, m):
         '''Usage:
