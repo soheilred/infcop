@@ -367,10 +367,10 @@ class ResNet(nn.Module):
             self.datasets.append(dataset)
             self.classifiers.append(nn.Linear(512, num_outputs))
 
-    def set_dataset(self, dataset):
+    def set_dataset(self, dataset, device):
         """Change the active classifier."""
         assert dataset in self.datasets
-        self.classifier = self.classifiers[self.datasets.index(dataset)]
+        self.classifier = self.classifiers[self.datasets.index(dataset)].to(device)
 
         # self.fc = nn.Linear(512 * block.expansion, num_classes)
 
