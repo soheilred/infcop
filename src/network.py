@@ -142,7 +142,7 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
             loss.backward()
 
             # Set frozen param grads to 0.
-            pruner.make_grads_zero()
+            # pruner.make_grads_zero()
 
             optimizer.step()
 
