@@ -48,7 +48,7 @@ class Data:
                 transform=self.transform
                 )
         elif dataset == "MNIST":
-            self.transform = torchvision.transforms.Compose([
+            self.transform = transforms.Compose([
                 torchvision.transforms.Grayscale(num_output_channels=3),
                 torchvision.transforms.ToTensor(),
             ])
