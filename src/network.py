@@ -11,6 +11,7 @@ import logging
 import utils
 from data_loader import Data
 import constants as C
+from models import resnet18
 
 # from EDGE_4_4_1 import EDGE
 # from matplotlib.ticker import MaxNLocator
@@ -18,7 +19,7 @@ import constants as C
 log = logging.getLogger("sampleLogger")
 
 class Network():
-    def __init__(self, device, arch, num_classes, pretrained=True,
+    def __init__(self, device, arch, num_classes=10, pretrained=True,
                  feature_extracting=False):
         """Setup the network and adjust it to the dataset dimentions.
         Parameters
@@ -64,13 +65,14 @@ class Network():
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
         elif self.arch == "resnet":
-            if self.pretrained == "True":
-                self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
-                self.set_parameter_requires_grad()
-            else:
-                self.model = models.resnet18()
-            num_ftrs = self.model.fc.in_features
-            self.model.fc = nn.Linear(num_ftrs, self.num_classes)
+            # if self.pretrained == "True":
+            #     self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
+            #     self.set_parameter_requires_grad()
+            # else:
+            #     self.model = models.resnet18()
+            # num_ftrs = self.model.fc.in_features
+            # self.model.fc = nn.Linear(num_ftrs, self.num_classes)
+            self.model = resnet18()
 
         elif self.arch == "alexnet":
             if self.pretrained == "True":
@@ -103,9 +105,25 @@ class Network():
             log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
             i += 1
 
+    def add_dataset(self, dataset, num_outputs):
+        """Adds a new dataset to the classifier."""
+        if dataset not in self.datasets:
+            self.datasets.append(dataset)
+            self.classifiers.append(nn.Linear(512, num_outputs))
+
+    def set_dataset(self, dataset):
+        """Change the active classifier."""
+        assert dataset in self.datasets
+        self.classifier = self.classifiers[self.datasets.index(dataset)]
+
+        # self.fc = nn.Linear(512 * block.expansion, num_classes)
+
+
 def train(model, dataloader, loss_fn, optimizer, epochs, device):
     log.debug('Training...')
     size = len(dataloader.dataset)
+    model.train_nobn()
+    print("No BN in training loop")
 
     for t in range(epochs):
         log.debug(f"Epoch {t+1}")

@@ -1,358 +1,451 @@
-"""
-Handles all the pruning and connectivity. Pruning steps are adapted from: https://github.com/arunmallya/packnet/blob/master/src/prune.py
-Connectivity steps and implementation of connectivity into the pruning steps are part of our contribution
-"""
-from __future__ import print_function
-
-import collections
-import time
 import copy
+import numpy as np
+from tqdm import tqdm
 import torch
-import random
-import multiprocessing
 import torch.nn as nn
-import numpy             as np
+import torchvision.datasets as datasets
+import torch.nn.init as init
+import pickle
 
-# Custom imports
-# from utils import activations, corr
-from utils import activations
+import utils
+from data_loader import Data
+from network import Network, train, test
+from correlation import Activations
+import constants as C
+import logging
+import logging.config
 
+log = logging.getLogger("sampleLogger")
 
-class SparsePruner(object):
-    """Performs pruning on the given model."""
-    ### Relavent arguments are moved to the pruner to explicitly show which arguments are used by it
-    def __init__(self, args, model, all_task_masks, composite_mask, conns, conn_aves):
-        self.args = args
-        self.model = model 
-        self.prune_perc = args.prune_perc_per_layer
-        self.freeze_perc = args.freeze_perc
-        self.num_freeze_layers = args.num_freeze_layers
-        self.freeze_order = args.freeze_order
-        self.task_num = args.task_num
-        print("current index is: " + str(self.task_num))
-        
-        self.testloader = None 
-        
-        self.conns = conns
-        self.conn_aves = conn_aves
-        
-        ### The composite mask stores the task number for which every weight was frozen, or if they are unfrozen the number is the current task
-        self.composite_mask = composite_mask
-        ### All_task_masks is a dictionary of binary masks, 1 per task, indicating which weights to include when evaluating that task
-        self.all_task_masks = all_task_masks 
-        
+class Pruner:
+    def __init__(self, model, arch_type, prune_percent, train_dataloader, test_dataloader):
+        "docstring"
+        self.model = model
+        self.arch_type = arch_type
+        self.train_loader = train_dataloader
+        self.test_loader = test_dataloader
+        self.mask = None
+        self.start_iter = 0
+        self.lr = 1.2e-3
+        self.end_iter = 100
+        self.prune_type = "lt"
+        self.prune_percent = prune_percent
+        self.reinit = False
+        self.num_layers = 0
+        self.init_state_dict = None
+        # Weight Initialization
+        self.model.apply(self.weight_init)
+        # Making Initial Mask
+        self.init_mask()
 
-    
-     
-    """
-    ###########################################################################################
-    #####
-    #####  Connectivity Functions
-    #####
-    #####  Use: Gets the connectivity between each pair of convolutional or linear layers. 
-    #####       The primary original code for our published connectivity-based freezing method
-    #####
-    ###########################################################################################
-    """
-
-      
-    def calc_conns(self):
-        self.task_conns = {}
-        self.task_conn_aves = {}        
-        
-        #!# Probably just calculate the activations here before the looping
-        
-        
-        #!# This can still be the same, splitting by parents and children, it just needs to index the acts appropriately rather than generate them each time
-        ### Record the indices of all adjacent pairs of layers in the shared network
-        ### This numbering method reflects the "layer index" in Figs. 2-4 of the accompanying paper
-        parents = []
-        children = []
-        i = 0
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                if (i == 0):
-                    parents.append(module_idx)
-                    i += 1
+    def weight_init(self, m):
+        '''Usage:
+            model = Model()
+            model.apply(weight_init)
+        '''
+        if isinstance(m, nn.Conv1d):
+            init.normal_(m.weight.data)
+            if m.bias is not None:
+                init.normal_(m.bias.data)
+        elif isinstance(m, nn.Conv2d):
+            init.xavier_normal_(m.weight.data)
+            if m.bias is not None:
+                init.normal_(m.bias.data)
+        elif isinstance(m, nn.Conv3d):
+            init.xavier_normal_(m.weight.data)
+            if m.bias is not None:
+                init.normal_(m.bias.data)
+        elif isinstance(m, nn.ConvTranspose1d):
+            init.normal_(m.weight.data)
+            if m.bias is not None:
+                init.normal_(m.bias.data)
+        elif isinstance(m, nn.ConvTranspose2d):
+            init.xavier_normal_(m.weight.data)
+            if m.bias is not None:
+                init.normal_(m.bias.data)
+        elif isinstance(m, nn.ConvTranspose3d):
+            init.xavier_normal_(m.weight.data)
+            if m.bias is not None:
+                init.normal_(m.bias.data)
+        elif isinstance(m, nn.BatchNorm1d):
+            init.normal_(m.weight.data, mean=1, std=0.02)
+            init.constant_(m.bias.data, 0)
+        elif isinstance(m, nn.BatchNorm2d):
+            init.normal_(m.weight.data, mean=1, std=0.02)
+            init.constant_(m.bias.data, 0)
+        elif isinstance(m, nn.BatchNorm3d):
+            init.normal_(m.weight.data, mean=1, std=0.02)
+            init.constant_(m.bias.data, 0)
+        elif isinstance(m, nn.Linear):
+            init.xavier_normal_(m.weight.data)
+            init.normal_(m.bias.data)
+        elif isinstance(m, nn.LSTM):
+            for param in m.parameters():
+                if len(param.shape) >= 2:
+                    init.orthogonal_(param.data)
                 else:
-                    parents.append(module_idx)
-                    children.append(module_idx)
-        children.append(-1)
-        for key_id in range(0,len(parents)): 
-            self.task_conn_aves[parents[key_id]], self.task_conns[parents[key_id]] = self.calc_conn([parents[key_id]], [children[key_id]], key_id)
-            
-        self.conn_aves[self.task_num] = self.task_conn_aves
-        self.conns[self.task_num] = self.task_conns
+                    init.normal_(param.data)
+        elif isinstance(m, nn.LSTMCell):
+            for param in m.parameters():
+                if len(param.shape) >= 2:
+                    init.orthogonal_(param.data)
+                else:
+                    init.normal_(param.data)
+        elif isinstance(m, nn.GRU):
+            for param in m.parameters():
+                if len(param.shape) >= 2:
+                    init.orthogonal_(param.data)
+                else:
+                    init.normal_(param.data)
+        elif isinstance(m, nn.GRUCell):
+            for param in m.parameters():
+                if len(param.shape) >= 2:
+                    init.orthogonal_(param.data)
+                else:
+                    init.normal_(param.data)
 
-
-   ### This was following an implementation by Madan which allowed for parallelization, where we calculate connectivity for one pair of layers at a time
-    def calc_conn(self, parent_key, children_key, key_id):
-        self.model.eval()
-    
-        # Obtain Activations
-        print("----------------------------------")
-        print("Collecting activations from layers")
-    
-        p1_op = {}
-        c1_op = {}
-        p1_lab = {}
-        c1_lab = {}    
-
-        unique_keys = np.unique(np.union1d(parent_key, children_key)).tolist()
-        act         = {}
-        lab         = {}
-    
-
-        ### Get activations and labels from the function in utils prior to calculating connectivities
-        for item_key in unique_keys:
-            act[item_key], lab[item_key] = activations(self.testloader, self.model, self.args.cuda, item_key)
-
-        for item_idx in range(len(parent_key)):
-            p1_op[str(item_idx)] = copy.deepcopy(act[parent_key[item_idx]]) 
-            p1_lab[str(item_idx)] = copy.deepcopy(lab[parent_key[item_idx]]) 
-            c1_op[str(item_idx)] = copy.deepcopy(act[children_key[item_idx]])
-            c1_lab[str(item_idx)] = copy.deepcopy(lab[children_key[item_idx]])
-        
-        del act, lab
-
-       
-        print("----------------------------------")
-        print("Begin Execution of conn estimation")
-    
-        parent_aves = []
-        p1_op = np.asarray(list(p1_op.values())[0])
-        p1_lab = np.asarray(list(p1_lab.values())[0])
-        c1_op = np.asarray(list(c1_op.values())[0])
-        c1_lab = np.asarray(list(c1_lab.values())[0])
-    
-        task = self.task_num
-
-        ### Normalizing the activation values per our proof in the previous work
-        for label in list(np.unique(np.asarray(p1_lab))):
-            # print("Parent mean and stdev: ", np.mean(p1_op[p1_lab == label]), " ", np.std(p1_op[p1_lab == label]))
-
-            p1_op[p1_lab == label] -= np.mean(p1_op[p1_lab == label])
-            p1_op[p1_lab == label] /= np.std(p1_op[p1_lab == label])
-
-
-
-            c1_op[c1_lab == label] -= np.mean(c1_op[c1_lab == label])
-            c1_op[c1_lab == label] /= np.std(c1_op[c1_lab == label])
-
-        """
-        Code for averaging conns by parent prior by layer
-        """
-        
-        parent_class_aves = []
-        parents_by_class = []
-        parents_aves = []
-        conn_aves = []
-        parents = []
-        
-        print("p1_op shape: ", p1_op.shape)
-
-        ### Calculating connectivity for each class individually and then averaging over all classes, as per proofs
-        for c in list(np.unique(np.asarray(p1_lab))):
-            p1_class = p1_op[np.where(p1_lab == c)]
-            c1_class = c1_op[np.where(c1_lab == c)]
-
-            ### Parents is a 2D list of all of the connectivities of parents and children for a single class
-            coefs = np.corrcoef(p1_class, c1_class, rowvar=False)
-            
-            parents = []
-            for i in range(0, len(p1_class[0])):
-                parents.append(coefs[i, len(p1_class[0]):])
-            parents = np.abs(np.asarray(parents))
-
-            ### This is a growing list of each p-c connectivity for all activations of a given class
-            ###     The dimensions are (class, parent, child)
-            parents_by_class.append(parents)
-        
-        ### Averages all classes, since all class priors are the same for cifar10 and 100
-        conn_aves = np.mean(np.asarray(parents_by_class), axis=0)
-        
-        ### Then average over the parents and children to get the layer-layer connectivity
-        layer_ave = np.mean(conn_aves)
-
-        return layer_ave, conn_aves
-
-
-
-    
-    
-    
-    
-    
-    """
-    ##########################################################################################################################################
-    Pruning Functions
-    ##########################################################################################################################################
-    """
-    ### Goes through and calls prune_mask for each layer and stores the results
-    ### Then applies the masks to the weights
-    def prune(self):
-        print('Pruning for dataset idx: %d' % (self.task_num))
-        print('Pruning each layer by removing %.2f%% of values' %
-              (100 * self.prune_perc))
-    
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                ### Get the pruned mask for the current layer
-                mask = self.pruning_mask(module.weight.data, self.composite_mask[module_idx], module_idx)
-                self.composite_mask[module_idx] = mask.cuda()
-
-                # Set pruned weights to 0.
-                weight = module.weight.data
-                weight[self.composite_mask[module_idx].gt(self.task_num)] = 0.0
-                self.all_task_masks[self.task_num][0][module_idx][mask.gt(self.task_num)] = 0
-
-                
-        print("\nFOR TASK %d:", self.task_num)
-        for layer_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                weight = module.weight.data
-                num_params = weight.numel()
-                num_frozen = weight[self.composite_mask[layer_idx].eq(self.task_num)].numel()
-                print('Layer #%d: Frozen %d/%d (%.2f%%)' %
-                      (layer_idx, num_frozen, num_params, 100 * num_frozen / num_params))                
-
-      
- 
- 
- 
- 
-    def pruning_mask(self, weights, composite_mask_in, layer_idx):
-        """
-            Ranks prunable filters by magnitude. Sets all below kth to 0.
-            Returns pruned mask.
+    def initialize_lth(self):
+        """Prepare the lth object by:
+        1. initializing the network's weights
+        2. saving the initial state of the network into the object
+        3. saving the initial state model on the disk
+        4. initializing the masks according to the layers size
         """
 
-        composite_mask = composite_mask_in.clone().detach().cuda()
+        # Weight Initialization
+        self.model.apply(self.weight_init)
 
-        filter_weights = weights
-        filter_composite_mask = composite_mask.eq(self.task_num)
-        tensor = weights[filter_composite_mask]
+        # Copying and Saving Initial State
+        self.init_state_dict = copy.deepcopy(self.model.state_dict())
+        utils.save_model(self.model, C.MODEL_ROOT_DIR, "/initial_model.pth.tar")
 
-        abs_tensor = tensor.abs()
+        # Making Initial Mask
+        self.init_mask()
+        return self.init_state_dict
 
+    def count_layers(self):
+        step = 0
+        for name, param in self.model.named_parameters():
+            if 'weight' in name:
+                step = step + 1
+        return step
 
-        """
-            Code for increasing the freezing percent of a given layer based on connectivity
-        """
+    def init_mask(self):
+        """Make an empty mask of the same size as the model."""
+        self.num_layers = self.count_layers()
+        self.mask = [None] * self.num_layers
+        step = 0
+        for name, param in self.model.named_parameters():
+            if 'weight' in name:
+                tensor = param.data.cpu().numpy()
+                self.mask[step] = np.ones_like(tensor)
+                step = step + 1
 
-        prune_rank = round(self.prune_perc * abs_tensor.numel())
-        connlist = self.conn_aves[self.task_num]
+    def prune_by_percentile(self):
+        # Calculate percentile value
+        step = 0
+        for name, param in self.model.named_parameters():
 
+            # We do not prune bias term
+            if 'weight' in name:
+                tensor = param.data.cpu().numpy()
+                alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
+                percentile_value = np.percentile(abs(alive), self.prune_percent)
 
-        max_n_layers_indices = np.argsort(list(connlist.values()))
-        max_n_keys = np.asarray(list(connlist.keys()))[list(max_n_layers_indices)]
-        random_idxs = np.copy(max_n_keys)
-        np.random.shuffle(random_idxs)
-        
-        # ### Apply freezing if the index is selected based on connectivity, otherwise prune at the baseline rate.
-        # if self.freeze_order == "top" and (layer_idx in max_n_keys[-self.num_freeze_layers:]):
-        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
-        # elif self.freeze_order == "bottom" and (layer_idx in max_n_keys[:self.num_freeze_layers]):
-        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
-        # elif self.freeze_order == "random" and (layer_idx in random_idxs[:self.num_freeze_layers]):
-        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
-        
-        prune_value = abs_tensor.view(-1).cpu().kthvalue(prune_rank)[0]
+                # Convert Tensors to numpy and calculate
+                weight_dev = param.device
+                new_mask = np.where(abs(tensor) < percentile_value, 0,
+                                    self.mask[step])
 
-        remove_mask = torch.zeros(weights.shape)
+                # Apply new weight and mask
+                param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
+                self.mask[step] = new_mask
+                step += 1
 
-        remove_mask[filter_weights.abs().le(prune_value)]=1
-        remove_mask[composite_mask.ne(self.task_num)]=0
+    def original_initialization(self, initial_state_dict):
+        step = 0
+        mask_temp = self.mask
+        for name, param in self.model.named_parameters():
+            if "weight" in name:
+                weight_dev = param.device
+                param.data = torch.from_numpy(mask_temp[step] *
+                                              initial_state_dict[name].
+                                              cpu().numpy()).to(weight_dev)
+                step = step + 1
+            if "bias" in name:
+                param.data = initial_state_dict[name]
+        # step = 0
 
-        composite_mask[remove_mask.eq(1)] = self.task_num + 1
-        mask = composite_mask
-        
-        print('Layer #%d, pruned %d/%d (%.2f%%) (Total in layer: %d)' %
-              (layer_idx, mask.gt(self.task_num).sum(), tensor.numel(),
-              100 * mask.gt(self.task_num).sum() / tensor.numel(), weights.numel()))
-
-        return mask
-        
-        
-        
-        
-    
-        
-        
-    
-    """
-    ##########################################################################################################################################
-    Update Functions
-    ##########################################################################################################################################
-    """
-
-    ### During training this is called to avoid storing gradients for the frozen weights, to prevent updating
-    ### This is unaffected in the shared masks since shared weights always have the current index unless frozen
-    def make_grads_zero(self):
-        """Sets grads of fixed weights to 0."""
-        # assert self.current_masks
-
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                layer_mask = self.composite_mask[module_idx]
-                # Set grads of all weights not belonging to current dataset to 0.
-                if module.weight.grad is not None:
-                    module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
-                if self.task_num>0 and module.bias is not None:
-                    module.bias.grad.data.fill_(0)
-                    
-            elif 'BatchNorm' in str(type(module)) and self.task_num>0:
-                    # Set grads of batchnorm params to 0.
-                    module.weight.grad.data.fill_(0)
-                    module.bias.grad.data.fill_(0)
-
-    ### Set all pruned weights to 0
-    ### This is just a prune() but with pre-calculated masks
-    def make_pruned_zero(self):
-        """Makes pruned weights 0."""
-        # assert self.current_masks
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                layer_mask = self.composite_mask[module_idx]
-                module.weight.data[layer_mask.gt(self.task_num)] = 0.0
+    def prune_once(self, initial_state_dict):
+        step = 0
+        self.prune_by_percentile()
+        # if the reinit option is activated
+        if self.reinit:
+            self.model.apply(self.weight_init)
+            step = 0
+            for name, param in self.model.named_parameters():
+                if 'weight' in name:
+                    weight_dev = param.device
+                    param.data = torch.from_numpy(param.data.cpu().numpy() *
+                                                  self.mask[step]).to(weight_dev)
+                    step = step + 1
+            step = 0
+        else:
+            # todo: why do we need an initialization here?
+            self.original_initialization(initial_state_dict)
+        # optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
 
 
-    ### Applies appropriate mask to recreate task model for inference
-    def apply_mask(self):
-        """To be done to retrieve weights just for a particular dataset"""
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                weight = module.weight.data
-                mask = -100
-
-                ### Any weights which weren't frozen in one of the tasks before or including task # dataset_idx are set to 0
-                for i in range(0, self.task_num+1):
-                    if i == 0:
-                        mask = self.all_task_masks[i][0][module_idx].cuda()
-                    else:
-                        mask = mask.logical_or(self.all_task_masks[i][0][module_idx].cuda())
-                weight[mask.eq(0)] = 0.0
-   
+    def find_unstable_layers(self, control_corrs):
+        control_corrs = np.array(control_corrs[1])
+        # mid = abs(np.median(control_corrs[1]))
+        thrsh = 100
+        unstable_layers = np.where(np.abs(control_corrs) > thrsh)[0]
+        return unstable_layers
 
 
-    """
-        Turns previously pruned weights into trainable weights for
-        current dataset.
-        Also updates task number and prepares new task mask
-    """
-    def increment_task(self):
-        self.task_num += 1
-                
-        ### Creates the task-specific mask during the initial weight allocation
-        task_mask = {}
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                task = torch.ByteTensor(module.weight.data.size()).fill_(1)
-                if 'cuda' in module.weight.data.type():
-                    task = task.cuda()
-                task_mask[module_idx] = task
+    def controller(self, control_corrs, layers_dim, cont_type, imp_iter, cont_layer_list=None):
+        # calculate the control proportional coefficient
+        log.debug(f"apply controller at layer {cont_layer_list}")
 
-        ### Initialize the new tasks' inclusion map with all 1's
-        self.all_task_masks[self.task_num] = [task_mask]
+        # coef = control_corrs[0][cont_layer_list] / max(control_corrs[1][layer_num], eps)
+        if cont_layer_list is None:
+            cont_layer_list = self.find_unstable_layers(control_corrs)
 
-        print("Exiting finetuning mask")
+        #     log.debug(f"controller coef at layer {ind}: {coef}")
+        #     contr_mask[ind] = (control_weights[ind] * coef).astype("float32")
+
+        # get the weights from previous iteration
+        prev_iter_weights = self.get_prev_iter_weights(imp_iter, cont_layer_list)
+
+        # get connectivity
+        connectivity = [(torch.mean(control_corrs[imp_iter - 1][i]).item() /
+                        (layers_dim[i][0] * layers_dim[i + 1][0]))
+                        for i in range(len(layers_dim) - 1)]
+
+        # get the coefficient based on connectivity
+        for ind in cont_layer_list:
+            prev_corr = self.get_prev_iter_correlation(control_corrs, layers_dim,
+                                                         imp_iter, ind)
+            prev_weight = prev_iter_weights[ind]
+
+            # type 1
+            if (cont_type == 1):
+                control_weights = prev_corr
+
+            # type 2
+            elif (cont_type == 2):
+                control_weights = torch.mul(prev_corr, prev_weight)
+
+            # type 3
+            elif (cont_type == 3):
+                control_weights = connectivity[ind] * prev_weight
+
+            self.apply_controller(control_weights, ind)
+
+        # self.apply_controller(control_weights=control_corrs, layer_list=layer_list)
+
+
+    def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
+        # the + 1 is for matching to the connectivity's dimension
+        weights = control_corrs[imp_iter - 1][ind - 1]
+        kernel_size = layers_dim[ind][-1]
+        weights = weights.tile(dims=(kernel_size, kernel_size, 1, 1)).\
+                               transpose(1, 2).transpose(0, 3)
+                               # transpose(1, 2).transpose(0, 3).transpose(0, 1)
+        return weights
+
+
+    def get_prev_iter_weights(self, imp_iter, layers_list):
+        model = torch.load(C.MODEL_ROOT_DIR + str(imp_iter) + '_model.pth.tar')
+        # model.to(device)
+        model.eval()
+        weights = {}
+
+        ind = 0
+        for name, param in model.named_parameters():
+            if ("weight" in name and 
+               ("conv" in name or "fc" in name or "features" in name)):
+                if ind in layers_list:
+                    log.debug(f"weights at layer {ind} in iteration {imp_iter} is added")
+                    weights[ind] = param.data
+                ind += 1
+            if ind > max(layers_list):
+                break
+
+        return weights
+
+
+    def apply_controller(self, control_weights, layer_ind):
+        ind = 0
+        # get a handle to the layer's weights
+        for name, param in self.model.named_parameters():
+            # if "weight" in name:
+            if ("weight" in name and 
+               ("conv" in name or "fc" in name or "features" in name)):
+                if ind == layer_ind:
+                    # weight = param.data.cpu().numpy()
+                    weight = param.data
+                    # exp = np.exp(weight)
+                    weight_dev = param.device
+                    # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
+                    # param.data = torch.from_numpy(weight * exp * contr_mask).to(weight_dev)
+                    # new_weights = utils.batch_mul(weight, control_weights)
+                    new_weights = torch.mul(weight, control_weights)
+                    param.data = new_weights.to(weight_dev)
+                    # param.data = torch.from_numpy(weight * control_weights).to(weight_dev)
+                    break
+                ind += 1
+        # weight = self.model.features[layer_list].weight.data.cpu().numpy()
+        # cur_weights = layer_param.data.cpu().numpy()
+
+def main():
+    # preparing the hardware
+    device = utils.get_device()
+    args = utils.get_args()
+    logger = utils.setup_logger()
+    num_exper = 5
+
+    data = Data(args.batch_size, C.DATA_DIR, args.dataset)
+    num_classes = data.get_num_classes()
+    train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    network = Network(device, args.arch, num_classes, args.pretrained)
+    preprocess = network.preprocess
+    model = network.set_model()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+
+    # Pruning
+    # NOTE First Pruning Iteration is of No Compression
+    ITERATION = args.imp_iter               # 35 was the default
+    MODEL_DIR = MODEL_ROOT_DIR + arch_type + "/" + args.dataset + "/"
+
+    # Copying and Saving Initial State
+    corr = []
+
+    pruning = LTPruning(model, args.arch, args.prune_perc_per_layer, train_dl,
+                        test_dl)
+
+    # Weight Initialization
+    model.apply(pruning.weight_init)
+
+    # Copying and Saving Initial State
+    initial_state_dict = copy.deepcopy(model.state_dict())
+    utils.save_model(model, MODEL_DIR, "/initial_state_dict.pth.tar")
+
+    # Making Initial Mask
+    pruning.init_mask()
+
+    # Optimizer and Loss
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=1e-4)
+
+
+    best_accuracy = 0
+    comp = np.zeros(ITERATION, float)
+    bestacc = np.zeros(ITERATION, float)
+    all_loss = np.zeros([ITERATION, num_training_epochs], float)
+    all_accuracy = np.zeros([ITERATION, num_training_epochs], float)
+
+    # Iterative Magnitude Pruning main loop
+    for imp_iter in tqdm(range(ITERATION)):
+        best_accuracy = 0
+        # except for the first iteration, cuz we don't prune in the first
+        # iteration
+        if imp_iter != 0:
+            pruning.prune_once(initial_state_dict)
+            optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+
+        logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop. Pruning level "
+                     f"{comp[imp_iter]}")
+
+        # Print the table of Nonzeros in each layer
+        comp_level = utils.print_nonzeros(model)
+        comp[imp_iter] = comp_level
+        logger.debug(f"Compression level: {comp_level}")
+
+        # Training the network
+        for train_iter in tqdm(range(num_training_epochs), leave=False):
+
+            # Training
+            logger.debug(f"Training iteration {train_iter} / {num_training_epochs}")
+            acc, loss = train(model, train_dataloader, criterion, optimizer,
+                              epochs=num_epochs, device=device)
+
+            # Test and save the most accurate model
+            # logger.debug("Testing...")
+            accuracy = test(model, test_dataloader, criterion, device)
+
+            # Save Weights
+            if accuracy > best_accuracy:
+                best_accuracy = accuracy
+                utils.save_model(model, MODEL_DIR, f"{imp_iter + 1}_model.pth.tar")
+
+            # apply the controller after some epochs
+            if (train_iter == control_at_epoch) and (imp_iter == control_at_iter):
+                # network.trained_enough(accuracy, train_dataloader, criterion,
+                #                        optimizer, num_epochs, device)
+                activations = Activations(model, test_dataloader, device, batch_size)
+                # control_corrs.append(activations.get_connectivity())
+                control_corrs.append(activations.get_correlations())
+                # pruning.apply_controller(control_corrs, [2])
+                pruning.controller(control_corrs, activations.layers_dim, control_type, imp_iter, [2])
+                # pruning.apply_controller(3, control_corrs)
+                optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+
+
+            all_loss[imp_iter, train_iter] = loss
+            all_accuracy[imp_iter, train_iter] = accuracy
+
+
+            # Frequency for Printing Accuracy and Loss
+            # if train_iter % print_freq == 0:
+            #     logger.debug(f'Train Epoch: {train_iter}/{num_training_epochs} \n'
+            #                  f'Loss: {loss:.6f} Accuracy: {accuracy:.2f}% \n'
+            #                  f'Best Accuracy: {best_accuracy:.2f}%\n')
+
+        # Calculate the connectivity
+        # network.trained_enough(accuracy, train_dataloader, criterion, optimizer,
+        #                        num_epochs, device) 
+        activations = Activations(model, test_dataloader, device, batch_size)
+        corr = activations.get_connectivity()
+        corrs.append(corr)
+        if imp_iter <= control_at_iter:
+            control_corrs.append(activations.get_correlations())
+
+        # save the best model
+        bestacc[imp_iter] = best_accuracy
+
+        # Dump Plot values
+        # all_loss.dump(C.RUN_DIR + f"{prune_type}_all_loss_{comp_level}.dat")
+        # all_accuracy.dump(C.RUN_DIR + f"{prune_type}_all_accuracy_{comp_level}.dat")
+        pickle.dump(corrs, open(C.RUN_DIR + arch_type + "_correlation.pkl", "wb"))
+        pickle.dump(all_accuracy, open(C.RUN_DIR + arch_type + "_all_accuracy.pkl", "wb"))
+        pickle.dump(all_loss, open(C.RUN_DIR + arch_type + "_all_loss.pkl", "wb"))
+
+        # Dumping mask
+        # with open(C.RUN_DIR + f"{prune_type}_mask_{comp_level}.pkl", 'wb') as fp:
+        #     pickle.dump(pruning.mask, fp)
+
+    # Dumping Values for Plotting
+    pickle.dump(comp, open(C.RUN_DIR + arch_type + "_compression.pkl", "wb"))
+    # bestacc.dump(C.RUN_DIR + f"{prune_type}_bestaccuracy.dat")
+    pickle.dump(bestacc, open(C.RUN_DIR + arch_type + "_best_accuracy.pkl", "wb"))
+    con_stability = utils.get_stability(corrs)
+    print(con_stability)
+    pickle.dump(con_stability,
+                open(C.RUN_DIR + arch_type + "_connectivity_stability.pkl", "wb"))
+    perform_stability = utils.get_stability(all_loss)
+    print(perform_stability)
+    pickle.dump(perform_stability,
+                open(C.RUN_DIR + arch_type + "_performance_stability.pkl", "wb"))
+    utils.plot_experiment(bestacc, corrs, C.RUN_DIR + arch_type +
+                          "correlation")
+    utils.plot_experiment(bestacc, con_stability, C.RUN_DIR + arch_type +
+                          "connection-stability")
+
+
+
+if __name__ == '__main__':
+    main()
