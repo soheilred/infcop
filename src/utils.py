@@ -34,11 +34,11 @@ def retrieve_name(var):
     return [var_name for var_name, var_val in callers_local_vars if var_val is var]
 
 def load_checkpoints(args):
-    save_prefix = C.CHPT_DIR + str(args.dataset) +
-                str(args.prune_perc_per_layer) + str(args.run_id) +
+    save_prefix = C.CHPT_DIR + str(args.dataset) +\
+                str(args.prune_perc_per_layer) + str(args.run_id) +\
                 str(args.task_num)) 
-    previoustaskpath = C.CHPT_DIR + str(args.dataset) +
-                        str(args.prune_perc_per_layer) + str(args.run_id) +
+    previoustaskpath = C.CHPT_DIR + str(args.dataset) +\
+                        str(args.prune_perc_per_layer) + str(args.run_id) +\
                         str(args.task_num-1)) 
     os.makedirs(save_prefix, exist_ok = True)
     os.makedirs(previoustaskpath, exist_ok = True)
