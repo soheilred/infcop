@@ -40,6 +40,9 @@ def main():
         optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
         train_acc, _ = train(model, train_dl, loss_fn, optimizer,
                              args.train_epochs, device)
+        pruning.prune()
+        pruner.apply_mask()
+
 
 
 if __name__ == '__main__':

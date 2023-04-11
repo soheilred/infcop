@@ -19,7 +19,7 @@ log = logging.getLogger("sampleLogger")
 
 class Pruner:
     def __init__(self, model, prune_percent,
-                 train_dataloader=None, test_dataloader=None
+                 train_dataloader=None, test_dataloader=None,
                  composite_mask=None, all_task_mask=None):
         """Prune the network.
         Parameters
@@ -157,6 +157,21 @@ class Pruner:
                 self.mask[step] = np.ones_like(tensor)
                 step = step + 1
 
+    def reset_weights_to_init(self, initial_state_dict):
+        """Reset the remaining weights in the network to the initial values.
+        """
+        step = 0
+        mask_temp = self.mask
+        for name, param in self.model.named_parameters():
+            if "weight" in name:
+                weight_dev = param.device
+                param.data = torch.from_numpy(mask_temp[step] *
+                                              initial_state_dict[name].
+                                              cpu().numpy()).to(weight_dev)
+                step = step + 1
+            if "bias" in name:
+                param.data = initial_state_dict[name]
+
     def prune_by_percentile(self):
         # Calculate percentile value
         step = 0
@@ -177,21 +192,6 @@ class Pruner:
                 param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
                 self.mask[step] = new_mask
                 step += 1
-
-    def reset_weights_to_init(self, initial_state_dict):
-        """Reset the remaining weights in the network to the initial values.
-        """
-        step = 0
-        mask_temp = self.mask
-        for name, param in self.model.named_parameters():
-            if "weight" in name:
-                weight_dev = param.device
-                param.data = torch.from_numpy(mask_temp[step] *
-                                              initial_state_dict[name].
-                                              cpu().numpy()).to(weight_dev)
-                step = step + 1
-            if "bias" in name:
-                param.data = initial_state_dict[name]
 
     def prune_once(self, initial_state_dict):
         step = 0
@@ -262,6 +262,9 @@ class Pruner:
                     else:
                         mask = mask.logical_or(self.all_task_masks[i][0][module_idx].cuda())
                 weight[mask.eq(0)] = 0.0
+
+        self.model.eval()
+
    
     def increment_task(self):
     """
@@ -530,7 +533,8 @@ class Pruner:
 
 
 
-def main():
+def def main():
+    ():
     # preparing the hardware
     device = utils.get_device()
     args = utils.get_args()
