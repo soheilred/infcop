@@ -18,7 +18,7 @@ import logging.config
 log = logging.getLogger("sampleLogger")
 
 class Pruner:
-    def __init__(self, model, prune_percent,
+    def __init__(self, model, prune_percent, total_tasks,
                  train_dataloader=None, test_dataloader=None,
                  composite_mask=None, all_task_masks=None):
         """Prune the network.
@@ -43,10 +43,11 @@ class Pruner:
         self.reinit = False
         self.num_layers = 0
         self.task_num = 0
+        self.total_tasks = total_tasks
         self.train_loader = train_dataloader
         self.test_loader = test_dataloader
         self.init_state_dict = None
-        self.composite_mask = composite_mask
+        self.composite_mask = {}
         self.all_task_masks = all_task_masks 
 
         # Initialize Weights 
@@ -156,6 +157,9 @@ class Pruner:
                 tensor = param.data.cpu().numpy()
                 self.mask[step] = np.ones_like(tensor)
                 step = step + 1
+
+        for task in range(self.total_tasks):
+            self.composite_mask[task] = copy.deepcopy(self.mask)
 
     def reset_weights_to_init(self, initial_state_dict):
         """Reset the remaining weights in the network to the initial values.
