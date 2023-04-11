@@ -15,6 +15,7 @@ def main():
     device = utils.get_device()
     args = utils.get_args()
     logger = utils.setup_logger()
+    chpt = utils.load_checkpoints()
 
     # instantiate the model 
     network = Network(device, args.arch)

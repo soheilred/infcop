@@ -33,12 +33,42 @@ def retrieve_name(var):
     callers_local_vars = inspect.currentframe().f_back.f_locals.items()
     return [var_name for var_name, var_val in callers_local_vars if var_val is var]
 
+def load_checkpoints(args):
+    save_prefix = C.CHPT_DIR + str(args.dataset) +
+                str(args.prune_perc_per_layer) + str(args.run_id) +
+                str(args.task_num)) 
+    previoustaskpath = C.CHPT_DIR + str(args.dataset) +
+                        str(args.prune_perc_per_layer) + str(args.run_id) +
+                        str(args.task_num-1)) 
+    os.makedirs(save_prefix, exist_ok = True)
+    os.makedirs(previoustaskpath, exist_ok = True)
+
+    trainedpath = os.path.join(save_prefix, "trained.pt")
+    initpath = os.path.join(previoustaskpath, "final.pt")
+
+    if os.path.isfile(initpath) == False and args.task_num == 0:
+        print("initializing model",flush = True)
+        utils.init_dump(args.arch, initpath)
+    
+    if os.path.isfile(os.path.join(previoustaskpath,"final.pt")) == True and (args.mode == "t" or args.mode == "all"):
+        ckpt = torch.load(os.path.join(previoustaskpath,"final.pt"))
+
+    elif os.path.isfile(os.path.join("../checkpoints/",str(args.dataset),str(args.prune_perc_per_layer),str(args.run_id),str((len(taskset)-1)), "final.pt")) == True and args.mode == "e":
+        ckpt = torch.load(os.path.join("../checkpoints/", str(args.dataset), str(args.prune_perc_per_layer), str(args.run_id), str((len(taskset)-1)), "final.pt"))
+
+    elif os.path.isfile(trainedpath) == True and (args.mode == "p" or args.mode == "c"):
+        ckpt = torch.load(trainedpath)
+
+    else:
+        print("No checkpoint file found")
+        return 0
+
+    
 def save_vars(**variables):
     for varname, value in variables.items():
         # print(nameof(var))
         pickle.dump(value, open(C.OUTPUT_DIR + # arch + "_" + 
                                     varname + ".pkl", "wb"))
-
     
 def get_device():
     device = "cuda" if torch.cuda.is_available() else "cpu"

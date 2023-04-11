@@ -11,3 +11,4 @@ RUN_DIR = OUTPUT_DIR + cur_time + "/"
 MODEL_ROOT_DIR = RUN_DIR + "model/"
 LOG_CONFIG_DIR = ROOT + "/src/logging.ini"
 LOG_FILENAME = RUN_DIR + 'out.log'
+CHPT_DIR = OUTPUT_DIR + "checkpoints/"
