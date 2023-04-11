@@ -39,7 +39,7 @@ class Pruner:
         """
         self.model = model
         self.mask = None
-        self.prune_percent = prune_percent
+        self.prune_perc = prune_percent
         self.reinit = False
         self.num_layers = 0
         self.task_num = 0
@@ -181,7 +181,7 @@ class Pruner:
             if 'weight' in name:
                 tensor = param.data.cpu().numpy()
                 alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
-                percentile_value = np.percentile(abs(alive), self.prune_percent)
+                percentile_value = np.percentile(abs(alive), self.prune_perc)
 
                 # Convert Tensors to numpy and calculate
                 weight_dev = param.device
