@@ -36,10 +36,10 @@ def retrieve_name(var):
 def load_checkpoints(args):
     save_prefix = C.CHPT_DIR + str(args.dataset) +\
                 str(args.prune_perc_per_layer) + str(args.run_id) +\
-                str(args.task_num)) 
+                str(args.task_num) 
     previoustaskpath = C.CHPT_DIR + str(args.dataset) +\
                         str(args.prune_perc_per_layer) + str(args.run_id) +\
-                        str(args.task_num-1)) 
+                        str(args.task_num-1) 
     os.makedirs(save_prefix, exist_ok = True)
     os.makedirs(previoustaskpath, exist_ok = True)
 
