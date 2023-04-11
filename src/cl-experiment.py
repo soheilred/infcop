@@ -24,7 +24,7 @@ def main():
 
     dataset_list = ["CIFAR10", "MNIST"]
 
-    pruning = Pruner(model, args.prune_perc_per_layer*100)
+    pruning = Pruner(model, args.prune_perc_per_layer*100, len(dataset_list))
 
     # Looping over tasks
     for task in range(0, args.task_num):
