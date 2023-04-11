@@ -383,8 +383,8 @@ class Pruner:
         scheduler = MultiStepLR(optimizer, milestones=self.args.Milestones,
                                 gamma=self.args.Gamma)     
 
-        ### Note: After the first task, batchnorm and bias throughout the
-        ### network are frozen, this is what train_nobn() refers to 
+        # Note: After the first task, batchnorm and bias throughout the
+        # network are frozen, this is what train_nobn() refers to 
         if self.task_num > 0:
             self.model.train_nobn()
             print("No BN in training loop")
@@ -415,15 +415,14 @@ class Pruner:
 
                 running_loss += loss.item()
 
-            scheduler.step()
-
-
                 if batch % 100 == 0:
                     last_loss, current = running_loss / 100, batch * len(X)
                     log.debug(f"loss: {last_loss:>5f}  [{current:>5d}/{size:>5d}]")
                 correct += (pred.argmax(1) == y).type(torch.float).sum().item()
             correct /= size
             log.debug(f"Training Error: Accuracy: {(100*correct):>0.1f}%")
+            scheduler.step()
+
         return 100.0 * correct, loss
 
 
