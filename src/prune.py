@@ -48,7 +48,7 @@ class Pruner:
         self.test_loader = test_dataloader
         self.init_state_dict = None
         self.composite_mask = {}
-        self.all_task_masks = all_task_masks 
+        self.all_task_masks = {}
         self.init_dump()
 
         # # Initialize Weights 
