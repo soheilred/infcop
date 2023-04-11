@@ -122,8 +122,6 @@ class Network():
 def train(model, dataloader, loss_fn, optimizer, epochs, device):
     log.debug('Training...')
     size = len(dataloader.dataset)
-    model.train_nobn()
-    print("No BN in training loop")
 
     for t in range(epochs):
         log.debug(f"Epoch {t+1}")

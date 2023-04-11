@@ -24,13 +24,14 @@ def main():
 
     dataset_list = ["CIFAR10", "MNIST"]
 
+    pruning = Pruner(model, args.arch, args.prune_perc_per_layer*100)
+
     # Looping over tasks
     for task in range(0, args.task_num):
         # Update the dataset
         data = Data(args.batch_size, C.DATA_DIR, dataset_list[task])
         num_classes = data.get_num_classes()
         train_dl, test_dl = data.train_dataloader, data.test_dataloader
-        import ipdb; ipdb.set_trace()
 
         # prepare the model for the task
         model.add_dataset(str(task), num_classes)
@@ -39,8 +40,6 @@ def main():
         optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
         train_acc, _ = train(model, train_dl, loss_fn, optimizer,
                              args.train_epochs, device)
-        pruning = Pruner(model, args.arch, args.prune_perc_per_layer*100,
-                            train_dl, test_dl)
 
 
 if __name__ == '__main__':

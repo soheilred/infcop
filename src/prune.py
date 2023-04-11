@@ -18,22 +18,38 @@ import logging.config
 log = logging.getLogger("sampleLogger")
 
 class Pruner:
-    def __init__(self, model, arch_type, prune_percent, train_dataloader, test_dataloader):
-        "docstring"
+    def __init__(self, model, prune_percent,
+                 train_dataloader=None, test_dataloader=None
+                 composite_mask=None, all_task_mask=None):
+        """Prune the network.
+        Parameters
+        ----------
+        model: Network
+            The network to be pruned
+        prune_percent: int
+            The percent to which each layer of the network is pruned
+        train_dataloader: dataloader
+        test_dataloader: dataloader
+        composite_mask:
+            The composite mask stores the task number for which every weight was
+            frozen, or if they are unfrozen the number is the current task 
+        all_task_masks: dict
+            A dictionary of binary masks, 1 per task, indicating
+            which weights to include when evaluating that task 
+        """
         self.model = model
-        self.arch_type = arch_type
-        self.train_loader = train_dataloader
-        self.test_loader = test_dataloader
         self.mask = None
-        self.start_iter = 0
-        self.lr = 1.2e-3
-        self.end_iter = 100
-        self.prune_type = "lt"
         self.prune_percent = prune_percent
         self.reinit = False
         self.num_layers = 0
+        self.task_num = 0
+        self.train_loader = train_dataloader
+        self.test_loader = test_dataloader
         self.init_state_dict = None
-        # Weight Initialization
+        self.composite_mask = composite_mask
+        self.all_task_masks = all_task_masks 
+
+        # Initialize Weights 
         self.model.apply(self.weight_init)
         # Making Initial Mask
         self.init_mask()
@@ -124,11 +140,11 @@ class Pruner:
         return self.init_state_dict
 
     def count_layers(self):
-        step = 0
+        count = 0
         for name, param in self.model.named_parameters():
             if 'weight' in name:
-                step = step + 1
-        return step
+                count = count + 1
+        return count
 
     def init_mask(self):
         """Make an empty mask of the same size as the model."""
@@ -162,7 +178,9 @@ class Pruner:
                 self.mask[step] = new_mask
                 step += 1
 
-    def original_initialization(self, initial_state_dict):
+    def reset_weights_to_init(self, initial_state_dict):
+        """Reset the remaining weights in the network to the initial values.
+        """
         step = 0
         mask_temp = self.mask
         for name, param in self.model.named_parameters():
@@ -174,7 +192,6 @@ class Pruner:
                 step = step + 1
             if "bias" in name:
                 param.data = initial_state_dict[name]
-        # step = 0
 
     def prune_once(self, initial_state_dict):
         step = 0
@@ -192,8 +209,220 @@ class Pruner:
             step = 0
         else:
             # todo: why do we need an initialization here?
-            self.original_initialization(initial_state_dict)
+            self.reset_weights_to_init(initial_state_dict)
         # optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+
+    def make_grads_zero(self):
+        """Sets grads of fixed weights to 0.
+            During training this is called to avoid storing gradients for the
+            frozen weights, to prevent updating.
+            This is unaffected in the shared masks since shared weights always
+            have the current index unless frozen 
+        """
+        # assert self.current_masks
+
+        for module_idx, module in enumerate(self.model.shared.modules()):
+            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                layer_mask = self.composite_mask[module_idx]
+                # Set grads of all weights not belonging to current dataset to 0.
+                if module.weight.grad is not None:
+                    module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
+                if self.task_num>0 and module.bias is not None:
+                    module.bias.grad.data.fill_(0)
+                    
+            elif 'BatchNorm' in str(type(module)) and self.task_num>0:
+                    # Set grads of batchnorm params to 0.
+                    module.weight.grad.data.fill_(0)
+                    module.bias.grad.data.fill_(0)
+
+    def make_pruned_zero(self):
+    """Set all pruned weights to 0.
+        This is just a prune() but with pre-calculated masks
+    """
+        # assert self.current_masks
+        for module_idx, module in enumerate(self.model.shared.modules()):
+            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                layer_mask = self.composite_mask[module_idx]
+                module.weight.data[layer_mask.gt(self.task_num)] = 0.0
+
+    def apply_mask(self):
+        """Applies appropriate mask to recreate task model for inference.
+            To be done to retrieve weights just for a particular dataset
+        """
+        for module_idx, module in enumerate(self.model.shared.modules()):
+            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                weight = module.weight.data
+                mask = -100
+
+                # Any weights which weren't frozen in one of the tasks before
+                # or including task # dataset_idx are set to 0 
+                for i in range(0, self.task_num + 1):
+                    if i == 0:
+                        mask = self.all_task_masks[i][0][module_idx].cuda()
+                    else:
+                        mask = mask.logical_or(self.all_task_masks[i][0][module_idx].cuda())
+                weight[mask.eq(0)] = 0.0
+   
+    def increment_task(self):
+    """
+        Turns previously pruned weights into trainable weights for
+        current dataset.
+        Also updates task number and prepares new task mask
+    """
+        self.task_num += 1
+                
+        ### Creates the task-specific mask during the initial weight allocation
+        task_mask = {}
+        for module_idx, module in enumerate(self.model.shared.modules()):
+            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                task = torch.ByteTensor(module.weight.data.size()).fill_(1)
+                if 'cuda' in module.weight.data.type():
+                    task = task.cuda()
+                task_mask[module_idx] = task
+
+        ### Initialize the new tasks' inclusion map with all 1's
+        self.all_task_masks[self.task_num] = [task_mask]
+
+        print("Exiting finetuning mask")
+
+    def prune(self):
+    """Apply the masks to the weights.
+        Goes through and calls prune_mask for each layer and stores the results
+    and then applies the masks to the weights
+    """
+        print('Pruning for dataset idx: %d' % (self.task_num))
+        print('Pruning each layer by removing %.2f%% of values' %
+              (100 * self.prune_perc))
+    
+        for module_idx, module in enumerate(self.model.shared.modules()):
+            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                ### Get the pruned mask for the current layer
+                mask = self.pruning_mask(module.weight.data,
+                                         self.composite_mask[module_idx],
+                                         module_idx)
+                self.composite_mask[module_idx] = mask.cuda()
+
+                # Set pruned weights to 0.
+                weight = module.weight.data
+                weight[self.composite_mask[module_idx].gt(self.task_num)] = 0.0
+                self.all_task_masks[self.task_num][0][module_idx][mask.gt(self.task_num)] = 0
+
+                
+        print("\nFOR TASK %d:", self.task_num)
+        for layer_idx, module in enumerate(self.model.shared.modules()):
+            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                weight = module.weight.data
+                num_params = weight.numel()
+                num_frozen = weight[self.composite_mask[layer_idx].eq(self.task_num)].numel()
+                print('Layer #%d: Frozen %d/%d (%.2f%%)' %
+                      (layer_idx, num_frozen, num_params,
+                       100 * num_frozen / num_params))                
+
+ 
+    def pruning_mask(self, weights, composite_mask_in, layer_idx):
+        """Rank prunable filters by magnitude.
+            Sets all below kth to 0.
+            Returns pruned mask.
+        """
+        composite_mask = composite_mask_in.clone().detach().cuda()
+        filter_weights = weights
+        import ipdb; ipdb.set_trace()
+        filter_composite_mask = composite_mask.eq(self.task_num)
+        tensor = weights[filter_composite_mask]
+
+        abs_tensor = tensor.abs()
+
+
+        # Code for increasing the freezing percent of a given layer based on
+        # connectivity 
+
+        prune_rank = round(self.prune_perc * abs_tensor.numel())
+        connlist = self.conn_aves[self.task_num]
+
+
+        max_n_layers_indices = np.argsort(list(connlist.values()))
+        max_n_keys = np.asarray(list(connlist.keys()))[list(max_n_layers_indices)]
+        random_idxs = np.copy(max_n_keys)
+        np.random.shuffle(random_idxs)
+        
+        # ### Apply freezing if the index is selected based on connectivity, otherwise prune at the baseline rate.
+        # if self.freeze_order == "top" and (layer_idx in max_n_keys[-self.num_freeze_layers:]):
+        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
+        # elif self.freeze_order == "bottom" and (layer_idx in max_n_keys[:self.num_freeze_layers]):
+        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
+        # elif self.freeze_order == "random" and (layer_idx in random_idxs[:self.num_freeze_layers]):
+        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
+        
+        prune_value = abs_tensor.view(-1).cpu().kthvalue(prune_rank)[0]
+
+        remove_mask = torch.zeros(weights.shape)
+
+        remove_mask[filter_weights.abs().le(prune_value)]=1
+        remove_mask[composite_mask.ne(self.task_num)]=0
+
+        composite_mask[remove_mask.eq(1)] = self.task_num + 1
+        mask = composite_mask
+        
+        print('Layer #%d, pruned %d/%d (%.2f%%) (Total in layer: %d)' %
+              (layer_idx, mask.gt(self.task_num).sum(), tensor.numel(),
+              100 * mask.gt(self.task_num).sum() / tensor.numel(), weights.numel()))
+
+        return mask
+     
+    def train(self, dataloader, loss_fn, optimizer, epochs, device):
+        log.debug('Training...')
+        size = len(dataloader.dataset)
+
+        # Get optimizer with correct params.
+        params_to_optimize = self.model.parameters()
+        optimizer = optim.SGD(params_to_optimize, lr=self.args.lr, momentum=0.9,
+                              weight_decay=self.args.weight_decay,
+                              nesterov=True) 
+        scheduler = MultiStepLR(optimizer, milestones=self.args.Milestones,
+                                gamma=self.args.Gamma)     
+
+        ### Note: After the first task, batchnorm and bias throughout the
+        ### network are frozen, this is what train_nobn() refers to 
+        if self.task_num > 0:
+            self.model.train_nobn()
+            print("No BN in training loop")
+
+        for t in range(epochs):
+            log.debug(f"Epoch {t+1}")
+            correct = 0
+            running_loss = 0.
+            last_loss = 0.
+
+            for batch, (X, y) in enumerate(dataloader):
+                # Compute prediction and loss
+                X, y = X.to(device), y.to(device)
+                pred = self.model(X)
+                loss = loss_fn(pred, y)
+
+                # Backpropagation
+                optimizer.zero_grad()
+                loss.backward()
+
+                # Set frozen param grads to 0.
+                self.make_grads_zero()
+
+                optimizer.step()
+
+                # Set pruned weights to 0.
+                self.pruner.make_pruned_zero()
+
+                running_loss += loss.item()
+
+            scheduler.step()
+
+
+                if batch % 100 == 0:
+                    last_loss, current = running_loss / 100, batch * len(X)
+                    log.debug(f"loss: {last_loss:>5f}  [{current:>5d}/{size:>5d}]")
+                correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+            correct /= size
+            log.debug(f"Training Error: Accuracy: {(100*correct):>0.1f}%")
+        return 100.0 * correct, loss
 
 
     def find_unstable_layers(self, control_corrs):
@@ -299,6 +528,8 @@ class Pruner:
         # weight = self.model.features[layer_list].weight.data.cpu().numpy()
         # cur_weights = layer_param.data.cpu().numpy()
 
+
+
 def main():
     # preparing the hardware
     device = utils.get_device()
@@ -325,127 +556,6 @@ def main():
 
     pruning = LTPruning(model, args.arch, args.prune_perc_per_layer, train_dl,
                         test_dl)
-
-    # Weight Initialization
-    model.apply(pruning.weight_init)
-
-    # Copying and Saving Initial State
-    initial_state_dict = copy.deepcopy(model.state_dict())
-    utils.save_model(model, MODEL_DIR, "/initial_state_dict.pth.tar")
-
-    # Making Initial Mask
-    pruning.init_mask()
-
-    # Optimizer and Loss
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
-    # optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=1e-4)
-
-
-    best_accuracy = 0
-    comp = np.zeros(ITERATION, float)
-    bestacc = np.zeros(ITERATION, float)
-    all_loss = np.zeros([ITERATION, num_training_epochs], float)
-    all_accuracy = np.zeros([ITERATION, num_training_epochs], float)
-
-    # Iterative Magnitude Pruning main loop
-    for imp_iter in tqdm(range(ITERATION)):
-        best_accuracy = 0
-        # except for the first iteration, cuz we don't prune in the first
-        # iteration
-        if imp_iter != 0:
-            pruning.prune_once(initial_state_dict)
-            optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
-
-        logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop. Pruning level "
-                     f"{comp[imp_iter]}")
-
-        # Print the table of Nonzeros in each layer
-        comp_level = utils.print_nonzeros(model)
-        comp[imp_iter] = comp_level
-        logger.debug(f"Compression level: {comp_level}")
-
-        # Training the network
-        for train_iter in tqdm(range(num_training_epochs), leave=False):
-
-            # Training
-            logger.debug(f"Training iteration {train_iter} / {num_training_epochs}")
-            acc, loss = train(model, train_dataloader, criterion, optimizer,
-                              epochs=num_epochs, device=device)
-
-            # Test and save the most accurate model
-            # logger.debug("Testing...")
-            accuracy = test(model, test_dataloader, criterion, device)
-
-            # Save Weights
-            if accuracy > best_accuracy:
-                best_accuracy = accuracy
-                utils.save_model(model, MODEL_DIR, f"{imp_iter + 1}_model.pth.tar")
-
-            # apply the controller after some epochs
-            if (train_iter == control_at_epoch) and (imp_iter == control_at_iter):
-                # network.trained_enough(accuracy, train_dataloader, criterion,
-                #                        optimizer, num_epochs, device)
-                activations = Activations(model, test_dataloader, device, batch_size)
-                # control_corrs.append(activations.get_connectivity())
-                control_corrs.append(activations.get_correlations())
-                # pruning.apply_controller(control_corrs, [2])
-                pruning.controller(control_corrs, activations.layers_dim, control_type, imp_iter, [2])
-                # pruning.apply_controller(3, control_corrs)
-                optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
-
-
-            all_loss[imp_iter, train_iter] = loss
-            all_accuracy[imp_iter, train_iter] = accuracy
-
-
-            # Frequency for Printing Accuracy and Loss
-            # if train_iter % print_freq == 0:
-            #     logger.debug(f'Train Epoch: {train_iter}/{num_training_epochs} \n'
-            #                  f'Loss: {loss:.6f} Accuracy: {accuracy:.2f}% \n'
-            #                  f'Best Accuracy: {best_accuracy:.2f}%\n')
-
-        # Calculate the connectivity
-        # network.trained_enough(accuracy, train_dataloader, criterion, optimizer,
-        #                        num_epochs, device) 
-        activations = Activations(model, test_dataloader, device, batch_size)
-        corr = activations.get_connectivity()
-        corrs.append(corr)
-        if imp_iter <= control_at_iter:
-            control_corrs.append(activations.get_correlations())
-
-        # save the best model
-        bestacc[imp_iter] = best_accuracy
-
-        # Dump Plot values
-        # all_loss.dump(C.RUN_DIR + f"{prune_type}_all_loss_{comp_level}.dat")
-        # all_accuracy.dump(C.RUN_DIR + f"{prune_type}_all_accuracy_{comp_level}.dat")
-        pickle.dump(corrs, open(C.RUN_DIR + arch_type + "_correlation.pkl", "wb"))
-        pickle.dump(all_accuracy, open(C.RUN_DIR + arch_type + "_all_accuracy.pkl", "wb"))
-        pickle.dump(all_loss, open(C.RUN_DIR + arch_type + "_all_loss.pkl", "wb"))
-
-        # Dumping mask
-        # with open(C.RUN_DIR + f"{prune_type}_mask_{comp_level}.pkl", 'wb') as fp:
-        #     pickle.dump(pruning.mask, fp)
-
-    # Dumping Values for Plotting
-    pickle.dump(comp, open(C.RUN_DIR + arch_type + "_compression.pkl", "wb"))
-    # bestacc.dump(C.RUN_DIR + f"{prune_type}_bestaccuracy.dat")
-    pickle.dump(bestacc, open(C.RUN_DIR + arch_type + "_best_accuracy.pkl", "wb"))
-    con_stability = utils.get_stability(corrs)
-    print(con_stability)
-    pickle.dump(con_stability,
-                open(C.RUN_DIR + arch_type + "_connectivity_stability.pkl", "wb"))
-    perform_stability = utils.get_stability(all_loss)
-    print(perform_stability)
-    pickle.dump(perform_stability,
-                open(C.RUN_DIR + arch_type + "_performance_stability.pkl", "wb"))
-    utils.plot_experiment(bestacc, corrs, C.RUN_DIR + arch_type +
-                          "correlation")
-    utils.plot_experiment(bestacc, con_stability, C.RUN_DIR + arch_type +
-                          "connection-stability")
-
-
 
 if __name__ == '__main__':
     main()
