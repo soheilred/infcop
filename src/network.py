@@ -157,7 +157,7 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
 
 def test(model, dataloader, loss_fn, device):
     log.debug('Testing')
-    # model.eval()
+    model.eval()
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
     test_loss, correct = 0, 0

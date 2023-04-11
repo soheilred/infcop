@@ -42,6 +42,7 @@ def main():
                              args.train_epochs, device)
         pruning.prune()
         pruner.apply_mask()
+        pruner.increment_task()
 
 
 
