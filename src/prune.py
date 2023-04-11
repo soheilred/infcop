@@ -151,15 +151,16 @@ class Pruner:
         """Make an empty mask of the same size as the model."""
         self.num_layers = self.count_layers()
         self.mask = [None] * self.num_layers
-        step = 0
+        layer_id = 0
         for name, param in self.model.named_parameters():
             if 'weight' in name:
-                tensor = param.data.cpu().numpy()
-                self.mask[step] = np.ones_like(tensor)
-                step = step + 1
+                # tensor = param.data.cpu().numpy()
+                # self.mask[layer_id] = np.ones_like(tensor)
+                self.mask[layer_id] = param.data
+                layer_id += 1
 
         for task in range(self.total_tasks):
-            self.composite_mask[task] = copy.deepcopy(torch.from_numpy(self.mask))
+            self.composite_mask[task] = copy.deepcopy(self.mask)
 
     def reset_weights_to_init(self, initial_state_dict):
         """Reset the remaining weights in the network to the initial values.
