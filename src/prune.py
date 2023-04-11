@@ -20,7 +20,7 @@ log = logging.getLogger("sampleLogger")
 class Pruner:
     def __init__(self, model, prune_percent,
                  train_dataloader=None, test_dataloader=None,
-                 composite_mask=None, all_task_mask=None):
+                 composite_mask=None, all_task_masks=None):
         """Prune the network.
         Parameters
         ----------
