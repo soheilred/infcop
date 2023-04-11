@@ -159,7 +159,7 @@ class Pruner:
                 step = step + 1
 
         for task in range(self.total_tasks):
-            self.composite_mask[task] = copy.deepcopy(self.mask)
+            self.composite_mask[task] = copy.deepcopy(torch.from_numpy(self.mask))
 
     def reset_weights_to_init(self, initial_state_dict):
         """Reset the remaining weights in the network to the initial values.
