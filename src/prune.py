@@ -293,8 +293,7 @@ class Pruner:
             and then applies the masks to the weights
         """
         print('Pruning for dataset idx: %d' % (self.task_num))
-        print('Pruning each layer by removing %.2f%% of values' %
-              (100 * self.prune_perc))
+        print(f'Pruning each layer by {(100 * self.prune_perc):.2f}%%')
     
         for module_idx, module in enumerate(self.model.shared.modules()):
             if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
