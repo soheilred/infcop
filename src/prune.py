@@ -392,6 +392,8 @@ class Pruner:
         if self.task_num > 0:
             self.model.train_nobn()
             print("No BN in training loop")
+        else:
+            self.pruner.model.train()
 
         for t in range(epochs):
             log.debug(f"Epoch {t+1}")
