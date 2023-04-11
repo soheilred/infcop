@@ -264,14 +264,13 @@ class Pruner:
                 weight[mask.eq(0)] = 0.0
 
         self.model.eval()
-
    
     def increment_task(self):
-    """
-        Turns previously pruned weights into trainable weights for
-        current dataset.
-        Also updates task number and prepares new task mask
-    """
+        """
+            Turns previously pruned weights into trainable weights for
+            current dataset.
+            Also updates task number and prepares new task mask
+        """
         self.task_num += 1
                 
         ### Creates the task-specific mask during the initial weight allocation
@@ -289,10 +288,10 @@ class Pruner:
         print("Exiting finetuning mask")
 
     def prune(self):
-    """Apply the masks to the weights.
-        Goes through and calls prune_mask for each layer and stores the results
-    and then applies the masks to the weights
-    """
+        """Apply the masks to the weights.
+            Goes through and calls prune_mask for each layer and stores the results
+            and then applies the masks to the weights
+        """
         print('Pruning for dataset idx: %d' % (self.task_num))
         print('Pruning each layer by removing %.2f%% of values' %
               (100 * self.prune_perc))
