@@ -236,9 +236,9 @@ class Pruner:
                     module.bias.grad.data.fill_(0)
 
     def make_pruned_zero(self):
-    """Set all pruned weights to 0.
-        This is just a prune() but with pre-calculated masks
-    """
+        """Set all pruned weights to 0.
+            This is just a prune() but with pre-calculated masks
+        """
         # assert self.current_masks
         for module_idx, module in enumerate(self.model.shared.modules()):
             if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
