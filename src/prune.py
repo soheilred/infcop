@@ -49,11 +49,12 @@ class Pruner:
         self.init_state_dict = None
         self.composite_mask = {}
         self.all_task_masks = all_task_masks 
+        self.init_dump()
 
-        # Initialize Weights 
-        self.model.apply(self.weight_init)
-        # Making Initial Mask
-        self.init_mask()
+        # # Initialize Weights 
+        # self.model.apply(self.weight_init)
+        # # Making Initial Mask
+        # self.init_mask()
 
     def weight_init(self, m):
         '''Usage:
@@ -156,11 +157,46 @@ class Pruner:
             if 'weight' in name:
                 # tensor = param.data.cpu().numpy()
                 # self.mask[layer_id] = np.ones_like(tensor)
-                self.mask[layer_id] = param.data
+                self.mask[layer_id] = torch.ones_like(param.data)
                 layer_id += 1
 
         for task in range(self.total_tasks):
             self.composite_mask[task] = copy.deepcopy(self.mask)
+
+    def init_dump(self):
+        """Dumps pretrained model in required format."""
+
+        # A dictionary of indecies for each layers' weight, containing all the
+        # indecies at which the weights were frozen.
+        composite_mask = {}
+        task_mask = {}
+        # A dictionary of binary masks 
+        all_task_masks = {}
+
+        for module_idx, module in enumerate(self.model.shared.modules()):
+            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                # print("appending conv or linear layer")
+                mask = torch.ByteTensor(module.weight.data.size()).fill_(1)
+                task = torch.ByteTensor(module.weight.data.size()).fill_(0)
+
+                if 'cuda' in module.weight.data.type():
+                    mask = mask.cuda()
+                    task = task.cuda()
+
+                task_mask[module_idx] = mask
+                composite_mask[module_idx] = task
+
+        self.all_task_masks[0] = [task_mask]
+        self.composite_mask = composite_mask
+
+        # torch.save({
+        #     'all_task_masks': all_task_masks,
+        #     'composite_mask': composite_mask,     
+        #     'model': model,
+        #     'conns' : {},
+        #     'conn_aves' : {},
+        # }, savepath)
+
 
     def reset_weights_to_init(self, initial_state_dict):
         """Reset the remaining weights in the network to the initial values.
@@ -512,7 +548,7 @@ class Pruner:
         return weights
 
 
-    def apply_controller(self, control_weights, layer_ind):
+    def apply_conroller(self, control_weights, layer_ind):
         ind = 0
         # get a handle to the layer's weights
         for name, param in self.model.named_parameters():
