@@ -531,8 +531,8 @@ class Pruner:
 
 
 
-def def main():
-    ():
+
+def main():
     # preparing the hardware
     device = utils.get_device()
     args = utils.get_args()
