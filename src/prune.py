@@ -40,7 +40,6 @@ class Pruner:
         self.model = model
         self.mask = None
         self.prune_perc = prune_percent
-        self.reinit = False
         self.num_layers = 0
         self.task_num = 0
         self.total_tasks = total_tasks
@@ -235,23 +234,10 @@ class Pruner:
                 step += 1
 
     def prune_once(self, initial_state_dict):
-        step = 0
         self.prune_by_percentile()
-        # if the reinit option is activated
-        if self.reinit:
-            self.model.apply(self.weight_init)
-            step = 0
-            for name, param in self.model.named_parameters():
-                if 'weight' in name:
-                    weight_dev = param.device
-                    param.data = torch.from_numpy(param.data.cpu().numpy() *
-                                                  self.mask[step]).to(weight_dev)
-                    step = step + 1
-            step = 0
-        else:
-            # todo: why do we need an initialization here?
-            self.reset_weights_to_init(initial_state_dict)
-        # optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+        # todo: why do we need an initialization here?
+        self.reset_weights_to_init(initial_state_dict)
+
 
     def make_grads_zero(self):
         """Sets grads of fixed weights to 0.
@@ -368,7 +354,6 @@ class Pruner:
         """
         composite_mask = composite_mask_in.clone().detach().cuda()
         filter_weights = weights
-        import ipdb; ipdb.set_trace()
         filter_composite_mask = composite_mask.eq(self.task_num)
         tensor = weights[filter_composite_mask]
 
@@ -558,20 +543,15 @@ class Pruner:
                 if ind == layer_ind:
                     # weight = param.data.cpu().numpy()
                     weight = param.data
-                    # exp = np.exp(weight)
                     weight_dev = param.device
                     # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
                     # param.data = torch.from_numpy(weight * exp * contr_mask).to(weight_dev)
-                    # new_weights = utils.batch_mul(weight, control_weights)
                     new_weights = torch.mul(weight, control_weights)
                     param.data = new_weights.to(weight_dev)
-                    # param.data = torch.from_numpy(weight * control_weights).to(weight_dev)
                     break
                 ind += 1
         # weight = self.model.features[layer_list].weight.data.cpu().numpy()
         # cur_weights = layer_param.data.cpu().numpy()
-
-
 
 
 def main():
