@@ -612,7 +612,7 @@ def lth(logger, device, args):
         pruning.corrs.append(activations.get_correlations())
         utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
-    return all_acc, pruning.corrs
+    return pruning.all_acc, pruning.corrs
     
 
 def main():
@@ -620,13 +620,20 @@ def main():
     logger = utils.setup_logger()
     device = utils.get_device()
     args = utils.get_args()
+    acc_list = []
+    corrs_list = []
     for i in range(3):
         all_acc, corrs = lth(logger, device, args)
+        acc_list.append(all_acc)
+        corrs_list.append(corrs)
         utils.save_vars(save_dir=C.OUTPUT_DIR+str(i), corrs=corrs,
                         all_accuracies=all_acc)
-        plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR +
+        plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
                                     "all_accuracies")
-   
+
+    all_acc = np.mean(acc_list, axis=0)
+    corrs = np.mean(corrs_list, axis=0)
+    plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
 
 if __name__ == '__main__':
     main()
