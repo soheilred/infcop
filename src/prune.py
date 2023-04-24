@@ -621,7 +621,7 @@ def main():
     device = utils.get_device()
     args = utils.get_args()
     for i in range(3):
-        all_acc, corrs = lth(legger, device, args)
+        all_acc, corrs = lth(logger, device, args)
         utils.save_vars(save_dir=C.OUTPUT_DIR+str(i), corrs=corrs,
                         all_accuracies=all_acc)
         plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR +
