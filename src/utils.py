@@ -39,8 +39,7 @@ def save_vars(**variables):
         # print(nameof(var))
         if varname == "save_dir":
             save_dir == value
-        pickle.dump(value, open(save_dir # arch + "_" + 
-                                    varname + ".pkl", "wb"))
+        pickle.dump(value, open(save_dir + varname + ".pkl", "wb"))
     
 def load_checkpoints(args):
     save_prefix = C.CHPT_DIR + str(args.dataset) +\
