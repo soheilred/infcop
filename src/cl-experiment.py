@@ -40,7 +40,7 @@ def main():
         optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
         train_acc, _ = train(model, train_dl, loss_fn, optimizer,
                              args.train_epochs, device)
-        pruning.prune()
+        pruning.prune_by_percentile()
         pruner.apply_mask()
         pruner.increment_task()
 

@@ -45,7 +45,6 @@ def main():
 
     comp = np.zeros(ITERATION, float)
     bestacc = np.zeros(ITERATION, float)
-    all_loss = np.zeros([ITERATION, args.train_epochs], float)
     all_accuracy = np.zeros([ITERATION, args.train_epochs], float)
 
     # Iterative Magnitude Pruning main loop
@@ -98,7 +97,6 @@ def main():
                                              weight_decay=1e-4)
 
 
-            all_loss[imp_iter, train_iter] = loss
             all_accuracy[imp_iter, train_iter] = accuracy
 
 
@@ -110,18 +108,16 @@ def main():
             control_corrs.append(activations.get_correlations())
 
         # save the best model
-        bestacc[imp_iter] = best_accuracy
+        # bestacc[imp_iter] = best_accuracy
 
         utils.save_vars(corrs=corrs, all_accuracy=all_accuracy)
         # Dumping mask
 
     # Dumping Values for Plotting
     utils.save_vars(corrs=corrs, all_accuracy=all_accuracy)
-    utils.save_vars(comp=comp, bestacc=bestacc)
+    # utils.save_vars(comp=comp, bestacc=bestacc)
     con_stability = utils.get_stability(corrs)
     print(con_stability)
-    perform_stability = utils.get_stability(all_loss)
-    print(perform_stability)
 
 if __name__ == '__main__':
     main()

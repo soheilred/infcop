@@ -17,7 +17,7 @@ plt.rcParams.update({
     # "legend.loc": "upper right",
     "axes.labelweight": "bold",
     "text.usetex": True,
-    "savefig.dpi": 300,     # higher resolution output.
+    "savefig.dpi": 100,     # higher resolution output.
     "pgf.rcfonts": True,
     "pgf.texsystem": 'pdflatex', # default is xetex
     # "pgf.preamble": [
@@ -35,15 +35,15 @@ linestyles = ['-', '--', '-.', ':']
 
 def plot_all_accuracy(accuracies, filename):
     accuracy_list = accuracies.flatten()
-    fig, axs = plt.subplots(1, figsize=(8,3))
-    xdata = np.arange(0, 2 * len(accuracy_list), 2)
+    fig, axs = plt.subplots(1, figsize=(8,4))
+    xdata = np.arange(0, 2 * len(accuracy_list) + 0, 2)
     axs.set_title("Accuracy of network in IMP")
     axs.set(xlabel="Training epochs", ylabel="Accuracy(\%)")
 
     axs.plot(xdata, accuracy_list, 'k')
     fig.tight_layout(pad=2.0)
-    # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    major_ticks = np.arange(0, 2 * len(accuracy_list), 20)
+    # axs.set_xticks(xdata)#, labels=[i for i in range(0, 2 * len(xdata), 20)])
+    major_ticks = np.arange(0, 2 * len(accuracy_list) + 0, 4)
     axs.set_xticks(major_ticks)
     axs.set_xlim([0, 2 * len(accuracy_list)])
     plt.grid()
@@ -54,7 +54,7 @@ def plot_multi_all_accuracy(accuracies, filename):
     accuracies_list = []
     for i in range(len(accuracies)):
         accuracies_list.append(accuracies[i].flatten())
-    fig, axs = plt.subplots(1, figsize=(8,3))
+    fig, axs = plt.subplots(1, figsize=(8,4))
     xdata = np.arange(0, 2 * len(accuracies_list[0]), 2)
     axs.set_title("Accuracy of network in IMP")
     axs.set(xlabel="Training epochs", ylabel="Accuracy(\%)")

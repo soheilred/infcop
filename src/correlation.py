@@ -14,7 +14,7 @@ from torchvision.models.resnet import Bottleneck
 import utils
 import plot_tool
 from data_loader import Data
-from network import Network, train, test
+from network import Network
 import constants as C
 
 log = logging.getLogger("sampleLogger")
@@ -104,6 +104,7 @@ class Activations:
         List of 2d tensors, each representing the connectivity between two
         consecutive layer.
         """
+        self.model.eval()
         ds_size = len(self.dataloader.dataset)
         num_batch = len(self.dataloader)
         # params = list(self.model.parameters())
@@ -111,7 +112,6 @@ class Activations:
         layers_dim = self.layers_dim
         hook_handles = []
         self.get_all_layers(self.model, layers_dim, hook_handles)
-        import ipdb; ipdb.set_trace()
         num_layers = len(layers_dim)
         first_run = 1
         torch.set_printoptions(precision=4)
@@ -159,11 +159,13 @@ class Activations:
                           act_means[i + 1])
                     corrs[i] += torch.matmul(f0, f1)
 
+        self.model.train()
         return corrs
 
     def get_connectivity(self):
         """Find the connectivity of each layer, the mean of correlation matrix.
         """
+        self.model.eval()
         ds_size = len(self.dataloader.dataset)
         num_batch = len(self.dataloader)
         # params = list(self.model.parameters())
@@ -237,6 +239,7 @@ class Activations:
         for handle in hook_handles:
             handle.remove()
 
+        self.model.train()
         return [torch.mean(corrs[i]).item()/(layers_dim[i][0] * layers_dim[i + 1][0])
                 for i in range(num_layers - 1)]
 
