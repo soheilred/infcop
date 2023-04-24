@@ -34,9 +34,12 @@ def retrieve_name(var):
     return [var_name for var_name, var_val in callers_local_vars if var_val is var]
 
 def save_vars(**variables):
+    save_dir = ""
     for varname, value in variables.items():
         # print(nameof(var))
-        pickle.dump(value, open(C.OUTPUT_DIR + # arch + "_" + 
+        if varname == "save_dir":
+            save_dir == value
+        pickle.dump(value, open(save_dir # arch + "_" + 
                                     varname + ".pkl", "wb"))
     
 def load_checkpoints(args):
@@ -137,7 +140,8 @@ def print_nonzeros(model):
         total_params = np.prod(tensor.shape)
         nonzero += nz_count
         total += total_params
-        print(f'{name:20} | nonzeros = {nz_count:7} / {total_params:7} ({100 * nz_count / total_params:6.2f}%) | total_pruned = {total_params - nz_count :7} | shape = {tensor.shape}')
+        # print(f'{name:10} | nz = {nz_count:4} / {total_params:5} ({100 * nz_count / total_params:6.2f}%) | pruned = {total_params - nz_count :4} | shape = {tensor.shape}')
+        print(f'{name[:14]: <14} | ({100 * nz_count / total_params:5.1f}%) | pruned = {total_params - nz_count :4} | dim = {tensor.shape}')
     print(f'alive: {nonzero}, pruned : {total - nonzero}, total: {total}, Compression rate : {total/nonzero:10.2f}x  ({100 * (total-nonzero) / total:6.2f}% pruned)')
     # # Layer Looper
     # for name, param in model.named_parameters():
@@ -175,7 +179,7 @@ def get_args():
                         help='Start with a pretrained network?')
     parser.add_argument('--dataset', type=str,
                         choices=['CIFAR10', 'MNIST', 'pmnist', '6splitcifar', '11splitcifar'],
-                        default='CIFAR10', help='Name of dataset')
+                        default='MNIST', help='Name of dataset')
     parser.add_argument('--single_task', action='store_true',
                         default=False, help='Run only the current task')
     parser.add_argument('--task_num', type=int, default=0,
@@ -216,29 +220,32 @@ def get_args():
     # Pruning options.
     parser.add_argument('--prune_method', type=str, default='sparse',
                       choices=['sparse'], help='Pruning method to use')
+
     parser.add_argument('--prune_perc_per_layer', type=float, default=0.1,
                       help='% of neurons to prune per layer')
+
     parser.add_argument('--finetune_epochs', type=int, default=2,
                       help='Number of epochs to finetune for after pruning')
+
     parser.add_argument('--freeze_perc', type=float, default=0.0)                   
     parser.add_argument('--num_freeze_layers', type=int, default=0)     
     parser.add_argument('--freeze_order', choices=['top','bottom', 'random'],
                       default=['top'],
                       help='Order of selection for layer freezing, by connectivity')
     # controller
-    parser.add_argument('--control-at-iter', default=-1,
+    parser.add_argument('--control_at_iter', type=int, default=-1,
                       help='Iteration at which the controller is applied')
 
-    parser.add_argument('--control_at_epoch', default=2,
+    parser.add_argument('--control_at_epoch', type=int, default=2,
                       help='Epoch at which the controller is applied')
 
-    parser.add_argument('--acc_thrd', default=70,
+    parser.add_argument('--acc_thrd', type=int, default=70,
                       help='Threshold accuracy to stop the training loop')
 
-    parser.add_argument('--control_type', default=1,
+    parser.add_argument('--control_type', type=int, default=1,
                       help='1: correlation, 2: connectivity, 3: prev weights')
 
-    parser.add_argument('--imp_total_iter', default=10,
+    parser.add_argument('--imp_total_iter', type=int, default=10,
                       help='Number of iteration at IMP')
     args = parser.parse_args()
 

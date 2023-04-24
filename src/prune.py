@@ -8,6 +8,7 @@ import torch.nn.init as init
 import pickle
 
 import utils
+import plot_tool
 from data_loader import Data
 from network import Network, train, test
 from correlation import Activations
@@ -18,9 +19,8 @@ import logging.config
 log = logging.getLogger("sampleLogger")
 
 class Pruner:
-    def __init__(self, model, prune_percent, total_tasks,
-                 train_dataloader=None, test_dataloader=None,
-                 composite_mask=None, all_task_masks=None):
+    def __init__(self, args, model, train_dataloader=None,
+                 test_dataloader=None, total_tasks=None, all_task_masks=None): 
         """Prune the network.
         Parameters
         ----------
@@ -39,21 +39,19 @@ class Pruner:
         """
         self.model = model
         self.mask = None
-        self.prune_perc = prune_percent
+        self.args = args
+        self.prune_perc = args.prune_perc_per_layer * 100
+        self.corrs = []
         self.num_layers = 0
         self.task_num = 0
         self.total_tasks = total_tasks
         self.train_loader = train_dataloader
         self.test_loader = test_dataloader
+        self.comp_level = np.zeros(args.imp_total_iter, float)
+        self.all_acc = np.zeros([args.imp_total_iter, args.train_epochs], float)
         self.init_state_dict = None
-        self.composite_mask = {}
         self.all_task_masks = {}
-        self.init_dump()
-
-        # # Initialize Weights 
-        # self.model.apply(self.weight_init)
-        # # Making Initial Mask
-        # self.init_mask()
+        # self.init_dump()
 
     def weight_init(self, m):
         '''Usage:
@@ -121,7 +119,7 @@ class Pruner:
                 else:
                     init.normal_(param.data)
 
-    def initialize_lth(self):
+    def init_lth(self):
         """Prepare the lth object by:
         1. initializing the network's weights
         2. saving the initial state of the network into the object
@@ -154,13 +152,11 @@ class Pruner:
         layer_id = 0
         for name, param in self.model.named_parameters():
             if 'weight' in name:
-                # tensor = param.data.cpu().numpy()
-                # self.mask[layer_id] = np.ones_like(tensor)
-                self.mask[layer_id] = torch.ones_like(param.data)
+                tensor = param.data.cpu().numpy()
+                self.mask[layer_id] = np.ones_like(tensor)
+                # self.mask[layer_id] = torch.ones_like(param.data)
                 layer_id += 1
 
-        for task in range(self.total_tasks):
-            self.composite_mask[task] = copy.deepcopy(self.mask)
 
     def init_dump(self):
         """Dumps pretrained model in required format."""
@@ -214,7 +210,7 @@ class Pruner:
 
     def prune_by_percentile(self):
         # Calculate percentile value
-        step = 0
+        layer_id = 0
         for name, param in self.model.named_parameters():
 
             # We do not prune bias term
@@ -226,12 +222,12 @@ class Pruner:
                 # Convert Tensors to numpy and calculate
                 weight_dev = param.device
                 new_mask = np.where(abs(tensor) < percentile_value, 0,
-                                    self.mask[step])
+                                    self.mask[layer_id])
 
                 # Apply new weight and mask
                 param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
-                self.mask[step] = new_mask
-                step += 1
+                self.mask[layer_id] = new_mask
+                layer_id += 1
 
     def prune_once(self, initial_state_dict):
         self.prune_by_percentile()
@@ -396,7 +392,7 @@ class Pruner:
 
         return mask
      
-    def train(self, dataloader, loss_fn, optimizer, epochs, device):
+    def train_cl(self, dataloader, loss_fn, optimizer, epochs, device):
         log.debug('Training...')
         size = len(dataloader.dataset)
 
@@ -461,19 +457,14 @@ class Pruner:
         return unstable_layers
 
 
-    def controller(self, control_corrs, layers_dim, cont_type, imp_iter, cont_layer_list=None):
-        # calculate the control proportional coefficient
+    def controller(self, corr, layers_dim, cont_type, imp_iter,
+                   cont_layer_list=None):
+        control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {cont_layer_list}")
 
-        # coef = control_corrs[0][cont_layer_list] / max(control_corrs[1][layer_num], eps)
-        if cont_layer_list is None:
-            cont_layer_list = self.find_unstable_layers(control_corrs)
-
-        #     log.debug(f"controller coef at layer {ind}: {coef}")
-        #     contr_mask[ind] = (control_weights[ind] * coef).astype("float32")
-
         # get the weights from previous iteration
-        prev_iter_weights = self.get_prev_iter_weights(imp_iter, cont_layer_list)
+        prev_iter_weights = self.get_prev_iter_weights(imp_iter,
+                                                       cont_layer_list)
 
         # get connectivity
         connectivity = [(torch.mean(control_corrs[imp_iter - 1][i]).item() /
@@ -514,7 +505,8 @@ class Pruner:
 
 
     def get_prev_iter_weights(self, imp_iter, layers_list):
-        model = torch.load(C.MODEL_ROOT_DIR + str(imp_iter) + '_model.pth.tar')
+        MODEL_DIR = C.MODEL_ROOT_DIR + self.args.arch + "/" + self.args.dataset + "/"
+        model = torch.load(MODEL_DIR + str(imp_iter) + '_model.pth.tar')
         # model.to(device)
         model.eval()
         weights = {}
@@ -533,11 +525,15 @@ class Pruner:
         return weights
 
 
-    def apply_conroller(self, control_weights, layer_ind):
+    def apply_controller(self, control_weights, layer_ind):
         ind = 0
         # get a handle to the layer's weights
+
+        # for module_idx, module in enumerate(self.model.shared.modules()):
+        #     if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                # if module.weight.grad is not None:
+                #     module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
         for name, param in self.model.named_parameters():
-            # if "weight" in name:
             if ("weight" in name and 
                ("conv" in name or "fc" in name or "features" in name)):
                 if ind == layer_ind:
@@ -553,33 +549,84 @@ class Pruner:
         # weight = self.model.features[layer_list].weight.data.cpu().numpy()
         # cur_weights = layer_param.data.cpu().numpy()
 
-
-def main():
-    # preparing the hardware
-    device = utils.get_device()
-    args = utils.get_args()
-    logger = utils.setup_logger()
-    num_exper = 5
+def lth(logger, device, args):
+ 
+    ITERATION = args.imp_total_iter               # 35 was the default
+    MODEL_DIR = C.MODEL_ROOT_DIR + args.arch + "/" + args.dataset + "/"
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
-    num_classes = data.get_num_classes()
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    num_classes = data.get_num_classes()
+
     network = Network(device, args.arch, num_classes, args.pretrained)
-    preprocess = network.preprocess
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
-    # Pruning
-    # NOTE First Pruning Iteration is of No Compression
-    ITERATION = args.imp_iter               # 35 was the default
-    MODEL_DIR = MODEL_ROOT_DIR + arch_type + "/" + args.dataset + "/"
+    pruning = Pruner(args, model, train_dl, test_dl)
+    init_state_dict = pruning.init_lth()
 
-    # Copying and Saving Initial State
-    corr = []
+    for imp_iter in tqdm(range(ITERATION)):
+        # except for the first iteration, cuz we don't prune in the first iteration
+        if imp_iter != 0:
+            pruning.prune_once(init_state_dict)
+            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                         weight_decay=1e-4)
 
-    pruning = LTPruning(model, args.arch, args.prune_perc_per_layer, train_dl,
-                        test_dl)
+        logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
+
+        # Print the table of Nonzeros in each layer
+        comp_level = utils.print_nonzeros(model)
+        pruning.comp_level[imp_iter] = comp_level
+        logger.debug(f"Compression level: {comp_level}")
+
+        # Training the network
+        for train_iter in range(args.train_epochs):
+
+            # Training
+            logger.debug(f"Training iteration {train_iter} / {args.train_epochs}")
+            acc, loss = train(model, train_dl, loss_fn, optimizer, 
+                              args.train_per_epoch, device)
+
+            # Test and save the most accurate model
+            logger.debug("Testing...")
+            accuracy = test(model, test_dl, loss_fn, device)
+
+            # apply the controller after some epochs and some iterations
+            if (train_iter == args.control_at_epoch) and \
+                (imp_iter == args.control_at_iter):
+                act = Activations(model, test_dl, device, args.batch_size)
+                corr = act.get_correlations()
+                pruning.controller(corr, act.layers_dim, args.control_type,
+                                   imp_iter, [2])
+                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                             weight_decay=1e-4)
+
+            pruning.all_acc[imp_iter, train_iter] = accuracy
+
+        # Save model
+        utils.save_model(model, MODEL_DIR, f"{imp_iter + 1}_model.pth.tar")
+
+        # Calculate the connectivity
+        activations = Activations(model, test_dl, device, args.batch_size)
+        pruning.corrs.append(activations.get_correlations())
+        utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
+
+    return all_acc, pruning.corrs
+    
+
+def main():
+    # preparing the hardware
+    logger = utils.setup_logger()
+    device = utils.get_device()
+    args = utils.get_args()
+    for i in range(3):
+        all_acc, corrs = lth(legger, device, args)
+        utils.save_vars(save_dir=C.OUTPUT_DIR+str(i), corrs=corrs,
+                        all_accuracies=all_acc)
+        plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR +
+                                    "all_accuracies")
+   
 
 if __name__ == '__main__':
     main()
