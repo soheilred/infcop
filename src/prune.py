@@ -611,8 +611,7 @@ def lth(logger, device, args):
         # Calculate the connectivity
         activations = Activations(model, test_dl, device, args.batch_size)
         pruning.corrs.append(activations.get_correlations())
-        import ipdb; ipdb.set_trace()
-        connectivity.append(activations.get_connectivity().detach().cpu().numpy())
+        connectivity.append(activations.get_connectivity())
         utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
     return pruning.all_acc, connectivity
