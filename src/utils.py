@@ -40,7 +40,7 @@ def save_vars(**variables):
         if varname == "save_dir":
             save_dir = value
         else:
-            pickle.dump(value, open(save_dir + "_" + varname + ".pkl", "wb"))
+            pickle.dump(value, open(save_dir + varname + ".pkl", "wb"))
     
 def load_checkpoints(args):
     save_prefix = C.CHPT_DIR + str(args.dataset) +\
