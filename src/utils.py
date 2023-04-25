@@ -40,7 +40,7 @@ def save_vars(**variables):
         if varname == "save_dir":
             save_dir = value
         else:
-            pickle.dump(value, open(save_dir + varname + ".pkl", "wb"))
+            pickle.dump(value, open(save_dir + "_" + varname + ".pkl", "wb"))
     
 def load_checkpoints(args):
     save_prefix = C.CHPT_DIR + str(args.dataset) +\
@@ -165,6 +165,12 @@ def get_stability(in_measure):
     stability = [np.divide(in_measure[i] - in_measure[i + 1],
                            in_measure[i]) for i in range(in_measure.shape[0] - 1)]
     return stability
+
+def get_run_dir(args):
+    control = "no_cntr" if args.control_at_iter == -1 else "cntr"
+    run_dir = C.MODEL_ROOT_DIR + args.arch + "/" + args.dataset + "/" +\
+                control + "/"
+    return run_dir
 
 def get_args():
     parser = argparse.ArgumentParser()
