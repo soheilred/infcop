@@ -604,7 +604,7 @@ def lth(logger, device, args, controller):
 
             # apply the controller after some epochs and some iterations
             if (train_iter == controller.c_epoch) and \
-                (imp_iter == controller.c_iter:
+                (imp_iter == controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
