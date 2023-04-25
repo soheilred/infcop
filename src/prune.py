@@ -632,7 +632,7 @@ def main():
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
 
-    all_acc = torch.mean(torch.stack(acc_list), axis=0)
+    all_acc = np.mean(np.max(acc_list, axis=2), axis=0)
     # corrs = np.mean(corrs_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=run_dir, corrs=corrs, all_accuracies=all_acc)
