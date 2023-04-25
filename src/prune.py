@@ -483,7 +483,7 @@ class Pruner:
                         for i in range(len(layers_dim) - 1)]
 
         # get the coefficient based on connectivity
-        for ind in cont_layer_list:
+        for ind in self.controller.c_layers:
             prev_corr = self.get_prev_iter_correlation(control_corrs, layers_dim,
                                                          imp_iter, ind)
             prev_weight = prev_iter_weights[ind]
