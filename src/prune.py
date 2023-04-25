@@ -23,7 +23,7 @@ class Controller:
         """Control the IMP's connectivity.
         """
         self.c_type = c_type
-        self.layers = c_layers
+        self.c_layers = c_layers
         self.c_iter = c_iter
         self.c_epoch = c_epoch
 
