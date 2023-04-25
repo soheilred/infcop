@@ -632,6 +632,7 @@ def main():
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
 
+    import ipdb; ipdb.set_trace()
     all_acc = torch.mean(torch.stack(acc_list), axis=0)
     corrs = torch.mean(torch.stack(corrs_list), axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
