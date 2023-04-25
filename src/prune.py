@@ -18,9 +18,20 @@ import logging.config
 
 log = logging.getLogger("sampleLogger")
 
+class Controller:
+    def __init__(self, c_type, c_layers, c_iter, c_epoch):
+        """Control the IMP's connectivity.
+        """
+        self.c_type = c_type
+        self.layers = c_layers
+        self.c_iter = c_iter
+        self.c_epoch = c_epoch
+
+
+
 class Pruner:
-    def __init__(self, args, model, train_dataloader=None,
-                 test_dataloader=None, total_tasks=None, all_task_masks=None): 
+    def __init__(self, args, model, train_dataloader=None, test_dataloader=None,
+                 controller=None, total_tasks=None, all_task_masks=None): 
         """Prune the network.
         Parameters
         ----------
@@ -42,6 +53,7 @@ class Pruner:
         self.args = args
         self.prune_perc = args.prune_perc_per_layer * 100
         self.corrs = []
+        self.controller = controller
         self.num_layers = 0
         self.task_num = 0
         self.total_tasks = total_tasks
@@ -458,14 +470,12 @@ class Pruner:
         return unstable_layers
 
 
-    def controller(self, corr, layers_dim, cont_type, imp_iter,
-                   cont_layer_list=None):
+    def control(self, corr, layers_dim, imp_iter):
         control_corrs = self.corrs + [corr]
-        log.debug(f"apply controller at layer {cont_layer_list}")
+        log.debug(f"apply controller at layer {self.controller.c_layers}")
 
         # get the weights from previous iteration
-        prev_iter_weights = self.get_prev_iter_weights(imp_iter,
-                                                       cont_layer_list)
+        prev_iter_weights = self.get_prev_iter_weights(imp_iter)
 
         # get connectivity
         connectivity = [(torch.mean(control_corrs[imp_iter - 1][i]).item() /
@@ -479,15 +489,15 @@ class Pruner:
             prev_weight = prev_iter_weights[ind]
 
             # type 1
-            if (cont_type == 1):
+            if (self.controller.c_type == 1):
                 control_weights = prev_corr
 
             # type 2
-            elif (cont_type == 2):
+            elif (self.controller.c_type == 2):
                 control_weights = torch.mul(prev_corr, prev_weight)
 
             # type 3
-            elif (cont_type == 3):
+            elif (self.controller.c_type == 3):
                 control_weights = connectivity[ind] * prev_weight
 
             self.apply_controller(control_weights, ind)
@@ -505,10 +515,9 @@ class Pruner:
         return weights
 
 
-    def get_prev_iter_weights(self, imp_iter, layers_list):
+    def get_prev_iter_weights(self, imp_iter):
         run_dir = utils.get_run_dir(self.args)
         model = torch.load(run_dir + str(imp_iter) + '_model.pth.tar')
-        # model.to(device)
         model.eval()
         weights = {}
 
@@ -516,11 +525,11 @@ class Pruner:
         for name, param in model.named_parameters():
             if ("weight" in name and 
                ("conv" in name or "fc" in name or "features" in name)):
-                if ind in layers_list:
+                if ind in self.controller.c_layers:
                     log.debug(f"weights at layer {ind} in iteration {imp_iter} is added")
                     weights[ind] = param.data
                 ind += 1
-            if ind > max(layers_list):
+            if ind > max(self.controller.c_layers):
                 break
 
         return weights
@@ -550,7 +559,7 @@ class Pruner:
         # weight = self.model.features[layer_list].weight.data.cpu().numpy()
         # cur_weights = layer_param.data.cpu().numpy()
 
-def lth(logger, device, args):
+def lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
 
@@ -563,7 +572,7 @@ def lth(logger, device, args):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
-    pruning = Pruner(args, model, train_dl, test_dl)
+    pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
     connectivity = []
 
@@ -594,12 +603,11 @@ def lth(logger, device, args):
             accuracy = test(model, test_dl, loss_fn, device)
 
             # apply the controller after some epochs and some iterations
-            if (train_iter == args.control_at_epoch) and \
-                (imp_iter == args.control_at_iter):
+            if (train_iter == controller.c_epoch) and \
+                (imp_iter == controller.c_iter:
                 act = Activations(model, test_dl, device, args.batch_size)
                 corr = act.get_correlations()
-                pruning.controller(corr, act.layers_dim, args.control_type,
-                                   imp_iter, [2])
+                pruning.control(corr, act.layers_dim, imp_iter)
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
@@ -635,7 +643,7 @@ def main():
         #                             "all_accuracies")
 
     all_acc = np.mean(np.max(acc_list, axis=2), axis=0)
-    corrs = np.mean(corrs_list, axis=0)
+    conn = np.mean(conn_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=run_dir, corrs=corrs, all_accuracies=all_acc)
 
