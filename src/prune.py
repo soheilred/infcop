@@ -634,7 +634,9 @@ def main():
     acc_list = []
     conn_list = []
     for i in range(3):
-        all_acc, conn = lth(logger, device, args)
+        controller = Controller(args.control_type, [2], args.control_at_iter,
+                                args.control_at_epoch)
+        all_acc, conn = lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
         utils.save_vars(save_dir=run_dir+str(i), conn=conn,
