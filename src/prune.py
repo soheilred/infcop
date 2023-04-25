@@ -639,7 +639,7 @@ def main():
         all_acc, conn = lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
-        utils.save_vars(save_dir=run_dir+str(i), conn=conn,
+        utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
                         all_accuracies=all_acc)
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
@@ -647,7 +647,7 @@ def main():
     all_acc = np.mean(np.max(acc_list, axis=2), axis=0)
     conn = np.mean(conn_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
-    utils.save_vars(save_dir=run_dir, corrs=corrs, all_accuracies=all_acc)
+    utils.save_vars(save_dir=run_dir, corrs=conn, all_accuracies=all_acc)
 
 if __name__ == '__main__':
     main()
