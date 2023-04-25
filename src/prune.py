@@ -565,6 +565,7 @@ def lth(logger, device, args):
 
     pruning = Pruner(args, model, train_dl, test_dl)
     init_state_dict = pruning.init_lth()
+    connectivity = []
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
@@ -610,9 +611,11 @@ def lth(logger, device, args):
         # Calculate the connectivity
         activations = Activations(model, test_dl, device, args.batch_size)
         pruning.corrs.append(activations.get_correlations())
+        import ipdb; ipdb.set_trace()
+        connectivity.append(activations.get_connectivity().detach().cpu().numpy())
         utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
-    return pruning.all_acc, pruning.corrs
+    return pruning.all_acc, connectivity
     
 
 def main():
@@ -622,18 +625,18 @@ def main():
     args = utils.get_args()
     run_dir = utils.get_run_dir(args)
     acc_list = []
-    corrs_list = []
+    conn_list = []
     for i in range(3):
-        all_acc, corrs = lth(logger, device, args)
+        all_acc, conn = lth(logger, device, args)
         acc_list.append(all_acc)
-        corrs_list.append(corrs)
-        utils.save_vars(save_dir=run_dir+str(i), corrs=corrs,
+        conn_list.append(conn)
+        utils.save_vars(save_dir=run_dir+str(i), conn=conn,
                         all_accuracies=all_acc)
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
 
     all_acc = np.mean(np.max(acc_list, axis=2), axis=0)
-    # corrs = np.mean(corrs_list, axis=0)
+    corrs = np.mean(corrs_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=run_dir, corrs=corrs, all_accuracies=all_acc)
 
