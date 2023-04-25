@@ -6,6 +6,7 @@ __pycache__/
 *.pt.old
 *.pth.tar
 *.pt
+*.tar.gz
 
 *.jpg
 *.png
