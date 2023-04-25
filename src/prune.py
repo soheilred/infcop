@@ -631,8 +631,8 @@ def main():
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
 
-    all_acc = np.mean(acc_list, axis=0)
-    corrs = np.mean(corrs_list, axis=0)
+    all_acc = torch.mean(acc_list, axis=0)
+    corrs = torch.mean(corrs_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=C.OUTPUT_DIR, corrs=corrs, all_accuracies=all_acc)
 
