@@ -256,9 +256,8 @@ def get_args():
                       help='Number of iteration at IMP')
     args = parser.parse_args()
 
-    # this line will be changed. The address of the file should match with the
-    # experiment 
-    json.dump(args.__dict__, open("exper.json", 'w'), indent=2)
+    run_dir = get_run_dir(args)
+    json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
     return args
 
 
