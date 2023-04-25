@@ -132,7 +132,8 @@ class Pruner:
 
         # Copying and Saving Initial State
         self.init_state_dict = copy.deepcopy(self.model.state_dict())
-        utils.save_model(self.model, C.MODEL_ROOT_DIR, "/initial_model.pth.tar")
+        run_dir = utils.get_run_dir(self.args)
+        utils.save_model(self.model, run_dir, "/initial_model.pth.tar")
 
         # Making Initial Mask
         self.init_mask()
@@ -505,8 +506,8 @@ class Pruner:
 
 
     def get_prev_iter_weights(self, imp_iter, layers_list):
-        MODEL_DIR = C.MODEL_ROOT_DIR + self.args.arch + "/" + self.args.dataset + "/"
-        model = torch.load(MODEL_DIR + str(imp_iter) + '_model.pth.tar')
+        run_dir = utils.get_run_dir(self.args)
+        model = torch.load(run_dir + str(imp_iter) + '_model.pth.tar')
         # model.to(device)
         model.eval()
         weights = {}
