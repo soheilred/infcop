@@ -170,6 +170,7 @@ def get_run_dir(args):
     control = "no_cntr" if args.control_at_iter == -1 else "cntr"
     run_dir = C.MODEL_ROOT_DIR + args.arch + "/" + args.dataset + "/" +\
                 control + "/"
+    checkdir(run_dir)
     return run_dir
 
 def get_args():
