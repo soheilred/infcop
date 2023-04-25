@@ -550,9 +550,8 @@ class Pruner:
         # cur_weights = layer_param.data.cpu().numpy()
 
 def lth(logger, device, args):
- 
     ITERATION = args.imp_total_iter               # 35 was the default
-    MODEL_DIR = C.MODEL_ROOT_DIR + args.arch + "/" + args.dataset + "/"
+    run_dir = utils.get_run_dir(args)
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
@@ -605,7 +604,7 @@ def lth(logger, device, args):
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
         # Save model
-        utils.save_model(model, MODEL_DIR, f"{imp_iter + 1}_model.pth.tar")
+        utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
         activations = Activations(model, test_dl, device, args.batch_size)
@@ -620,13 +619,14 @@ def main():
     logger = utils.setup_logger()
     device = utils.get_device()
     args = utils.get_args()
+    run_dir = utils.get_run_dir(args)
     acc_list = []
     corrs_list = []
     for i in range(3):
         all_acc, corrs = lth(logger, device, args)
         acc_list.append(all_acc)
         corrs_list.append(corrs)
-        utils.save_vars(save_dir=C.OUTPUT_DIR+str(i), corrs=corrs,
+        utils.save_vars(save_dir=run_dir+str(i), corrs=corrs,
                         all_accuracies=all_acc)
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
@@ -634,7 +634,7 @@ def main():
     all_acc = torch.mean(acc_list, axis=0)
     corrs = torch.mean(corrs_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
-    utils.save_vars(save_dir=C.OUTPUT_DIR, corrs=corrs, all_accuracies=all_acc)
+    utils.save_vars(save_dir=run_dir, corrs=corrs, all_accuracies=all_acc)
 
 if __name__ == '__main__':
     main()
