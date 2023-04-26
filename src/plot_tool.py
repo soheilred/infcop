@@ -181,7 +181,7 @@ def plot_train_epochs(epochs, labels, filename):
     # plt.grid()
     plt.savefig(filename + ".png")
 
-def plot_connectivity(test_acc, corrs):
+def plot_connectivity_0(test_acc, corrs):
     fig, axs = plt.subplots(2, figsize=(12, 8))
     xdata = np.arange(1, len(test_acc) + 1)
     axs[0].scatter(xdata, test_acc, marker=(5, 0))
