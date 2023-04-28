@@ -394,7 +394,7 @@ def main():
         utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
         logger.debug('model is saved...!')
 
-        utils.save_vars(test_acc=test_acc, corr=corr)
+        # utils.save_vars(test_acc=test_acc, corr=corr)
 
     print(corr)
     plot_tool.plot_connectivity(test_acc, corr)
