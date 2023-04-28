@@ -82,10 +82,14 @@ def get_device():
     return device
 
 
-def batch_mul(mat, v):
-    in_shape = mat.shape[:2]
-    res = torch.stack([v[i, j] * mat[i, j, :, :] for i in range(in_shape[0]) for j in range(in_shape[1])])
-    return res.reshape(mat.shape)
+def batch_mul(a, b):
+    # in_shape = mat.shape[:2]
+    # res = torch.stack([v[i, j] * mat[i, j, :, :] for i in range(in_shape[0]) for j in range(in_shape[1])])
+    # return res.reshape(mat.shape)
+    out = np.mean([np.nan_to_num(np.outer(a[i], b[i])) for i in
+                  range(a.shape[0])], axis=0)
+    return out
+
 
 def get_vars(arch, out_dir):
     # train_acc = pickle.load(open("vgg16" + "_training_acc.pkl", "rb"))
