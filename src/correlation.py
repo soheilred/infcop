@@ -14,7 +14,7 @@ from torchvision.models.resnet import Bottleneck
 import utils
 import plot_tool
 from data_loader import Data
-from network import Network
+from network import Network, train, test
 import constants as C
 
 log = logging.getLogger("sampleLogger")
@@ -41,6 +41,7 @@ class Activations:
         self.device = device
         self.batch_size = batch_size
         self.layers_dim = []
+        self.layers_idx = []
 
     def hook_fn(self, m, i, o):
         """Assign the activations/mean of activations to a matrix
@@ -48,14 +49,14 @@ class Activations:
         ----------
         self: type
             description
-        m: int
-            Layer number
+        m: str
+            Layer's name
         i: type
             description
         o: torch tensor
             the activation function output
-
         """
+
         tmp = o.detach()
         if len(tmp.shape) > 2:
             self.activation[m] = torch.mean(tmp, axis=(2, 3))
@@ -63,7 +64,7 @@ class Activations:
         else:
             self.activation[m] = tmp
 
-    def get_all_layers(self, net, layers_dim, hook_handles):
+    def hook_all_layers(self, layers_dim, hook_handles):
         """ Hook a handle to all layers that are interesting to us, such as
         Linear or Conv2d.
         Parameters
@@ -83,7 +84,7 @@ class Activations:
                          isinstance(module[1], nn.Linear):
                 hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                 layers_dim.append(module[1].weight.shape)
-            
+
         # Recursive version
         # for name, layer in net._modules.items():
         #     if (isinstance(layer, nn.Sequential) or
@@ -96,6 +97,119 @@ class Activations:
         #         hook_handles.append(layer.register_forward_hook(self.hook_fn))
         #         layers_dim.append(layer.weight.shape)
 
+    def get_layers_idx(self):
+        """Find all convolutional and linear layers and add them to layers_ind.
+        """
+        for module_idx, module in enumerate(self.model.named_modules()):
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                self.layers_idx.append(module_idx)
+                self.layers_dim.append(module[1].weight.shape)
+        return self.layers_idx
+
+    def hook_layer_idx(self, item_key, hook_handles):
+        for module_idx, module in enumerate(self.model.named_modules()):
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                if (module_idx == item_key):
+                    hook_handles.append(module[1].register_forward_hook(self.hook_fn))
+                    self.layers_dim.append(module[1].weight.shape)
+
+    def get_act_keys(self):
+        layers_dim = []
+        hook_handles = []
+
+        self.hook_all_layers(layers_dim, hook_handles)
+
+        with torch.no_grad():
+            X, y = next(iter(self.dataloader))
+            X, y = X.to(self.device), y.to(self.device)
+            self.model(X)
+            act_keys = list(self.activation.keys())
+
+        return act_keys
+
+    def get_corrs(self):
+        """ Compute the individual correlation
+        Returns
+        -------
+        List of 2d tensors, each representing the connectivity between two
+        consecutive layer.
+        """
+        self.model.eval()
+        ds_size = len(self.dataloader.dataset)
+
+        layers_idx = self.get_layers_idx()
+        layers_dim = self.layers_dim
+        num_layers = len(layers_dim)
+        act_keys = self.get_act_keys()
+        corrs = []
+
+        for i in range(num_layers - 1):
+            logging.debug(f"working on layer {layers_idx[i]} {str(act_keys[i])[:8]}...")
+            # prepare an array with the right dimension
+            parent = []
+            child = []
+
+            # add the sample's activation to the array
+
+            with torch.no_grad():
+                for batch, (X, y) in enumerate(self.dataloader):
+                    X, y = X.to(self.device), y.to(self.device)
+                    self.model(X)
+                    parent.append(self.activation[act_keys[i]].detach().cpu().numpy())
+                    child.append(self.activation[act_keys[i + 1]].detach().cpu().numpy())
+
+            parent = np.vstack(parent)
+            parent = (parent - parent.mean(axis=0)) / parent.std(axis=0)
+            child = np.vstack(child)
+            child = (child - child.mean(axis=0)) / child.std(axis=0)
+            corr = np.corrcoef(parent, child, rowvar=False)
+            corrs.append(corr)
+
+        # print(corrs)
+        self.model.train()
+        return corrs
+
+    def get_conns(self, corrs):
+        conns = []
+        for corr in corrs[0]:
+            conns.append(corr.mean())
+        print(conns)
+        return conns
+
+    def get_act_layer(self, layers_dim, hook_handles):
+        """ Hook a handle to all layers that are interesting to us, such as
+        Linear or Conv2d.
+        Parameters
+        ----------
+        net: Network
+            The network we're looking at
+        layers_dim: list
+            List of layers that are registered for saving activations
+        hook_handles: type
+            description
+
+        If it is a sequential, don't register a hook on it but recursively
+        register hook on all it's module children
+        """
+        for module in self.model.named_modules():
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                hook_handles.append(module[1].register_forward_hook(self.hook_fn))
+                self.layers_dim.append(module[1].weight.shape)
+
+        # Recursive version
+        # for name, layer in net._modules.items():
+        #     if (isinstance(layer, nn.Sequential) or
+        #             isinstance(layer, ResidualBlock) or
+        #             isinstance(layer, Bottleneck)):
+        #         self.get_all_layers(layer, layers_dim, hook_handles)
+        #     elif (isinstance(layer, nn.Conv2d) or
+        #           (isinstance(layer, nn.Linear))):
+        #         # it's a non sequential. Register a hook
+        #         hook_handles.append(layer.register_forward_hook(self.hook_fn))
+        #         layers_dim.append(layer.weight.shape)
 
     def get_correlations(self):
         """ Compute the individual correlation
@@ -118,7 +232,6 @@ class Activations:
 
         corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).to(self.device)
                  for i in range(num_layers - 1)]
-
 
         act_means = [torch.zeros(layers_dim[i][0]).to(self.device)
                             for i in range(num_layers)]
@@ -271,13 +384,15 @@ def main():
         test_acc[i] = test(model, test_dl, loss_fn, device)
 
         activations = Activations(model, test_dl, device, args.batch_size)
-        corr.append(activations.get_connectivity())
+        # corr.append(activations.get_connectivity())
+        corr.append(activations.get_corrs())
 
         utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
         logger.debug('model is saved...!')
 
         utils.save_vars(test_acc=test_acc, corr=corr)
 
+    print(corr)
     plot_tool.plot_connectivity(test_acc, corr)
 
 
