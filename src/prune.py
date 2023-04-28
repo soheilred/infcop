@@ -556,7 +556,7 @@ class Pruner:
                     # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
                     param.data = torch.from_numpy(weight * control_weights).to(weight_dev)
                     # new_weights = torch.mul(weight, control_weights)
-                    param.data = new_weights.to(weight_dev)
+                    # param.data = new_weights.to(weight_dev)
                     break
                 ind += 1
         # weight = self.model.features[layer_list].weight.data.cpu().numpy()
