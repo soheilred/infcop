@@ -11,7 +11,7 @@
   "cores": 4,
   "save_prefix": "../checkpoints/",
   "loadname": "",
-  "train_epochs": 2,
+  "train_epochs": 3,
   "train_per_epoch": 2,
   "lr": 0.001,
   "batch_size": 64,
@@ -30,7 +30,7 @@
   "freeze_order": [
     "top"
   ],
-  "control_at_iter": 1,
+  "control_at_iter": 2,
   "control_at_epoch": 2,
   "acc_thrd": 70,
   "control_type": 1,
