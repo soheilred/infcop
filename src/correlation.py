@@ -146,7 +146,7 @@ class Activations:
         corrs = []
 
         for i in range(num_layers - 1):
-            logging.debug(f"working on layer {layers_idx[i]} {str(act_keys[i])[:8]}...")
+            logging.debug(f"working on layer {layers_idx[i]} {str(act_keys[i])[:18]}...")
             # prepare an array with the right dimension
             parent = []
             child = []
@@ -164,7 +164,11 @@ class Activations:
             parent = (parent - parent.mean(axis=0)) / parent.std(axis=0)
             child = np.vstack(child)
             child = (child - child.mean(axis=0)) / child.std(axis=0)
-            corr = np.corrcoef(parent, child, rowvar=False)
+            # corr = np.corrcoef(parent, child, rowvar=False)
+            # x_len = corr.shape[0] // 2
+            # y_len = corr.shape[1] // 2
+            corr = utils.batch_mul(parent, child)
+            logging.debug(f"correlation dimension: {corr.shape}")
             corrs.append(corr)
 
         # print(corrs)
@@ -173,7 +177,7 @@ class Activations:
 
     def get_conns(self, corrs):
         conns = []
-        for corr in corrs[0]:
+        for corr in corrs:
             conns.append(corr.mean())
         print(conns)
         return conns

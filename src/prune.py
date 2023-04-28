@@ -478,7 +478,7 @@ class Pruner:
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
 
         # get connectivity
-        connectivity = [(torch.mean(control_corrs[imp_iter - 1][i]).item() /
+        connectivity = [(np.mean(control_corrs[imp_iter - 1][i]) /
                         (layers_dim[i][0] * layers_dim[i + 1][0]))
                         for i in range(len(layers_dim) - 1)]
 
@@ -509,9 +509,11 @@ class Pruner:
         # the + 1 is for matching to the connectivity's dimension
         weights = control_corrs[imp_iter - 1][ind - 1]
         kernel_size = layers_dim[ind][-1]
-        weights = weights.tile(dims=(kernel_size, kernel_size, 1, 1)).\
-                               transpose(1, 2).transpose(0, 3)
+        # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
+        #                        transpose(1, 2).transpose(0, 3)
                                # transpose(1, 2).transpose(0, 3).transpose(0, 1)
+        weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
+                               transpose(3, 2, 1, 0)
         return weights
 
 
@@ -544,15 +546,16 @@ class Pruner:
                 # if module.weight.grad is not None:
                 #     module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
         for name, param in self.model.named_parameters():
+            print(name, param.data.shape)
             if ("weight" in name and 
                ("conv" in name or "fc" in name or "features" in name)):
                 if ind == layer_ind:
-                    # weight = param.data.cpu().numpy()
-                    weight = param.data
+                    weight = param.data.cpu().numpy()
+                    # weight = param.data
                     weight_dev = param.device
                     # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
-                    # param.data = torch.from_numpy(weight * exp * contr_mask).to(weight_dev)
-                    new_weights = torch.mul(weight, control_weights)
+                    param.data = torch.from_numpy(weight * control_weights).to(weight_dev)
+                    # new_weights = torch.mul(weight, control_weights)
                     param.data = new_weights.to(weight_dev)
                     break
                 ind += 1
@@ -619,7 +622,7 @@ def lth(logger, device, args, controller):
         # Calculate the connectivity
         activations = Activations(model, test_dl, device, args.batch_size)
         pruning.corrs.append(activations.get_corrs())
-        connectivity.append(activations.get_conns(pruning.corrs))
+        connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
     return pruning.all_acc, connectivity
