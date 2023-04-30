@@ -81,6 +81,7 @@ def get_device():
                      torch.cuda.get_device_name())
     return device
 
+def large_mean(a)
 
 def batch_mul(a, b):
     # in_shape = mat.shape[:2]
