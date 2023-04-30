@@ -148,8 +148,8 @@ class Activations:
         for idx in range(num_layers - 1):
             logging.debug(f"working on layer {layers_idx[idx]} {str(act_keys[idx])[:18]}...")
             # prepare an array with the right dimension
-            parent = []
-            child = []
+            parent_arr = []
+            child_arr = []
 
             # add the sample's activation to the array
 
@@ -157,14 +157,14 @@ class Activations:
                 for batch, (X, y) in enumerate(self.dataloader):
                     X, y = X.to(self.device), y.to(self.device)
                     self.model(X)
-                    parent.append(self.activation[act_keys[idx]].\
+                    parent_arr.append(self.activation[act_keys[idx]].\
                                   detach().cpu().numpy())
-                    child.append(self.activation[act_keys[idx + 1]].\
+                    child_arr.append(self.activation[act_keys[idx + 1]].\
                                  detach().cpu().numpy())
 
-            parent = np.vstack(parent)
+            parent = np.vstack(parent_arr)
             parent = (parent - parent.mean(axis=0)) / parent.std(axis=0)
-            child = np.vstack(child)
+            child = np.vstack(child_arr)
             child = (child - child.mean(axis=0)) / child.std(axis=0)
             if np.any(np.isnan(parent)):
                 print("nan in layer {layers_idx[idx]}")
