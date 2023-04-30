@@ -622,7 +622,7 @@ def lth(logger, device, args, controller):
         activations = Activations(model, test_dl, device, args.batch_size)
         pruning.corrs.append(activations.get_corrs())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
-        utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
+        # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
     return pruning.all_acc, connectivity
     
