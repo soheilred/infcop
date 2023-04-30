@@ -546,7 +546,6 @@ class Pruner:
                 # if module.weight.grad is not None:
                 #     module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
         for name, param in self.model.named_parameters():
-            print(name, param.data.shape)
             if ("weight" in name and 
                ("conv" in name or "fc" in name or "features" in name)):
                 if ind == layer_ind:
@@ -620,7 +619,6 @@ def lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
-        import ipdb; ipdb.set_trace()
         activations = Activations(model, test_dl, device, args.batch_size)
         pruning.corrs.append(activations.get_corrs())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
