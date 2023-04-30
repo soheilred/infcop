@@ -163,9 +163,11 @@ class Activations:
                                  detach().cpu().numpy())
 
             parent = np.vstack(parent_arr)
-            parent = (parent - parent.mean(axis=0)) / np.abs(np.max(parent))
+            parent = (parent - parent.mean(axis=0))
+            parent /= np.abs(np.max(parent))
             child = np.vstack(child_arr)
-            child = (child - child.mean(axis=0)) / np.abs(np.max(child)) # child.std(axis=0)
+            child = (child - child.mean(axis=0))
+            child /= np.abs(np.max(child)) # child.std(axis=0)
             if np.any(np.isnan(parent)):
                 print("nan in layer {layers_idx[idx]}")
                 import ipdb; ipdb.set_trace()
