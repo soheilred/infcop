@@ -168,7 +168,7 @@ class Activations:
             # x_len = corr.shape[0] // 2
             # y_len = corr.shape[1] // 2
             corr = utils.batch_mul(parent, child)
-            logging.debug(f"correlation dimension: {corr.shape}")
+            logging.debug(f"correlation dimension: {corr.shape}, conn: {np.mean(corr)}")
             corrs.append(corr)
 
         # print(corrs)
