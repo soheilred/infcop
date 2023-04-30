@@ -168,9 +168,11 @@ class Activations:
             child = (child - child.mean(axis=0)) / child.std(axis=0)
             if np.any(np.isnan(parent)):
                 print("nan in layer {layers_idx[idx]}")
+                import ipdb; ipdb.set_trace()
 
             if np.any(np.isnan(child)):
                 print("nan in layer {layers_idx[idx + 1]}")
+                import ipdb; ipdb.set_trace()
             # corr = np.corrcoef(parent, child, rowvar=False)
             # x_len = corr.shape[0] // 2
             # y_len = corr.shape[1] // 2
