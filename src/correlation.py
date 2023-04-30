@@ -161,10 +161,10 @@ class Activations:
                                   detach().cpu().numpy())
                     child.append(self.activation[act_keys[idx + 1]].\
                                  detach().cpu().numpy())
-                    if np.any(np.isnan(parent[i])):
+                    if np.any(np.isnan(parent[idx])):
                         print("nan in layer {layers_idx[idx]}")
 
-                    if np.any(np.isnan(child[i])):
+                    if np.any(np.isnan(child[idx])):
                         print("nan in layer {layers_idx[idx + 1]}")
 
             parent = np.vstack(parent)
