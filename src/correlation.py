@@ -145,8 +145,8 @@ class Activations:
         act_keys = self.get_act_keys()
         corrs = []
 
-        for i in range(num_layers - 1):
-            logging.debug(f"working on layer {layers_idx[i]} {str(act_keys[i])[:18]}...")
+        for idx in range(num_layers - 1):
+            logging.debug(f"working on layer {layers_idx[idx]} {str(act_keys[idx])[:18]}...")
             # prepare an array with the right dimension
             parent = []
             child = []
@@ -157,8 +157,15 @@ class Activations:
                 for batch, (X, y) in enumerate(self.dataloader):
                     X, y = X.to(self.device), y.to(self.device)
                     self.model(X)
-                    parent.append(self.activation[act_keys[i]].detach().cpu().numpy())
-                    child.append(self.activation[act_keys[i + 1]].detach().cpu().numpy())
+                    parent.append(self.activation[act_keys[idx]].\
+                                  detach().cpu().numpy())
+                    child.append(self.activation[act_keys[idx + 1]].\
+                                 detach().cpu().numpy())
+                    if np.any(np.isnan(parent)):
+                        print("nan in layer {layers_idx[idx]}")
+
+                    if np.any(np.isnan(child)):
+                        print("nan in layer {layers_idx[idx + 1]}")
 
             parent = np.vstack(parent)
             parent = (parent - parent.mean(axis=0)) / parent.std(axis=0)
@@ -168,7 +175,7 @@ class Activations:
             # x_len = corr.shape[0] // 2
             # y_len = corr.shape[1] // 2
             corr = utils.batch_mul(parent, child)
-            logging.debug(f"correlation dimension: {corr.shape}, conn: {np.mean(corr)}")
+            logging.debug(f"correlation dimension: {corr.shape}, conn: {np.mean(corr):.3f}")
             corrs.append(corr)
 
         # print(corrs)
