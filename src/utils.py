@@ -188,7 +188,7 @@ def get_args():
                         choices=["False","True"],
                         help='Start with a pretrained network?')
     parser.add_argument('--dataset', type=str,
-                        choices=['CIFAR10', 'MNIST', 'pmnist', '6splitcifar', '11splitcifar'],
+                        choices=['CIFAR10', 'MNIST', 'IMAGENET', 'pmnist', '6splitcifar', '11splitcifar'],
                         default='MNIST', help='Name of dataset')
     parser.add_argument('--single_task', action='store_true',
                         default=False, help='Run only the current task')
