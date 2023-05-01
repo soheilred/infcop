@@ -47,6 +47,22 @@ class Data:
                 download=True,
                 transform=self.transform
                 )
+
+        if dataset == "IMAGENET":
+            training_data = datasets.ImageNet(
+                root=data_dir,
+                train=True,
+                download=True,
+                transform=self.transform
+                )
+
+            test_data = datasets.CIFAR10(
+                root=data_dir,
+                train=False,
+                download=True,
+                transform=self.transform
+                )
+
         elif dataset == "MNIST":
             self.transform = transforms.Compose([
                 transforms.Grayscale(num_output_channels=3),

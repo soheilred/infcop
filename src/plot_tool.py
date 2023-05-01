@@ -63,7 +63,7 @@ def plot_multi_all_accuracy(accuracies, filename):
                  linestyle=linestyles[i % len(linestyles)])
     fig.tight_layout(pad=2.0)
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    major_ticks = np.arange(0, 2 * len(accuracies_list[0]), 20)
+    major_ticks = np.arange(0, 3 * len(accuracies_list[0]), 3)
     axs.set_xticks(major_ticks)
     axs.set_xlim([0, 2 * len(accuracies_list[0])])
     plt.grid()
@@ -181,29 +181,24 @@ def plot_train_epochs(epochs, labels, filename):
     # plt.grid()
     plt.savefig(filename + ".png")
 
-def plot_connectivity_0(test_acc, corrs):
-    fig, axs = plt.subplots(2, figsize=(12, 8))
-    xdata = np.arange(1, len(test_acc) + 1)
-    axs[0].scatter(xdata, test_acc, marker=(5, 0))
-    axs[0].set_title("Accuracy of network in training")
-    axs[0].set(xlabel="IMP Iteration", ylabel="Training accuracy")
-    axs[0].set_xticks(xdata)
+def plot_connectivity(conns, filename):
+    fig, axs = plt.subplots(1, figsize=(12, 8))
+    xdata = np.arange(1, len(conns[0]) + 1)
 
-    xdata = np.arange(1, len(corrs[0]) + 1)
-
-    for i in range(len(corrs)):
-        axs[1].plot(xdata, corrs[i], marker=filled_markers[i],
+    for i in range(len(conns)):
+        axs.plot(xdata, conns[i], marker=filled_markers[i],
                  linestyle=linestyles[i % len(linestyles)],
-                 label=f"exper {i}",
+                 label=f"Iter {i}",
                  alpha=.5) 
     fig.tight_layout(pad=2.0)
     plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    major_ticks = np.arange(1, len(corrs[0]) + 1)
-    axs[1].set_xticks(major_ticks)
+    major_ticks = np.arange(1, len(conns[0]) + 1)
+    axs.set_xticks(major_ticks)
     # axs.set_xlim([1, len(epochs[0])])
-    # plt.grid()
-    filename = C.OUTPUT_DIR + "correlation"
+    axs.set_title("Accuracy of network in training")
+    axs.set(xlabel="Layer index", ylabel="Training accuracy")
+    plt.grid()
     plt.savefig(filename + ".png")
 
 
