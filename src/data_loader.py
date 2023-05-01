@@ -48,7 +48,7 @@ class Data:
                 transform=self.transform
                 )
 
-        if dataset == "IMAGENET":
+        elif dataset == "IMAGENET":
             training_data = datasets.ImageNet(
                 root=data_dir,
                 train=True,
