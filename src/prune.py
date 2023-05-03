@@ -637,7 +637,7 @@ def main():
     logger = utils.setup_logger()
     args = utils.get_args()
     device = utils.get_device(args)
-    controlled_layers = [8]
+    controlled_layers = [5]
     controller = Controller(args.control_type, controlled_layers,
                             args.control_at_iter, args.control_at_epoch)
     run_dir = utils.get_run_dir(args) + ("").join([str(l) for l in
