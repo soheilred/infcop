@@ -635,8 +635,8 @@ def lth(logger, device, args, controller):
 def main():
     # preparing the hardware
     logger = utils.setup_logger()
-    device = utils.get_device()
     args = utils.get_args()
+    device = utils.get_device(args)
     controlled_layers = [10]
     controller = Controller(args.control_type, controlled_layers,
                             args.control_at_iter, args.control_at_epoch)
