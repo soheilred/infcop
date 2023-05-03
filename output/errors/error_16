@@ -1,0 +1,33 @@
+/var/lib/slurm-llnl/slurmd/job00016/slurm_script: line 27: /conda-init: No such file or directory
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [08:34<1:17:09, 514.41s/it] 10%|█         | 1/10 [17:43<2:39:35, 1063.93s/it]
+Traceback (most recent call last):
+  File "prune.py", line 663, in <module>
+    main()
+  File "prune.py", line 648, in main
+    all_acc, conn = lth(logger, device, args, controller)
+  File "prune.py", line 617, in lth
+    pruning.control(corr, act.layers_dim, imp_iter)
+  File "prune.py", line 480, in control
+    prev_iter_weights = self.get_prev_iter_weights(imp_iter)
+  File "prune.py", line 524, in get_prev_iter_weights
+    controller.c_layers]) + "/"
+NameError: name 'controller' is not defined
