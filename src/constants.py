@@ -2,13 +2,13 @@ import pathlib
 import datetime
 
 # cur_time = datetime.datetime.now().strftime("%d-%m-%H-%M-%S")
-cur_time = "test"
+cur_time = ""
 ROOT = str(pathlib.Path(__file__).resolve().parents[1]) + "/"
 DATA_DIR = ROOT + "data/"
 OUTPUT_DIR = ROOT + "output/"
-RUN_DIR = OUTPUT_DIR + cur_time + "/"
+RUN_DIR = OUTPUT_DIR + # cur_time + "/" 
 # MODEL_ROOT_DIR = OUTPUT_DIR + "model/"
-MODEL_ROOT_DIR = RUN_DIR + "model/"
+MODEL_ROOT_DIR = RUN_DIR # + "model/"
 LOG_CONFIG_DIR = ROOT + "/src/logging.ini"
 LOG_FILENAME = RUN_DIR + 'out.log'
 CHPT_DIR = OUTPUT_DIR + "checkpoints/"

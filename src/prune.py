@@ -563,7 +563,8 @@ class Pruner:
 
 def lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
-    run_dir = utils.get_run_dir(args)
+    run_dir = utils.get_run_dir(args) + ("").join([str(l) for l in
+                                                   controller.c_layers]) 
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
@@ -571,6 +572,7 @@ def lth(logger, device, args, controller):
 
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
+    import ipdb; ipdb.set_trace()
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
@@ -632,12 +634,14 @@ def main():
     logger = utils.setup_logger()
     device = utils.get_device()
     args = utils.get_args()
-    run_dir = utils.get_run_dir(args)
+    controlled_layers = [2]
+    controller = Controller(args.control_type, controlled_layers,
+                            args.control_at_iter, args.control_at_epoch)
+    run_dir = utils.get_run_dir(args) + ("").join([str(l) for l in
+                                                   controller.c_layers])
     acc_list = []
     conn_list = []
     for i in range(3):
-        controller = Controller(args.control_type, [2], args.control_at_iter,
-                                args.control_at_epoch)
         all_acc, conn = lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
