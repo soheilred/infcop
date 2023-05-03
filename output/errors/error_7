@@ -1,0 +1,21 @@
+/var/lib/slurm-llnl/slurmd/job00007/slurm_script: line 27: /conda-init: No such file or directory
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [07:29<1:07:27, 449.67s/it]/var/lib/slurm-llnl/slurmd/job00007/slurm_script: line 35: 40033 Killed                  python "$@"
