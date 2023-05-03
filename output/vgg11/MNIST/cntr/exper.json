@@ -1,5 +1,5 @@
 {
-  "arch": "resnet",
+  "arch": "vgg11",
   "mode": "all",
   "pretrained": "True",
   "dataset": "MNIST",
