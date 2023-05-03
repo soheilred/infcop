@@ -87,7 +87,6 @@ class Network():
             sys.exit("Wrong architecture")
 
         self.model = self.model.to(self.device)
-        # self.model.eval()
         return self.model
 
 
