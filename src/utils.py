@@ -170,9 +170,9 @@ def get_stability(in_measure):
     return stability
 
 def get_run_dir(args):
-    control = "no_cntr" if args.control_at_iter == -1 else "cntr"
-    run_dir = C.MODEL_ROOT_DIR + args.arch + "/" + args.dataset + "/" +\
-                control + "/"
+    control = "no_cntr" if args.control_at_iter == -1 else "cntr" + "/" +\
+                        ("").join([str(l) for l in args.control_at_layer]) + "/"
+    run_dir = C.MODEL_ROOT_DIR + args.arch + "/" + args.dataset + "/" + control 
     checkdir(run_dir)
     return run_dir
 
@@ -251,6 +251,9 @@ def get_args():
     parser.add_argument('--control_at_epoch', type=int, default=2,
                       help='Epoch at which the controller is applied')
 
+    parser.add_argument('--control_at_layer', type=str, default="2",
+                      help='Network layer at which the controller is applied')
+
     parser.add_argument('--acc_thrd', type=int, default=70,
                       help='Threshold accuracy to stop the training loop')
 
@@ -260,6 +263,8 @@ def get_args():
     parser.add_argument('--imp_total_iter', type=int, default=10,
                       help='Number of iteration at IMP')
     args = parser.parse_args()
+
+    args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
 
     run_dir = get_run_dir(args)
     json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
