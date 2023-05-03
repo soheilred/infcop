@@ -19,13 +19,13 @@ import logging.config
 log = logging.getLogger("sampleLogger")
 
 class Controller:
-    def __init__(self, c_type, c_layers, c_iter, c_epoch):
+    def __init__(self, args):
         """Control the IMP's connectivity.
         """
-        self.c_type = c_type
-        self.c_layers = c_layers
-        self.c_iter = c_iter
-        self.c_epoch = c_epoch
+        self.c_type = args.control_type
+        self.c_layers = args.control_at_layer
+        self.c_iter = args.control_at_iter
+        self.c_epoch = args.control_at_epoch
 
 
 
@@ -144,8 +144,7 @@ class Pruner:
 
         # Copying and Saving Initial State
         self.init_state_dict = copy.deepcopy(self.model.state_dict())
-        run_dir = utils.get_run_dir(self.args) + ("").join([str(l) for l in
-                                                   self.controller.c_layers]) + "/"
+        run_dir = utils.get_run_dir(self.args)
         utils.save_model(self.model, run_dir, "/initial_model.pth.tar")
 
         # Making Initial Mask
@@ -520,9 +519,7 @@ class Pruner:
 
 
     def get_prev_iter_weights(self, imp_iter):
-        run_dir = utils.get_run_dir(self.args) + ("").join([str(l) for l in
-                                                   self.controller.c_layers]) + "/"
-
+        run_dir = utils.get_run_dir(self.args)
         model = torch.load(run_dir + str(imp_iter) + '_model.pth.tar')
         model.eval()
         weights = {}
@@ -567,9 +564,7 @@ class Pruner:
 
 def lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
-    run_dir = utils.get_run_dir(args) + ("").join([str(l) for l in
-                                                   controller.c_layers]) + "/"
-
+    run_dir = utils.get_run_dir(args)
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
     num_classes = data.get_num_classes()
@@ -637,11 +632,8 @@ def main():
     logger = utils.setup_logger()
     args = utils.get_args()
     device = utils.get_device(args)
-    controlled_layers = [5]
-    controller = Controller(args.control_type, controlled_layers,
-                            args.control_at_iter, args.control_at_epoch)
-    run_dir = utils.get_run_dir(args) + ("").join([str(l) for l in
-                                                   controller.c_layers]) + "/"
+    controller = Controller(args)
+    run_dir = utils.get_run_dir(args)
     acc_list = []
     conn_list = []
     for i in range(3):
