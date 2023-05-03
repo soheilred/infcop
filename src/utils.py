@@ -73,8 +73,8 @@ def load_checkpoints(args):
         return 0
 
     
-def get_device():
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+def get_device(args):
+    device = "cuda:{args.gpu}" if torch.cuda.is_available() else "cpu"
     logger.debug(f"Using {device} device")
     if torch.cuda.is_available():
         logger.debug("Name of the Cuda Device: " +
@@ -200,6 +200,8 @@ def get_args():
                         help='Num outputs for dataset')
     parser.add_argument('--cuda', action='store_true', default=True,
                         help='use CUDA')
+    parser.add_argument('--gpu', type=int, default=0,
+                        help='gpu number to use')
     parser.add_argument('--cores', type=int, default=4,
                         help='Number of CPU cores.')
 
