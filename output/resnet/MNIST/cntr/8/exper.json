@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
+  "arch": "vgg11",
+=======
   "arch": "resnet",
+>>>>>>> 90997fce92e402c4781aff984df8742bdba8613d
   "mode": "all",
   "pretrained": "True",
   "dataset": "MNIST",
@@ -33,6 +37,12 @@
   ],
   "control_at_iter": 1,
   "control_at_epoch": 2,
+<<<<<<< HEAD
+=======
+  "control_at_layer": [
+    8
+  ],
+>>>>>>> 90997fce92e402c4781aff984df8742bdba8613d
   "acc_thrd": 70,
   "control_type": 1,
   "imp_total_iter": 10
