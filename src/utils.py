@@ -170,7 +170,7 @@ def get_stability(in_measure):
     return stability
 
 def get_run_dir(args):
-    control = "no_cntr" if args.control_at_iter == -1 else "cntr" + "/" +\
+    control = "no_cntr/" if args.control_at_iter == -1 else "cntr" + "/" +\
                         ("").join([str(l) for l in args.control_at_layer]) + "/"
     run_dir = C.MODEL_ROOT_DIR + args.arch + "/" + args.dataset + "/" + control 
     checkdir(run_dir)
