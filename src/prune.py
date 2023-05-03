@@ -144,7 +144,8 @@ class Pruner:
 
         # Copying and Saving Initial State
         self.init_state_dict = copy.deepcopy(self.model.state_dict())
-        run_dir = utils.get_run_dir(self.args)
+        run_dir = utils.get_run_dir(self.args) + ("").join([str(l) for l in
+                                                   self.controller.c_layers]) + "/"
         utils.save_model(self.model, run_dir, "/initial_model.pth.tar")
 
         # Making Initial Mask
@@ -473,6 +474,7 @@ class Pruner:
     def control(self, corr, layers_dim, imp_iter):
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
+        log.debug(f"controllable layers are {layers_dim}")
 
         # get the weights from previous iteration
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
@@ -564,7 +566,7 @@ class Pruner:
 def lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args) + ("").join([str(l) for l in
-                                                   controller.c_layers]) 
+                                                   controller.c_layers]) + "/"
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
@@ -572,7 +574,6 @@ def lth(logger, device, args, controller):
 
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
-    import ipdb; ipdb.set_trace()
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
@@ -638,7 +639,7 @@ def main():
     controller = Controller(args.control_type, controlled_layers,
                             args.control_at_iter, args.control_at_epoch)
     run_dir = utils.get_run_dir(args) + ("").join([str(l) for l in
-                                                   controller.c_layers])
+                                                   controller.c_layers]) + "/"
     acc_list = []
     conn_list = []
     for i in range(3):
