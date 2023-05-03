@@ -521,7 +521,7 @@ class Pruner:
 
     def get_prev_iter_weights(self, imp_iter):
         run_dir = utils.get_run_dir(self.args) + ("").join([str(l) for l in
-                                                   controller.c_layers]) + "/"
+                                                   self.controller.c_layers]) + "/"
 
         model = torch.load(run_dir + str(imp_iter) + '_model.pth.tar')
         model.eval()
