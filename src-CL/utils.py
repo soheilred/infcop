@@ -124,25 +124,6 @@ def activations(data_loader, model, cuda, item_key):
 
 
 
-# ### Calculate pearson correlation for a parent node and each downstream child node in the next layer
-# ### p1 is a 1d array of activations while c1_op is a 2d array, with dimensions for the number of nodes and the number of activations
-# def corr(p1, c1_op):
-#     corrs_p = []
-#     if (np.std(p1) < 0.001):
-#         print("insufficient parent standard deviation of acts")
-#         corrs_p = [0]*len(c1_op[0])
-#     else:
-#         for c in range(len(c1_op[0])):
-#             ### This is to avoid errors with dividing by 0 with Pearson correlation
-#             if (np.std(c1_op[:,c]) < 0.001):
-#                 corrs_p.append(0) 
-#             else:
-#                 corrcoef_mat = np.corrcoef(p1, c1_op[:,c])
-                
-#                 corrs_p.append(abs(corrcoef_mat[0][1]))  
-#     return np.asarray(corrs_p[:]) 
-        
-
 
 
 def get_dataloader(dataset, batch_size, num_workers=4, pin_memory=False, normalize=None, task_num=0, set="train"):
@@ -160,44 +141,48 @@ def get_dataloader(dataset, batch_size, num_workers=4, pin_memory=False, normali
 
 
 
-### Produces an initialized model and initial shared mask prior to beginning training
-def init_dump(arch,savepath):
-    """Dumps pretrained model in required format."""
-    if arch == 'vgg16':
-        model = net.ModifiedVGG16()
-    elif arch == 'resnet18':
-        model = net.resnet18()
-    else:
-        raise ValueError('Architecture type not supported.')
+# ### Get a binary mask where all previously frozen weights are indicated by a value of 1
+# def get_frozen_mask(module_idx, all_task_masks, task_num):
+#     # mask = torch.zeros(weights.shape)
+#     mask = all_task_masks[0][0][module_idx]
+
+#     if task_num > 0:
+#         for i in range(1, task_num):
+#             mask = torch.maximum(all_task_masks[i][0][module_idx], mask)
+    
+#     return mask
+    
     
 
-    composite_mask = {}
-    task_mask = {}
-    all_task_masks = {}
-    
-    for module_idx, module in enumerate(model.shared.modules()):
-        if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-            # print("appending conv or linear layer")
-            mask = torch.ByteTensor(module.weight.data.size()).fill_(1)
-            task = torch.ByteTensor(module.weight.data.size()).fill_(0)
-            
-            if 'cuda' in module.weight.data.type():
-                mask = mask.cuda()
-                task = task.cuda()
-                
-            task_mask[module_idx] = mask
-            composite_mask[module_idx] = task
-    
+### Get a binary mask where all previously frozen weights are indicated by a value of 1
+### After pruning on the current task, this will still return the same masks, as the new weights aren't frozen until the task ends
+def get_frozen_mask(weights, module_idx, all_task_masks, task_num):
+    mask = torch.zeros(weights.shape)
 
-    all_task_masks[0] = [task_mask]
+    ### Can't just initialize with task 0 since before pruning it will erroneously .
+    for i in range(0, task_num):
+        # print("Maximum check for task ", i)
+        if i == 0:
+            mask = all_task_masks[i][0][module_idx]
+        else:
+            mask = torch.maximum(all_task_masks[i][0][module_idx], mask)
     
+    return mask
+        
     
-    torch.save({
-        'all_task_masks': all_task_masks,
-        'composite_mask': composite_mask,     
-        'model': model,
-        'conns' : {},
-        'conn_aves' : {},
-    }, savepath)
+### Get a binary mask where all unpruned, unfrozen weights are indicated by a value of 1
+### Unlike get_frozen_mask(), this mask will change after pruning since the pruned weights are no longer trainable for the current task
+def get_trainable_mask(module_idx, all_task_masks, task_num):
+    mask = all_task_masks[task_num][0][module_idx]
 
-
+    frozen_mask = get_frozen_mask(mask, module_idx, all_task_masks, task_num)
+    
+    # ### Any weights which were frozen for previous tasks are removed from mask
+    # for i in range(0, task_num):
+    #     # print("Minimum check for task ", i)
+    #     mask = torch.minimum(all_task_masks[i][0][module_idx], mask)
+    
+    mask[frozen_mask.eq(1)] = 0
+    
+    return mask
+    

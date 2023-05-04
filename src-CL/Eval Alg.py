@@ -77,107 +77,62 @@ def main():
         return    
     torch.cuda.set_device(0)
     
-    ### Determines which tasks are included in the overall sequence
     if args.dataset == "6splitcifar":
         taskset = [*range(0,6,1)]
-    elif args.dataset == "11splitcifar":
-        taskset = [*range(0,11,1)]
     else: 
         print("Incorrect dataset name for args.dataset")
         return 0
      
-
-
-
-
-
-     
+    final_task_num = taskset[-1]
+    print("Final task number: ", final_task_num)
     ###################
-    ##### Prepare Checkpoint and Pruner
+    ##### Prepare Ckpt
     ###################
-    args.save_prefix = os.path.join("../checkpoints/", str(args.dataset), str(args.prune_perc_per_layer), str(args.run_id), str(args.task_num))
-    os.makedirs(args.save_prefix, exist_ok = True)
+    args.save_prefix = os.path.join("../checkpoints/", str(args.dataset), str(args.prune_perc_per_layer), str(args.run_id), str(final_task_num))
 
-    previous_task_path = os.path.join("../checkpoints/", str(args.dataset), str(args.prune_perc_per_layer), str(args.run_id), str(args.task_num-1), "final.pt")
-    trained_path = os.path.join(args.save_prefix, "trained.pt")
+    finalpath = os.path.join(args.save_prefix, "final.pt")
 
 
-    ### If no checkpoint is found, the default value will be None and a new one will be initialized in the SparsePruner
-    ckpt = None
-
-    ### Reloads checkpoint depending on where you are at for the current task's progress (t->c->p)    
-    if os.path.isfile(previous_task_path) == True and (args.mode == "t" or args.mode == "all"):
-        ckpt = torch.load(previous_task_path)
-    elif os.path.isfile(trained_path) == True and (args.mode == "p" or args.mode == "c"):
-        ckpt = torch.load(trained_path)
+    if os.path.isfile(finalpath) == False:
+        print("Pruning wasn't finished, no trained checkpoint found for final task number: ", final_task_num)
+        return 0
     else:
-        print("No checkpoint file found")
-        if args.task_num > 0:
-            return 0
+        ckpt = torch.load(finalpath)
 
-    ### Initialize the pruner using the checkpoint
+    # pruner = SparsePruner(args, model, all_task_masks, composite_mask, conns, conn_aves, batchnorms)
     pruner = SparsePruner(args, ckpt)
+    if args.cuda:
+        pruner.model = pruner.model.cuda()
 
-
-
-
-    ###################
-    ##### Loop Through Tasks
-    ###################
-    
-    ### Logic for looping over remaining tasks
+    ### Insert logic for looping over remaining tasks
     for task in taskset[args.task_num:]:
-        
-        ### Update paths as needed for each new task
-        args.save_prefix = os.path.join("../checkpoints/", str(args.dataset), str(args.prune_perc_per_layer), str(args.run_id), str(task))
-        os.makedirs(args.save_prefix, exist_ok = True)
-        trained_path = os.path.join(args.save_prefix, "trained.pt")
-        finetuned_path = os.path.join(args.save_prefix, "final.pt")
+        print("Task Number: ", task)
+        pruner.task_num = task
 
-        ### Prepare dataloaders for new task
+        ckpt = torch.load(finalpath)
+        model = ckpt['model']
+        pruner.model = model
+
+        # Create the manager object.
         train_data_loader = utils.get_dataloader(args.dataset, args.batch_size, pin_memory=args.cuda, task_num=task, set="train")
         test_data_loader =  utils.get_dataloader(args.dataset, args.batch_size, pin_memory=args.cuda, task_num=task, set="test")
         val_data_loader = test_data_loader
         pruner.testloader = test_data_loader
 
         ### This is for producing and setting the classifier layer for a given task's # classes
-        pruner.model.add_dataset(str(task), args.num_outputs)
         pruner.model.set_dataset(str(task))
-
-        ### Create the manager object. Cover higher-level functions such as training and evaluation
+                
         manager = Manager(args, pruner, train_data_loader, val_data_loader, test_data_loader, task)
         print("Manager created")
 
-
-
-
-        ### train for new task
-        if  args.mode == "t" or args.mode == "all":
-            ### Optionally re-initialize pruned weights before training. Hopefully avoids NaN issues
-            # if pruner.task_num > 0 and args.reinit == True:
-            #     pruner.reinitialize_pruned()
-            #     manager.save_model(savename="./tempsave.pt")
-            print("Training", flush = True)
-            manager.train(args.train_epochs, save=True, savename=trained_path)
         
-                
-        ### calculate connectivity scores
-        if  args.mode == "c" or args.mode == "all":
-            print("Calculate Connectivities")
-            manager.calc_conns(savename=trained_path) 
-        
-        ### Prune unecessary weights or nodes
-        if  args.mode == "p" or args.mode == "all":
-            print("Pruning", flush = True)
-            manager.prune(prune_savename=finetuned_path)
 
-        
-        ### Save the checkpoint and move on to the next task if required
-        manager.save_model(savename=finetuned_path)
-                    
-        if args.single_task == False and args.mode == "all":
-            manager.increment_task()
-        else: 
+        ### Evaluate performance on task
+        if  args.mode == "e":
+            print("Evaluating Accuracy")
+            manager.eval(restore_bns = True)
+
+        if args.single_task == True: 
             return 0
 
     

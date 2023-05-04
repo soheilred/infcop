@@ -47,12 +47,28 @@ class Manager(object):
     
 
        
-    def eval(self):
+    def eval(self, restore_bns = False):
         """Performs evaluation."""
         print("Task number in Eval: ", self.task_num, " ", self.pruner.task_num)
 
         print("Applying dataset mask for current dataset")
+        
+        last_task = list(self.pruner.batchnorms.keys())[-1]
+        print("Last trained task: ", last_task)
+        print(type(last_task))
+
+        ### I can probably just group these together. Logically I think they should always be coupled anyways
         self.pruner.apply_mask()
+        
+        if restore_bns == True:
+            self.pruner.restore_batchnorm(self.pruner.task_num)
+        
+        # savepath = os.path.join(self.args.save_prefix, "previoustasks", str(self.task_num),"model.pt")
+        # os.makedirs(os.path.join(self.args.save_prefix, "previoustasks", str(self.task_num)), exist_ok = True)
+        # torch.save(self.pruner.model, savepath)
+
+            
+        
     
         self.pruner.model.eval()
         error_meter = None
@@ -77,9 +93,9 @@ class Manager(object):
         errors = error_meter.value()
         print('Error: ' + ', '.join('@%s=%.2f' %
                                     t for t in zip(topk, errors)))
-                                    
-        ### Note: After the first task, batchnorm and bias throughout the network are frozen, this is what train_nobn() refers to
-        if self.task_num > 0:
+               
+        ### If not training batchnorm with train_bn, use train_nobn to freeze only the batchnorm layers after task 0
+        if self.task_num > 0 and self.args.train_bn == False:
             self.pruner.model.train_nobn()
         else:
             self.pruner.model.train()
@@ -99,17 +115,18 @@ class Manager(object):
         params_to_optimize = self.pruner.model.parameters()
         optimizer = optim.SGD(params_to_optimize, lr=self.args.lr, momentum=0.9, weight_decay=self.args.weight_decay, nesterov=True)
         scheduler = MultiStepLR(optimizer, milestones=self.args.Milestones, gamma=self.args.Gamma)    
-
+        
+        if self.task_num > 0 and self.args.train_bn == False:
+            self.pruner.model.train_nobn()
+            print("No BN in training loop")
+        else:
+            self.pruner.model.train()
+            
         for idx in range(epochs):
             epoch_idx = idx + 1
             print('Epoch: %d' % (epoch_idx))
             print("Learning rate:", optimizer.param_groups[0]['lr'])
-            if self.task_num > 0:
-                self.pruner.model.train_nobn()
-                print("No BN in training loop")
-            else:
-                self.pruner.model.train()
-                
+
             for x, y in tqdm(self.train_data_loader, desc='Epoch: %d ' % (epoch_idx), disable=True):
                 if self.cuda:
                     x = x.cuda()
@@ -133,7 +150,7 @@ class Manager(object):
                 optimizer.step()
 
                 # Set pruned weights to 0.
-                self.pruner.make_pruned_zero()
+                # self.pruner.apply_mask()
                             
             scheduler.step()
             
@@ -168,11 +185,6 @@ class Manager(object):
     def calc_conns(self, savename = ""):
         """Calculating Connectivities."""
         self.pruner.calc_conns()
-        ### Commented out to save storage space, but these will save the connectivity data as their own files
-        # np.save(os.path.join(self.args.save_prefix, "conns.npy"), self.pruner.conns)
-        # np.save('./conn_aves.npy', self.pruner.conn_aves)
-        
-        ### Saving model, save_model() will fetch and save the latest connectivity data in self.pruner
         self.save_model(savename)
 
 
@@ -183,20 +195,25 @@ class Manager(object):
         print('Pre-prune eval:')
         self.eval()
 
+
+        ### Currently have two checks in for debugging. Checks how many weights are zero in each layer before and after pruning
+        self.check(True)
         self.pruner.prune()
         self.check(True)
 
+        
         print('\nPost-prune eval:')
         errors = self.eval()
 
         accuracy = 100 - errors[0]  # Top-1 accuracy.
         self.save_model(prune_savename)
 
+ 
         # Do final finetuning to improve results on pruned network.
         if self.args.finetune_epochs:
             print('Doing some extra finetuning...')
-            self.train(self.args.finetune_epochs, save=True,
-                       savename=prune_savename, best_accuracy=0)
+            self.train(self.args.finetune_epochs, save=True, savename=prune_savename, best_accuracy=0)
+        
         print('-' * 16)
         print('Pruning summary:')
         self.check(True)
@@ -223,10 +240,13 @@ class Manager(object):
     def save_model(self, savename):
         """Saves model to file."""
 
+        self.pruner.get_batchnorm()
+
         # Prepare the ckpt.
         ckpt = {
             'args': self.args,
-            'composite_mask': self.pruner.composite_mask,
+            'batchnorms': self.pruner.batchnorms,
+            # 'composite_mask': self.pruner.composite_mask,
             'all_task_masks': self.pruner.all_task_masks,
             'conns' : self.pruner.conns,
             'conn_aves' : self.pruner.conn_aves,
@@ -240,7 +260,7 @@ class Manager(object):
 
 
     
-    ### After each task, this is called to update the task number and have the pruner update necessary information
+    
     def increment_task(self):
             self.task_num += 1
             self.pruner.increment_task()
