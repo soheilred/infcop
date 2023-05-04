@@ -240,10 +240,9 @@ class Activations:
 
         layers_dim = self.layers_dim
         hook_handles = []
-        self.get_all_layers(self.model, layers_dim, hook_handles)
+        self.get_act_layer(self.model, layers_dim, hook_handles)
         num_layers = len(layers_dim)
         first_run = 1
-        torch.set_printoptions(precision=4)
 
         corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).to(self.device)
                  for i in range(num_layers - 1)]
