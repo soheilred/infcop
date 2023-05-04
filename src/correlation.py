@@ -273,10 +273,12 @@ class Activations:
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
                 for i in range(num_layers):
-                    act_means[i] += torch.sum(self.activation[act_keys[i]],dim=0)
+                    act_means[i] += torch.sum(self.activation[act_keys[i]],
+                                              dim=0) 
                     act_sq_sum[i] += torch.sum(
                             torch.pow(self.activation[act_keys[i]], 2), dim=0)
-                    act_max[i] = torch.max(self.activation[act_keys[i]])
+                    act_max[i] = torch.max(act_max[i],
+                                           torch.max(self.activation[act_keys[i]])) 
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
             activation_sd = [torch.pow(act_sq_sum[i] / ds_size -
@@ -291,10 +293,8 @@ class Activations:
                 self.model(X)
 
                 for i in range(num_layers - 1):
-                    f0 = torch.div((self.activation[act_keys[i]] -
-                                    act_means[i]), act_max[i]).T
-                    f1 = torch.div((self.activation[act_keys[i + 1]] -
-                                    act_means[i + 1]), act_max[i + 1])
+                    f0 = ((self.activation[act_keys[i]] - act_means[i]) / act_max[i]).T
+                    f1 = (self.activation[act_keys[i + 1]] - act_means[i + 1]) / act_max[i + 1])
                     corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
@@ -422,6 +422,7 @@ def main():
         diff = [np.sum(np.abs(corrs[i] - my_corrs[i])) for i in
                 range(len(corrs))]
         print(diff)
+        import ipdb; ipdb.set_trace()
         diff_cons = np.array(conns) - np.array(my_conns)
         print(diff_cons)
         corr.append(corrs)
