@@ -257,7 +257,6 @@ class Activations:
         layers_dim = self.layers_dim
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
-        import ipdb; ipdb.set_trace()
 
         corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).to(self.device)
                  for i in range(num_layers - 1)]
@@ -297,7 +296,7 @@ class Activations:
                                     act_means[i]), act_max[i]).T
                     f1 = torch.div((self.activation[act_keys[i + 1]] -
                                     act_means[i + 1]), act_max[i + 1])
-                    corrs[i] += torch.matmul(f0, f1)
+                    corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
 
         self.model.train()
         return corrs
@@ -417,9 +416,11 @@ def main():
         # corr.append(activations.get_connectivity())
         corrs = activations.get_corrs()
         my_corrs = activations.get_correlations()
-        import ipdb; ipdb.set_trace()
 
-        diff = [torch.sum(corrs[i] - my_corrs[i]) for i in range(len(corrs))]
+        diff = [np.sum(np.abs(corrs[i] - my_corrs[i])) for i in
+                range(len(corrs))]
+        print(diff)
+        print(diff.sum())
         corr.append(corrs)
 
         utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
