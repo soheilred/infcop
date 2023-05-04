@@ -554,7 +554,7 @@ class Pruner:
                     # weight = param.data
                     weight_dev = param.device
                     # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
-                    param.data = torch.from_numpy(weight * control_weights).to(weight_dev)
+                    param.data = torch.from_numpy((weight * control_weights).astype("float32")).to(weight_dev)
                     # new_weights = torch.mul(weight, control_weights)
                     # param.data = new_weights.to(weight_dev)
                     break
@@ -608,7 +608,7 @@ def lth(logger, device, args, controller):
             if (train_iter == controller.c_epoch) and \
                 (imp_iter == controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
-                corr = act.get_corrs()
+                corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
@@ -620,7 +620,7 @@ def lth(logger, device, args, controller):
 
         # Calculate the connectivity
         activations = Activations(model, test_dl, device, args.batch_size)
-        pruning.corrs.append(activations.get_corrs())
+        pruning.corrs.append(activations.get_correlations())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
