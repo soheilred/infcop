@@ -205,7 +205,6 @@ class Activations:
         conns = []
         for corr in corrs:
             conns.append(corr.mean())
-        print(conns)
         return conns
 
     def get_act_layer(self, layers_dim, hook_handles):
@@ -417,11 +416,13 @@ def main():
         # corr.append(activations.get_connectivity())
         corrs = activations.get_corrs()
         my_corrs = activations.get_correlations()
+        conns = activations.get_conns(corrs)
+        my_conns = activations.get_conns(my_corrs)
 
         diff = [np.sum(np.abs(corrs[i] - my_corrs[i])) for i in
                 range(len(corrs))]
         print(diff)
-        print(np.sum(diff))
+        diff_cons = np.array(conns) - np.array(my_conns)
         corr.append(corrs)
 
         utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
