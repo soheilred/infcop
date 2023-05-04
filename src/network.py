@@ -180,7 +180,7 @@ def main():
     logger = utils.setup_logger()
 
     # preparing the hardware
-    device = utils.get_device()
+    device = utils.get_device(args)
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
     num_classes = data.get_num_classes()
@@ -192,9 +192,9 @@ def main():
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
     for i in range(3):
-        train_acc = network.train(train_dl, loss_fn, optimizer,
-                                  args.train_epochs) 
-        test_acc = network.test(test_dl, loss_fn)
+        train_acc = train(model, train_dl, loss_fn, optimizer,
+                          args.train_epochs, device) 
+        test_acc = test(model, test_dl, loss_fn, device)
 
 
 if __name__ == '__main__':
