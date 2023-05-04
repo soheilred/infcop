@@ -407,7 +407,7 @@ def main():
         my_corrs = activations.get_correlations()
         import ipdb; ipdb.set_trace()
 
-        diff = [torch.sum(corrs[i] - my_corrs[i] for i in range(len(corrs))]
+        diff = [torch.sum(corrs[i] - my_corrs[i]) for i in range(len(corrs))]
         corr.append(corrs)
 
         utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
