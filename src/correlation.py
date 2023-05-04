@@ -140,7 +140,7 @@ class Activations:
         self.act_keys = act_keys
 
     def get_act_keys(self):
-        if act_keys == None:
+        if self.act_keys == None:
             self.set_act_keys()
         return self.act_keys
 
