@@ -140,7 +140,7 @@ class Pruner:
         """
 
         # Weight Initialization
-        self.model.apply(self.weight_init)
+        # self.model.apply(self.weight_init)
 
         # Copying and Saving Initial State
         self.init_state_dict = copy.deepcopy(self.model.state_dict())
@@ -574,11 +574,9 @@ def lth(logger, device, args, controller):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
-    import ipdb; ipdb.set_trace()
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
     connectivity = []
-    import ipdb; ipdb.set_trace()
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
