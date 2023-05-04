@@ -577,6 +577,7 @@ def lth(logger, device, args, controller):
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
     connectivity = []
+    import ipdb; ipdb.set_trace()
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
