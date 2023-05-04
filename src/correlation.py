@@ -40,8 +40,9 @@ class Activations:
         self.dataloader = dataloader
         self.device = device
         self.batch_size = batch_size
-        self.layers_dim = []
-        self.layers_idx = []
+        self.layers_dim = None
+        self.layers_idx = None
+        self.act_keys = None
 
     def hook_fn(self, m, i, o):
         """Assign the activations/mean of activations to a matrix
@@ -97,14 +98,23 @@ class Activations:
         #         hook_handles.append(layer.register_forward_hook(self.hook_fn))
         #         layers_dim.append(layer.weight.shape)
 
-    def get_layers_idx(self):
+    def set_layers_idx(self):
         """Find all convolutional and linear layers and add them to layers_ind.
         """
+        layers_idx = []
+        layers_dim = []
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
-                self.layers_idx.append(module_idx)
-                self.layers_dim.append(module[1].weight.shape)
+                layers_idx.append(module_idx)
+                layers_dim.append(module[1].weight.shape)
+
+        self.layers_dim = layers_dim
+        self.layers_idx = layers_idx
+
+    def get_layers_idx(self):
+        if self.layers_idx == None:
+            self.set_layers_idx()
         return self.layers_idx
 
     def hook_layer_idx(self, item_key, hook_handles):
@@ -115,7 +125,7 @@ class Activations:
                     hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                     self.layers_dim.append(module[1].weight.shape)
 
-    def get_act_keys(self):
+    def set_act_keys(self):
         layers_dim = []
         hook_handles = []
 
@@ -127,7 +137,12 @@ class Activations:
             self.model(X)
             act_keys = list(self.activation.keys())
 
-        return act_keys
+        self.act_keys = act_keys
+
+    def get_act_keys(self):
+        if act_keys == None:
+            self.set_act_keys()
+        return self.act_keys
 
     def get_corrs(self):
         """ Compute the individual correlation
@@ -260,7 +275,6 @@ class Activations:
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
                 for i in range(num_layers):
-                    print(i)
                     act_means[i] += torch.sum(self.activation[act_keys[i]],dim=0)
                     act_sq_sum[i] += torch.sum(
                             torch.pow(self.activation[act_keys[i]], 2), dim=0)
