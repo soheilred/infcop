@@ -297,7 +297,8 @@ class Activations:
                     f1 = torch.div((self.activation[act_keys[i + 1]] -
                                     act_means[i + 1]), act_max[i + 1])
                     corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
-
+        for i in range(num_layers - 1):
+            corrs[i] = corrs[i] / (layers_dim[i][0] * layers_dim[i + 1][0])
         self.model.train()
         return corrs
 
