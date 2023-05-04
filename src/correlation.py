@@ -277,8 +277,8 @@ class Activations:
                                               dim=0) 
                     act_sq_sum[i] += torch.sum(
                             torch.pow(self.activation[act_keys[i]], 2), dim=0)
-                    act_max[i] = torch.max(act_max[i],
-                                           torch.max(self.activation[act_keys[i]])) 
+                    act_max[i] = abs(torch.max(act_max[i],
+                                     abs(torch.max(self.activation[act_keys[i]]))))
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
             activation_sd = [torch.pow(act_sq_sum[i] / ds_size -
