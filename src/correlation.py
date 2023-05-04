@@ -260,10 +260,10 @@ class Activations:
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
                 for i in range(num_layers):
-                    act_means[i] += torch.sum(
-                        self.activation[act_keys[i]], dim=0)
+                    print(i)
+                    act_means[i] += torch.sum(self.activation[act_keys[i]],dim=0)
                     act_sq_sum[i] += torch.sum(
-                        torch.pow(self.activation[act_keys[i]], 2), dim=0)
+                            torch.pow(self.activation[act_keys[i]], 2), dim=0)
                     act_max[i] = torch.max(self.activation[act_keys[i]])
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
