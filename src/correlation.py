@@ -311,6 +311,8 @@ class Activations:
                             for i in range(num_layers)]
         sq_sum = [torch.zeros(layers_dim[i][0]).to(self.device)
                          for i in range(num_layers)]
+        act_max = [torch.zeros(layers_dim[i][0]).to(self.device)
+                            for i in range(num_layers)]
 
         with torch.no_grad():
             # Compute the mean of activations
@@ -331,6 +333,7 @@ class Activations:
                         self.activation[act_keys[i]], dim=0)
                     sq_sum[i] += torch.sum(
                         torch.pow(self.activation[act_keys[i]], 2), dim=0)
+                    act_max[i] = torch.max(self.activation[act_keys[i]])
             # log.debug("-------------------------------")
 
             activation_means = [activation_means[i] / ds_size
@@ -354,9 +357,9 @@ class Activations:
                 for i in range(num_layers - 1):
                     # Normalized activations
                     f0 = torch.div((self.activation[act_keys[i]] -
-                                    activation_means[i]), activation_sd[i]).T
+                                    activation_means[i]), act_max[i]).T
                     f1 = torch.div((self.activation[act_keys[i + 1]] -
-                                    activation_means[i + 1]), activation_sd[i + 1])
+                                    activation_means[i + 1]), act_max[i + 1])
 
                     # Zero-meaned activations
                     # f0 = (self.activation[act_keys[i]] - activation_means[i]).T
@@ -400,7 +403,12 @@ def main():
 
         activations = Activations(model, test_dl, device, args.batch_size)
         # corr.append(activations.get_connectivity())
-        corr.append(activations.get_corrs())
+        corrs = activations.get_corrs()
+        my_corrs = activations.get_correlations()
+        import ipdb; ipdb.set_trace()
+
+        diff = [torch.sum(corrs[i] - my_corrs[i] for i in range(len(corrs))]
+        corr.append(corrs)
 
         utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
         logger.debug('model is saved...!')
