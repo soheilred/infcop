@@ -8,11 +8,7 @@
   "run_id": "000",
   "num_outputs": -1,
   "cuda": true,
-<<<<<<< HEAD
-  "gpu": 1,
-=======
   "gpu": 0,
->>>>>>> f4c163134b8ae3fdec80bfed6088ea90121af6b4
   "cores": 4,
   "save_prefix": "../checkpoints/",
   "loadname": "",
