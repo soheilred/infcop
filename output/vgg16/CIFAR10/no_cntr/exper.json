@@ -15,7 +15,7 @@
   "train_epochs": 2,
   "train_per_epoch": 2,
   "lr": 0.001,
-  "batch_size": 8,
+  "batch_size": 64,
   "weight_decay": 0.0,
   "Milestones": [
     30,
