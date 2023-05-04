@@ -238,11 +238,10 @@ class Activations:
         num_batch = len(self.dataloader)
         # params = list(self.model.parameters())
 
+        layers_idx = self.get_layers_idx()
         layers_dim = self.layers_dim
-        hook_handles = []
-        self.get_act_layer(layers_dim, hook_handles)
         num_layers = len(layers_dim)
-        first_run = 1
+        act_keys = self.get_act_keys()
 
         corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).to(self.device)
                  for i in range(num_layers - 1)]
@@ -252,17 +251,13 @@ class Activations:
         act_sq_sum = [torch.zeros(layers_dim[i][0]).to(self.device)
                          for i in range(num_layers)]
         act_max = torch.zeros(num_layers).to(self.device)
+
         with torch.no_grad():
             # Compute the mean of activations
             log.debug("Compute the mean and sd of activations")
             for batch, (X, y) in enumerate(self.dataloader):
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
-
-                if first_run:
-                    act_keys = list(self.activation.keys())
-                    first_run = 0
-
                 for i in range(num_layers):
                     act_means[i] += torch.sum(
                         self.activation[act_keys[i]], dim=0)
