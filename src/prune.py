@@ -521,7 +521,7 @@ class Pruner:
     def get_prev_iter_weights(self, imp_iter):
         run_dir = utils.get_run_dir(self.args)
         model = torch.load(run_dir + str(imp_iter) + '_model.pth.tar')
-        model.eval()
+        # model.eval()
         weights = {}
 
         ind = 0
@@ -574,6 +574,7 @@ def lth(logger, device, args, controller):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
+    import ipdb; ipdb.set_trace()
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
     connectivity = []
