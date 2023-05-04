@@ -423,6 +423,7 @@ def main():
                 range(len(corrs))]
         print(diff)
         diff_cons = np.array(conns) - np.array(my_conns)
+        print(diff_cons)
         corr.append(corrs)
 
         utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
