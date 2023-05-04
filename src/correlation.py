@@ -296,7 +296,7 @@ class Activations:
                                     act_means[i]), act_max[i]).T
                     f1 = torch.div((self.activation[act_keys[i + 1]] -
                                     act_means[i + 1]), act_max[i + 1])
-                    corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
+                    corrs[i] += torch.matmul(f0, f1).cpu().numpy()
 
         self.model.train()
         return corrs
