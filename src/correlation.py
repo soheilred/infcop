@@ -416,6 +416,7 @@ def main():
         # corr.append(activations.get_connectivity())
         corrs = activations.get_corrs()
         my_corrs = activations.get_correlations()
+        import ipdb; ipdb.set_trace()
 
         diff = [np.sum(np.abs(corrs[i] - my_corrs[i])) for i in
                 range(len(corrs))]
