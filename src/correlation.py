@@ -240,7 +240,7 @@ class Activations:
 
         layers_dim = self.layers_dim
         hook_handles = []
-        self.get_act_layer(self.model, layers_dim, hook_handles)
+        self.get_act_layer(layers_dim, hook_handles)
         num_layers = len(layers_dim)
         first_run = 1
 
@@ -251,6 +251,7 @@ class Activations:
                             for i in range(num_layers)]
         act_sq_sum = [torch.zeros(layers_dim[i][0]).to(self.device)
                          for i in range(num_layers)]
+        act_max = torch.zeros(num_layers).to(self.device)
         with torch.no_grad():
             # Compute the mean of activations
             log.debug("Compute the mean and sd of activations")
@@ -267,6 +268,7 @@ class Activations:
                         self.activation[act_keys[i]], dim=0)
                     act_sq_sum[i] += torch.sum(
                         torch.pow(self.activation[act_keys[i]], 2), dim=0)
+                    act_max[i] = torch.max(self.activation[act_keys[i]])
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
             activation_sd = [torch.pow(act_sq_sum[i] / ds_size -
@@ -281,9 +283,10 @@ class Activations:
                 self.model(X)
 
                 for i in range(num_layers - 1):
-                    f0 = (self.activation[act_keys[i]] - act_means[i]).T
-                    f1 = (self.activation[act_keys[i + 1]] -
-                          act_means[i + 1])
+                    f0 = torch.div((self.activation[act_keys[i]] -
+                                    act_means[i]), act_max[i]).T
+                    f1 = torch.div((self.activation[act_keys[i + 1]] -
+                                    act_means[i + 1]), act_max[i + 1])
                     corrs[i] += torch.matmul(f0, f1)
 
         self.model.train()
