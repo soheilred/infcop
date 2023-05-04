@@ -242,6 +242,7 @@ class Activations:
         layers_dim = self.layers_dim
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
+        import ipdb; ipdb.set_trace()
 
         corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).to(self.device)
                  for i in range(num_layers - 1)]
