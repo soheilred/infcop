@@ -3,11 +3,11 @@
 #SBATCH --partition=grtx                # Select partition
 #SBATCH --cpus-per-task=4               # Run on a 4 cores per node
 #SBATCH --nodes=1                       # Run on a 1 node
-#SBATCH --ntasks=6                      # One process (shared-memory)
-#SBATCH --mem=16gb                     # Job memory request
+#SBATCH --ntasks=1                      # One process (shared-memory)
+#SBATCH --mem=32gb                     # Job memory request
 #SBATCH --time=1000:00:00               # Time limit hrs:min:sec
-#SBATCH --gres=gpu:6                    # Request one GPU
-#SBATCH --gpus-per-task=1               # Run on 1 gpu per node
+#SBATCH --gres=gpu:1                    # Request one GPU
+# SBATCH --gpus-per-task=1               # Run on 1 gpu per node
 #SBATCH --output=../output/errors/tbst_%j.log   # Standard output and error log
 #SBATCH --error=../output/errors/error_%j
 #SBATCH --mail-type=BEGIN,END,FAIL          # Mail events
@@ -27,15 +27,7 @@ echo "Modules loaded"
 
 . $CONDA_BIN/conda-init
 conda activate ib
-
-ARCHS=("alexnet" "vgg16" "resnet")
-DATASETS=("IMAGENET" "CIFAR10" "MNIST")
-for arch in ${ARCHS[@]}; do for dataset in ${DATASETS[@]}; do
-    echo $arch $dataset
-    singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=-1 --control_at_layer="2" &
-    singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=2 --control_at_layer="2" &
-done; done;
-wait
+singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/prune.py "$@"
 #+end_src
 echo "====================================================="
 date
