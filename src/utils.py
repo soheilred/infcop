@@ -262,6 +262,11 @@ def get_args():
 
     parser.add_argument('--imp_total_iter', type=int, default=10,
                       help='Number of iteration at IMP')
+
+    parser.add_argument('--experiment_type', type=str, default="performance",
+                        choices=["performance","efficiency"],
+                        help='What type of LTH experiment you are running?')
+
     args = parser.parse_args()
 
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
