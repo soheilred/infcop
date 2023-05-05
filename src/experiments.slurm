@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=4               # Run on a 4 cores per node
 #SBATCH --nodes=1                       # Run on a 1 node
 #SBATCH --ntasks=6                      # One process (shared-memory)
-#SBATCH --mem=128gb                     # Job memory request
+#SBATCH --mem=16gb                     # Job memory request
 #SBATCH --time=1000:00:00               # Time limit hrs:min:sec
 #SBATCH --gres=gpu:6                    # Request one GPU
 #SBATCH --gpus-per-task=1               # Run on 1 gpu per node
