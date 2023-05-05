@@ -50,24 +50,25 @@ def plot_all_accuracy(accuracies, filename):
     plt.savefig(filename + ".png")
 
 
-def plot_multi_all_accuracy(accuracies, train_per_epochs, filename):
-    accuracies_list = []
-    for i in range(len(accuracies)):
-        accuracies_list.append(accuracies[i].flatten())
+def plot_multi_all_accuracy(accuracies, args, filename):
+    # accuracies_list = []
+    # for i in range(len(accuracies)):
+    #     accuracies_list.append(accuracies[i].flatten())
     fig, axs = plt.subplots(1, figsize=(8,4))
-    xdata = np.arange(0, train_per_epochs * len(accuracies_list[0]),
-                      train_per_epochs)
+    xdata = np.arange(0, args['train_per_epoch'] * args['train_epochs'] *
+                      len(accuracies[0]), args['train_per_epoch'])
     axs.set_title("Accuracy of network in IMP")
     axs.set(xlabel="Training epochs", ylabel="Accuracy(\%)")
     for i in range(len(accuracies)):
-        axs.plot(xdata, accuracies_list[i],
+        axs.plot(xdata, accuracies[i].flatten(),
                  linestyle=linestyles[i % len(linestyles)])
     fig.tight_layout(pad=2.0)
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    major_ticks = np.arange(0, train_per_epochs * len(accuracies_list[0]),
-                            train_per_epochs * 3)
+    major_ticks = np.arange(0, args['train_per_epoch']* args['train_epochs'] *
+                            len(accuracies[0]), 
+                            args['train_per_epoch'] * args['train_epochs'])
     axs.set_xticks(major_ticks)
-    axs.set_xlim([0, 2 * len(accuracies_list[0])])
+    axs.set_xlim([0, args['train_per_epoch']* args['train_epochs'] * len(accuracies[0])])
     plt.grid()
     plt.savefig(filename + ".png")
 

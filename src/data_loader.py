@@ -49,32 +49,31 @@ class Data:
                 )
 
         elif dataset == "IMAGENET":
-            # traindir = os.path.join(args.data, 'train')
-            # valdir = os.path.join(args.data, 'val')
-            # normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-            #                                 std=[0.229, 0.224, 0.225])
+            data_dir = 'tiny-imagenet-200' 
+            train_dir = os.path.join(data_dir, 'train')
+            test_dir = os.path.join(data_dir, 'test')
+            # normalize = 
 
-            # train_dataset = datasets.ImageFolder(
-            #     traindir,
-            #     transforms.Compose([
-            #         transforms.RandomResizedCrop(224),
-            #         transforms.RandomHorizontalFlip(),
-            #         transforms.ToTensor(),
-            #         normalize,
-            #     ]))
-            training_data = datasets.ImageNet(
-                root=data_dir,
-                train=True,
-                download=True,
-                transform=self.transform
-                )
+            train_dataset = datasets.ImageFolder(
+                train_dir,
+                transforms.Compose([
+                    transforms.RandomResizedCrop(224),
+                    transforms.RandomHorizontalFlip(),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                            std=[0.229, 0.224, 0.225])
+                ]))
 
-            test_data = datasets.CIFAR10(
-                root=data_dir,
-                train=False,
-                download=True,
-                transform=self.transform
-                )
+            test_data = datasets.ImageFolder(
+                test_dir,
+                transforms.Compose([
+                    transforms.RandomResizedCrop(224),
+                    transforms.RandomHorizontalFlip(),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                            std=[0.229, 0.224, 0.225])
+                ]))
+
 
         elif dataset == "MNIST":
             self.transform = transforms.Compose([
