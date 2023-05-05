@@ -642,10 +642,12 @@ def effic_lth(logger, device, args, controller):
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
     connectivity = []
+    all_acc = []
     train_iter = np.zeros(ITERATION, int)
 
     for imp_iter in tqdm(range(ITERATION)):
         accuracy = -1
+        acc_list = []
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
@@ -672,6 +674,7 @@ def effic_lth(logger, device, args, controller):
             # Test and save the most accurate model
             logger.debug("Testing...")
             accuracy = test(model, test_dl, loss_fn, device)
+            acc_list.append(accuracy)
 
             # apply the controller after some epochs and some iterations
             if (train_iter[imp_iter] == controller.c_epoch) and \
@@ -682,7 +685,7 @@ def effic_lth(logger, device, args, controller):
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
-            pruning.all_acc[imp_iter, train_iter[imp_iter]] = accuracy
+        all_acc.append(acc_list)
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
@@ -693,7 +696,7 @@ def effic_lth(logger, device, args, controller):
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
-    return pruning.all_acc, connectivity
+    return all_acc, connectivity
     
 def perf_exper(logger, args, device, run_dir):
     logger.debug("####### In performance experiemnt #######")
@@ -709,10 +712,11 @@ def perf_exper(logger, args, device, run_dir):
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
 
-    all_acc = np.mean(acc_list, axis=0)
-    conn = np.mean(conn_list, axis=0)
+    # all_acc = np.mean(acc_list, axis=0)
+    # conn = np.mean(conn_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
-    utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
+    # utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
+    utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list)
 
 def effic_exper(logger, args, device, run_dir):
     logger.debug("####### In efficiency experiemnt #######")
