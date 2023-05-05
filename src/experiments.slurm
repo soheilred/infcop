@@ -28,7 +28,7 @@ echo "Modules loaded"
 . $CONDA_BIN/conda-init
 conda activate ib
 
-ARCHS=("resnet", "vgg16", "alexnet")
+ARCHS=("alexnet", "vgg16") #, "resnet")
 DATASETS=("MNIST", "CIFAR10", "IMAGENET")
 for arch in ${ARCHS[@]}; do for dataset in ${DATASETS[@]}; do
     echo $arch $dataset
