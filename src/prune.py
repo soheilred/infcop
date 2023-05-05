@@ -562,7 +562,7 @@ class Pruner:
         # weight = self.model.features[layer_list].weight.data.cpu().numpy()
         # cur_weights = layer_param.data.cpu().numpy()
 
-def lth(logger, device, args, controller):
+def perf_lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
@@ -626,14 +626,76 @@ def lth(logger, device, args, controller):
 
     return pruning.all_acc, connectivity
     
-
-def main():
-    # preparing the hardware
-    logger = utils.setup_logger()
-    args = utils.get_args()
-    device = utils.get_device(args)
-    controller = Controller(args)
+def effic_lth(logger, device, args, controller):
+    ITERATION = args.imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
+    data = Data(args.batch_size, C.DATA_DIR, args.dataset)
+    train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    num_classes = data.get_num_classes()
+
+    network = Network(device, args.arch, num_classes, args.pretrained)
+    model = network.set_model()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+
+    pruning = Pruner(args, model, train_dl, test_dl, controller)
+    init_state_dict = pruning.init_lth()
+    connectivity = []
+    train_iter = np.zeros(ITERATION, int)
+
+    for imp_iter in tqdm(range(ITERATION)):
+        accuracy = -1
+        # except for the first iteration, cuz we don't prune in the first iteration
+        if imp_iter != 0:
+            pruning.prune_once(init_state_dict)
+            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                         weight_decay=1e-4)
+
+        logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
+
+        # Print the table of Nonzeros in each layer
+        comp_level = utils.print_nonzeros(model)
+        pruning.comp_level[imp_iter] = comp_level
+        logger.debug(f"Compression level: {comp_level}")
+
+        # Training the network
+        # for train_iter in range(args.train_epochs):
+        while accuracy < args.acc_thrd:
+            # Training
+            logger.debug(f"Training iteration {train_iter[imp_iter]} / {args.train_epochs}")
+            acc, loss = train(model, train_dl, loss_fn, optimizer, 
+                              args.train_per_epoch, device)
+
+            train_iter[imp_iter] += 1
+
+            # Test and save the most accurate model
+            logger.debug("Testing...")
+            accuracy = test(model, test_dl, loss_fn, device)
+
+            # apply the controller after some epochs and some iterations
+            if (train_iter[imp_iter] == controller.c_epoch) and \
+                (imp_iter == controller.c_iter):
+                act = Activations(model, test_dl, device, args.batch_size)
+                corr = act.get_correlations()
+                pruning.control(corr, act.layers_dim, imp_iter)
+                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                             weight_decay=1e-4)
+
+            pruning.all_acc[imp_iter, train_iter[imp_iter]] = accuracy
+
+        # Save model
+        utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
+
+        # Calculate the connectivity
+        activations = Activations(model, test_dl, device, args.batch_size)
+        pruning.corrs.append(activations.get_correlations())
+        connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
+        # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
+
+    return pruning.all_acc, connectivity
+    
+def perf_exper(logger, args, device, run_dir):
+    controller = Controller(args)
     acc_list = []
     conn_list = []
     for i in range(3):
@@ -649,6 +711,35 @@ def main():
     conn = np.mean(conn_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
+
+def effic_exper(logger, args, device, run_dir):
+    controller = Controller(args)
+    acc_list = []
+    conn_list = []
+    for i in range(3):
+        all_acc, conn = perf_lth(logger, device, args, controller)
+        acc_list.append(all_acc)
+        conn_list.append(conn)
+        utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
+                        all_accuracies=all_acc)
+        # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
+        #                             "all_accuracies")
+
+    all_acc = np.mean(acc_list, axis=0)
+    conn = np.mean(conn_list, axis=0)
+    # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
+    utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
+
+def main():
+    logger = utils.setup_logger()
+    args = utils.get_args()
+    device = utils.get_device(args)
+    run_dir = utils.get_run_dir(args)
+    if args.experiment == "performance":
+        perf_exper(logger, args, device, run_dir)
+    elif args.experiment == "efficiency":
+        effic_exper(logger, args, device, run_dir)
+
 
 if __name__ == '__main__':
     main()
