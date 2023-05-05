@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=compute_correlation  # Job name
 #SBATCH --partition=grtx                # Select partition
-#SBATCH --cpus-per-task=1               # Run on a 4 cores per node
+#SBATCH --cpus-per-task=4               # Run on a 4 cores per node
 #SBATCH --nodes=1                       # Run on a 1 node
 #SBATCH --ntasks=6                      # One process (shared-memory)
 #SBATCH --mem=16gb                     # Job memory request
