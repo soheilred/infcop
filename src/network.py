@@ -44,6 +44,7 @@ class Network():
         self.pretrained = pretrained
         self.device = device
         self.feature_extracting = feature_extracting
+        self.input_size = 224
     
     def set_model(self):
         if self.arch == "vgg11":
@@ -82,6 +83,16 @@ class Network():
                 self.model = models.alexnet()
             num_ftrs = self.model.fc.in_features
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
+
+        elif self.arch == "densenet":
+            if self.pretrained == "True":
+                self.model = models.squeezenet1_0(weights=Inception_V3_Weights.IMAGENET1K_V1)
+                self.set_parameter_requires_grad()
+            else:
+                self.model = models.squeezenet1_0()
+            num_ftrs = 512
+            self.model.classifier[1] = nn.Conv2d(num_ftrs, self.num_classes,
+                                                 kernel_size=(1,1), stride=(1,1))
 
         else:
             sys.exit("Wrong architecture")
