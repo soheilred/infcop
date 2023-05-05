@@ -6,6 +6,7 @@ import torch.nn as nn
 import torchvision.datasets as datasets
 import torch.nn.init as init
 import pickle
+import sys
 
 import utils
 import plot_tool
@@ -742,6 +743,9 @@ def main():
 
     elif args.experiment_type == "efficiency":
         effic_exper(logger, args, device, run_dir)
+
+    else:
+        sys.exit("Wrong experiment type")
 
 
 if __name__ == '__main__':
