@@ -735,9 +735,10 @@ def main():
     args = utils.get_args()
     device = utils.get_device(args)
     run_dir = utils.get_run_dir(args)
-    if args.experiment == "performance":
+    if args.experiment_type == "performance":
         perf_exper(logger, args, device, run_dir)
-    elif args.experiment == "efficiency":
+
+    elif args.experiment_type == "efficiency":
         effic_exper(logger, args, device, run_dir)
 
 
