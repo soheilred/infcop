@@ -3,6 +3,7 @@ import sys
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import os
+import constants as C
 
 # from torchvision.transforms import ToTensor
 
@@ -50,7 +51,7 @@ class Data:
                 )
 
         elif dataset == "IMAGENET":
-            data_dir = 'tiny-imagenet-200' 
+            data_dir = C.DATA_DIR + 'tiny-imagenet-200' 
             train_dir = os.path.join(data_dir, 'train')
             test_dir = os.path.join(data_dir, 'test')
             # normalize = 
