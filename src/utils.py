@@ -179,7 +179,7 @@ def get_run_dir(args):
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--arch',
-                        choices=['vgg11', 'vgg16', 'resnet18', 'densenet121'],
+                        choices=['vgg11', 'vgg16', 'resnet18', 'alexnet', 'densenet121'],
                         default='resnet',
                         help='Architectures')
     parser.add_argument('--mode', choices=['t','c','p','e','all'], default='all',
