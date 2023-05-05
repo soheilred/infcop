@@ -56,7 +56,7 @@ class Data:
             test_dir = os.path.join(data_dir, 'test')
             # normalize = 
 
-            train_dataset = datasets.ImageFolder(
+            training_data = datasets.ImageFolder(
                 train_dir,
                 transforms.Compose([
                     transforms.RandomResizedCrop(224),
