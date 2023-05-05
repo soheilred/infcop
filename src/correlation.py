@@ -424,7 +424,6 @@ def main():
         diff = [np.sum(np.abs(corrs[i] - my_corrs[i])) for i in
                 range(len(corrs))]
         print(diff)
-        import ipdb; ipdb.set_trace()
         diff_cons = np.array(conns) - np.array(my_conns)
         print(diff_cons)
         corr.append(corrs)
