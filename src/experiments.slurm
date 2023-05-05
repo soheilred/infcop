@@ -28,8 +28,8 @@ echo "Modules loaded"
 . $CONDA_BIN/conda-init
 conda activate ib
 
-ARCHS=("alexnet", "vgg16") #, "resnet")
-DATASETS=("MNIST", "CIFAR10", "IMAGENET")
+ARCHS=("alexnet" "vgg16") # "resnet")
+DATASETS=("MNIST" "CIFAR10" "IMAGENET")
 for arch in ${ARCHS[@]}; do for dataset in ${DATASETS[@]}; do
     echo $arch $dataset
     singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=-1 --control_at_layer="2"
