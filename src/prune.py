@@ -647,7 +647,6 @@ def main():
 
     all_acc = np.mean(acc_list, axis=0)
     conn = np.mean(conn_list, axis=0)
-    import ipdb; ipdb.set_trace()
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
 
