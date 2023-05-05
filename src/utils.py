@@ -254,7 +254,7 @@ def get_args():
     parser.add_argument('--control_at_layer', type=str, default="2",
                       help='Network layer at which the controller is applied')
 
-    parser.add_argument('--acc_thrd', type=int, default=70,
+    parser.add_argument('--acc_thrd', type=int, default=95,
                       help='Threshold accuracy to stop the training loop')
 
     parser.add_argument('--control_type', type=int, default=1,
