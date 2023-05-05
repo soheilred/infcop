@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=compute_correlation  # Job name
 #SBATCH --partition=grtx                # Select partition
-#SBATCH --cpus-per-task=4               # Run on a 4 cores per node
+#SBATCH --cpus-per-task=1               # Run on a 4 cores per node
 #SBATCH --nodes=1                       # Run on a 1 node
 #SBATCH --ntasks=6                      # One process (shared-memory)
 #SBATCH --mem=16gb                     # Job memory request
@@ -28,13 +28,10 @@ echo "Modules loaded"
 . $CONDA_BIN/conda-init
 conda activate ib
 
-ARCHS=("alexnet" "vgg16") # "resnet")
-DATASETS=("MNIST" "CIFAR10" "IMAGENET")
+ARCHS=("alexnet" "vgg16" "resnet")
+DATASETS=("IMAGENET" "CIFAR10" "MNIST")
 for arch in ${ARCHS[@]}; do for dataset in ${DATASETS[@]}; do
     echo $arch $dataset
-    # singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/ prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=-1 --control_at_layer="2" &
-    # singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/ prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=2 --control_at_layer="2" &
-
     srun -n 1 singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=-1 --control_at_layer="2" &
     srun -n 1 singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=2 --control_at_layer="2" &
 done; done;
