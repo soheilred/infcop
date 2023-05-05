@@ -663,7 +663,7 @@ def effic_lth(logger, device, args, controller):
         # for train_iter in range(args.train_epochs):
         while accuracy < args.acc_thrd:
             # Training
-            logger.debug(f"Training iteration {train_iter[imp_iter]} / {args.train_epochs}")
+            logger.debug(f"Current Accuracy {accuracy} at training iteration {train_iter[imp_iter]}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
                               args.train_per_epoch, device)
 
