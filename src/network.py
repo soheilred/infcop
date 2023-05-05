@@ -65,7 +65,7 @@ class Network():
             num_ftrs = self.model.classifier[6].in_features
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
-        elif self.arch == "resnet":
+        elif self.arch == "resnet18":
             if self.pretrained == "True":
                 self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
