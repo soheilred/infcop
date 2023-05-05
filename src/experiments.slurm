@@ -35,8 +35,8 @@ for arch in ${ARCHS[@]}; do for dataset in ${DATASETS[@]}; do
     # singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/ prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=-1 --control_at_layer="2" &
     # singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/ prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=2 --control_at_layer="2" &
 
-    srun -n 1 --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/ prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=-1 --control_at_layer="2" &
-    srun -n 1 --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/ prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=2 --control_at_layer="2" &
+    srun -n 1 singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/ prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=-1 --control_at_layer="2" &
+    srun -n 1 singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/ prune.py --lr=.001 --arch=$arch --dataset=$dataset --train_epochs=3 --control_at_iter=1 --control_at_epoch=2 --control_at_layer="2" &
 done; done;
 wait
 #+end_src
