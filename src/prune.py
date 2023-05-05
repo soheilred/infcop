@@ -720,7 +720,7 @@ def effic_exper(logger, args, device, run_dir):
     acc_list = []
     conn_list = []
     for i in range(3):
-        all_acc, conn = perf_lth(logger, device, args, controller)
+        all_acc, conn = effic_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
         utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
