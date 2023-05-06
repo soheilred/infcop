@@ -668,9 +668,8 @@ def effic_lth(logger, device, args, controller):
                     break
 
             # Training
-            logger.debug(f"Current Accuracy {accuracy:.2f} at training "
-                         f"iteration {train_iter[imp_iter]}, thsd accuracy: "
-                         f"{args.acc_thrd}")
+            logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
+                         f"{train_iter[imp_iter]}, thsd: {args.acc_thrd}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
                               args.train_per_epoch, device)
 
@@ -688,6 +687,7 @@ def effic_lth(logger, device, args, controller):
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
+            # increment the training iterator
             train_iter[imp_iter] += 1
 
         all_acc.append(acc_list)
@@ -709,7 +709,7 @@ def perf_exper(logger, args, device, run_dir):
     acc_list = []
     conn_list = []
     for i in range(3):
-        all_acc, conn = lth(logger, device, args, controller)
+        all_acc, conn = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
         utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
