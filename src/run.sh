@@ -1,5 +1,7 @@
 #!/bin/bash
 
+touch ../output/errors/batch-run.out
+
 ARCHS=("alexnet" "vgg16" "resnet18")
 DATASETS=("IMAGENET" "CIFAR10" "MNIST")
 for arch in ${ARCHS[@]}; do for dataset in ${DATASETS[@]}; do
