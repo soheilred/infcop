@@ -661,15 +661,16 @@ def effic_lth(logger, device, args, controller):
         pruning.comp_level[imp_iter] = comp_level
         logger.debug(f"Compression level: {comp_level}")
 
-        # Training the network
-        # for train_iter in range(args.train_epochs):
+        # Training loop
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
                 if (accuracy > args.acc_thrd):
                     break
 
             # Training
-            logger.debug(f"Current Accuracy {accuracy} at training iteration {train_iter[imp_iter]}")
+            logger.debug(f"Current Accuracy {accuracy:.2f} at training "
+                         f"iteration {train_iter[imp_iter]}, thsd accuracy: "
+                         f"{args.acc_thrd}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
                               args.train_per_epoch, device)
 
