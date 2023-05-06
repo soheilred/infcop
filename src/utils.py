@@ -172,7 +172,7 @@ def get_stability(in_measure):
 def get_run_dir(args):
     control = "no_cntr/" if args.control_at_iter == -1 else "cntr" + "/" +\
                         ("").join([str(l) for l in args.control_at_layer]) + "/"
-    run_dir = C.MODEL_ROOT_DIR + args.arch + "/" + args.dataset + "/" + control 
+    run_dir = C.MODEL_ROOT_DIR + args.experiment_type + "/" + args.arch + "/" + args.dataset + "/" + control 
     checkdir(run_dir)
     return run_dir
 
@@ -254,7 +254,7 @@ def get_args():
     parser.add_argument('--control_at_layer', type=str, default="2",
                       help='Network layer at which the controller is applied')
 
-    parser.add_argument('--acc_thrd', type=int, default=70,
+    parser.add_argument('--acc_thrd', type=int, default=95,
                       help='Threshold accuracy to stop the training loop')
 
     parser.add_argument('--control_type', type=int, default=1,
@@ -262,6 +262,11 @@ def get_args():
 
     parser.add_argument('--imp_total_iter', type=int, default=10,
                       help='Number of iteration at IMP')
+
+    parser.add_argument('--experiment_type', type=str, default="performance",
+                        choices=["performance","efficiency"],
+                        help='What type of LTH experiment you are running?')
+
     args = parser.parse_args()
 
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
