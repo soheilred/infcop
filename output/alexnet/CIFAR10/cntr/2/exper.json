@@ -1,5 +1,5 @@
 {
-  "arch": "vgg16",
+  "arch": "alexnet",
   "mode": "all",
   "pretrained": "True",
   "dataset": "CIFAR10",

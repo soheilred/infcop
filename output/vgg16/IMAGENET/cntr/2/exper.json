@@ -2,7 +2,7 @@
   "arch": "vgg16",
   "mode": "all",
   "pretrained": "True",
-  "dataset": "CIFAR10",
+  "dataset": "IMAGENET",
   "single_task": false,
   "task_num": 0,
   "run_id": "000",
@@ -32,11 +32,11 @@
     "top"
   ],
   "control_at_iter": 1,
-  "control_at_epoch": -1,
+  "control_at_epoch": 2,
   "control_at_layer": [
     2
   ],
   "acc_thrd": 70,
   "control_type": 1,
   "imp_total_iter": 10
-}
+}}
