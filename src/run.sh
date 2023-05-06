@@ -3,7 +3,7 @@
 # touch ../output/errors/batch-run.out
 
 ARCHS=("alexnet" "vgg16" "resnet18")
-DATASETS=("IMAGENET" "MNIST") #"CIFAR10" 
+DATASETS=("IMAGENET" "CIFAR10" "MNIST") # 
 for arch in ${ARCHS[@]}; do for dataset in ${DATASETS[@]}; do
     echo $arch $dataset >> ../output/errors/batch-run.out
     sbatch experiments.slurm --lr=.001 --arch=$arch --dataset=$dataset \
