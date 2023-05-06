@@ -661,15 +661,15 @@ def effic_lth(logger, device, args, controller):
         pruning.comp_level[imp_iter] = comp_level
         logger.debug(f"Compression level: {comp_level}")
 
-        # Training the network
-        # for train_iter in range(args.train_epochs):
+        # Training loop
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
                 if (accuracy > args.acc_thrd):
                     break
 
             # Training
-            logger.debug(f"Current Accuracy {accuracy} at training iteration {train_iter[imp_iter]}")
+            logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
+                         f"{train_iter[imp_iter]}, thsd: {args.acc_thrd}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
                               args.train_per_epoch, device)
 
@@ -687,6 +687,7 @@ def effic_lth(logger, device, args, controller):
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
+            # increment the training iterator
             train_iter[imp_iter] += 1
 
         all_acc.append(acc_list)
