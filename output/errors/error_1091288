@@ -2,4 +2,4 @@
 13:4: not a valid test operator: 470.129.06
   0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [3:36:29<32:28:23, 12989.30s/it]/usr/local/lib/python3.8/dist-packages/numpy/core/_methods.py:179: RuntimeWarning: invalid value encountered in reduce
   ret = umr_sum(arr, axis, dtype, out, keepdims, where=where)
- 20%|██        | 2/10 [7:19:39<29:23:22, 13225.34s/it] 30%|███       | 3/10 [10:58:27<25:37:43, 13180.52s/it]
+ 20%|██        | 2/10 [7:19:39<29:23:22, 13225.34s/it] 30%|███       | 3/10 [10:58:27<25:37:43, 13180.52s/it] 40%|████      | 4/10 [14:51:22<22:29:25, 13494.29s/it]

@@ -1,0 +1,14 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+Traceback (most recent call last):
+  File "/home/gharatappeh/nips/src/prune.py", line 767, in <module>
+    main()
+  File "/home/gharatappeh/nips/src/prune.py", line 760, in main
+    effic_exper(logger, args, device, run_dir)
+  File "/home/gharatappeh/nips/src/prune.py", line 738, in effic_exper
+    all_acc, conn = effic_lth(logger, device, args, controller)
+  File "/home/gharatappeh/nips/src/prune.py", line 633, in effic_lth
+    data = Data(args.batch_size, C.DATA_DIR, args.dataset)
+  File "/home/gharatappeh/nips/src/data_loader.py", line 70, in __init__
+    shuffle=(name=="train"), 
+NameError: name 'name' is not defined
