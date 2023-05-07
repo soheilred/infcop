@@ -36,7 +36,7 @@
   "control_at_layer": [
     2
   ],
-  "acc_thrd": 95,
+  "acc_thrd": 90,
   "control_type": 1,
   "imp_total_iter": 10,
   "experiment_type": "performance"
