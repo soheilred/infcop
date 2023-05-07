@@ -708,7 +708,9 @@ def perf_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    for i in range(3):
+    total_exper = 3
+    for i in range(total_exper):
+        logger.debug(f"In experiment {i} / {total_exper}")
         all_acc, conn = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
@@ -728,7 +730,10 @@ def effic_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    for i in range(3):
+    total_exper = 3
+
+    for i in range(total_exper):
+        logger.debug(f"In experiment {i} / {total_exper}")
         all_acc, conn = effic_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
