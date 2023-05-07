@@ -12,6 +12,7 @@ class Data:
         "Load the training DataLoader and the test DataLoader"
         self.train_kwargs = {'batch_size': batch_size}
         self.test_kwargs = {'batch_size': batch_size}
+        self.batch_size = batch_size
 
         if torch.cuda.is_available():
             cuda_kwargs = {'num_workers': 1,
@@ -65,6 +66,9 @@ class Data:
                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225])
                 ]))
+            dataloader = DataLoader(training_data, batch_size=self.batch_size, 
+                            shuffle=(name=="train"), 
+                            **self.train_kwargs)           
 
             test_data = datasets.ImageFolder(
                 test_dir,
@@ -75,6 +79,9 @@ class Data:
                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225])
                 ]))
+            dataloader = DataLoader(test_data, batch_size=self.batch_size, 
+                                    shuffle=(name=="test"), 
+                                    **self.test_kwargs)
 
 
         elif dataset == "MNIST":
