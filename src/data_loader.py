@@ -66,9 +66,7 @@ class Data:
                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225])
                 ]))
-            dataloader = DataLoader(training_data, batch_size=self.batch_size, 
-                            shuffle=True, 
-                            **self.train_kwargs)           
+            dataloader = DataLoader(training_data, shuffle=True, **self.train_kwargs)           
 
             test_data = datasets.ImageFolder(
                 test_dir,
@@ -79,9 +77,7 @@ class Data:
                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225])
                 ]))
-            dataloader = DataLoader(test_data, batch_size=self.batch_size, 
-                                    shuffle=False, 
-                                    **self.test_kwargs)
+            dataloader = DataLoader(test_data, shuffle=False, **self.test_kwargs)
 
 
         elif dataset == "MNIST":
