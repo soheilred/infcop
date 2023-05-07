@@ -55,29 +55,22 @@ class Data:
             data_dir = C.DATA_DIR + 'tiny-imagenet-200' 
             train_dir = os.path.join(data_dir, 'train')
             test_dir = os.path.join(data_dir, 'test')
-            # normalize = 
 
-            training_data = datasets.ImageFolder(
-                train_dir,
-                transforms.Compose([
+            self.transform = transforms.Compose([
                     transforms.RandomResizedCrop(224),
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225])
-                ]))
-            dataloader = DataLoader(training_data, **self.train_kwargs)           
+                ])
 
-            test_data = datasets.ImageFolder(
-                test_dir,
-                transforms.Compose([
-                    transforms.RandomResizedCrop(224),
-                    transforms.RandomHorizontalFlip(),
-                    transforms.ToTensor(),
-                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                            std=[0.229, 0.224, 0.225])
-                ]))
-            dataloader = DataLoader(test_data, **self.test_kwargs)
+            training_data = datasets.ImageFolder(train_dir,
+                                                transform=self.transform)
+            # dataloader = DataLoader(training_data, **self.train_kwargs)           
+
+            test_data = datasets.ImageFolder(test_dir,
+                                             transform=self.transform)
+            # dataloader = DataLoader(test_data, **self.test_kwargs)
 
 
         elif dataset == "MNIST":
@@ -103,8 +96,6 @@ class Data:
             sys.exit("Wrong dataset name")
 
         self.num_classes = len(training_data.classes)
-        self.train_dataloader = DataLoader(training_data, **self.train_kwargs)
-
         self.train_dataloader = DataLoader(training_data, **self.train_kwargs)
         self.test_dataloader = DataLoader(test_data, **self.test_kwargs)
 
