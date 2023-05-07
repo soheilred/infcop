@@ -108,3 +108,24 @@ Submitted batch job 1091310
 resnet18 MNIST
 Submitted batch job 1091311
 Submitted batch job 1091312
+#############################
+Sat May  6 22:46:36 EDT 2023
+efficiency
+alexnet IMAGENET
+Submitted batch job 1091381
+alexnet CIFAR10
+Submitted batch job 1091382
+alexnet MNIST
+Submitted batch job 1091383
+vgg16 IMAGENET
+Submitted batch job 1091384
+vgg16 CIFAR10
+Submitted batch job 1091385
+vgg16 MNIST
+Submitted batch job 1091386
+resnet18 IMAGENET
+Submitted batch job 1091387
+resnet18 CIFAR10
+Submitted batch job 1091388
+resnet18 MNIST
+Submitted batch job 1091389
