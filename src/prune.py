@@ -691,6 +691,7 @@ def effic_lth(logger, device, args, controller):
             train_iter[imp_iter] += 1
 
         all_acc.append(acc_list)
+        logger.debug(all_acc)
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
