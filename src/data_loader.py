@@ -67,7 +67,7 @@ class Data:
                                             std=[0.229, 0.224, 0.225])
                 ]))
             dataloader = DataLoader(training_data, batch_size=self.batch_size, 
-                            shuffle=(name=="train"), 
+                            shuffle=True, 
                             **self.train_kwargs)           
 
             test_data = datasets.ImageFolder(
@@ -80,7 +80,7 @@ class Data:
                                             std=[0.229, 0.224, 0.225])
                 ]))
             dataloader = DataLoader(test_data, batch_size=self.batch_size, 
-                                    shuffle=(name=="test"), 
+                                    shuffle=False, 
                                     **self.test_kwargs)
 
 
