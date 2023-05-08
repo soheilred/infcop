@@ -63,7 +63,7 @@ class Network():
                 self.set_parameter_requires_grad()
             else:
                 self.model = models.vgg16()
-            first_conv_layer = [nn.Conv2d(1, 3, kernel_size=3, stride=1,
+            first_conv_layer = [nn.Conv2d(3, 3, kernel_size=3, stride=1,
                                           padding=1, dilation=1, groups=1,
                                           bias=True)] 
             first_conv_layer.extend(list(self.model.features))
