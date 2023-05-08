@@ -6,4 +6,4 @@
 /usr/local/lib/python3.8/dist-packages/numpy/core/_methods.py:179: RuntimeWarning: invalid value encountered in reduce
   ret = umr_sum(arr, axis, dtype, out, keepdims, where=where)
 100%|██████████| 10/10 [10:42:55<00:00, 3986.44s/it]100%|██████████| 10/10 [10:42:55<00:00, 3857.56s/it]
-  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [1:03:02<9:27:18, 3782.08s/it]
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [1:03:02<9:27:18, 3782.08s/it] 20%|██        | 2/10 [2:51:44<11:59:12, 5394.00s/it]
