@@ -663,7 +663,7 @@ def effic_lth(logger, device, args, controller):
         # Training loop
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
-                if (accuracy > max_acc * args.acc_thrd):
+                if (accuracy > max_acc * args.acc_thrd / 100.0):
                     break
 
             # Training
