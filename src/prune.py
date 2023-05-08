@@ -500,11 +500,9 @@ class Pruner:
 
             # type 3
             elif (self.controller.c_type == 3):
-                control_weights = connectivity[ind] * prev_weight
+                control_weights = connectivity[ind] # * prev_weight
 
             self.apply_controller(control_weights, ind)
-
-        # self.apply_controller(control_weights=control_corrs, layer_list=layer_list)
 
 
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
