@@ -5,7 +5,8 @@ from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from torchvision import datasets, transforms, models
 from torchvision.models import resnet50, ResNet18_Weights, ResNet50_Weights,\
-    vgg11, vgg16, alexnet, VGG11_Weights, VGG16_Weights, AlexNet_Weights
+    vgg11, vgg16, alexnet, VGG11_Weights, VGG16_Weights, AlexNet_Weights,\
+    GoogLeNet_Weights 
 
 import logging
 import utils
@@ -84,7 +85,7 @@ class Network():
             num_ftrs = self.model.classifier[6].in_features
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
-        elif self.arch == "densenet":
+        elif self.arch == "squeezenet":
             if self.pretrained == "True":
                 self.model = models.squeezenet1_0(weights=Inception_V3_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
@@ -93,6 +94,34 @@ class Network():
             num_ftrs = 512
             self.model.classifier[1] = nn.Conv2d(num_ftrs, self.num_classes,
                                                  kernel_size=(1,1), stride=(1,1))
+
+        elif self.arch == "densenet":
+            if self.pretrained == "True":
+                self.model = models.densenet121(weights=Inception_V3_Weights.IMAGENET1K_V1)
+                self.set_parameter_requires_grad()
+            else:
+                self.model = models.densenet121()
+            num_ftrs = self.model.classifier.in_features
+            self.model.classifier = nn.Conv2d(num_ftrs, self.num_classes)
+
+        elif self.arch == "googlenet":
+            if self.pretrained == "True":
+                self.model = models.googlenet(weights=GoogLeNet_Weights.IMAGENET1K_V1)
+                self.set_parameter_requires_grad()
+            else:
+                self.model = models.inception_v3()
+            num_ftrs = self.model.fc.in_features
+            self.model.classifier = nn.Linear(num_ftrs, self.num_classes)
+
+        elif self.arch == "inception":
+            if self.pretrained == "True":
+                self.model = models.inception_v3(weights=Inception_V3_Weights.IMAGENET1K_V1)
+                self.set_parameter_requires_grad()
+            else:
+                self.model = models.inception_v3()
+            num_ftrs = self.model.classifier.in_features
+            self.model.classifier = nn.Conv2d(num_ftrs, self.num_classes)
+            self.input_size = 299
 
         else:
             sys.exit("Wrong architecture")
