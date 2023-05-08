@@ -500,11 +500,9 @@ class Pruner:
 
             # type 3
             elif (self.controller.c_type == 3):
-                control_weights = connectivity[ind] * prev_weight
+                control_weights = connectivity[ind] # * prev_weight
 
             self.apply_controller(control_weights, ind)
-
-        # self.apply_controller(control_weights=control_corrs, layer_list=layer_list)
 
 
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
@@ -691,6 +689,7 @@ def effic_lth(logger, device, args, controller):
             train_iter[imp_iter] += 1
 
         all_acc.append(acc_list)
+        logger.debug(all_acc)
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
@@ -708,7 +707,9 @@ def perf_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    for i in range(3):
+    total_exper = 3
+    for i in range(total_exper):
+        logger.debug(f"In experiment {i} / {total_exper}")
         all_acc, conn = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
@@ -728,7 +729,10 @@ def effic_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    for i in range(3):
+    total_exper = 3
+
+    for i in range(total_exper):
+        logger.debug(f"In experiment {i} / {total_exper}")
         all_acc, conn = effic_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
@@ -737,8 +741,8 @@ def effic_exper(logger, args, device, run_dir):
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
 
-    all_acc = np.mean(acc_list, axis=0)
-    conn = np.mean(conn_list, axis=0)
+    # all_acc = np.mean(acc_list, axis=0)
+    # conn = np.mean(conn_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
 

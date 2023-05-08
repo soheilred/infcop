@@ -8,7 +8,11 @@
   "run_id": "000",
   "num_outputs": -1,
   "cuda": true,
+<<<<<<< HEAD
   "gpu": 1,
+=======
+  "gpu": 0,
+>>>>>>> 12915d545c36cefea742a801d6507a6bbc338f8b
   "cores": 4,
   "save_prefix": "../checkpoints/",
   "loadname": "",
@@ -32,7 +36,11 @@
     "top"
   ],
   "control_at_iter": -1,
+<<<<<<< HEAD
   "control_at_epoch": 1,
+=======
+  "control_at_epoch": 2,
+>>>>>>> 12915d545c36cefea742a801d6507a6bbc338f8b
   "control_at_layer": [
     2
   ],

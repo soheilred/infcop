@@ -12,7 +12,11 @@
   "cores": 4,
   "save_prefix": "../checkpoints/",
   "loadname": "",
+<<<<<<< HEAD
   "train_epochs": 2,
+=======
+  "train_epochs": 3,
+>>>>>>> 12915d545c36cefea742a801d6507a6bbc338f8b
   "train_per_epoch": 2,
   "lr": 0.001,
   "batch_size": 64,
@@ -32,11 +36,19 @@
     "top"
   ],
   "control_at_iter": -1,
+<<<<<<< HEAD
   "control_at_epoch": 2,
   "control_at_layer": [
     2
   ],
   "acc_thrd": 95,
+=======
+  "control_at_epoch": -1,
+  "control_at_layer": [
+    2
+  ],
+  "acc_thrd": 90,
+>>>>>>> 12915d545c36cefea742a801d6507a6bbc338f8b
   "control_type": 1,
   "imp_total_iter": 10,
   "experiment_type": "performance"

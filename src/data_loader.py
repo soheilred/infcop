@@ -12,6 +12,7 @@ class Data:
         "Load the training DataLoader and the test DataLoader"
         self.train_kwargs = {'batch_size': batch_size}
         self.test_kwargs = {'batch_size': batch_size}
+        self.batch_size = batch_size
 
         if torch.cuda.is_available():
             cuda_kwargs = {'num_workers': 1,
@@ -34,6 +35,7 @@ class Data:
 
         else:
             self.transform = transform
+
         # preparing the training and test dataset
         if dataset == "CIFAR10":
             training_data = datasets.CIFAR10(
@@ -54,27 +56,18 @@ class Data:
             data_dir = C.DATA_DIR + 'tiny-imagenet-200' 
             train_dir = os.path.join(data_dir, 'train')
             test_dir = os.path.join(data_dir, 'test')
-            # normalize = 
 
-            training_data = datasets.ImageFolder(
-                train_dir,
-                transforms.Compose([
+            self.transform = transforms.Compose([
                     transforms.RandomResizedCrop(224),
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225])
-                ]))
+                ])
 
-            test_data = datasets.ImageFolder(
-                test_dir,
-                transforms.Compose([
-                    transforms.RandomResizedCrop(224),
-                    transforms.RandomHorizontalFlip(),
-                    transforms.ToTensor(),
-                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                            std=[0.229, 0.224, 0.225])
-                ]))
+            training_data = datasets.ImageFolder(train_dir,
+                                                transform=self.transform)
+            test_data = datasets.ImageFolder(test_dir, transform=self.transform)
 
 
         elif dataset == "MNIST":
@@ -96,12 +89,29 @@ class Data:
                 transform=self.transform
                 )
 
+        elif dataset == "FashinMNIST":
+            self.transform = transforms.Compose([
+                transforms.Grayscale(num_output_channels=3),
+                transforms.ToTensor(),
+            ])
+            training_data = datasets.FashionMNIST(
+                root=data_dir,
+                train=True,
+                download=True,
+                transform=self.transform
+                )
+
+            test_data = datasets.FashionMNIST(
+                root=data_dir,
+                train=False,
+                download=True,
+                transform=self.transform
+                )
+
         else:
             sys.exit("Wrong dataset name")
 
         self.num_classes = len(training_data.classes)
-        self.train_dataloader = DataLoader(training_data, **self.train_kwargs)
-
         self.train_dataloader = DataLoader(training_data, **self.train_kwargs)
         self.test_dataloader = DataLoader(test_data, **self.test_kwargs)
 

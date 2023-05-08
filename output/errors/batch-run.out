@@ -1,18 +1,161 @@
-Submitted batch job 1090856
-Submitted batch job 1090857
-Submitted batch job 1090858
-Submitted batch job 1090859
-Submitted batch job 1090860
-Submitted batch job 1090861
-Submitted batch job 1090862
-Submitted batch job 1090863
-Submitted batch job 1090864
-Submitted batch job 1090865
-Submitted batch job 1090866
-Submitted batch job 1090867
-Submitted batch job 1090868
-Submitted batch job 1090869
-Submitted batch job 1090870
-Submitted batch job 1090871
-Submitted batch job 1090872
-Submitted batch job 1090873
+alexnet IMAGENET
+Submitted batch job 1091221
+Submitted batch job 1091222
+alexnet CIFAR10
+Submitted batch job 1091223
+Submitted batch job 1091224
+alexnet MNIST
+Submitted batch job 1091225
+Submitted batch job 1091226
+vgg16 IMAGENET
+Submitted batch job 1091227
+Submitted batch job 1091228
+vgg16 CIFAR10
+Submitted batch job 1091229
+Submitted batch job 1091230
+vgg16 MNIST
+Submitted batch job 1091231
+Submitted batch job 1091232
+resnet18 IMAGENET
+Submitted batch job 1091233
+Submitted batch job 1091234
+resnet18 CIFAR10
+Submitted batch job 1091235
+Submitted batch job 1091236
+resnet18 MNIST
+Submitted batch job 1091237
+Submitted batch job 1091238
+alexnet IMAGENET
+Submitted batch job 1091241
+Submitted batch job 1091242
+alexnet MNIST
+Submitted batch job 1091243
+Submitted batch job 1091244
+vgg16 IMAGENET
+Submitted batch job 1091245
+Submitted batch job 1091246
+vgg16 MNIST
+Submitted batch job 1091247
+Submitted batch job 1091248
+resnet18 IMAGENET
+Submitted batch job 1091249
+Submitted batch job 1091250
+resnet18 MNIST
+Submitted batch job 1091251
+Submitted batch job 1091252
+alexnet IMAGENET
+Submitted batch job 1091268
+Submitted batch job 1091269
+alexnet MNIST
+Submitted batch job 1091270
+Submitted batch job 1091271
+vgg16 IMAGENET
+Submitted batch job 1091272
+Submitted batch job 1091273
+vgg16 MNIST
+Submitted batch job 1091274
+Submitted batch job 1091275
+resnet18 IMAGENET
+Submitted batch job 1091276
+Submitted batch job 1091277
+resnet18 MNIST
+Submitted batch job 1091278
+Submitted batch job 1091279
+alexnet IMAGENET
+Submitted batch job 1091283
+Submitted batch job 1091284
+alexnet MNIST
+Submitted batch job 1091285
+Submitted batch job 1091286
+vgg16 IMAGENET
+Submitted batch job 1091287
+Submitted batch job 1091288
+vgg16 MNIST
+Submitted batch job 1091289
+Submitted batch job 1091290
+resnet18 IMAGENET
+Submitted batch job 1091291
+Submitted batch job 1091292
+resnet18 MNIST
+Submitted batch job 1091293
+Submitted batch job 1091294
+Sat May  6 18:04:44 EDT 2023
+performance
+alexnet IMAGENET
+Submitted batch job 1091295
+Submitted batch job 1091296
+alexnet CIFAR10
+Submitted batch job 1091297
+Submitted batch job 1091298
+alexnet MNIST
+Submitted batch job 1091299
+Submitted batch job 1091300
+vgg16 IMAGENET
+Submitted batch job 1091301
+Submitted batch job 1091302
+vgg16 CIFAR10
+Submitted batch job 1091303
+Submitted batch job 1091304
+vgg16 MNIST
+Submitted batch job 1091305
+Submitted batch job 1091306
+resnet18 IMAGENET
+Submitted batch job 1091307
+Submitted batch job 1091308
+resnet18 CIFAR10
+Submitted batch job 1091309
+Submitted batch job 1091310
+resnet18 MNIST
+Submitted batch job 1091311
+Submitted batch job 1091312
+#############################
+Sat May  6 22:46:36 EDT 2023
+efficiency
+alexnet IMAGENET
+Submitted batch job 1091381
+alexnet CIFAR10
+Submitted batch job 1091382
+alexnet MNIST
+Submitted batch job 1091383
+vgg16 IMAGENET
+Submitted batch job 1091384
+vgg16 CIFAR10
+Submitted batch job 1091385
+vgg16 MNIST
+Submitted batch job 1091386
+resnet18 IMAGENET
+Submitted batch job 1091387
+resnet18 CIFAR10
+Submitted batch job 1091388
+resnet18 MNIST
+Submitted batch job 1091389
+#############################
+Sat May  6 23:57:45 EDT 2023
+efficiency
+alexnet IMAGENET
+Submitted batch job 1091411
+Submitted batch job 1091412
+alexnet CIFAR10
+Submitted batch job 1091413
+Submitted batch job 1091414
+alexnet MNIST
+Submitted batch job 1091415
+Submitted batch job 1091416
+vgg16 IMAGENET
+Submitted batch job 1091417
+Submitted batch job 1091418
+vgg16 CIFAR10
+Submitted batch job 1091419
+Submitted batch job 1091420
+vgg16 MNIST
+Submitted batch job 1091421
+Submitted batch job 1091422
+resnet18 IMAGENET
+Submitted batch job 1091423
+Submitted batch job 1091424
+resnet18 CIFAR10
+Submitted batch job 1091425
+Submitted batch job 1091426
+resnet18 MNIST
+Submitted batch job 1091427
+Submitted batch job 1091428
