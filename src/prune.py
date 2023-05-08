@@ -642,6 +642,7 @@ def effic_lth(logger, device, args, controller):
     connectivity = []
     all_acc = []
     train_iter = np.zeros(ITERATION, int)
+    max_acc = 1
 
     for imp_iter in tqdm(range(ITERATION)):
         accuracy = -1
@@ -662,7 +663,7 @@ def effic_lth(logger, device, args, controller):
         # Training loop
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
-                if (accuracy > args.acc_thrd):
+                if (accuracy > max_acc * args.acc_thrd):
                     break
 
             # Training
@@ -690,6 +691,7 @@ def effic_lth(logger, device, args, controller):
 
         all_acc.append(acc_list)
         logger.debug(all_acc)
+        max_acc = max(all_acc[0])
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
