@@ -220,7 +220,7 @@ def get_args():
     parser.add_argument('--lr', type=float, default=0.1,
                       help='Learning rate')
 
-    parser.add_argument('--batch_size', type=int, default=64,
+    parser.add_argument('--batch_size', type=int, default=256,
                       help='Batch size')
 
     parser.add_argument('--weight_decay', type=float, default=0.0,
