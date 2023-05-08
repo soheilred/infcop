@@ -63,11 +63,6 @@ class Network():
                 self.set_parameter_requires_grad()
             else:
                 self.model = models.vgg16()
-            first_conv_layer = [nn.Conv2d(3, 3, kernel_size=3, stride=1,
-                                          padding=1, dilation=1, groups=1,
-                                          bias=True)] 
-            first_conv_layer.extend(list(self.model.features))
-            self.model.features = nn.Sequential(*first_conv_layer )
             num_ftrs = self.model.classifier[6].in_features
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
