@@ -32,7 +32,11 @@
     "top"
   ],
   "control_at_iter": -1,
+<<<<<<< HEAD
   "control_at_epoch": -1,
+=======
+  "control_at_epoch": 2,
+>>>>>>> 12915d545c36cefea742a801d6507a6bbc338f8b
   "control_at_layer": [
     2
   ],

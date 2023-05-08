@@ -1,0 +1,31 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:06<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/gharatappeh/nips/src/prune.py", line 767, in <module>
+    main()
+  File "/home/gharatappeh/nips/src/prune.py", line 757, in main
+    perf_exper(logger, args, device, run_dir)
+  File "/home/gharatappeh/nips/src/prune.py", line 715, in perf_exper
+    all_acc, conn = perf_lth(logger, device, args, controller)
+  File "/home/gharatappeh/nips/src/prune.py", line 601, in perf_lth
+    acc, loss = train(model, train_dl, loss_fn, optimizer, 
+  File "/home/gharatappeh/nips/src/network.py", line 144, in train
+    pred = model(X)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torchvision/models/alexnet.py", line 48, in forward
+    x = self.features(x)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/container.py", line 204, in forward
+    input = module(input)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/pooling.py", line 166, in forward
+    return F.max_pool2d(input, self.kernel_size, self.stride,
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/_jit_internal.py", line 485, in fn
+    return if_false(*args, **kwargs)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/functional.py", line 782, in _max_pool2d
+    return torch.max_pool2d(input, kernel_size, stride, padding, dilation, ceil_mode)
+RuntimeError: Given input size: (192x2x2). Calculated output size: (192x0x0). Output size is too small

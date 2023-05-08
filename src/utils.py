@@ -179,7 +179,8 @@ def get_run_dir(args):
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--arch',
-                        choices=['vgg11', 'vgg16', 'resnet18', 'alexnet', 'densenet121'],
+                        choices=['vgg11', 'vgg16', 'resnet18', 'alexnet',
+                                 'densenet', 'googlenet'], 
                         default='resnet18',
                         help='Architectures')
     parser.add_argument('--mode', choices=['t','c','p','e','all'], default='all',
@@ -219,7 +220,7 @@ def get_args():
     parser.add_argument('--lr', type=float, default=0.1,
                       help='Learning rate')
 
-    parser.add_argument('--batch_size', type=int, default=64,
+    parser.add_argument('--batch_size', type=int, default=256,
                       help='Batch size')
 
     parser.add_argument('--weight_decay', type=float, default=0.0,

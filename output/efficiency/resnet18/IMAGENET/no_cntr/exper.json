@@ -1,0 +1,43 @@
+{
+  "arch": "resnet18",
+  "mode": "all",
+  "pretrained": "True",
+  "dataset": "IMAGENET",
+  "single_task": false,
+  "task_num": 0,
+  "run_id": "000",
+  "num_outputs": -1,
+  "cuda": true,
+  "gpu": 0,
+  "cores": 4,
+  "save_prefix": "../checkpoints/",
+  "loadname": "",
+  "train_epochs": 3,
+  "train_per_epoch": 2,
+  "lr": 0.001,
+  "batch_size": 64,
+  "weight_decay": 0.0,
+  "Milestones": [
+    30,
+    60,
+    90
+  ],
+  "Gamma": 0.1,
+  "prune_method": "sparse",
+  "prune_perc_per_layer": 0.1,
+  "finetune_epochs": 2,
+  "freeze_perc": 0.0,
+  "num_freeze_layers": 0,
+  "freeze_order": [
+    "top"
+  ],
+  "control_at_iter": -1,
+  "control_at_epoch": -1,
+  "control_at_layer": [
+    2
+  ],
+  "acc_thrd": 90,
+  "control_type": 1,
+  "imp_total_iter": 10,
+  "experiment_type": "efficiency"
+}

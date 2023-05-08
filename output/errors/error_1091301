@@ -1,0 +1,5 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [1:00:36<9:05:25, 3636.16s/it] 20%|██        | 2/10 [2:03:29<8:15:34, 3716.87s/it] 30%|███       | 3/10 [3:09:06<7:25:22, 3817.48s/it] 40%|████      | 4/10 [4:09:39<6:14:26, 3744.47s/it] 50%|█████     | 5/10 [5:11:28<5:10:58, 3731.69s/it]/usr/local/lib/python3.8/dist-packages/numpy/core/_methods.py:179: RuntimeWarning: invalid value encountered in reduce
+  ret = umr_sum(arr, axis, dtype, out, keepdims, where=where)
+ 60%|██████    | 6/10 [6:14:00<4:09:14, 3738.71s/it] 70%|███████   | 7/10 [7:20:07<3:10:40, 3813.36s/it]slurmstepd: error: *** JOB 1091301 ON grtx-1 CANCELLED AT 2023-05-07T07:14:59 ***
