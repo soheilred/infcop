@@ -1,3 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 470.129.06
-  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [3:25:55<30:53:15, 12355.10s/it] 20%|██        | 2/10 [6:52:32<27:30:38, 12379.85s/it]slurmstepd: error: *** JOB 1091411 ON dgx CANCELLED AT 2023-05-07T07:05:58 ***
