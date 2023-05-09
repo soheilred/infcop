@@ -668,7 +668,8 @@ def effic_lth(logger, device, args, controller):
 
             # Training
             logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
-                         f"{train_iter[imp_iter]}, thsd: {args.acc_thrd}")
+                         f"{train_iter[imp_iter]}, thsd: "
+                         f"{args.acc_thrd * args.acc_thrd / 100.0}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
                               args.train_per_epoch, device)
 
@@ -709,7 +710,7 @@ def perf_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    total_exper = 3
+    total_exper = 1
     for i in range(total_exper):
         logger.debug(f"In experiment {i} / {total_exper}")
         all_acc, conn = perf_lth(logger, device, args, controller)
@@ -731,7 +732,7 @@ def effic_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    total_exper = 3
+    total_exper = 1
 
     for i in range(total_exper):
         logger.debug(f"In experiment {i} / {total_exper}")
