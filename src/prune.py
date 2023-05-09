@@ -706,7 +706,7 @@ def effic_lth(logger, device, args, controller):
     return all_acc, connectivity
     
 def perf_exper(logger, args, device, run_dir):
-    logger.debug("####### In performance experiemnt #######")
+    logger.debug("####### In performance experiment #######")
     controller = Controller(args)
     acc_list = []
     conn_list = []

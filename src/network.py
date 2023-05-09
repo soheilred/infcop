@@ -20,7 +20,7 @@ from models import resnet18
 log = logging.getLogger("sampleLogger")
 
 class Network():
-    def __init__(self, device, arch, num_classes=10, pretrained=True,
+    def __init__(self, device, arch, num_classes=10, pretrained="True",
                  feature_extracting=False):
         """Setup the network and adjust it to the dataset dimentions.
         Parameters
@@ -71,6 +71,7 @@ class Network():
                 self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
+                import ipdb; ipdb.set_trace()
                 self.model = models.resnet18()
             num_ftrs = self.model.fc.in_features
             self.model.fc = nn.Linear(num_ftrs, self.num_classes)
