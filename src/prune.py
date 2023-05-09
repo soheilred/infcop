@@ -474,7 +474,6 @@ class Pruner:
     def control(self, corr, layers_dim, imp_iter):
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
-        log.debug(f"controllable layers are {layers_dim}")
 
         # get the weights from previous iteration
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
@@ -607,7 +606,7 @@ def perf_lth(logger, device, args, controller):
             if (train_iter == controller.c_epoch) and \
                 (imp_iter == controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
-                corr = act.get_correlations()
+                corr = act.get_corrs()
                 pruning.control(corr, act.layers_dim, imp_iter)
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
@@ -619,7 +618,7 @@ def perf_lth(logger, device, args, controller):
 
         # Calculate the connectivity
         activations = Activations(model, test_dl, device, args.batch_size)
-        pruning.corrs.append(activations.get_correlations())
+        pruning.corrs.append(activations.get_corrs())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
@@ -663,13 +662,13 @@ def effic_lth(logger, device, args, controller):
         # Training loop
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
-                if (accuracy > max_acc * args.acc_thrd / 100.0):
+                if (accuracy > args.acc_thrd * max_acc / 100.0):
                     break
 
             # Training
             logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
                          f"{train_iter[imp_iter]}, thsd: "
-                         f"{args.acc_thrd * args.acc_thrd / 100.0}")
+                         f"{args.acc_thrd * max_acc / 100.0}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
                               args.train_per_epoch, device)
 
