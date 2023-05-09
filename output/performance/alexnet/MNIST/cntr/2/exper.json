@@ -15,7 +15,7 @@
   "train_epochs": 3,
   "train_per_epoch": 2,
   "lr": 0.001,
-  "batch_size": 64,
+  "batch_size": 256,
   "weight_decay": 0.0,
   "Milestones": [
     30,
@@ -36,8 +36,8 @@
   "control_at_layer": [
     2
   ],
-  "acc_thrd": 90,
-  "control_type": 1,
+  "acc_thrd": 80,
+  "control_type": 3,
   "imp_total_iter": 10,
   "experiment_type": "performance"
 }
