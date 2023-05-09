@@ -265,6 +265,9 @@ def get_args():
     parser.add_argument('--imp_total_iter', type=int, default=10,
                       help='Number of iteration at IMP')
 
+    parser.add_argument('--num_exper', type=int, default=1,
+                      help='Number of experiments')
+
     parser.add_argument('--experiment_type', type=str, default="performance",
                         choices=["performance","efficiency"],
                         help='What type of LTH experiment you are running?')
