@@ -617,7 +617,7 @@ def perf_lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
-        if (imp_iter =< controller.c_iter):
+        if (imp_iter <= controller.c_iter):
             activations = Activations(model, test_dl, device, args.batch_size)
             pruning.corrs.append(activations.get_corrs())
             connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
