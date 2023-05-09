@@ -5,7 +5,7 @@
 LOG="../output/errors/batch-run.out"
 echo "#############################" >> $LOG
 date >> $LOG
-echo $1 >> $LOG
+echo "$@" >> $LOG
 
 ARCHS=("alexnet" "vgg16" "resnet18")
 DATASETS=("IMAGENET" "CIFAR10" "MNIST") # 
