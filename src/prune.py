@@ -474,7 +474,6 @@ class Pruner:
     def control(self, corr, layers_dim, imp_iter):
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
-        log.debug(f"controllable layers are {layers_dim}")
 
         # get the weights from previous iteration
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
@@ -607,7 +606,7 @@ def perf_lth(logger, device, args, controller):
             if (train_iter == controller.c_epoch) and \
                 (imp_iter == controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
-                corr = act.get_correlations()
+                corr = act.get_corrs()
                 pruning.control(corr, act.layers_dim, imp_iter)
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
@@ -619,7 +618,7 @@ def perf_lth(logger, device, args, controller):
 
         # Calculate the connectivity
         activations = Activations(model, test_dl, device, args.batch_size)
-        pruning.corrs.append(activations.get_correlations())
+        pruning.corrs.append(activations.get_corrs())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
@@ -642,6 +641,7 @@ def effic_lth(logger, device, args, controller):
     connectivity = []
     all_acc = []
     train_iter = np.zeros(ITERATION, int)
+    max_acc = 1
 
     for imp_iter in tqdm(range(ITERATION)):
         accuracy = -1
@@ -662,12 +662,13 @@ def effic_lth(logger, device, args, controller):
         # Training loop
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
-                if (accuracy > args.acc_thrd):
+                if (accuracy > args.acc_thrd * max_acc / 100.0):
                     break
 
             # Training
             logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
-                         f"{train_iter[imp_iter]}, thsd: {args.acc_thrd}")
+                         f"{train_iter[imp_iter]}, thsd: "
+                         f"{args.acc_thrd * max_acc / 100.0}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
                               args.train_per_epoch, device)
 
@@ -690,6 +691,7 @@ def effic_lth(logger, device, args, controller):
 
         all_acc.append(acc_list)
         logger.debug(all_acc)
+        max_acc = max(all_acc[0])
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
@@ -707,7 +709,7 @@ def perf_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    total_exper = 3
+    total_exper = 1
     for i in range(total_exper):
         logger.debug(f"In experiment {i} / {total_exper}")
         all_acc, conn = perf_lth(logger, device, args, controller)
@@ -729,7 +731,7 @@ def effic_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    total_exper = 3
+    total_exper = 1
 
     for i in range(total_exper):
         logger.debug(f"In experiment {i} / {total_exper}")
