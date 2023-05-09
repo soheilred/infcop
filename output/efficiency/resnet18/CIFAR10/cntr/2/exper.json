@@ -37,7 +37,7 @@
     2
   ],
   "acc_thrd": 80,
-  "control_type": 1,
+  "control_type": 3,
   "imp_total_iter": 10,
   "experiment_type": "efficiency"
 }
