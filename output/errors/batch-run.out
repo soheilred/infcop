@@ -1,0 +1,24 @@
+#############################
+Tue May  9 12:26:46 EDT 2023
+performance
+
+Submitted batch job 1092004
+Submitted batch job 1092005
+#############################
+Tue May  9 12:39:40 EDT 2023
+performance resnet18 MNIST 10
+
+Submitted batch job 1092006
+Submitted batch job 1092007
+#############################
+Tue May  9 12:42:13 EDT 2023
+performance resnet18 CIFAR10 10
+
+Submitted batch job 1092008
+Submitted batch job 1092009
+#############################
+Tue May  9 13:15:14 EDT 2023
+performance vgg16 CIFAR10 10
+
+Submitted batch job 1092010
+Submitted batch job 1092011
