@@ -1,15 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 525.85.12
-  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [03:03<?, ?it/s]
-Traceback (most recent call last):
-  File "/home/gharatappeh/nips/src/prune.py", line 767, in <module>
-    main()
-  File "/home/gharatappeh/nips/src/prune.py", line 757, in main
-    perf_exper(logger, args, device, run_dir)
-  File "/home/gharatappeh/nips/src/prune.py", line 715, in perf_exper
-    all_acc, conn = perf_lth(logger, device, args, controller)
-  File "/home/gharatappeh/nips/src/prune.py", line 624, in perf_lth
-    pruning.corrs.append(activations.get_correlations())
-  File "/home/gharatappeh/nips/src/correlation.py", line 276, in get_correlations
-    act_means[i] += torch.sum(self.activation[act_keys[i]],
-IndexError: list index out of range
