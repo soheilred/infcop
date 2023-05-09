@@ -172,7 +172,8 @@ def get_stability(in_measure):
 def get_run_dir(args):
     control = "no_cntr/" if args.control_at_iter == -1 else "cntr" + "/" +\
                         ("").join([str(l) for l in args.control_at_layer]) + "/"
-    run_dir = C.MODEL_ROOT_DIR + args.experiment_type + "/" + args.arch + "/" + args.dataset + "/" + control 
+    run_dir = C.MODEL_ROOT_DIR + args.experiment_type + "/" + args.arch + "/" +\
+                args.dataset + "/" + control + C.cur_time + "/" 
     checkdir(run_dir)
     return run_dir
 
@@ -263,6 +264,9 @@ def get_args():
 
     parser.add_argument('--imp_total_iter', type=int, default=10,
                       help='Number of iteration at IMP')
+
+    parser.add_argument('--num_exper', type=int, default=1,
+                      help='Number of experiments')
 
     parser.add_argument('--experiment_type', type=str, default="performance",
                         choices=["performance","efficiency"],

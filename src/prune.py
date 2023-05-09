@@ -617,10 +617,11 @@ def perf_lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
-        activations = Activations(model, test_dl, device, args.batch_size)
-        pruning.corrs.append(activations.get_corrs())
-        connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
-        # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
+        if (imp_iter <= controller.c_iter):
+            activations = Activations(model, test_dl, device, args.batch_size)
+            pruning.corrs.append(activations.get_corrs())
+            connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
+            # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
     return pruning.all_acc, connectivity
     
@@ -709,8 +710,8 @@ def perf_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    total_exper = 1
-    for i in range(total_exper):
+
+    for i in range(args.num_exper):
         logger.debug(f"In experiment {i} / {total_exper}")
         all_acc, conn = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
@@ -731,9 +732,8 @@ def effic_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    total_exper = 1
 
-    for i in range(total_exper):
+    for i in range(args.num_exper):
         logger.debug(f"In experiment {i} / {total_exper}")
         all_acc, conn = effic_lth(logger, device, args, controller)
         acc_list.append(all_acc)
@@ -753,6 +753,7 @@ def main():
     args = utils.get_args()
     device = utils.get_device(args)
     run_dir = utils.get_run_dir(args)
+    logger.debug(f"Dir: {run_dir}")
     if args.experiment_type == "performance":
         perf_exper(logger, args, device, run_dir)
 
