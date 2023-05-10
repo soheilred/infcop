@@ -1,5 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 470.129.06
-  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [3:36:29<32:28:23, 12989.30s/it]/usr/local/lib/python3.8/dist-packages/numpy/core/_methods.py:179: RuntimeWarning: invalid value encountered in reduce
-  ret = umr_sum(arr, axis, dtype, out, keepdims, where=where)
- 20%|██        | 2/10 [7:19:39<29:23:22, 13225.34s/it] 30%|███       | 3/10 [10:58:27<25:37:43, 13180.52s/it] 40%|████      | 4/10 [14:51:22<22:29:25, 13494.29s/it] 50%|█████     | 5/10 [18:46:36<19:03:09, 13717.83s/it] 60%|██████    | 6/10 [22:41:53<15:23:33, 13853.41s/it] 70%|███████   | 7/10 [26:46:00<11:45:38, 14112.92s/it] 80%|████████  | 8/10 [31:10:40<8:09:10, 14675.49s/it]  90%|█████████ | 9/10 [35:33:06<4:10:10, 15010.29s/it]slurmstepd: error: *** JOB 1091288 ON dgx CANCELLED AT 2023-05-08T09:11:05 ***

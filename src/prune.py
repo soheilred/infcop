@@ -146,7 +146,7 @@ class Pruner:
         # Copying and Saving Initial State
         self.init_state_dict = copy.deepcopy(self.model.state_dict())
         run_dir = utils.get_run_dir(self.args)
-        utils.save_model(self.model, run_dir, "/initial_model.pth.tar")
+        utils.save_model(self.model, run_dir, "initial_model.pth.tar")
 
         # Making Initial Mask
         self.init_mask()
@@ -170,41 +170,6 @@ class Pruner:
                 self.mask[layer_id] = np.ones_like(tensor)
                 # self.mask[layer_id] = torch.ones_like(param.data)
                 layer_id += 1
-
-
-    def init_dump(self):
-        """Dumps pretrained model in required format."""
-
-        # A dictionary of indecies for each layers' weight, containing all the
-        # indecies at which the weights were frozen.
-        composite_mask = {}
-        task_mask = {}
-        # A dictionary of binary masks 
-        all_task_masks = {}
-
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                # print("appending conv or linear layer")
-                mask = torch.ByteTensor(module.weight.data.size()).fill_(1)
-                task = torch.ByteTensor(module.weight.data.size()).fill_(0)
-
-                if 'cuda' in module.weight.data.type():
-                    mask = mask.cuda()
-                    task = task.cuda()
-
-                task_mask[module_idx] = mask
-                composite_mask[module_idx] = task
-
-        self.all_task_masks[0] = [task_mask]
-        self.composite_mask = composite_mask
-
-        # torch.save({
-        #     'all_task_masks': all_task_masks,
-        #     'composite_mask': composite_mask,     
-        #     'model': model,
-        #     'conns' : {},
-        #     'conn_aves' : {},
-        # }, savepath)
 
 
     def reset_weights_to_init(self, initial_state_dict):
@@ -302,167 +267,6 @@ class Pruner:
 
         self.model.eval()
    
-    def increment_task(self):
-        """
-            Turns previously pruned weights into trainable weights for
-            current dataset.
-            Also updates task number and prepares new task mask
-        """
-        self.task_num += 1
-                
-        ### Creates the task-specific mask during the initial weight allocation
-        task_mask = {}
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                task = torch.ByteTensor(module.weight.data.size()).fill_(1)
-                if 'cuda' in module.weight.data.type():
-                    task = task.cuda()
-                task_mask[module_idx] = task
-
-        ### Initialize the new tasks' inclusion map with all 1's
-        self.all_task_masks[self.task_num] = [task_mask]
-
-        print("Exiting finetuning mask")
-
-    def prune(self):
-        """Apply the masks to the weights.
-            Goes through and calls prune_mask for each layer and stores the results
-            and then applies the masks to the weights
-        """
-        print('Pruning for dataset idx: %d' % (self.task_num))
-        print(f'Pruning each layer by {(100 * self.prune_perc):.2f}%%')
-    
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                ### Get the pruned mask for the current layer
-                mask = self.pruning_mask(module.weight.data,
-                                         self.composite_mask[module_idx],
-                                         module_idx)
-                self.composite_mask[module_idx] = mask.cuda()
-
-                # Set pruned weights to 0.
-                weight = module.weight.data
-                weight[self.composite_mask[module_idx].gt(self.task_num)] = 0.0
-                self.all_task_masks[self.task_num][0][module_idx][mask.gt(self.task_num)] = 0
-
-                
-        print("\nFOR TASK %d:", self.task_num)
-        for layer_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                weight = module.weight.data
-                num_params = weight.numel()
-                num_frozen = weight[self.composite_mask[layer_idx].eq(self.task_num)].numel()
-                print('Layer #%d: Frozen %d/%d (%.2f%%)' %
-                      (layer_idx, num_frozen, num_params,
-                       100 * num_frozen / num_params))                
-
- 
-    def pruning_mask(self, weights, composite_mask_in, layer_idx):
-        """Rank prunable filters by magnitude.
-            Sets all below kth to 0.
-            Returns pruned mask.
-        """
-        composite_mask = composite_mask_in.clone().detach().cuda()
-        filter_weights = weights
-        filter_composite_mask = composite_mask.eq(self.task_num)
-        tensor = weights[filter_composite_mask]
-
-        abs_tensor = tensor.abs()
-
-
-        # Code for increasing the freezing percent of a given layer based on
-        # connectivity 
-
-        prune_rank = round(self.prune_perc * abs_tensor.numel())
-        connlist = self.conn_aves[self.task_num]
-
-
-        max_n_layers_indices = np.argsort(list(connlist.values()))
-        max_n_keys = np.asarray(list(connlist.keys()))[list(max_n_layers_indices)]
-        random_idxs = np.copy(max_n_keys)
-        np.random.shuffle(random_idxs)
-        
-        # ### Apply freezing if the index is selected based on connectivity, otherwise prune at the baseline rate.
-        # if self.freeze_order == "top" and (layer_idx in max_n_keys[-self.num_freeze_layers:]):
-        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
-        # elif self.freeze_order == "bottom" and (layer_idx in max_n_keys[:self.num_freeze_layers]):
-        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
-        # elif self.freeze_order == "random" and (layer_idx in random_idxs[:self.num_freeze_layers]):
-        #     prune_rank = round((self.prune_perc - self.freeze_perc) * abs_tensor.numel())
-        
-        prune_value = abs_tensor.view(-1).cpu().kthvalue(prune_rank)[0]
-
-        remove_mask = torch.zeros(weights.shape)
-
-        remove_mask[filter_weights.abs().le(prune_value)]=1
-        remove_mask[composite_mask.ne(self.task_num)]=0
-
-        composite_mask[remove_mask.eq(1)] = self.task_num + 1
-        mask = composite_mask
-        
-        print('Layer #%d, pruned %d/%d (%.2f%%) (Total in layer: %d)' %
-              (layer_idx, mask.gt(self.task_num).sum(), tensor.numel(),
-              100 * mask.gt(self.task_num).sum() / tensor.numel(), weights.numel()))
-
-        return mask
-     
-    def train_cl(self, dataloader, loss_fn, optimizer, epochs, device):
-        log.debug('Training...')
-        size = len(dataloader.dataset)
-
-        # Get optimizer with correct params.
-        params_to_optimize = self.model.parameters()
-        optimizer = optim.SGD(params_to_optimize, lr=self.args.lr, momentum=0.9,
-                              weight_decay=self.args.weight_decay,
-                              nesterov=True) 
-        scheduler = MultiStepLR(optimizer, milestones=self.args.Milestones,
-                                gamma=self.args.Gamma)     
-
-        # Note: After the first task, batchnorm and bias throughout the
-        # network are frozen, this is what train_nobn() refers to 
-        if self.task_num > 0:
-            self.model.train_nobn()
-            print("No BN in training loop")
-        else:
-            self.pruner.model.train()
-
-        for t in range(epochs):
-            log.debug(f"Epoch {t+1}")
-            correct = 0
-            running_loss = 0.
-            last_loss = 0.
-
-            for batch, (X, y) in enumerate(dataloader):
-                # Compute prediction and loss
-                X, y = X.to(device), y.to(device)
-                pred = self.model(X)
-                loss = loss_fn(pred, y)
-
-                # Backpropagation
-                optimizer.zero_grad()
-                loss.backward()
-
-                # Set frozen param grads to 0.
-                self.make_grads_zero()
-
-                optimizer.step()
-
-                # Set pruned weights to 0.
-                self.pruner.make_pruned_zero()
-
-                running_loss += loss.item()
-
-                if batch % 100 == 0:
-                    last_loss, current = running_loss / 100, batch * len(X)
-                    log.debug(f"loss: {last_loss:>5f}  [{current:>5d}/{size:>5d}]")
-                correct += (pred.argmax(1) == y).type(torch.float).sum().item()
-            correct /= size
-            log.debug(f"Training Error: Accuracy: {(100*correct):>0.1f}%")
-            scheduler.step()
-
-        return 100.0 * correct, loss
-
-
     def find_unstable_layers(self, control_corrs):
         control_corrs = np.array(control_corrs[1])
         # mid = abs(np.median(control_corrs[1]))
@@ -606,7 +410,7 @@ def perf_lth(logger, device, args, controller):
             if (train_iter == controller.c_epoch) and \
                 (imp_iter == controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
-                corr = act.get_corrs()
+                corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
@@ -617,11 +421,11 @@ def perf_lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
-        if (imp_iter <= controller.c_iter):
-            activations = Activations(model, test_dl, device, args.batch_size)
-            pruning.corrs.append(activations.get_corrs())
-            connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
-            # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
+        # if (imp_iter <= controller.c_iter):
+        activations = Activations(model, test_dl, device, args.batch_size)
+        pruning.corrs.append(activations.get_correlations())
+        connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
+        # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
     return pruning.all_acc, connectivity
     
