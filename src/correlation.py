@@ -280,13 +280,17 @@ class Activations:
 
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
-            activation_sd = [torch.pow(act_sq_sum[i] / ds_size -
+            act_sd = [torch.pow(act_sq_sum[i] / ds_size -
                                        torch.pow(act_means[i], 2), 0.5)
                              for i in range(num_layers)]
 
             # fix maximum activation for layers that are too close to zero
             for i in range(num_layers):
-                act_max[i] = max(act_max[i], 0.001)
+                sign = np.sign(act_max[i])
+                act_max[i] = sign * max(abs(act_max[i]), 0.001)
+            logging.debug(f"activation mean: {act_means}")
+            logging.debug(f"activation sd: {act_sd}")
+            logging.debug(f"activation max: {act_max}")
 
             for batch, (X, y) in enumerate(self.dataloader):
                 # if batch % 100 == 0:
