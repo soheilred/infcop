@@ -278,10 +278,15 @@ class Activations:
                     act_max[i] = abs(torch.max(act_max[i],
                                      abs(torch.max(self.activation[act_keys[i]]))))
 
+
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
             activation_sd = [torch.pow(act_sq_sum[i] / ds_size -
                                        torch.pow(act_means[i], 2), 0.5)
                              for i in range(num_layers)]
+
+            # fix maximum activation for layers that are too close to zero
+            for i in range(num_layers):
+                act_max[i] = max(act_max[i], 0.001)
 
             for batch, (X, y) in enumerate(self.dataloader):
                 # if batch % 100 == 0:

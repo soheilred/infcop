@@ -1,0 +1,4 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+  0%|          | 0/10 [00:00<?, ?it/s]/var/spool/slurm/d/job1092005/slurm_script: line 29: 113687 Killed                  singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/prune.py "$@"
+slurmstepd: error: Detected 1 oom-kill event(s) in step 1092005.batch cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.
