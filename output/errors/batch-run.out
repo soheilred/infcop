@@ -22,3 +22,9 @@ performance vgg16 CIFAR10 10
 
 Submitted batch job 1092010
 Submitted batch job 1092011
+#############################
+Tue May  9 21:25:33 EDT 2023
+performance vgg16 MNIST 5
+
+Submitted batch job 1092163
+Submitted batch job 1092164
