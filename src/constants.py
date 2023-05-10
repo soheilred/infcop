@@ -1,7 +1,8 @@
 import pathlib
 import datetime
 
-cur_time = datetime.datetime.now().strftime("%d-%m-%H-%M-%S")
+# cur_time = datetime.datetime.now().strftime("%d-%m-%H-%M-%S")
+cur_time = datetime.datetime.now().strftime("%H-%M")
 # cur_time = ""
 ROOT = str(pathlib.Path(__file__).resolve().parents[1]) + "/"
 DATA_DIR = ROOT + "data/"
