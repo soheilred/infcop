@@ -286,7 +286,7 @@ class Activations:
 
             # fix maximum activation for layers that are too close to zero
             for i in range(num_layers):
-                sign = np.sign(act_max[i])
+                sign = torch.sign(act_max[i])
                 act_max[i] = sign * max(abs(act_max[i]), 0.001)
             logging.debug(f"activation mean: {act_means}")
             logging.debug(f"activation sd: {act_sd}")
