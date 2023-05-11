@@ -186,7 +186,7 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
 
             if batch % 100 == 0:
                 last_loss, current = running_loss / 100, batch * len(X)
-                log.debug(f"loss: {last_loss:>3f}  [{current:>5d}/{size:>5d}]")
+                # log.debug(f"loss: {last_loss:>3f}  [{current:>5d}/{size:>5d}]")
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
         correct /= size
         log.debug(f"Training Error: Accuracy: {(100*correct):>0.1f}%")
