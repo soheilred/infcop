@@ -141,7 +141,7 @@ class Pruner:
         """
 
         # Weight Initialization
-        if args.pretrained == "False":
+        if self.args.pretrained == "False":
             self.model.apply(self.weight_init)
 
         # Copying and Saving Initial State
