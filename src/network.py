@@ -162,7 +162,7 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
     size = len(dataloader.dataset)
 
     for t in range(epochs):
-        log.debug(f"Epoch {t+1}")
+        # log.debug(f"Epoch {t+1}")
         correct = 0
         running_loss = 0.
         last_loss = 0.
@@ -189,7 +189,7 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
                 # log.debug(f"loss: {last_loss:>3f}  [{current:>5d}/{size:>5d}]")
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
         correct /= size
-        log.debug(f"Training Error: Accuracy: {(100*correct):>0.1f}%")
+        log.debug(f"Epoch {t+1} accuracy: {(100*correct):>0.1f}%")
     return 100.0 * correct, loss
 
 
@@ -209,7 +209,7 @@ def test(model, dataloader, loss_fn, device):
 
         test_loss /= num_batches
         correct /= size
-    log.debug(f"Test Error: Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f}")
+    log.debug(f"Test accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f}")
     model.train()
     return 100. * correct
 
