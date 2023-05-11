@@ -53,7 +53,7 @@ class Network():
                 self.model = models.vgg11(weights=VGG11_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
-                self.model = models.vgg11()
+                self.model = models.vgg11(weights=None)
             num_ftrs = self.model.classifier[6].in_features
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
@@ -62,7 +62,7 @@ class Network():
                 self.model = models.vgg16(weights=VGG16_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
-                self.model = models.vgg16()
+                self.model = models.vgg16(weights=None)
             num_ftrs = self.model.classifier[6].in_features
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
@@ -71,7 +71,7 @@ class Network():
                 self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
-                self.model = models.resnet18()
+                self.model = models.resnet18(weights=None)
             num_ftrs = self.model.fc.in_features
             self.model.fc = nn.Linear(num_ftrs, self.num_classes)
             # self.model = resnet18()
@@ -81,7 +81,7 @@ class Network():
                 self.model = models.alexnet(weights=AlexNet_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
-                self.model = models.alexnet()
+                self.model = models.alexnet(weights=None)
             num_ftrs = self.model.classifier[6].in_features
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
@@ -90,7 +90,7 @@ class Network():
                 self.model = models.squeezenet1_0(weights=Inception_V3_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
-                self.model = models.squeezenet1_0()
+                self.model = models.squeezenet1_0(weights=None)
             num_ftrs = 512
             self.model.classifier[1] = nn.Conv2d(num_ftrs, self.num_classes,
                                                  kernel_size=(1,1), stride=(1,1))
@@ -100,7 +100,7 @@ class Network():
                 self.model = models.densenet121(weights=Inception_V3_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
-                self.model = models.densenet121()
+                self.model = models.densenet121(weights=None)
             num_ftrs = self.model.classifier.in_features
             self.model.classifier = nn.Conv2d(num_ftrs, self.num_classes)
 
@@ -109,7 +109,7 @@ class Network():
                 self.model = models.googlenet(weights=GoogLeNet_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
-                self.model = models.inception_v3()
+                self.model = models.inception_v3(weights=None)
             num_ftrs = self.model.fc.in_features
             self.model.classifier = nn.Linear(num_ftrs, self.num_classes)
 
@@ -118,7 +118,7 @@ class Network():
                 self.model = models.inception_v3(weights=Inception_V3_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
-                self.model = models.inception_v3()
+                self.model = models.inception_v3(weights=None)
             num_ftrs = self.model.classifier.in_features
             self.model.classifier = nn.Conv2d(num_ftrs, self.num_classes)
             self.input_size = 299
