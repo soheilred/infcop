@@ -13,11 +13,11 @@ DATASETS=("IMAGENET" "CIFAR10" "MNIST") #
     echo $arch $dataset >> ../output/errors/batch-run.out
     sbatch experiments.slurm --lr=.001 --arch=$2 --dataset=$3 \
         --train_epochs=$4 --control_at_iter=-1 --control_at_epoch=2 \
-        --control_at_layer="2" --experiment_type=$1 \
-        --acc_thrd=$4 >> $LOG
+        --control_at_layer="2" --experiment_type=$1 --pretrained=False \
+        --acc_thrd=$4 --imp_total_iter=$5 >> $LOG
 
     sbatch experiments.slurm --lr=.001 --arch=$2 --dataset=$3 \
         --train_epochs=$4 --control_at_iter=1 --control_at_epoch=2 \
-        --control_at_layer="2" --experiment_type=$1 \
-        --acc_thrd=$4 >> $LOG
+        --control_at_layer="2" --experiment_type=$1 --pretrained=False \
+        --acc_thrd=$4 --imp_total_iter=$5 >> $LOG
 # done; done;
