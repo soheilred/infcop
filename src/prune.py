@@ -404,7 +404,6 @@ def perf_lth(logger, device, args, controller):
                               args.train_per_epoch, device)
 
             # Test and save the most accurate model
-            logger.debug("Testing...")
             accuracy = test(model, test_dl, loss_fn, device)
 
             # apply the controller after some epochs and some iterations
