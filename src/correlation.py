@@ -288,8 +288,8 @@ class Activations:
             for i in range(num_layers):
                 sign = torch.sign(act_max[i])
                 act_max[i] = sign * max(abs(act_max[i]), 0.001)
-            logging.debug(f"activation mean: {act_means}")
-            logging.debug(f"activation sd: {act_sd}")
+            # logging.debug(f"activation mean: {act_means}")
+            # logging.debug(f"activation sd: {act_sd}")
             logging.debug(f"activation max: {act_max}")
 
             for batch, (X, y) in enumerate(self.dataloader):
@@ -305,6 +305,7 @@ class Activations:
                     f1 = (self.activation[act_keys[i + 1]] - act_means[i + 1])/\
                           act_max[i + 1]
                     corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
+
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
         self.model.train()
