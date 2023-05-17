@@ -209,7 +209,7 @@ def test(model, dataloader, loss_fn, device):
 
         test_loss /= num_batches
         correct /= size
-    log.debug(f"Test accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f}")
+    log.debug(f"Test accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:.2f}")
     model.train()
     return 100. * correct
 
