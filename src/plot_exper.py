@@ -40,35 +40,6 @@ def making_plots_performance(arch, dataset, exper_cntr, exper_no_cntr):
     plot_tool.plot_connectivity(no_cntr_conn, no_cntr_dir + "../" + "no_conn")
 
 
-ARCHS=["resnet18", "vgg16", "alexnet"]
-DATASETS=["MNIST", "CIFAR10", "IMAGENET"]
-
-exper_cntr = ["09-05-00-06-59/", "09-05-13-06-08/", "09-05-21-22-08/",
-              "09-05-13-15-53/", "09-05-12-39-57/", "09-06/", "09-22/",
-                "08-10/", "16-13/"]
-exper_no_cntr = ["09-05-00-07-49/", "09-05-12-42-23/", "09-05-21-22-08/",
-                 "09-05-13-11-53/", "09-05-12-36-16/", "09-06/", "09-22/",
-                 "08-10/", "23-57/"]
-
-# exper_cntr = ""
-# exper_no_cntr = ""
-
-making_plots_performance(ARCHS[1], DATASETS[0], exper_cntr[-1], exper_no_cntr[-1])
-# making_plots_efficiency(ARCHS[2], DATASETS[1])
-# for arch in ARCHS:
-#     for dataset in DATASETS:
-#         making_plots(arch, dataset)
-
-import plot_tool
-import pickle
-import utils
-import json
-from pathlib import Path
-import sys
-import os
-import numpy as np
-
-
 def making_plots_efficiency(arch, dataset):
     no_cntr_dir = f"../output/efficiency/{arch}/{dataset}/no_cntr/"
     cntr_dir = f"../output/efficiency/{arch}/{dataset}/cntr/2/"
@@ -99,7 +70,24 @@ def making_plots_efficiency(arch, dataset):
     # plot_tool.plot_connectivity(conn)
 
 
-ARCHS=["resnet18", "vgg16", "alexnet"]
-DATASETS=["MNIST", "CIFAR10", "IMAGENET"]
+ARCHS=["resnet18", "vgg16"]
+DATASETS=["MNIST", "CIFAR10"]
+
+exper_cntr = ["09-05-00-06-59/", "09-05-13-06-08/", "09-05-21-22-08/",
+              "09-05-13-15-53/", "09-05-12-39-57/", "09-06/", "09-22/",
+                "08-10/", "16-13/"]
+exper_no_cntr = ["09-05-00-07-49/", "09-05-12-42-23/", "09-05-21-22-08/",
+                 "09-05-13-11-53/", "09-05-12-36-16/", "09-06/", "09-22/",
+                 "08-10/", "23-57/"]
+
+# exper_cntr = ""
+# exper_no_cntr = ""
+
+making_plots_performance(ARCHS[1], DATASETS[0], exper_cntr[-1], exper_no_cntr[-1])
+# making_plots_efficiency(ARCHS[2], DATASETS[1])
+# for arch in ARCHS:
+#     for dataset in DATASETS:
+#         making_plots(arch, dataset)
+
 
 making_plots_efficiency(ARCHS[1], DATASETS[1])
