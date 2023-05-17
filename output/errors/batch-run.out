@@ -28,6 +28,7 @@ performance vgg16 MNIST 5
 
 Submitted batch job 1092163
 Submitted batch job 1092164
+<<<<<<< HEAD
 #############################
 Thu May 11 13:45:40 EDT 2023
 performance vgg16 MNIST 5 10
@@ -88,3 +89,175 @@ performance vgg16 CIFAR10 10 5
 
 Submitted batch job 1093651
 Submitted batch job 1093652
+=======
+\n#############################
+Tue 16 May 2023 09:57:17 PM EDT
+performance resnet18 MNIST 5 5 0
+
+2023-05-16 21:57:20,784 - In Precision-7920-Tower
+2023-05-16 21:57:20,886 - Using cuda:0 device
+2023-05-16 21:57:20,918 - Name of the Cuda Device: NVIDIA RTX A6000
+2023-05-16 21:57:20,918 - Dir: /home/soheil/code/nips/output/performance/resnet18/MNIST/no_cntr/21-57/
+2023-05-16 21:57:20,918 - ####### In performance experiment #######
+2023-05-16 21:57:20,918 - In experiment 0 / 1
+2023-05-16 21:57:23,418 - [1/5] IMP loop
+conv1.weight         | (100.0%) | pruned =    0 | dim = (64, 3, 7, 7)
+bn1.weight           | (100.0%) | pruned =    0 | dim = (64,)
+bn1.bias             | (  0.0%) | pruned =   64 | dim = (64,)
+layer1.0.conv1.weigh | (100.0%) | pruned =    0 | dim = (64, 64, 3, 3)
+layer1.0.bn1.weight  | (100.0%) | pruned =    0 | dim = (64,)
+layer1.0.bn1.bias    | (  0.0%) | pruned =   64 | dim = (64,)
+layer1.0.conv2.weigh | (100.0%) | pruned =    0 | dim = (64, 64, 3, 3)
+layer1.0.bn2.weight  | (100.0%) | pruned =    0 | dim = (64,)
+layer1.0.bn2.bias    | (  0.0%) | pruned =   64 | dim = (64,)
+layer1.1.conv1.weigh | (100.0%) | pruned =    0 | dim = (64, 64, 3, 3)
+layer1.1.bn1.weight  | (100.0%) | pruned =    0 | dim = (64,)
+layer1.1.bn1.bias    | (  0.0%) | pruned =   64 | dim = (64,)
+layer1.1.conv2.weigh | (100.0%) | pruned =    0 | dim = (64, 64, 3, 3)
+layer1.1.bn2.weight  | (100.0%) | pruned =    0 | dim = (64,)
+layer1.1.bn2.bias    | (  0.0%) | pruned =   64 | dim = (64,)
+layer2.0.conv1.weigh | (100.0%) | pruned =    0 | dim = (128, 64, 3, 3)
+layer2.0.bn1.weight  | (100.0%) | pruned =    0 | dim = (128,)
+layer2.0.bn1.bias    | (  0.0%) | pruned =  128 | dim = (128,)
+layer2.0.conv2.weigh | (100.0%) | pruned =    0 | dim = (128, 128, 3, 3)
+layer2.0.bn2.weight  | (100.0%) | pruned =    0 | dim = (128,)
+layer2.0.bn2.bias    | (  0.0%) | pruned =  128 | dim = (128,)
+layer2.0.downsample. | (100.0%) | pruned =    0 | dim = (128, 64, 1, 1)
+layer2.0.downsample. | (100.0%) | pruned =    0 | dim = (128,)
+layer2.0.downsample. | (  0.0%) | pruned =  128 | dim = (128,)
+layer2.1.conv1.weigh | (100.0%) | pruned =    0 | dim = (128, 128, 3, 3)
+layer2.1.bn1.weight  | (100.0%) | pruned =    0 | dim = (128,)
+layer2.1.bn1.bias    | (  0.0%) | pruned =  128 | dim = (128,)
+layer2.1.conv2.weigh | (100.0%) | pruned =    0 | dim = (128, 128, 3, 3)
+layer2.1.bn2.weight  | (100.0%) | pruned =    0 | dim = (128,)
+layer2.1.bn2.bias    | (  0.0%) | pruned =  128 | dim = (128,)
+layer3.0.conv1.weigh | (100.0%) | pruned =    0 | dim = (256, 128, 3, 3)
+layer3.0.bn1.weight  | (100.0%) | pruned =    0 | dim = (256,)
+layer3.0.bn1.bias    | (  0.0%) | pruned =  256 | dim = (256,)
+layer3.0.conv2.weigh | (100.0%) | pruned =    0 | dim = (256, 256, 3, 3)
+layer3.0.bn2.weight  | (100.0%) | pruned =    0 | dim = (256,)
+layer3.0.bn2.bias    | (  0.0%) | pruned =  256 | dim = (256,)
+layer3.0.downsample. | (100.0%) | pruned =    0 | dim = (256, 128, 1, 1)
+layer3.0.downsample. | (100.0%) | pruned =    0 | dim = (256,)
+layer3.0.downsample. | (  0.0%) | pruned =  256 | dim = (256,)
+layer3.1.conv1.weigh | (100.0%) | pruned =    1 | dim = (256, 256, 3, 3)
+layer3.1.bn1.weight  | (100.0%) | pruned =    0 | dim = (256,)
+layer3.1.bn1.bias    | (  0.0%) | pruned =  256 | dim = (256,)
+layer3.1.conv2.weigh | (100.0%) | pruned =    0 | dim = (256, 256, 3, 3)
+layer3.1.bn2.weight  | (100.0%) | pruned =    0 | dim = (256,)
+layer3.1.bn2.bias    | (  0.0%) | pruned =  256 | dim = (256,)
+layer4.0.conv1.weigh | (100.0%) | pruned =    0 | dim = (512, 256, 3, 3)
+layer4.0.bn1.weight  | (100.0%) | pruned =    0 | dim = (512,)
+layer4.0.bn1.bias    | (  0.0%) | pruned =  512 | dim = (512,)
+layer4.0.conv2.weigh | (100.0%) | pruned =    0 | dim = (512, 512, 3, 3)
+layer4.0.bn2.weight  | (100.0%) | pruned =    0 | dim = (512,)
+layer4.0.bn2.bias    | (  0.0%) | pruned =  512 | dim = (512,)
+layer4.0.downsample. | (100.0%) | pruned =    0 | dim = (512, 256, 1, 1)
+layer4.0.downsample. | (100.0%) | pruned =    0 | dim = (512,)
+layer4.0.downsample. | (  0.0%) | pruned =  512 | dim = (512,)
+layer4.1.conv1.weigh | (100.0%) | pruned =    0 | dim = (512, 512, 3, 3)
+layer4.1.bn1.weight  | (100.0%) | pruned =    0 | dim = (512,)
+layer4.1.bn1.bias    | (  0.0%) | pruned =  512 | dim = (512,)
+layer4.1.conv2.weigh | (100.0%) | pruned =    0 | dim = (512, 512, 3, 3)
+layer4.1.bn2.weight  | (100.0%) | pruned =    0 | dim = (512,)
+layer4.1.bn2.bias    | (  0.0%) | pruned =  512 | dim = (512,)
+fc.weight            | (100.0%) | pruned =    0 | dim = (10, 512)
+fc.bias              | (100.0%) | pruned =    0 | dim = (10,)
+alive: 11176841, pruned : 4801, total: 11181642, Compression rate :       1.00x  (  0.04% pruned)
+2023-05-16 21:57:23,478 - Compression level: 100.0
+2023-05-16 21:57:23,478 - Training iteration 0 / 5
+2023-05-16 21:57:23,479 - Training...
+\n#############################
+Tue 16 May 2023 09:58:23 PM EDT
+performance resnet18 MNIST 5 5 0
+
+2023-05-16 21:58:26,012 - In Precision-7920-Tower
+2023-05-16 21:58:26,117 - Using cuda:0 device
+2023-05-16 21:58:26,149 - Name of the Cuda Device: NVIDIA RTX A6000
+2023-05-16 21:58:26,149 - Dir: /home/soheil/code/nips/output/performance/resnet18/MNIST/no_cntr/21-58/
+2023-05-16 21:58:26,149 - ####### In performance experiment #######
+2023-05-16 21:58:26,149 - In experiment 0 / 1
+2023-05-16 21:58:28,598 - [1/5] IMP loop
+conv1.weight         | (100.0%) | pruned =    0 | dim = (64, 3, 7, 7)
+bn1.weight           | (100.0%) | pruned =    0 | dim = (64,)
+bn1.bias             | (  0.0%) | pruned =   64 | dim = (64,)
+layer1.0.conv1.weigh | (100.0%) | pruned =    0 | dim = (64, 64, 3, 3)
+layer1.0.bn1.weight  | (100.0%) | pruned =    0 | dim = (64,)
+layer1.0.bn1.bias    | (  0.0%) | pruned =   64 | dim = (64,)
+layer1.0.conv2.weigh | (100.0%) | pruned =    0 | dim = (64, 64, 3, 3)
+layer1.0.bn2.weight  | (100.0%) | pruned =    0 | dim = (64,)
+layer1.0.bn2.bias    | (  0.0%) | pruned =   64 | dim = (64,)
+layer1.1.conv1.weigh | (100.0%) | pruned =    0 | dim = (64, 64, 3, 3)
+layer1.1.bn1.weight  | (100.0%) | pruned =    0 | dim = (64,)
+layer1.1.bn1.bias    | (  0.0%) | pruned =   64 | dim = (64,)
+layer1.1.conv2.weigh | (100.0%) | pruned =    0 | dim = (64, 64, 3, 3)
+layer1.1.bn2.weight  | (100.0%) | pruned =    0 | dim = (64,)
+layer1.1.bn2.bias    | (  0.0%) | pruned =   64 | dim = (64,)
+layer2.0.conv1.weigh | (100.0%) | pruned =    0 | dim = (128, 64, 3, 3)
+layer2.0.bn1.weight  | (100.0%) | pruned =    0 | dim = (128,)
+layer2.0.bn1.bias    | (  0.0%) | pruned =  128 | dim = (128,)
+layer2.0.conv2.weigh | (100.0%) | pruned =    0 | dim = (128, 128, 3, 3)
+layer2.0.bn2.weight  | (100.0%) | pruned =    0 | dim = (128,)
+layer2.0.bn2.bias    | (  0.0%) | pruned =  128 | dim = (128,)
+layer2.0.downsample. | (100.0%) | pruned =    0 | dim = (128, 64, 1, 1)
+layer2.0.downsample. | (100.0%) | pruned =    0 | dim = (128,)
+layer2.0.downsample. | (  0.0%) | pruned =  128 | dim = (128,)
+layer2.1.conv1.weigh | (100.0%) | pruned =    0 | dim = (128, 128, 3, 3)
+layer2.1.bn1.weight  | (100.0%) | pruned =    0 | dim = (128,)
+layer2.1.bn1.bias    | (  0.0%) | pruned =  128 | dim = (128,)
+layer2.1.conv2.weigh | (100.0%) | pruned =    0 | dim = (128, 128, 3, 3)
+layer2.1.bn2.weight  | (100.0%) | pruned =    0 | dim = (128,)
+layer2.1.bn2.bias    | (  0.0%) | pruned =  128 | dim = (128,)
+layer3.0.conv1.weigh | (100.0%) | pruned =    0 | dim = (256, 128, 3, 3)
+layer3.0.bn1.weight  | (100.0%) | pruned =    0 | dim = (256,)
+layer3.0.bn1.bias    | (  0.0%) | pruned =  256 | dim = (256,)
+layer3.0.conv2.weigh | (100.0%) | pruned =    0 | dim = (256, 256, 3, 3)
+layer3.0.bn2.weight  | (100.0%) | pruned =    0 | dim = (256,)
+layer3.0.bn2.bias    | (  0.0%) | pruned =  256 | dim = (256,)
+layer3.0.downsample. | (100.0%) | pruned =    0 | dim = (256, 128, 1, 1)
+layer3.0.downsample. | (100.0%) | pruned =    0 | dim = (256,)
+layer3.0.downsample. | (  0.0%) | pruned =  256 | dim = (256,)
+layer3.1.conv1.weigh | (100.0%) | pruned =    0 | dim = (256, 256, 3, 3)
+layer3.1.bn1.weight  | (100.0%) | pruned =    0 | dim = (256,)
+layer3.1.bn1.bias    | (  0.0%) | pruned =  256 | dim = (256,)
+layer3.1.conv2.weigh | (100.0%) | pruned =    0 | dim = (256, 256, 3, 3)
+layer3.1.bn2.weight  | (100.0%) | pruned =    0 | dim = (256,)
+layer3.1.bn2.bias    | (  0.0%) | pruned =  256 | dim = (256,)
+layer4.0.conv1.weigh | (100.0%) | pruned =    1 | dim = (512, 256, 3, 3)
+layer4.0.bn1.weight  | (100.0%) | pruned =    0 | dim = (512,)
+layer4.0.bn1.bias    | (  0.0%) | pruned =  512 | dim = (512,)
+layer4.0.conv2.weigh | (100.0%) | pruned =    0 | dim = (512, 512, 3, 3)
+layer4.0.bn2.weight  | (100.0%) | pruned =    0 | dim = (512,)
+layer4.0.bn2.bias    | (  0.0%) | pruned =  512 | dim = (512,)
+layer4.0.downsample. | (100.0%) | pruned =    0 | dim = (512, 256, 1, 1)
+layer4.0.downsample. | (100.0%) | pruned =    0 | dim = (512,)
+layer4.0.downsample. | (  0.0%) | pruned =  512 | dim = (512,)
+layer4.1.conv1.weigh | (100.0%) | pruned =    0 | dim = (512, 512, 3, 3)
+layer4.1.bn1.weight  | (100.0%) | pruned =    0 | dim = (512,)
+layer4.1.bn1.bias    | (  0.0%) | pruned =  512 | dim = (512,)
+layer4.1.conv2.weigh | (100.0%) | pruned =    0 | dim = (512, 512, 3, 3)
+layer4.1.bn2.weight  | (100.0%) | pruned =    0 | dim = (512,)
+layer4.1.bn2.bias    | (  0.0%) | pruned =  512 | dim = (512,)
+fc.weight            | (100.0%) | pruned =    0 | dim = (10, 512)
+fc.bias              | (100.0%) | pruned =    0 | dim = (10,)
+alive: 11176841, pruned : 4801, total: 11181642, Compression rate :       1.00x  (  0.04% pruned)
+2023-05-16 21:58:28,657 - Compression level: 100.0
+2023-05-16 21:58:28,657 - Training iteration 0 / 5
+2023-05-16 21:58:28,657 - Training...
+\n#############################
+Tue 16 May 2023 10:00:35 PM EDT
+performance resnet18 MNIST 5 5 0
+
+\n#############################
+Tue 16 May 2023 10:01:02 PM EDT
+performance vgg16 MNIST 5 5 0
+
+\n#############################
+Tue 16 May 2023 10:01:38 PM EDT
+performance vgg16 MNIST 5 5 1
+
+\n#############################
+Tue 16 May 2023 10:02:15 PM EDT
+performance vgg16 CIFAR10 5 5 2
+
+>>>>>>> 9e4c2c493fa16e83699e9b72a9abdf705c7fefba
