@@ -43,6 +43,7 @@ class Activations:
         self.layers_dim = None
         self.layers_idx = None
         self.act_keys = None
+        self.hook_handles = None
 
     def hook_fn(self, m, i, o):
         """Assign the activations/mean of activations to a matrix
@@ -64,6 +65,14 @@ class Activations:
             # activation[m] = tmp
         else:
             self.activation[m] = tmp
+
+    def hook_layer_idx(self, item_key, hook_handles):
+        for module_idx, module in enumerate(self.model.named_modules()):
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                if (module_idx == item_key):
+                    hook_handles.append(module[1].register_forward_hook(self.hook_fn))
+                    self.layers_dim.append(module[1].weight.shape)
 
     def hook_all_layers(self, layers_dim, hook_handles):
         """ Hook a handle to all layers that are interesting to us, such as
@@ -117,14 +126,6 @@ class Activations:
             self.set_layers_idx()
         return self.layers_idx
 
-    def hook_layer_idx(self, item_key, hook_handles):
-        for module_idx, module in enumerate(self.model.named_modules()):
-            if isinstance(module[1], nn.Conv2d) or \
-                         isinstance(module[1], nn.Linear):
-                if (module_idx == item_key):
-                    hook_handles.append(module[1].register_forward_hook(self.hook_fn))
-                    self.layers_dim.append(module[1].weight.shape)
-
     def set_act_keys(self):
         layers_dim = []
         hook_handles = []
@@ -138,6 +139,7 @@ class Activations:
             act_keys = list(self.activation.keys())
 
         self.act_keys = act_keys
+        self.hook_handles = hook_handles
 
     def get_act_keys(self):
         if self.act_keys == None:
@@ -176,6 +178,10 @@ class Activations:
                                   detach().cpu().numpy())
                     child_arr.append(self.activation[act_keys[idx + 1]].\
                                  detach().cpu().numpy())
+
+
+            del self.activation[act_keys[idx]]
+            del self.hook_handles[idx]
 
             parent = np.vstack(parent_arr)
             parent = (parent - parent.mean(axis=0))

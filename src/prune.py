@@ -410,7 +410,8 @@ def perf_lth(logger, device, args, controller):
             if (train_iter == controller.c_epoch) and \
                 (imp_iter == controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
-                corr = act.get_correlations()
+                corr = act.get_corrs()
+                # corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
@@ -423,7 +424,8 @@ def perf_lth(logger, device, args, controller):
         # Calculate the connectivity
         # if (imp_iter <= controller.c_iter):
         activations = Activations(model, test_dl, device, args.batch_size)
-        pruning.corrs.append(activations.get_correlations())
+        # pruning.corrs.append(activations.get_correlations())
+        pruning.corrs.append(activations.get_corrs())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
