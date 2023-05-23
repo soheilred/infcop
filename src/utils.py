@@ -290,6 +290,7 @@ def get_yaml_args(args):
     args.imp_total_iter = int(exper_conf["imp_total_iter"])
     args.experiment_type = exper_conf["type"]
     args.gpu_id = int(exper_conf["gpu_id"])
+    args.num_exper = int(exper_conf["num_exper"])
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
     run_dir = get_run_dir(args)
     json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
