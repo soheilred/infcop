@@ -260,8 +260,8 @@ def get_args():
 
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
 
-    run_dir = get_run_dir(args)
-    json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
+    # run_dir = get_run_dir(args)
+    # json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
     return args
 
 
