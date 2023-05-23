@@ -26,7 +26,8 @@ echo "Modules loaded"
 
 . $CONDA_BIN/conda-init
 conda activate ib
-singularity run --nv /home/gharatappeh/images/pytorch.sif python ~/nips/src/prune.py "$@"
+cd /home/gharatappeh/nips
+singularity run --nv /home/gharatappeh/images/pytorch.sif python "$@"
 #+end_src
 echo "====================================================="
 date
