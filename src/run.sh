@@ -3,7 +3,7 @@
 # touch ../output/errors/batch-run.out
 
 LOG="../output/errors/batch-run.out"
-echo "\n#############################" >> $LOG
+echo "\n #############################" >> $LOG
 date >> $LOG
 echo "$@" >> $LOG
 

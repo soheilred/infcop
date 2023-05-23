@@ -10,9 +10,9 @@ import constants as C
 class Data:
     def __init__(self, batch_size, data_dir, dataset, transform=None):
         "Load the training DataLoader and the test DataLoader"
+        self.batch_size = batch_size
         self.train_kwargs = {'batch_size': batch_size}
         self.test_kwargs = {'batch_size': batch_size}
-        self.batch_size = batch_size
 
         if torch.cuda.is_available():
             cuda_kwargs = {'num_workers': 1,

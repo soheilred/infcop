@@ -28,6 +28,68 @@ performance vgg16 MNIST 5
 
 Submitted batch job 1092163
 Submitted batch job 1092164
+<<<<<<< HEAD
+#############################
+Thu May 11 13:45:40 EDT 2023
+performance vgg16 MNIST 5 10
+
+Submitted batch job 1092446
+Submitted batch job 1092447
+#############################
+Thu May 11 15:08:13 EDT 2023
+performance vgg16 MNIST 10 10
+
+Submitted batch job 1092450
+Submitted batch job 1092451
+#############################
+Tue May 16 21:20:37 EDT 2023
+performance resnet18 MNIST 10 10
+
+Submitted batch job 1093637
+Submitted batch job 1093638
+#############################
+Tue May 16 21:21:02 EDT 2023
+performance resnet18 CIFAR10 10 10
+
+Submitted batch job 1093639
+Submitted batch job 1093640
+#############################
+Tue May 16 21:24:32 EDT 2023
+performance vgg16 MNIST 10 10
+
+Submitted batch job 1093641
+Submitted batch job 1093642
+#############################
+Tue May 16 21:24:42 EDT 2023
+performance vgg16 CIFAR10 10 10
+
+Submitted batch job 1093643
+Submitted batch job 1093644
+#############################
+Tue May 16 21:29:02 EDT 2023
+performance resnet18 MNIST 10 5
+
+Submitted batch job 1093645
+Submitted batch job 1093646
+#############################
+Tue May 16 21:29:08 EDT 2023
+performance resnet18 CIFAR10 10 5
+
+Submitted batch job 1093647
+Submitted batch job 1093648
+#############################
+Tue May 16 21:29:12 EDT 2023
+performance vgg16 MNIST 10 5
+
+Submitted batch job 1093649
+Submitted batch job 1093650
+#############################
+Tue May 16 21:29:16 EDT 2023
+performance vgg16 CIFAR10 10 5
+
+Submitted batch job 1093651
+Submitted batch job 1093652
+=======
 \n#############################
 Tue 16 May 2023 09:57:17 PM EDT
 performance resnet18 MNIST 5 5 0
@@ -198,7 +260,11 @@ performance vgg16 MNIST 5 5 1
 Tue 16 May 2023 10:02:15 PM EDT
 performance vgg16 CIFAR10 5 5 2
 
+<<<<<<< HEAD
 \n#############################
 Mon 22 May 2023 10:28:41 PM EDT
 performance resnet18 CIFAR10 10 10 2
 
+=======
+>>>>>>> 9e4c2c493fa16e83699e9b72a9abdf705c7fefba
+>>>>>>> 5edbf17caad3705ad0066154b7c53d5ca581c65f

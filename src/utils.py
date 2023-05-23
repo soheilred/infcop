@@ -3,6 +3,8 @@ import torch
 import pickle
 import argparse
 import json
+import yaml
+import configparser
 from torch import nn
 import numpy as np
 import logging
@@ -74,7 +76,7 @@ def load_checkpoints(args):
 
     
 def get_device(args):
-    device = f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu"
+    device = f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu"
     logger.debug(f"Using {device} device")
     if torch.cuda.is_available():
         logger.debug("Name of the Cuda Device: " +
@@ -151,11 +153,16 @@ def print_nonzeros(model):
     #     print(name, param.size())
     return (round((nonzero / total) * 100, 1))
 
-def setup_logger_dir():
+def setup_logger_dir(args):
     Path(C.RUN_DIR).mkdir(parents=True, exist_ok=True)
+    run_dir = get_run_dir(args)
+    LOG_FILENAME = run_dir + 'out.log'
     logging.config.fileConfig(C.LOG_CONFIG_DIR,
-                              defaults={'logfilename': C.LOG_FILENAME})
-    return setup_logger()
+                              defaults={'logfilename': LOG_FILENAME})
+    logger = logging.getLogger("sampleLogger")
+    return logger
+    
+    # return setup_logger()
 
 def setup_logger():
     logging.config.fileConfig(C.LOG_CONFIG_DIR)
@@ -184,33 +191,21 @@ def get_args():
                                  'densenet', 'googlenet'], 
                         default='resnet18',
                         help='Architectures')
-    parser.add_argument('--mode', choices=['t','c','p','e','all'], default='all',
-                        help='modes: train, calc. conns, prune, finetune, or eval')
     parser.add_argument('--pretrained', type=str, default="True",
                         choices=["False","True"],
                         help='Start with a pretrained network?')
     parser.add_argument('--dataset', type=str,
                         choices=['CIFAR10', 'MNIST', 'IMAGENET', 'pmnist', '6splitcifar', '11splitcifar'],
                         default='MNIST', help='Name of dataset')
-    parser.add_argument('--single_task', action='store_true',
-                        default=False, help='Run only the current task')
-    parser.add_argument('--task_num', type=int, default=0,
-                        help='Current task number.')
     parser.add_argument('--run_id', type=str, default="000",
                         help='Id of current run.')
-    parser.add_argument('--num_outputs', type=int, default=-1,
-                        help='Num outputs for dataset')
     parser.add_argument('--cuda', action='store_true', default=True,
                         help='use CUDA')
-    parser.add_argument('--gpu', type=int, default=0,
+    parser.add_argument('--gpu_id', type=int, default=0,
                         help='gpu number to use')
     parser.add_argument('--cores', type=int, default=4,
                         help='Number of CPU cores.')
 
-    parser.add_argument('--save_prefix', type=str, default='../checkpoints/',
-                      help='Location to save model')
-    parser.add_argument('--loadname', type=str, default='',
-                      help='Location to save model')
     # Training options.
     parser.add_argument('--train_epochs', type=int, default=2,
                       help='Number of epochs to train for')
@@ -226,26 +221,11 @@ def get_args():
 
     parser.add_argument('--weight_decay', type=float, default=0.0,
                       help='Weight decay')
-
-    parser.add_argument('--Milestones', nargs='+', type=float,
-                        default=[30,60,90])
     
-    parser.add_argument('--Gamma', type=float, default=0.1)   
     # Pruning options.
-    parser.add_argument('--prune_method', type=str, default='sparse',
-                      choices=['sparse'], help='Pruning method to use')
-
     parser.add_argument('--prune_perc_per_layer', type=float, default=0.1,
                       help='% of neurons to prune per layer')
 
-    parser.add_argument('--finetune_epochs', type=int, default=2,
-                      help='Number of epochs to finetune for after pruning')
-
-    parser.add_argument('--freeze_perc', type=float, default=0.0)                   
-    parser.add_argument('--num_freeze_layers', type=int, default=0)     
-    parser.add_argument('--freeze_order', choices=['top','bottom', 'random'],
-                      default=['top'],
-                      help='Order of selection for layer freezing, by connectivity')
     # controller
     parser.add_argument('--control_at_iter', type=int, default=-1,
                       help='Iteration at which the controller is applied')
@@ -272,6 +252,9 @@ def get_args():
                         choices=["performance","efficiency"],
                         help='What type of LTH experiment you are running?')
 
+    parser.add_argument('--yaml_config', type=str, default="no",
+                        help="Address to the config file")
+
     args = parser.parse_args()
 
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
@@ -281,3 +264,35 @@ def get_args():
     return args
 
 
+def get_yaml_args(args):
+    if args.yaml_config == "no":
+        return
+    config_obj = configparser.ConfigParser()
+    config_obj.read(args.yaml_config)
+    network_conf = config_obj["network"]
+    control_conf = config_obj["control"]
+    exper_conf = config_obj["experiment"]
+    args.arch = network_conf["arch"]
+    args.dataset = network_conf["dataset"]
+    args.pretrained = network_conf["pretrained"]
+    args.lr = float(network_conf["lr"])
+    args.train_epochs = int(network_conf["train_epochs"])
+    args.train_per_epoch = int(network_conf["train_per_epoch"])
+    args.batch_size = int(network_conf["batch_size"])
+    args.weight_decay = float(network_conf["weight_decay"])
+    args.control_type = int(control_conf["control_type"])
+    args.control_at_iter = int(control_conf["control_at_iter"])
+    args.control_at_epoch = int(control_conf["control_at_epoch"])
+    args.control_at_layer = control_conf["control_at_layer"]
+    args.prune_perc_per_layer = float(exper_conf["prune_perc_per_layer"])
+    args.acc_thrd = int(exper_conf["acc_thrd"])
+    args.imp_total_iter = int(exper_conf["imp_total_iter"])
+    args.experiment_type = exper_conf["type"]
+    args.gpu_id = int(exper_conf["gpu_id"])
+    args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
+    run_dir = get_run_dir(args)
+    json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
+    logger.debug(yaml.dump(args.__dict__, default_flow_style=False))
+    return args
+
+    
