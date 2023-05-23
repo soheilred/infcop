@@ -217,10 +217,10 @@ def test(model, dataloader, loss_fn, device):
 
 def main():
     args = utils.get_args()
-    logger = utils.setup_logger()
-
-    # preparing the hardware
+    logger = utils.setup_logger_dir(args)
+    args = utils.get_yaml_args(args)
     device = utils.get_device(args)
+
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
     num_classes = data.get_num_classes()
