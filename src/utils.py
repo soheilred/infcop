@@ -179,8 +179,9 @@ def get_stability(in_measure):
 def get_run_dir(args):
     control = "no_cntr/" if args.control_at_iter == -1 else "cntr" + "/" +\
                         ("").join([str(l) for l in args.control_at_layer]) + "/"
+    cur_folder = (C.cur_time + "/" if C.cur_time != "" else "")
     run_dir = C.MODEL_ROOT_DIR + args.experiment_type + "/" + args.arch + "/" +\
-                args.dataset + "/" + control + C.cur_time + "/" 
+                args.dataset + "/" + control + cur_folder
     checkdir(run_dir)
     return run_dir
 
@@ -292,6 +293,7 @@ def get_yaml_args(args):
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
     run_dir = get_run_dir(args)
     json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
+    logger.debug(f"In dir: {run_dir}")
     logger.debug(yaml.dump(args.__dict__, default_flow_style=False))
     return args
 

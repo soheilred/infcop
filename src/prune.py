@@ -559,7 +559,6 @@ def main():
     args = utils.get_args()
     device = utils.get_device(args)
     run_dir = utils.get_run_dir(args)
-    logger.debug(f"Dir: {run_dir}")
     if args.experiment_type == "performance":
         perf_exper(logger, args, device, run_dir)
 
