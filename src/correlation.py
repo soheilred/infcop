@@ -181,7 +181,7 @@ class Activations:
 
 
             del self.activation[act_keys[idx]]
-            del self.hook_handles[idx]
+            del self.hook_handles.pop(0)
 
             parent = np.vstack(parent_arr)
             parent = (parent - parent.mean(axis=0))
