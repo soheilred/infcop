@@ -555,9 +555,11 @@ def effic_exper(logger, args, device, run_dir):
     utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
 
 def main():
-    logger = utils.setup_logger()
     args = utils.get_args()
+    logger = utils.setup_logger_dir(args)
+    args = utils.get_yaml_args(args)
     device = utils.get_device(args)
+
     run_dir = utils.get_run_dir(args)
     if args.experiment_type == "performance":
         perf_exper(logger, args, device, run_dir)
