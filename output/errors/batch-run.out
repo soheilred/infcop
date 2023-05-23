@@ -198,3 +198,7 @@ performance vgg16 MNIST 5 5 1
 Tue 16 May 2023 10:02:15 PM EDT
 performance vgg16 CIFAR10 5 5 2
 
+\n#############################
+Mon 22 May 2023 10:28:41 PM EDT
+performance resnet18 CIFAR10 10 10 2
+
