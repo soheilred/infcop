@@ -1,0 +1,9 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+Traceback (most recent call last):
+  File "src/prune.py", line 15, in <module>
+    from correlation import Activations
+  File "/home/gharatappeh/nips/src/correlation.py", line 184
+    del self.hook_handles.pop(0)
+        ^
+SyntaxError: cannot delete function call
