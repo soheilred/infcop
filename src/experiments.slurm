@@ -26,7 +26,7 @@ echo "Modules loaded"
 
 . $CONDA_BIN/conda-init
 conda activate ib
-cd /home/gharatappeh/nips
+# cd /home/gharatappeh/nips
 singularity run --nv /home/gharatappeh/images/pytorch.sif python "$@"
 #+end_src
 echo "====================================================="
