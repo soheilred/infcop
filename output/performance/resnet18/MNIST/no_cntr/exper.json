@@ -22,5 +22,5 @@
   "imp_total_iter": 10,
   "num_exper": 1,
   "experiment_type": "performance",
-  "yaml_config": "config.ini"
+  "yaml_config": "/home/gharatappeh/nips/src/config.ini"
 }

@@ -1,0 +1,3 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+python: can't open file 'prune.py': [Errno 2] No such file or directory

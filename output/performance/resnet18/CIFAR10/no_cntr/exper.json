@@ -6,7 +6,7 @@
   "cuda": true,
   "gpu_id": 0,
   "cores": 4,
-  "train_epochs": 3,
+  "train_epochs": 5,
   "train_per_epoch": 2,
   "lr": 0.001,
   "batch_size": 64,
@@ -18,7 +18,7 @@
     2
   ],
   "acc_thrd": 80,
-  "control_type": 3,
+  "control_type": 1,
   "imp_total_iter": 5,
   "num_exper": 1,
   "experiment_type": "performance",
