@@ -1,6 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 525.85.12
-  File "/home/gharatappeh/nips/src/prune.py", line 620
-    if (imp_iter =< controller.c_iter):
-                 ^
-SyntaxError: invalid syntax
