@@ -378,15 +378,15 @@ class Pruner:
                          isinstance(module[1], nn.Linear):
                 if (idx == layer_idx):
                     # weight = module[1].weight.detach().cpu().numpy()
-                    import ipdb; ipdb.set_trace()
                     weight = module[1].weight.data
+                    mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
-                    control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
-                    # new_weight = torch.from_numpy((weight * control_weights).astype("float32")).to(weight_dev)
+                    # control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
+                    new_weight = torch.from_numpy((mod_weight * control_weights).astype("float32")).to(weight_dev)
                     # module[1].weight = torch.nn.Parameter(new_weight,
                     #                                        dtype=torch.float,
                     #                                        device=weight_dev)
-                    weight = weight * control_weights
+                    weight = new_weight
                     break
                 idx += 1
 
