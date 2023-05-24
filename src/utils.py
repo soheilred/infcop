@@ -246,8 +246,8 @@ def get_args():
     parser.add_argument('--imp_total_iter', type=int, default=10,
                       help='Number of iteration at IMP')
 
-    parser.add_argument('--num_trail', type=int, default=1,
-                      help='Number of trails')
+    parser.add_argument('--num_trial', type=int, default=1,
+                      help='Number of trials')
 
     parser.add_argument('--experiment_type', type=str, default="performance",
                         choices=["performance","efficiency"],
@@ -290,7 +290,7 @@ def get_yaml_args(args):
     args.imp_total_iter = int(exper_conf["imp_total_iter"])
     args.experiment_type = exper_conf["type"]
     args.gpu_id = int(exper_conf["gpu_id"])
-    args.num_trail = int(exper_conf["num_trail"])
+    args.num_trial = int(exper_conf["num_trial"])
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
     run_dir = get_run_dir(args)
     json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
