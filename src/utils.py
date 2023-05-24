@@ -146,7 +146,7 @@ def print_nonzeros(model):
         nonzero += nz_count
         total += total_params
         # print(f'{name:10} | nz = {nz_count:4} / {total_params:5} ({100 * nz_count / total_params:6.2f}%) | pruned = {total_params - nz_count :4} | shape = {tensor.shape}')
-        print(f'{name[:20]: <20} | ({100 * nz_count / total_params:5.1f}%) | pruned = {total_params - nz_count :4} | dim = {tensor.shape}')
+        print(f'{name[:30]: <30} | ({100 * nz_count / total_params:5.1f}%) | pruned = {total_params - nz_count :4} | dim = {tensor.shape}')
     print(f'alive: {nonzero}, pruned : {total - nonzero}, total: {total}, Compression rate : {total/nonzero:10.2f}x  ({100 * (total-nonzero) / total:6.2f}% pruned)')
     # # Layer Looper
     # for name, param in model.named_parameters():

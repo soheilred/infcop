@@ -56,14 +56,11 @@ class Pruner:
         self.corrs = []
         self.controller = controller
         self.num_layers = 0
-        self.task_num = 0
-        self.total_tasks = total_tasks
         self.train_loader = train_dataloader
         self.test_loader = test_dataloader
         self.comp_level = np.zeros(args.imp_total_iter, float)
         self.all_acc = np.zeros([args.imp_total_iter, args.train_epochs], float)
         self.init_state_dict = None
-        self.all_task_masks = {}
         # self.init_dump()
 
     def weight_init(self, m):
@@ -211,7 +208,6 @@ class Pruner:
 
     def prune_once(self, initial_state_dict):
         self.prune_by_percentile()
-        # todo: why do we need an initialization here?
         self.reset_weights_to_init(initial_state_dict)
 
 
@@ -334,33 +330,55 @@ class Pruner:
         # model.eval()
         weights = {}
 
-        ind = 0
-        for name, param in model.named_parameters():
-            if ("weight" in name and 
-               ("conv" in name or "fc" in name or "features" in name)):
-                if ind in self.controller.c_layers:
-                    log.debug(f"weights at layer {ind} in iteration {imp_iter} is added")
-                    weights[ind] = param.data
-                ind += 1
-            if ind > max(self.controller.c_layers):
-                break
+        idx = 0
+        for module_idx, module in enumerate(self.model.named_modules()):
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                if (idx in self.controller.c_layers):
+                    weights[ind] = module[1].weight
+                idx += 1
+        # for name, param in model.named_parameters():
+        #     if ("weight" in name and 
+        #        ("conv" in name or "fc" in name or "features" in name or\
+        #         "downsample" in name)):
+        #         if ind in self.controller.c_layers:
+        #             log.debug(f"weights at layer {ind} in iteration {imp_iter} is added")
+        #             weights[ind] = param.data
+        #         ind += 1
+        #     if ind > max(self.controller.c_layers):
+        #         break
 
         return weights
 
 
-    def apply_controller(self, control_weights, layer_ind):
-        ind = 0
+    def apply_controller(self, control_weights, layer_idx):
+        idx = 0
         # get a handle to the layer's weights
 
         # for module_idx, module in enumerate(self.model.shared.modules()):
         #     if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
                 # if module.weight.grad is not None:
                 #     module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
-        for name, param in self.model.named_parameters():
-            if ("weight" in name and 
-               ("conv" in name or "fc" in name or "features" in name)):
-                if ind == layer_ind:
-                    weight = param.data.cpu().numpy()
+
+        # for name, param in self.model.named_parameters():
+        #     if ("weight" in name and 
+        #        ("conv" in name or "fc" in name or "features" in name)):
+        #         if ind == layer_ind:
+        #             weight = param.data.cpu().numpy()
+        #             # weight = param.data
+        #             weight_dev = param.device
+        #             # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
+        #             param.data = torch.from_numpy((weight * control_weights).astype("float32")).to(weight_dev)
+        #             # new_weights = torch.mul(weight, control_weights)
+        #             # param.data = new_weights.to(weight_dev)
+        #             break
+        #         ind += 1
+
+        for module_idx, module in enumerate(self.model.named_modules()):
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                if (idx == layer_idx):
+                    weight = module[1].weight.detach().cpu().numpy()
                     # weight = param.data
                     weight_dev = param.device
                     # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
@@ -368,9 +386,7 @@ class Pruner:
                     # new_weights = torch.mul(weight, control_weights)
                     # param.data = new_weights.to(weight_dev)
                     break
-                ind += 1
-        # weight = self.model.features[layer_list].weight.data.cpu().numpy()
-        # cur_weights = layer_param.data.cpu().numpy()
+                idx += 1
 
 def perf_lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
