@@ -308,7 +308,6 @@ class Pruner:
                 control_weights = np.exp(control_weights) /\
                     np.exp(control_weights).sum()
 
-            import ipdb; ipdb.set_trace()
             self.apply_controller(control_weights, ind)
 
 
@@ -379,12 +378,8 @@ class Pruner:
                          isinstance(module[1], nn.Linear):
                 if (idx == layer_idx):
                     weight = module[1].weight.detach().cpu().numpy()
-                    # weight = param.data
                     weight_dev = param.device
-                    # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
                     module[1].weight = torch.from_numpy((weight * control_weights).astype("float32")).to(weight_dev)
-                    # new_weights = torch.mul(weight, control_weights)
-                    # param.data = new_weights.to(weight_dev)
                     break
                 idx += 1
 
