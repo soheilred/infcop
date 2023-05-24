@@ -308,6 +308,9 @@ class Pruner:
                 control_weights = np.exp(control_weights) /\
                     np.exp(control_weights).sum()
 
+            if (self.controller.c_type == 5):
+                control_weights = np.exp(abs(control_weights))
+
             self.apply_controller(control_weights, ind)
 
 
