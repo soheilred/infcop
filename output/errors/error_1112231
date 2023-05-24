@@ -1,0 +1,17 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [14:24<57:37, 864.50s/it] 20%|██        | 1/5 [23:06<1:32:25, 1386.32s/it]
+Traceback (most recent call last):
+  File "prune.py", line 600, in <module>
+    
+  File "prune.py", line 590, in main
+    
+  File "prune.py", line 547, in perf_exper
+    
+  File "prune.py", line 440, in perf_lth
+    act = Activations(model, test_dl, device, args.batch_size)
+  File "prune.py", line 311, in control
+    if (self.controller.c_type == 5):
+  File "prune.py", line 385, in apply_controller
+    mod_weight = weight.cpu().numpy()
+ValueError: operands could not be broadcast together with shapes (512,256,1,1) (512,512,1,1) 

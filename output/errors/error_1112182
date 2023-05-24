@@ -1,0 +1,24 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+Traceback (most recent call last):
+  File "prune.py", line 593, in <module>
+    main()
+  File "prune.py", line 583, in main
+    perf_exper(logger, args, device, run_dir)
+  File "prune.py", line 540, in perf_exper
+    all_acc, conn = perf_lth(logger, device, args, controller)
+  File "prune.py", line 394, in perf_lth
+    model = network.set_model()
+  File "/home/gharatappeh/nips/src/network.py", line 129, in set_model
+    self.model = self.model.to(self.device)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 987, in to
+    return self._apply(convert)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 639, in _apply
+    module._apply(fn)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 662, in _apply
+    param_applied = fn(param)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 985, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+RuntimeError: CUDA error: invalid device ordinal
+CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.

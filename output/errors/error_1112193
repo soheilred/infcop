@@ -1,0 +1,19 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [14:39<58:38, 879.71s/it] 20%|██        | 1/5 [23:30<1:34:01, 1410.37s/it]
+Traceback (most recent call last):
+  File "prune.py", line 593, in <module>
+    main()
+  File "prune.py", line 583, in main
+    perf_exper(logger, args, device, run_dir)
+  File "prune.py", line 540, in perf_exper
+    all_acc, conn = perf_lth(logger, device, args, controller)
+  File "prune.py", line 433, in perf_lth
+    pruning.control(corr, act.layers_dim, imp_iter)
+  File "prune.py", line 311, in control
+    self.apply_controller(control_weights, ind)
+  File "prune.py", line 382, in apply_controller
+    module[1].weight = torch.from_numpy((weight * control_weights).astype("float32")).to(weight_dev)
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1286, in __setattr__
+    raise TypeError("cannot assign '{}' as parameter '{}' "
+TypeError: cannot assign 'torch.cuda.FloatTensor' as parameter 'weight' (torch.nn.Parameter or None expected)
