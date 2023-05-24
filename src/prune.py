@@ -303,13 +303,13 @@ class Pruner:
                 control_weights = abs(connectivity[ind]) # * prev_weight
 
             # type 4
-            if (self.controller.c_type == 4):
+            elif (self.controller.c_type == 4):
                 control_weights = abs(prev_corr)
                 control_weights = np.exp(control_weights) /\
                     np.exp(control_weights).sum()
 
-            if (self.controller.c_type == 5):
-                control_weights = np.exp(abs(control_weights))
+            elif (self.controller.c_type == 5):
+                control_weights = np.exp(abs(prev_corr))
 
             self.apply_controller(control_weights, ind)
 
