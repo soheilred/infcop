@@ -335,7 +335,7 @@ class Pruner:
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
                 if (idx in self.controller.c_layers):
-                    weights[ind] = module[1].weight
+                    weights[idx] = module[1].weight
                 idx += 1
         # for name, param in model.named_parameters():
         #     if ("weight" in name and 
