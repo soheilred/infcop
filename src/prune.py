@@ -312,6 +312,7 @@ class Pruner:
                 control_weights = np.exp(control_weights) /\
                     np.exp(control_weights).sum()
 
+            import ipdb; ipdb.set_trace()
             self.apply_controller(control_weights, ind)
 
 
@@ -523,8 +524,8 @@ def perf_exper(logger, args, device, run_dir):
     acc_list = []
     conn_list = []
 
-    for i in range(args.num_trail):
-        logger.debug(f"In experiment {i} / {args.num_trail}")
+    for i in range(args.num_trial):
+        logger.debug(f"In experiment {i} / {args.num_trial}")
         all_acc, conn = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
@@ -545,8 +546,8 @@ def effic_exper(logger, args, device, run_dir):
     acc_list = []
     conn_list = []
 
-    for i in range(args.num_trail):
-        logger.debug(f"In experiment {i} / {args.num_trail}")
+    for i in range(args.num_trial):
+        logger.debug(f"In experiment {i} / {args.num_trial}")
         all_acc, conn = effic_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
