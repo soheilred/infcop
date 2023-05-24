@@ -379,7 +379,8 @@ class Pruner:
                 if (idx == layer_idx):
                     weight = module[1].weight.detach().cpu().numpy()
                     weight_dev = module[1].weight.device
-                    module[1].weight = torch.from_numpy((weight * control_weights).astype("float32")).to(weight_dev)
+                    new_weight = torch.from_numpy((weight * control_weights).astype("float32")).to(weight_dev)
+                    module[1].weight = torch.nn.Parameters(new_weight).to(weight_dev)
                     break
                 idx += 1
 
