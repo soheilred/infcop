@@ -309,6 +309,7 @@ class Pruner:
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
         # the + 1 is for matching to the connectivity's dimension
         weights = control_corrs[imp_iter - 1][ind]
+        print("controller weight shape", weights.shape)
         kernel_size = layers_dim[ind][-1]
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(1, 2).transpose(0, 3)
@@ -342,6 +343,7 @@ class Pruner:
                 if (idx == layer_idx):
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
+                    print("network's weight shape", weight.shape)
                     mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
                     # control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
