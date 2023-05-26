@@ -1,3 +1,17 @@
 13:4: not a valid test operator: (
 13:4: not a valid test operator: 525.85.12
-  0%|          | 0/5 [00:00<?, ?it/s]
+  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [13:24<53:39, 804.98s/it] 20%|██        | 1/5 [21:27<1:25:48, 1287.24s/it]
+Traceback (most recent call last):
+  File "prune.py", line 603, in <module>
+    main()
+  File "prune.py", line 593, in main
+    perf_exper(logger, args, device, run_dir)
+  File "prune.py", line 550, in perf_exper
+    all_acc, conn = perf_lth(logger, device, args, controller)
+  File "prune.py", line 443, in perf_lth
+    pruning.control(corr, act.layers_dim, imp_iter)
+  File "prune.py", line 314, in control
+    self.apply_controller(control_weights, ind)
+  File "prune.py", line 388, in apply_controller
+    new_weight = torch.from_numpy((mod_weight * control_weights).astype("float32")).to(weight_dev)
+ValueError: operands could not be broadcast together with shapes (512,256,1,1) (512,512,1,1) 
