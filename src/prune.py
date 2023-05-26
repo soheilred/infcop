@@ -331,43 +331,11 @@ class Pruner:
                 if (idx in self.controller.c_layers):
                     weights[idx] = module[1].weight
                 idx += 1
-        # for name, param in model.named_parameters():
-        #     if ("weight" in name and 
-        #        ("conv" in name or "fc" in name or "features" in name or\
-        #         "downsample" in name)):
-        #         if ind in self.controller.c_layers:
-        #             log.debug(f"weights at layer {ind} in iteration {imp_iter} is added")
-        #             weights[ind] = param.data
-        #         ind += 1
-        #     if ind > max(self.controller.c_layers):
-        #         break
-
         return weights
 
 
     def apply_controller(self, control_weights, layer_idx):
         idx = 0
-        # get a handle to the layer's weights
-
-        # for module_idx, module in enumerate(self.model.shared.modules()):
-        #     if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                # if module.weight.grad is not None:
-                #     module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
-
-        # for name, param in self.model.named_parameters():
-        #     if ("weight" in name and 
-        #        ("conv" in name or "fc" in name or "features" in name)):
-        #         if ind == layer_ind:
-        #             weight = param.data.cpu().numpy()
-        #             # weight = param.data
-        #             weight_dev = param.device
-        #             # contr_mask = (np.ones(weight.shape) * coef).astype("float32")
-        #             param.data = torch.from_numpy((weight * control_weights).astype("float32")).to(weight_dev)
-        #             # new_weights = torch.mul(weight, control_weights)
-        #             # param.data = new_weights.to(weight_dev)
-        #             break
-        #         ind += 1
-
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
