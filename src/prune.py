@@ -302,13 +302,12 @@ class Pruner:
             elif (self.controller.c_type == 5):
                 control_weights = np.exp(abs(prev_corr))
 
-            import ipdb; ipdb.set_trace()
             self.apply_controller(control_weights, ind)
 
 
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
         # the + 1 is for matching to the connectivity's dimension
-        weights = control_corrs[imp_iter - 1][ind]
+        weights = control_corrs[imp_iter - 1][ind - 1]
         print("controller weight shape", weights.shape)
         kernel_size = layers_dim[ind][-1]
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
@@ -316,6 +315,7 @@ class Pruner:
                                # transpose(1, 2).transpose(0, 3).transpose(0, 1)
         weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
                                transpose(3, 2, 1, 0)
+        print("controller weight shape", weights.shape)
         return weights
 
 
