@@ -210,7 +210,6 @@ class Pruner:
         self.prune_by_percentile()
         self.reset_weights_to_init(initial_state_dict)
 
-
     def make_grads_zero(self):
         """Sets grads of fixed weights to 0.
             During training this is called to avoid storing gradients for the
@@ -264,14 +263,6 @@ class Pruner:
 
         self.model.eval()
    
-    def find_unstable_layers(self, control_corrs):
-        control_corrs = np.array(control_corrs[1])
-        # mid = abs(np.median(control_corrs[1]))
-        thrsh = 100
-        unstable_layers = np.where(np.abs(control_corrs) > thrsh)[0]
-        return unstable_layers
-
-
     def control(self, corr, layers_dim, imp_iter):
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
