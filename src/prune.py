@@ -343,6 +343,7 @@ class Pruner:
                 if (idx == layer_idx):
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
+                    import ipdb; ipdb.set_trace()
                     print("network's weight shape", weight.shape)
                     mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
