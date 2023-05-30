@@ -283,7 +283,7 @@ def get_yaml_args(args):
     args.batch_size = int(network_conf["batch_size"])
     args.weight_decay = float(network_conf["weight_decay"])
     args.control_type = int(control_conf["control_type"])
-    args.control_at_iter = int(control_conf["control_at_iter"])
+    # args.control_at_iter = int(control_conf["control_at_iter"])
     args.control_at_epoch = int(control_conf["control_at_epoch"])
     args.control_at_layer = control_conf["control_at_layer"]
     args.prune_perc_per_layer = float(exper_conf["prune_perc_per_layer"])
