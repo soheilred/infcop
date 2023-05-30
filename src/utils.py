@@ -259,6 +259,7 @@ def get_args():
     args = parser.parse_args()
 
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
+    args.control_at_iter = [int(l) for l in args.control_at_iter.split(" ")]
 
     # run_dir = get_run_dir(args)
     # json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
@@ -291,7 +292,10 @@ def get_yaml_args(args):
     args.experiment_type = exper_conf["type"]
     args.gpu_id = int(exper_conf["gpu_id"])
     args.num_trial = int(exper_conf["num_trial"])
+
     args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
+    args.control_at_iter = [int(l) for l in args.control_at_iter.split(" ")]
+
     run_dir = get_run_dir(args)
     json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
     logger.debug(f"In dir: {run_dir}")
