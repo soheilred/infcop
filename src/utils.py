@@ -228,7 +228,7 @@ def get_args():
                       help='% of neurons to prune per layer')
 
     # controller
-    parser.add_argument('--control_at_iter', type=int, default=-1,
+    parser.add_argument('--control_at_iter', type=str, default=-1,
                       help='Iteration at which the controller is applied')
 
     parser.add_argument('--control_at_epoch', type=int, default=2,
