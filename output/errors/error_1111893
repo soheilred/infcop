@@ -1,15 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 470.129.06
-  0%|          | 0/5 [00:00<?, ?it/s]  0%|          | 0/5 [11:39<?, ?it/s]
-Traceback (most recent call last):
-  File "/home/gharatappeh/nips/src/prune.py", line 575, in <module>
-    main()
-  File "/home/gharatappeh/nips/src/prune.py", line 565, in main
-    perf_exper(logger, args, device, run_dir)
-  File "/home/gharatappeh/nips/src/prune.py", line 522, in perf_exper
-    all_acc, conn = perf_lth(logger, device, args, controller)
-  File "/home/gharatappeh/nips/src/prune.py", line 428, in perf_lth
-    pruning.corrs.append(activations.get_corrs())
-  File "/home/gharatappeh/nips/src/correlation.py", line 184, in get_corrs
-    del self.hook_handles[idx]
-IndexError: list assignment index out of range
