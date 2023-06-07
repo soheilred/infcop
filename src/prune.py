@@ -282,7 +282,7 @@ class Pruner:
 
             # type 1
             if (self.controller.c_type == 1):
-                control_weights = abs(prev_corr)
+                control_weights = abs(prev_corr) / np.linalg.norm(prev_corr)
 
             # type 2
             elif (self.controller.c_type == 2):
