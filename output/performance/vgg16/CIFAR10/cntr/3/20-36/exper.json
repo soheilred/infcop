@@ -1,0 +1,31 @@
+{
+  "arch": "vgg16",
+  "pretrained": "True",
+  "dataset": "CIFAR10",
+  "run_id": "000",
+  "cuda": true,
+  "gpu_id": 0,
+  "cores": 4,
+  "train_epochs": 5,
+  "train_per_epoch": 2,
+  "lr": 0.001,
+  "batch_size": 64,
+  "weight_decay": 0.0,
+  "prune_perc_per_layer": 0.1,
+  "control_at_iter": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "control_at_epoch": 1,
+  "control_at_layer": [
+    3
+  ],
+  "acc_thrd": 80,
+  "control_type": 3,
+  "imp_total_iter": 5,
+  "num_trial": 3,
+  "experiment_type": "performance",
+  "yaml_config": "config.ini"
+}
