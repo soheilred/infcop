@@ -52,6 +52,21 @@ class Data:
                 transform=self.transform
                 )
 
+        elif dataset == "CIFAR100":
+            training_data = datasets.CIFAR100(
+                root=data_dir,
+                train=True,
+                download=True,
+                transform=self.transform
+                )
+
+            test_data = datasets.CIFAR100(
+                root=data_dir,
+                train=False,
+                download=True,
+                transform=self.transform
+                )
+
         elif dataset == "IMAGENET":
             data_dir = C.DATA_DIR + 'tiny-imagenet-200' 
             train_dir = os.path.join(data_dir, 'train')

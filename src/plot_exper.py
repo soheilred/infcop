@@ -8,10 +8,10 @@ import os
 import numpy as np
 
 
-def making_plots_perf(arch, dataset, layer, exper_cntr, exper_no_cntr):
+def making_plots_perf(arch, dataset, exper_cntr, exper_no_cntr):
     print(arch, dataset)
     no_cntr_dir = f"../output/performance/{arch}/{dataset}/no_cntr/" + exper_no_cntr
-    cntr_dir = f"../output/performance/{arch}/{dataset}/cntr/{layer}/" + exper_cntr
+    cntr_dir = f"../output/performance/{arch}/{dataset}/cntr/" + exper_cntr
 
     labels = [f"{arch} w. $\phi$", f"{arch} w.o. $\phi$"]
     if not os.path.exists(no_cntr_dir):
@@ -76,15 +76,15 @@ def main():
     ARCHS=["resnet18", "vgg16"]
     DATASETS=["MNIST", "CIFAR10"]
 
-    exper_cntr = ["", "13-32/", "13-38/", "13-56/", "08-52/"]
+    exper_cntr = ["", "03-50/"]
     exper_no_cntr = [""]
 
-    layer = 9
+    layer = 18
 
     # exper_cntr = ""
     # exper_no_cntr = ""
 
-    making_plots_perf(ARCHS[0], DATASETS[1], layer, exper_cntr[-1],
+    making_plots_perf(ARCHS[0], DATASETS[1], f"{layer}/{exper_cntr[-1]}",
                       exper_no_cntr[-1])
     # making_plots_efficiency(ARCHS[2], DATASETS[1])
     # for arch in ARCHS:

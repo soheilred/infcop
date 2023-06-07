@@ -204,7 +204,7 @@ def plot_connectivity(conns, filename):
     axs.set_xticks(major_ticks)
     # axs.set_xlim([1, len(epochs[0])])
     axs.set_title("Accuracy of network in training")
-    axs.set(xlabel="Layer index", ylabel="Training accuracy")
+    axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.grid()
     plt.savefig(filename + ".png")
 

@@ -29,7 +29,6 @@ class Controller:
         self.c_epoch = args.control_at_epoch
 
 
-
 class Pruner:
     def __init__(self, args, model, train_dataloader=None, test_dataloader=None,
                  controller=None, total_tasks=None, all_task_masks=None): 
