@@ -380,7 +380,7 @@ def perf_lth(logger, device, args, controller):
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
         # Print the table of Nonzeros in each layer
-        comp_level = utils.print_nonzeros(model)
+        # comp_level = utils.print_nonzeros(model)
         pruning.comp_level[imp_iter] = comp_level
         logger.debug(f"Compression level: {comp_level}")
 
@@ -451,7 +451,7 @@ def effic_lth(logger, device, args, controller):
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
         # Print the table of Nonzeros in each layer
-        comp_level = utils.print_nonzeros(model)
+        # comp_level = utils.print_nonzeros(model)
         pruning.comp_level[imp_iter] = comp_level
         logger.debug(f"Compression level: {comp_level}")
 
