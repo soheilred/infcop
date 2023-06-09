@@ -74,17 +74,17 @@ def making_plots_eff(arch, dataset):
 
 def main():
     ARCHS=["resnet18", "vgg16"]
-    DATASETS=["MNIST", "CIFAR10"]
+    DATASETS=["MNIST", "CIFAR10", "CIFAR100"]
 
-    exper_cntr = ["", "03-50/"]
-    exper_no_cntr = [""]
+    exper_cntr = ["", "23-57/"]
+    exper_no_cntr = ["", "22-23/"]
 
-    layer = 18
+    layer = 3
 
     # exper_cntr = ""
     # exper_no_cntr = ""
 
-    making_plots_perf(ARCHS[0], DATASETS[1], f"{layer}/{exper_cntr[-1]}",
+    making_plots_perf(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
                       exper_no_cntr[-1])
     # making_plots_efficiency(ARCHS[2], DATASETS[1])
     # for arch in ARCHS:
