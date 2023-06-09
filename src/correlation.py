@@ -277,10 +277,10 @@ class Activations:
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
                 for i in range(num_layers):
-                    act_means[i] += torch.sum(self.activation[act_keys[i]],
+                    act_means[i] += torch.sum(torch.nan_to_num(self.activation[act_keys[i]]),
                                               dim=0) 
                     act_sq_sum[i] += torch.sum(
-                            torch.pow(self.activation[act_keys[i]], 2), dim=0)
+                            torch.pow(torch.nan_to_num(self.activation[act_keys[i]]), 2), dim=0)
                     act_max[i] = abs(torch.max(act_max[i],
                                      abs(torch.max(self.activation[act_keys[i]]))))
 
@@ -294,8 +294,9 @@ class Activations:
             for i in range(num_layers):
                 sign = torch.sign(act_max[i])
                 act_max[i] = sign * max(abs(act_max[i]), 0.001)
+                act_sd[i] = sign * max(abs(act_sd[i]), 0.001)
             # logging.debug(f"activation mean: {act_means}")
-            # logging.debug(f"activation sd: {act_sd}")
+            logging.debug(f"# nans in activation sd: {torch.nonzero(torch.isnan(act_sd.view(-1)))}")
             logging.debug(f"activation max: {act_max}")
 
             for batch, (X, y) in enumerate(self.dataloader):
@@ -307,9 +308,9 @@ class Activations:
 
                 for i in range(num_layers - 1):
                     f0 = ((self.activation[act_keys[i]] - act_means[i]) /\
-                          act_max[i]).T
+                          act_sd[i]).T
                     f1 = (self.activation[act_keys[i + 1]] - act_means[i + 1])/\
-                          act_max[i + 1]
+                          act_sd[i + 1]
                     corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
 
         for i in range(num_layers - 1):
