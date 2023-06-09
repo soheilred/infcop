@@ -297,7 +297,7 @@ class Activations:
                 act_sd[i] = torch.max(act_sd[i], 0.001 * \
                                       torch.ones(act_sd[i].shape).to(self.device))
                 # logging.debug(f"nans in activation sd layer {i}: {torch.isnan(act_sd[i]).any()}")
-                logging.debug(f"nans in activation sd layer {i}: {torch.nonzero(torch.isnan(act_sd[i].view(-1)))}")
+                logging.debug(f"nans in activation sd layer {i}: {torch.sum(torch.isnan(act_sd[i].view(-1)))}")
             # logging.debug(f"activation mean: {act_means}")
             # logging.debug(f"# nans in activation sd: {torch.nonzero(torch.isnan(act_sd.view(-1)))}")
             # logging.debug(f"activation max: {act_max}")
