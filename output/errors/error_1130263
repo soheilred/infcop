@@ -1,0 +1,13 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+  0%|          | 0/10 [00:00<?, ?it/s]  0%|          | 0/10 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "prune.py", line 566, in <module>
+    main()
+  File "prune.py", line 556, in main
+    perf_exper(logger, args, device, run_dir)
+  File "prune.py", line 513, in perf_exper
+    all_acc, conn = perf_lth(logger, device, args, controller)
+  File "prune.py", line 386, in perf_lth
+    pruning.comp_level[imp_iter] = comp_level
+NameError: name 'comp_level' is not defined
