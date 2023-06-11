@@ -306,7 +306,8 @@ class Pruner:
 
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
         # the + 1 is for matching to the connectivity's dimension
-        weights = control_corrs[imp_iter - 1][ind - 1]
+        # weights = control_corrs[imp_iter - 1][ind - 1]
+        weights = control_corrs[0][ind - 1]
         print("controller weight shape", weights.shape)
         kernel_size = layers_dim[ind][-1]
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
