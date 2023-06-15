@@ -290,7 +290,7 @@ class Pruner:
 
             # type 3
             elif (self.controller.c_type == 3):
-                control_weights = abs(connectivity[ind]) # * prev_weight
+                control_weights = 10 * abs(connectivity[ind]) # * prev_weight
 
             # type 4
             elif (self.controller.c_type == 4):
