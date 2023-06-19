@@ -367,7 +367,7 @@ def perf_lth(logger, device, args, controller):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     # warm up the pretrained model
-    acc, _ = train(model, train_dl, loss_fn, optimizer, 100, device)
+    acc, _ = train(model, train_dl, loss_fn, optimizer, 10, device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
