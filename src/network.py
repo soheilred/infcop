@@ -158,6 +158,7 @@ class Network():
         # self.fc = nn.Linear(512 * block.expansion, num_classes)
 
 def train(model, dataloader, loss_fn, optimizer, epochs, device):
+    model.train()
     log.debug('Training...')
     size = len(dataloader.dataset)
 
