@@ -290,7 +290,7 @@ class Pruner:
 
             # type 3
             elif (self.controller.c_type == 3):
-                control_weights = 10 * abs(connectivity[ind]) # * prev_weight
+                control_weights = 100 * abs(connectivity[ind]) # * prev_weight
 
             # type 4
             elif (self.controller.c_type == 4):
@@ -302,6 +302,26 @@ class Pruner:
                 control_weights = np.exp(abs(prev_corr))
 
             self.apply_controller(control_weights, ind)
+
+    def apply_controller(self, control_weights, layer_idx):
+        idx = 0
+        for module_idx, module in enumerate(self.model.named_modules()):
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                if (idx == layer_idx):
+                    # weight = module[1].weight.detach().cpu().numpy()
+                    weight = module[1].weight.data
+                    print("network's weight shape", weight.shape)
+                    mod_weight = weight.cpu().numpy()
+                    weight_dev = module[1].weight.device
+                    # control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
+                    new_weight = torch.from_numpy((mod_weight * control_weights).astype("float32")).to(weight_dev)
+                    # module[1].weight = torch.nn.Parameter(new_weight,
+                    #                                        dtype=torch.float,
+                    #                                        device=weight_dev)
+                    weight = new_weight
+                    break
+                idx += 1
 
 
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
@@ -334,26 +354,6 @@ class Pruner:
                 idx += 1
         return weights
 
-
-    def apply_controller(self, control_weights, layer_idx):
-        idx = 0
-        for module_idx, module in enumerate(self.model.named_modules()):
-            if isinstance(module[1], nn.Conv2d) or \
-                         isinstance(module[1], nn.Linear):
-                if (idx == layer_idx):
-                    # weight = module[1].weight.detach().cpu().numpy()
-                    weight = module[1].weight.data
-                    print("network's weight shape", weight.shape)
-                    mod_weight = weight.cpu().numpy()
-                    weight_dev = module[1].weight.device
-                    # control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
-                    new_weight = torch.from_numpy((mod_weight * control_weights).astype("float32")).to(weight_dev)
-                    # module[1].weight = torch.nn.Parameter(new_weight,
-                    #                                        dtype=torch.float,
-                    #                                        device=weight_dev)
-                    weight = new_weight
-                    break
-                idx += 1
 
 def perf_lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
