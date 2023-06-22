@@ -301,7 +301,6 @@ class Pruner:
             elif (self.controller.c_type == 5):
                 control_weights = np.exp(abs(prev_corr))
 
-            import ipdb; ipdb.set_trace()
             self.apply_controller(control_weights, ind)
 
     def apply_controller(self, control_weights, layer_idx):
