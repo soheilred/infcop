@@ -1,0 +1,32 @@
+{
+  "arch": "resnet18",
+  "pretrained": "False",
+  "dataset": "CIFAR100",
+  "run_id": "000",
+  "cuda": true,
+  "gpu_id": 0,
+  "cores": 4,
+  "train_epochs": 20,
+  "train_per_epoch": 2,
+  "lr": 0.001,
+  "batch_size": 64,
+  "weight_decay": 0.0,
+  "prune_perc_per_layer": 0.1,
+  "control_at_iter": [
+    -1
+  ],
+  "control_at_epoch": 1,
+  "control_at_layer": [
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "acc_thrd": 80,
+  "control_type": 3,
+  "imp_total_iter": 5,
+  "num_trial": 3,
+  "experiment_type": "performance",
+  "yaml_config": "config.ini"
+}
