@@ -1,0 +1,28 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [29:44<1:58:58, 1784.66s/it] 20%|██        | 1/5 [36:16<2:25:04, 2176.11s/it]
+Traceback (most recent call last):
+  File "prune.py", line 568, in <module>
+  File "prune.py", line 558, in main
+  File "prune.py", line 515, in perf_exper
+    acc_list.append(all_acc)
+  File "prune.py", line 408, in perf_lth
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+  File "prune.py", line 305, in control
+  File "prune.py", line 305, in control
+  File "/usr/lib/python3.8/bdb.py", line 88, in trace_dispatch
+    return self.dispatch_line(frame)
+  File "/usr/lib/python3.8/bdb.py", line 113, in dispatch_line
+    if self.quitting: raise BdbQuit
+bdb.BdbQuit
+
+If you suspect this is an IPython 8.6.0 bug, please report it at:
+    https://github.com/ipython/ipython/issues
+or send an email to the mailing list at ipython-dev@python.org
+
+You can print a more detailed traceback right now with "%tb", or use "%debug"
+to interactively debug it.
+
+Extra-detailed tracebacks for bug-reporting purposes can be enabled via:
+    %config Application.verbose_crash=True
+
