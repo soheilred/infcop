@@ -290,7 +290,7 @@ class Pruner:
 
             # type 3
             elif (self.controller.c_type == 3):
-                control_weights = 100000 * abs(connectivity[ind]) / max(connectivity) # * prev_weight
+                control_weights = 100 * abs(connectivity[ind]) / max(connectivity) # * prev_weight
 
             # type 4
             elif (self.controller.c_type == 4):
@@ -319,6 +319,9 @@ class Pruner:
                     # module[1].weight = torch.nn.Parameter(new_weight,
                     #                                        dtype=torch.float,
                     #                                        device=weight_dev)
+                    print("control weight", np.linalg.norm(control_weights))
+                    print("old weight", torch.linalg.norm(weights))
+                    print("new weight", torch.linalg.norm(new_weights))
                     weight = new_weight
                     break
                 idx += 1
@@ -367,7 +370,7 @@ def perf_lth(logger, device, args, controller):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     # warm up the pretrained model
-    acc, _ = train(model, train_dl, loss_fn, optimizer, 50, device)
+    # acc, _ = train(model, train_dl, loss_fn, optimizer, 50, device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
