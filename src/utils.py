@@ -211,6 +211,9 @@ def get_args():
     parser.add_argument('--train_epochs', type=int, default=2,
                       help='Number of epochs to train for')
 
+    parser.add_argument('--warmup_train', type=int, default=20,
+                      help='Number of epochs to perform warmup training')
+
     parser.add_argument('--train_per_epoch', type=int, default=2,
                       help='Number of epochs to train for')
 
@@ -280,6 +283,7 @@ def get_yaml_args(args):
     args.lr = float(network_conf["lr"])
     args.train_epochs = int(network_conf["train_epochs"])
     args.train_per_epoch = int(network_conf["train_per_epoch"])
+    args.warmup_train = int(network_conf["warmup_train"])
     args.batch_size = int(network_conf["batch_size"])
     args.weight_decay = float(network_conf["weight_decay"])
     args.control_type = int(control_conf["control_type"])
