@@ -637,11 +637,8 @@ def main():
     logger = utils.setup_logger_dir(args)
     args = utils.get_yaml_args(args)
     device = utils.get_device(args)
-
     run_dir = utils.get_run_dir(args)
-
-    else:
-        sys.exit("Wrong experiment type")
+    run_experiment(logger, args, device, run_dir)
 
 
 if __name__ == '__main__':
