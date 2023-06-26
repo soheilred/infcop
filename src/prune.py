@@ -395,7 +395,7 @@ def perf_lth(logger, device, args, controller):
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     # warm up the pretrained model
     acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
 
@@ -407,7 +407,7 @@ def perf_lth(logger, device, args, controller):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -435,7 +435,7 @@ def perf_lth(logger, device, args, controller):
                 # corr = act.get_corrs()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
@@ -463,7 +463,7 @@ def perf_correlation_lth(logger, device, args, controller):
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     # warm up the pretrained model
     acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
 
@@ -477,7 +477,7 @@ def perf_correlation_lth(logger, device, args, controller):
             act = Activations(model, test_dl, device, args.batch_size)
             corr = act.get_correlations()
             pruning.prune_once(init_state_dict, correlation=corr)
-            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -505,7 +505,7 @@ def perf_correlation_lth(logger, device, args, controller):
                 # corr = act.get_corrs()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
@@ -533,7 +533,7 @@ def eff_lth(logger, device, args, controller):
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
@@ -548,7 +548,7 @@ def eff_lth(logger, device, args, controller):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -582,7 +582,7 @@ def eff_lth(logger, device, args, controller):
                 act = Activations(model, test_dl, device, args.batch_size)
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
             # increment the training iterator
