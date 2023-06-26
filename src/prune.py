@@ -193,6 +193,7 @@ class Pruner:
             # We do not prune bias term
             if 'weight' in name:
                 tensor = param.data.cpu().numpy()
+                import ipdb; ipdb.set_trace()
                 # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
                 percentile_value = np.percentile(abs(correlation), self.prune_perc)
 
@@ -603,7 +604,7 @@ def eff_lth(logger, device, args, controller):
     return all_acc, connectivity
     
 def run_experiment(logger, args, device, run_dir):
-    logger.debug("####### In performance experiment #######")
+    logger.debug(f"####### In {args.experiment_type} experiment #######")
     controller = Controller(args)
     acc_list = []
     conn_list = []
