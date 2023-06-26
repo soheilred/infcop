@@ -394,7 +394,7 @@ def perf_lth(logger, device, args, controller):
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # warm up the pretrained model
     acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
 
@@ -452,7 +452,7 @@ def perf_lth(logger, device, args, controller):
 
     return pruning.all_acc, connectivity
     
-def perf_connectivity_lth(logger, device, args, controller):
+def perf_correlation_lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
@@ -462,7 +462,7 @@ def perf_connectivity_lth(logger, device, args, controller):
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # warm up the pretrained model
     acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
 
@@ -522,7 +522,7 @@ def perf_connectivity_lth(logger, device, args, controller):
 
     return pruning.all_acc, connectivity
     
-def effic_lth(logger, device, args, controller):
+def eff_lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
@@ -532,7 +532,7 @@ def effic_lth(logger, device, args, controller):
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
@@ -602,7 +602,7 @@ def effic_lth(logger, device, args, controller):
 
     return all_acc, connectivity
     
-def perf_exper(logger, args, device, run_dir):
+def run_experiment(logger, args, device, run_dir):
     logger.debug("####### In performance experiment #######")
     controller = Controller(args)
     acc_list = []
@@ -610,7 +610,15 @@ def perf_exper(logger, args, device, run_dir):
 
     for i in range(args.num_trial):
         logger.debug(f"In experiment {i} / {args.num_trial}")
-        all_acc, conn = perf_lth(logger, device, args, controller)
+        if args.experiment_type == "performance":
+            all_acc, conn = perf_lth(logger, device, args, controller)
+
+        elif args.experiment_type == "efficiency":
+            all_acc, conn = eff_lth(logger, device, args, controller)
+
+        elif args.experiment_type == "pcorr":
+            all_acc, conn = perf_correlation_lth(logger, device, args, controller)
+
         acc_list.append(all_acc)
         conn_list.append(conn)
         utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
@@ -624,27 +632,6 @@ def perf_exper(logger, args, device, run_dir):
     # utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
     utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list)
 
-def effic_exper(logger, args, device, run_dir):
-    logger.debug("####### In efficiency experiemnt #######")
-    controller = Controller(args)
-    acc_list = []
-    conn_list = []
-
-    for i in range(args.num_trial):
-        logger.debug(f"In experiment {i} / {args.num_trial}")
-        all_acc, conn = effic_lth(logger, device, args, controller)
-        acc_list.append(all_acc)
-        conn_list.append(conn)
-        utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
-                        all_accuracies=all_acc)
-        # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
-        #                             "all_accuracies")
-
-    # all_acc = np.mean(acc_list, axis=0)
-    # conn = np.mean(conn_list, axis=0)
-    # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
-    utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
-
 def main():
     args = utils.get_args()
     logger = utils.setup_logger_dir(args)
@@ -652,11 +639,6 @@ def main():
     device = utils.get_device(args)
 
     run_dir = utils.get_run_dir(args)
-    if args.experiment_type == "performance":
-        perf_exper(logger, args, device, run_dir)
-
-    elif args.experiment_type == "efficiency":
-        effic_exper(logger, args, device, run_dir)
 
     else:
         sys.exit("Wrong experiment type")
