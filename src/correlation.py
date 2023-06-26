@@ -168,8 +168,6 @@ class Activations:
             parent_arr = []
             child_arr = []
 
-            # add the sample's activation to the array
-
             with torch.no_grad():
                 for batch, (X, y) in enumerate(self.dataloader):
                     X, y = X.to(self.device), y.to(self.device)
@@ -178,7 +176,6 @@ class Activations:
                                   detach().cpu().numpy())
                     child_arr.append(self.activation[act_keys[idx + 1]].\
                                  detach().cpu().numpy())
-
 
             del self.activation[act_keys[idx]]
             self.hook_handles.pop(0)
@@ -283,7 +280,6 @@ class Activations:
                             torch.pow(torch.nan_to_num(self.activation[act_keys[i]]), 2), dim=0)
                     act_max[i] = abs(torch.max(act_max[i],
                                      abs(torch.max(self.activation[act_keys[i]]))))
-
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
             act_sd = [torch.pow(act_sq_sum[i] / ds_size -

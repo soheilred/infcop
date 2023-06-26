@@ -31,7 +31,7 @@ class Controller:
 
 class Pruner:
     def __init__(self, args, model, train_dataloader=None, test_dataloader=None,
-                 controller=None, total_tasks=None, all_task_masks=None): 
+                 controller=None, correlation=None): 
         """Prune the network.
         Parameters
         ----------
@@ -54,6 +54,7 @@ class Pruner:
         self.prune_perc = args.prune_perc_per_layer * 100
         self.corrs = []
         self.controller = controller
+        self.correlation = correlation
         self.num_layers = 0
         self.train_loader = train_dataloader
         self.test_loader = test_dataloader
@@ -184,6 +185,27 @@ class Pruner:
             if "bias" in name:
                 param.data = initial_state_dict[name]
 
+    def prune_by_correlation(self, correlation):
+        # Calculate percentile value
+        layer_id = 0
+        for name, param in self.model.named_parameters():
+
+            # We do not prune bias term
+            if 'weight' in name:
+                tensor = param.data.cpu().numpy()
+                # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
+                percentile_value = np.percentile(abs(correlation), self.prune_perc)
+
+                # Convert Tensors to numpy and calculate
+                weight_dev = param.device
+                new_mask = np.where(abs(correlation[layer_id]) < percentile_value, 0,
+                                    self.mask[layer_id])
+
+                # Apply new weight and mask
+                param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
+                self.mask[layer_id] = new_mask
+                layer_id += 1
+
     def prune_by_percentile(self):
         # Calculate percentile value
         layer_id = 0
@@ -205,8 +227,12 @@ class Pruner:
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
-    def prune_once(self, initial_state_dict):
-        self.prune_by_percentile()
+    def prune_once(self, initial_state_dict, correlation=None):
+
+        if correlation != None:
+            self.prune_by_correlation(correlation)
+        else:
+            self.prune_by_percentile()
         self.reset_weights_to_init(initial_state_dict)
 
     def make_grads_zero(self):
@@ -380,6 +406,76 @@ def perf_lth(logger, device, args, controller):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
+            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                         weight_decay=1e-4)
+
+        logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
+
+        # Print the table of Nonzeros in each layer
+        comp_level = utils.print_nonzeros(model)
+        pruning.comp_level[imp_iter] = comp_level
+        logger.debug(f"Compression level: {comp_level}")
+
+        # Training the network
+        for train_iter in range(args.train_epochs):
+
+            # Training
+            logger.debug(f"Training iteration {train_iter} / {args.train_epochs}")
+            acc, loss = train(model, train_dl, loss_fn, optimizer, 
+                              args.train_per_epoch, device)
+
+            # Test and save the most accurate model
+            accuracy = test(model, test_dl, loss_fn, device)
+
+            # apply the controller after some epochs and some iterations
+            if (train_iter == controller.c_epoch) and \
+                (imp_iter in controller.c_iter):
+                act = Activations(model, test_dl, device, args.batch_size)
+                # corr = act.get_corrs()
+                corr = act.get_correlations()
+                pruning.control(corr, act.layers_dim, imp_iter)
+                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                             weight_decay=1e-4)
+
+            pruning.all_acc[imp_iter, train_iter] = accuracy
+
+        # Save model
+        utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
+
+        # Calculate the connectivity
+        # if (imp_iter <= controller.c_iter):
+        activations = Activations(model, test_dl, device, args.batch_size)
+        # pruning.corrs.append(activations.get_corrs())
+        pruning.corrs.append(activations.get_correlations())
+        connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
+        # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
+
+    return pruning.all_acc, connectivity
+    
+def perf_connectivity_lth(logger, device, args, controller):
+    ITERATION = args.imp_total_iter               # 35 was the default
+    run_dir = utils.get_run_dir(args)
+    data = Data(args.batch_size, C.DATA_DIR, args.dataset)
+    train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    num_classes = data.get_num_classes()
+
+    network = Network(device, args.arch, num_classes, args.pretrained)
+    model = network.set_model()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    # warm up the pretrained model
+    acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
+
+    pruning = Pruner(args, model, train_dl, test_dl, controller)
+    init_state_dict = pruning.init_lth()
+    connectivity = []
+
+    for imp_iter in tqdm(range(ITERATION)):
+        # except for the first iteration, cuz we don't prune in the first iteration
+        if imp_iter != 0:
+            act = Activations(model, test_dl, device, args.batch_size)
+            corr = act.get_correlations()
+            pruning.prune_once(init_state_dict, correlation=corr)
             optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
 
