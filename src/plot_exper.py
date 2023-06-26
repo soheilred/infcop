@@ -76,8 +76,8 @@ def main():
     ARCHS=["resnet18", "vgg16"]
     DATASETS=["MNIST", "CIFAR10", "CIFAR100"]
 
-    exper_cntr = ["", "22-37/"]
-    exper_no_cntr = ["", "22-39/"]
+    exper_cntr = ["", "11-29/"]
+    exper_no_cntr = ["", "11-51/"]
 
     layer = 23456
 
