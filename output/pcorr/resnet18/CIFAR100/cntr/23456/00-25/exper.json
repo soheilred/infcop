@@ -31,6 +31,6 @@
   "control_type": 3,
   "imp_total_iter": 5,
   "num_trial": 3,
-  "experiment_type": "performance",
+  "experiment_type": "pcorr",
   "yaml_config": "config.ini"
 }

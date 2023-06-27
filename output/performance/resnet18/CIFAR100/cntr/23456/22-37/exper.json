@@ -6,7 +6,7 @@
   "cuda": true,
   "gpu_id": 0,
   "cores": 4,
-  "train_epochs": 40,
+  "train_epochs": 10,
   "warmup_train": 10,
   "train_per_epoch": 2,
   "lr": 0.001,

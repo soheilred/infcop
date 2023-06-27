@@ -14,10 +14,7 @@
   "weight_decay": 0.0,
   "prune_perc_per_layer": 0.1,
   "control_at_iter": [
-    1,
-    2,
-    3,
-    4
+    -1
   ],
   "control_at_epoch": 1,
   "control_at_layer": [

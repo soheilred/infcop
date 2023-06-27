@@ -1,0 +1,6 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+  File "prune.py", line 643
+    else:
+    ^
+SyntaxError: invalid syntax
