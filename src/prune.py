@@ -487,7 +487,7 @@ def perf_correlation_lth(logger, device, args, controller):
         if imp_iter != 0:
             act = Activations(model, test_dl, device, args.batch_size)
             corr = act.get_correlations()
-            layers_idx = act.get_layers_idx
+            layers_idx = act.get_layers_idx()
             pruning.prune_once(init_state_dict, corr_con=[corr, layers_idx])
             optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
