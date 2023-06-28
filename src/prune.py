@@ -239,7 +239,7 @@ class Pruner:
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
-    def prune_once(self, initial_state_dict, correlation=None):
+    def prune_once(self, initial_state_dict, corr_con=None):
 
         if correlation != None:
             self.prune_by_correlation(correlation)
