@@ -241,7 +241,7 @@ class Pruner:
 
     def prune_once(self, initial_state_dict, corr_con=None):
 
-        if correlation != None:
+        if corr_con != None:
             self.prune_by_correlation(correlation)
         else:
             self.prune_by_percentile()
