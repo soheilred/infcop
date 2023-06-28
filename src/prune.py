@@ -188,17 +188,25 @@ class Pruner:
     def prune_by_correlation(self, correlation):
         # Calculate percentile value
         layer_id = 0
-        for name, param in self.model.named_parameters():
+        # for name, param in self.model.named_parameters():
 
+        for module in self.model.named_modules():
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
             # We do not prune bias term
-            if 'weight' in name:
-                tensor = param.data.cpu().numpy()
                 import ipdb; ipdb.set_trace()
-                # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
-                percentile_value = np.percentile(abs(correlation), self.prune_perc)
+                weight = module[1].weight.data
+                weight = weight.cpu().numpy()
+                weight_dev = module[1].weight.device
 
+                # tensor = param.data.cpu().numpy()
+                alive = tensor[np.nonzero(weight)] # flattened array of nonzero values
+                percentile_value = np.percentile(abs(correlation[layer_id]), self.prune_perc)
+
+                kernel_size = self.mask[layer_id].shape[-1]
+                weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
+                                    transpose(3, 2, 1, 0)
                 # Convert Tensors to numpy and calculate
-                weight_dev = param.device
                 new_mask = np.where(abs(correlation[layer_id]) < percentile_value, 0,
                                     self.mask[layer_id])
 
