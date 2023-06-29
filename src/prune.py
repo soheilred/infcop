@@ -194,7 +194,6 @@ class Pruner:
         for module in self.model.named_modules():
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
-                import ipdb; ipdb.set_trace()
                 if layer_id in layer_idx:
                     # We do not prune bias term
                     weight = module[1].weight.data
@@ -216,7 +215,7 @@ class Pruner:
                     # Apply new weight and mask
                     param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
                     self.mask[layer_id] = new_mask
-                layer_id += 1
+            layer_id += 1
 
     def prune_by_percentile(self):
         # Calculate percentile value
@@ -233,6 +232,7 @@ class Pruner:
                 weight_dev = param.device
                 new_mask = np.where(abs(tensor) < percentile_value, 0,
                                     self.mask[layer_id])
+                new_mask = np.zeros(tensor.shape)
 
                 # Apply new weight and mask
                 param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
