@@ -232,7 +232,7 @@ class Pruner:
                 weight_dev = param.device
                 new_mask = np.where(abs(tensor) < percentile_value, 0,
                                     self.mask[layer_id])
-                new_mask = np.zeros(tensor.shape)
+                new_mask = np.zeros(tensor.shape, dtype='float32')
 
                 # Apply new weight and mask
                 param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
@@ -417,7 +417,10 @@ def perf_lth(logger, device, args, controller):
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
+            import ipdb; ipdb.set_trace()
+            utils.print_nonzeros(model)
             pruning.prune_once(init_state_dict)
+            utils.print_nonzeros(model)
             optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
 
