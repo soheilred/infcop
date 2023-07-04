@@ -1,0 +1,13 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [21:01<1:24:05, 1261.30s/it] 20%|██        | 1/5 [21:01<1:24:05, 1261.30s/it]
+Traceback (most recent call last):
+  File "prune.py", line 658, in <module>
+    main()
+  File "prune.py", line 654, in main
+    run_experiment(logger, args, device, run_dir)
+  File "prune.py", line 633, in run_experiment
+    all_acc, conn = perf_correlation_lth(logger, device, args, controller)
+  File "prune.py", line 491, in perf_correlation_lth
+    pruning.prune_once(init_state_dict, corr_con=[corr, layers_idx])
+UnboundLocalError: local variable 'corr' referenced before assignment

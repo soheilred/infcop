@@ -1,0 +1,32 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 470.129.06
+  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [20:07<1:20:29, 1207.36s/it] 40%|████      | 2/5 [41:43<1:02:58, 1259.65s/it] 40%|████      | 2/5 [41:43<1:02:35, 1251.81s/it]
+Traceback (most recent call last):
+  File "prune.py", line 659, in <module>
+  File "prune.py", line 655, in main
+    
+  File "prune.py", line 628, in run_experiment
+    
+  File "prune.py", line 421, in perf_lth
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+  File "prune.py", line 248, in prune_once
+    self.reset_weights_to_init(initial_state_dict)
+  File "prune.py", line 229, in prune_by_percentile
+    percentile_value = np.percentile(abs(alive), self.prune_perc)
+  File "<__array_function__ internals>", line 180, in percentile
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/function_base.py", line 4134, in percentile
+    return _quantile_unchecked(
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/function_base.py", line 4383, in _quantile_unchecked
+    r, k = _ureduce(a,
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/function_base.py", line 3702, in _ureduce
+    r = func(a, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/function_base.py", line 4552, in _quantile_ureduce_func
+    result = _quantile(arr,
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/function_base.py", line 4658, in _quantile
+    take(arr, indices=-1, axis=DATA_AXIS)
+  File "<__array_function__ internals>", line 180, in take
+  File "/usr/local/lib/python3.8/dist-packages/numpy/core/fromnumeric.py", line 190, in take
+    return _wrapfunc(a, 'take', indices, axis=axis, out=out, mode=mode)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/core/fromnumeric.py", line 57, in _wrapfunc
+    return bound(*args, **kwds)
+IndexError: cannot do a non-empty take from an empty axes.
