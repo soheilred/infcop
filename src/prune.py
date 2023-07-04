@@ -417,10 +417,7 @@ def perf_lth(logger, device, args, controller):
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
-            import ipdb; ipdb.set_trace()
-            utils.print_nonzeros(model)
             pruning.prune_once(init_state_dict)
-            utils.print_nonzeros(model)
             optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
 
@@ -429,7 +426,7 @@ def perf_lth(logger, device, args, controller):
         # Print the table of Nonzeros in each layer
         comp_level = utils.print_nonzeros(model)
         pruning.comp_level[imp_iter] = comp_level
-        logger.debug(f"Compression level: {comp_level}")
+        logger.debug(f"Nonzero percentage: {comp_level}")
 
         # Training the network
         for train_iter in range(args.train_epochs):
