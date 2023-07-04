@@ -485,9 +485,9 @@ def perf_correlation_lth(logger, device, args, controller):
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
-            act = Activations(model, test_dl, device, args.batch_size)
-            corr = act.get_correlations()
-            layers_idx = act.get_layers_idx()
+            # act = Activations(model, test_dl, device, args.batch_size)
+            # corr = act.get_correlations()
+            # layers_idx = act.get_layers_idx()
             pruning.prune_once(init_state_dict, corr_con=[corr, layers_idx])
             optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
@@ -501,15 +501,6 @@ def perf_correlation_lth(logger, device, args, controller):
 
         # Training the network
         for train_iter in range(args.train_epochs):
-
-            # Training
-            logger.debug(f"Training iteration {train_iter} / {args.train_epochs}")
-            acc, loss = train(model, train_dl, loss_fn, optimizer, 
-                              args.train_per_epoch, device)
-
-            # Test and save the most accurate model
-            accuracy = test(model, test_dl, loss_fn, device)
-
             # apply the controller after some epochs and some iterations
             if (train_iter == controller.c_epoch) and \
                 (imp_iter in controller.c_iter):
@@ -519,6 +510,15 @@ def perf_correlation_lth(logger, device, args, controller):
                 pruning.control(corr, act.layers_dim, imp_iter)
                 optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
+
+
+            # Training
+            logger.debug(f"Training iteration {train_iter} / {args.train_epochs}")
+            acc, loss = train(model, train_dl, loss_fn, optimizer, 
+                              args.train_per_epoch, device)
+
+            # Test and save the most accurate model
+            accuracy = test(model, test_dl, loss_fn, device)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
