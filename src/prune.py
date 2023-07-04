@@ -324,7 +324,7 @@ class Pruner:
 
             # type 2
             elif (self.controller.c_type == 2):
-                control_weights = torch.mul(prev_corr, prev_weight)
+                control_weights = abs(torch.mul(prev_corr, prev_weight)) / max(connectivity)
 
             # type 3
             elif (self.controller.c_type == 3):
