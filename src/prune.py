@@ -232,7 +232,8 @@ class Pruner:
                 weight_dev = param.device
                 new_mask = np.where(abs(tensor) < percentile_value, 0,
                                     self.mask[layer_id])
-                new_mask = np.zeros_like(tensor) #.shape, dtype='float32')
+                new_mask = np.zeros(tensor.shape, dtype='float32')
+                # new_mask = np.zeros_like(tensor) #.shape, dtype='float32')
 
                 # Apply new weight and mask
                 param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
