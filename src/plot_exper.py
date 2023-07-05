@@ -76,7 +76,7 @@ def main():
     ARCHS=["resnet18", "vgg16"]
     DATASETS=["MNIST", "CIFAR10", "CIFAR100"]
 
-    exper_cntr = ["", "11-35/"]
+    exper_cntr = ["", "11-11/"]
     exper_no_cntr = ["", "16-05/"]
 
     layer = 3

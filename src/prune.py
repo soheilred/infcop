@@ -575,7 +575,7 @@ def eff_lth(logger, device, args, controller):
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
                 # if (accuracy > args.acc_thrd * max_acc / 100.0):
-                if (accuracy > (args.acc_thrd / 100.0)):
+                if (accuracy > (args.acc_thrd)):
                     break
 
             # Training
@@ -588,7 +588,7 @@ def eff_lth(logger, device, args, controller):
 
             logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
                          f"{train_iter[imp_iter]}, thsd: "
-                         f"{args.acc_thrd / 100.0}")
+                         f"{args.acc_thrd}")
 
             # apply the controller after some epochs and some iterations
             if (train_iter[imp_iter] == controller.c_epoch) and \
