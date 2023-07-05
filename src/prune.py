@@ -328,7 +328,7 @@ class Pruner:
 
             # type 3
             elif (self.controller.c_type == 3):
-                control_weights = 100 * abs(connectivity[ind]) / max(connectivity) # * prev_weight
+                control_weights = abs(connectivity[ind]) / max(connectivity) # * prev_weight
 
             # type 4
             elif (self.controller.c_type == 4):
@@ -575,20 +575,20 @@ def eff_lth(logger, device, args, controller):
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
                 # if (accuracy > args.acc_thrd * max_acc / 100.0):
-                if (accuracy > args.acc_thrd / 100.0):
+                if (accuracy > (args.acc_thrd / 100.0)):
                     break
 
             # Training
-            logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
-                         f"{train_iter[imp_iter]}, thsd: "
-                         f"{args.acc_thrd * max_acc / 100.0}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
                               args.train_per_epoch, device)
 
             # Test and save the most accurate model
-            logger.debug("Testing...")
             accuracy = test(model, test_dl, loss_fn, device)
             acc_list.append(accuracy)
+
+            logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
+                         f"{train_iter[imp_iter]}, thsd: "
+                         f"{args.acc_thrd / 100.0}")
 
             # apply the controller after some epochs and some iterations
             if (train_iter[imp_iter] == controller.c_epoch) and \
