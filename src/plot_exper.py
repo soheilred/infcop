@@ -43,7 +43,7 @@ def making_plots_perf(arch, dataset, exper_cntr, exper_no_cntr):
 
 
 def making_plots_eff(arch, dataset, exper_cntr, exper_no_cntr):
-    no_cntr_dir = f"../output/efficiency/{arch}/{dataset}/no_cntr/" + exper_no_cntr
+    no_cntr_dir = f"../output/efficiency/{arch}/{dataset}/cntr/" + exper_no_cntr
     cntr_dir = f"../output/efficiency/{arch}/{dataset}/cntr/" + exper_cntr
     labels = [f"{arch} w. $\phi$", f"{arch} w.o. $\phi$"]
 
@@ -62,13 +62,15 @@ def making_plots_eff(arch, dataset, exper_cntr, exper_no_cntr):
     # print([np.where(np.array(exp) > 88.0)[0][0] for exp in no_cntr_all_acc])
     print([len(exp) for exp in cntr_all_acc])
     print([len(exp) for exp in no_cntr_all_acc])
+    print(np.mean([[len(exp) for exp in trial] for trial in cntr_all_acc], axis=0))
+    print(np.mean([[len(exp) for exp in trial] for trial in no_cntr_all_acc], axis=0))
     # cntr_all_acc = np.array([acc for exp in cntr_all_acc for acc in exp])
     # no_cntr_all_acc = np.array([acc for exp in no_cntr_all_acc for acc in exp])
-    print(cntr_all_acc)
-    print(no_cntr_all_acc)
+    # print(cntr_all_acc)
+    # print(no_cntr_all_acc)
 
     # plot_tool.plot_multi_all_accuracy([no_cntr_all_acc, cntr_all_acc], labels,
-    #                                   args, no_cntr_dir + "../" +  "all_accuracies")
+    #                                   args, cntr_dir + "all_accuracies")
     # plot_tool.plot_connectivity(cntr_conn, no_cntr_dir + "../" +  "conn")
     # plot_tool.plot_connectivity(no_cntr_conn, no_cntr_dir + "../" + "no_conn")
     # plot_tool.plot_connectivity(conn)
@@ -78,23 +80,19 @@ def main():
     ARCHS=["resnet18", "vgg16"]
     DATASETS=["MNIST", "CIFAR10", "CIFAR100"]
 
-    exper_cntr = ["", "11-11/"]
-    exper_no_cntr = ["", "16-05/"]
+    exper_cntr = ["", "02-30/"]
+    exper_no_cntr = ["", "02-35/"]
 
     layer = 3
 
     # exper_cntr = ""
     # exper_no_cntr = ""
 
-    making_plots_perf(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
-                      exper_no_cntr[-1])
-    # making_plots_efficiency(ARCHS[2], DATASETS[1])
-    # for arch in ARCHS:
-    #     for dataset in DATASETS:
-    #         making_plots(arch, dataset)
+    # making_plots_perf(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
+    #                   exper_no_cntr[-1])
 
-
-    making_plots_eff(ARCHS[1], DATASETS[1])
+    making_plots_eff(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
+                      f"{layer}/{exper_no_cntr[-1]}")
 
 if __name__ == '__main__':
     main()
