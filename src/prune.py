@@ -320,7 +320,7 @@ class Pruner:
 
             # type 1
             if (self.controller.c_type == 1):
-                control_weights = - abs(prev_corr) / max(connectivity)
+                control_weights = abs(prev_corr) / max(connectivity)
 
             # type 2
             elif (self.controller.c_type == 2):
@@ -337,7 +337,7 @@ class Pruner:
                     np.exp(control_weights).sum()
 
             elif (self.controller.c_type == 5):
-                control_weights = np.exp(abs(prev_corr))
+                control_weights = np.exp(abs(prev_corr) / max(connectivity))
 
             self.apply_controller(control_weights, ind)
 
@@ -352,6 +352,9 @@ class Pruner:
                     print("network's weight shape", weight.shape)
                     mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
+                    if mod_weight.shape != control_weights.shape:
+                        log.debug(f"Shape of matrices do not match in layer {layer_idx}")
+                        return
                     # control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
                     new_weight = torch.from_numpy((mod_weight * control_weights).astype("float32")).to(weight_dev)
                     # module[1].weight = torch.nn.Parameter(new_weight,
