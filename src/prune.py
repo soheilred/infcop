@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 import torchvision.datasets as datasets
 import torch.nn.init as init
+from torch.nn.functional import normalize
 import pickle
 import sys
 
@@ -363,7 +364,7 @@ class Pruner:
                     print("control weight", np.linalg.norm(control_weights))
                     print("old weight", torch.linalg.norm(weight))
                     print("new weight", torch.linalg.norm(new_weight))
-                    weight = new_weight
+                    weight = normalize(new_weight, p=1.0)
                     break
                 idx += 1
 
