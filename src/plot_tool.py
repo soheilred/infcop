@@ -196,7 +196,9 @@ def plot_connectivity(conns, filename):
         axs.plot(xdata, conns[i], marker=filled_markers[i],
                  linestyle=linestyles[i % len(linestyles)],
                  label=f"Iter {i}",
-                 alpha=.5) 
+                 alpha=.5 + i * 0.1,
+                 linewidth=0.5 + i * 0.2
+                 ) 
     fig.tight_layout(pad=2.0)
     plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
@@ -206,6 +208,39 @@ def plot_connectivity(conns, filename):
     axs.set_title("Accuracy of network in training")
     axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.grid()
+    plt.savefig(filename + ".png")
+
+
+ 
+def compare_connectivities(conns, no_conns, filename):
+    num_exper = len(conns)
+    fig, axs = plt.subplots(num_exper, figsize=(5, 10))
+    xdata = np.arange(1, len(conns[0]) + 1)
+    major_ticks = np.arange(1, len(conns[0]) + 1, 3)
+
+    for i in range(len(conns)):
+        axs[i].plot(xdata, conns[i], marker=filled_markers[0],
+                 linestyle=linestyles[0 % len(linestyles)],
+                 # label=f"Iter {i}",
+                 label = "Controller",
+                 alpha=.5) 
+
+        axs[i].plot(xdata, no_conns[i], marker=filled_markers[1],
+                 linestyle=linestyles[1 % len(linestyles)],
+                 # label=f"Iter {i}",
+                 label = "No Controller",
+                 alpha=.5) 
+        axs[i].set_xticks(major_ticks)
+        axs[i].grid()
+        axs[i].set_title(f"Iter {i + 1}")
+
+    handles, labels = axs[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center')
+    fig.tight_layout(pad=0.5)
+    # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
+    # axs.set_xlim([1, len(epochs[0])])
+    # axs.set_title("Accuracy of network in training")
+    # axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.savefig(filename + ".png")
 
 

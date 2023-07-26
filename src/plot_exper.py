@@ -39,6 +39,7 @@ def making_plots_perf(arch, dataset, exper_cntr, exper_no_cntr):
                                       args, cntr_dir + "all_accuracies")
     plot_tool.plot_connectivity(cntr_conn, cntr_dir + "conn")
     plot_tool.plot_connectivity(no_cntr_conn, cntr_dir + "no_conn")
+    plot_tool.compare_connectivities(cntr_conn, no_cntr_conn, cntr_dir + "compare")
     print("plots saved in:", cntr_dir)
 
 
