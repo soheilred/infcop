@@ -515,11 +515,11 @@ def perf_correlation_lth(logger, device, args, controller):
             if imp_iter == 0:
                 if train_iter == 0:
                     act = Activations(model, test_dl, device, args.batch_size)
-                    corrs[0] = act.get_correlations()
+                    corrs.append(act.get_correlations())
 
                 elif train_iter == 1:
                     act = Activations(model, test_dl, device, args.batch_size)
-                    corrs[1] = act.get_correlations()
+                    corrs.append(act.get_correlations())
 
             # apply the controller after some epochs and some iterations
             if (train_iter == controller.c_epoch) and \
