@@ -369,12 +369,13 @@ class Pruner:
                 idx += 1
 
     def control_diff_conn(self, corrs, layers_dim, imp_iter):
-        for ind in self.controller.c_layers:
+        layers_list = self.controller.c_layers
+        for i in range(len(layers_list)):
             # 1. create the masking using correlations
-            mask = np.abs((corrs[0][ind] - corrs[1][ind] > 0.001).astype("float32"))
-            mask += np.ones_like(corrs[0][ind])
+            mask = np.abs((corrs[0][i] - corrs[1][i] > 0.001).astype("float32"))
+            mask += np.ones_like(corrs[0][i])
             # 2. apply the masking to the network
-            self.apply_controller(mask, ind)
+            self.apply_controller(mask, layers_list[i])
 
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
         # the + 1 is for matching to the connectivity's dimension
@@ -517,7 +518,7 @@ def perf_correlation_lth(logger, device, args, controller):
                     act = Activations(model, test_dl, device, args.batch_size)
                     corrs.append(act.get_correlations())
 
-                elif train_iter == 1:
+                elif train_iter == args.train_epochs - 1:
                     act = Activations(model, test_dl, device, args.batch_size)
                     corrs.append(act.get_correlations())
 
