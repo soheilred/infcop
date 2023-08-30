@@ -80,24 +80,64 @@ def making_plots_eff(arch, dataset, exper_cntr, exper_no_cntr):
     # plot_tool.plot_connectivity(no_cntr_conn, no_cntr_dir + "../" + "no_conn")
     # plot_tool.plot_connectivity(conn)
 
+def making_plots_pcorr(arch, dataset, exper_cntr, exper_no_cntr):
+    print(arch, dataset)
+    no_cntr_dir = f"../output/performance/{arch}/{dataset}/no_cntr/" + exper_no_cntr
+    cntr_dir = f"../output/pcorr/{arch}/{dataset}/cntr/" + exper_cntr
+
+    labels = [f"{arch} w. $\phi$", f"{arch} w.o. $\phi$"]
+    if not os.path.exists(no_cntr_dir):
+        print(no_cntr_dir)
+        sys.exit(f"Directory for {arch} and {dataset} doesn't exist")
+
+    args = json.load(open(cntr_dir + "exper.json"))
+
+    no_cntr_conn = pickle.load(open(no_cntr_dir + "conn.pkl", "rb"))
+    no_cntr_conn = np.mean(no_cntr_conn, axis=0)
+    no_cntr_all_acc = pickle.load(open(no_cntr_dir + "all_accuracies.pkl", "rb"))
+    no_cntr_all_acc = np.mean(no_cntr_all_acc, axis=0)
+
+    cntr_conn = pickle.load(open(cntr_dir + "conn.pkl", "rb"))
+    cntr_conn = np.mean(cntr_conn, axis=0)
+    cntr_all_acc = pickle.load(open(cntr_dir + "all_accuracies.pkl", "rb"))
+    cntr_all_acc = np.mean(cntr_all_acc, axis=0)
+    np.set_printoptions(precision=1)
+
+    print(cntr_all_acc)
+    print(no_cntr_all_acc)
+    print(np.mean(np.abs(cntr_all_acc - no_cntr_all_acc)))
+    # print(cntr_conn)
+    # print(no_cntr_conn)
+
+    plot_tool.plot_multi_all_accuracy([no_cntr_all_acc, cntr_all_acc], labels,
+                                      args, cntr_dir + "all_accuracies")
+    plot_tool.plot_connectivity(cntr_conn, cntr_dir + "conn")
+    plot_tool.plot_connectivity(no_cntr_conn, cntr_dir + "no_conn")
+    plot_tool.compare_connectivities(cntr_conn, no_cntr_conn, cntr_dir + "compare")
+    print("plots saved in:", cntr_dir)
+
+
 
 def main():
     ARCHS=["resnet18", "vgg16"]
     DATASETS=["MNIST", "CIFAR10", "CIFAR100"]
 
-    exper_cntr = ["", "08-34/"]
+    exper_cntr = ["", "08-49/"]
     exper_no_cntr = ["", "22-11/"]
 
-    layer = 234569
+    layer = 234
 
     # exper_cntr = ""
     # exper_no_cntr = ""
 
-    making_plots_perf(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
-                      exper_no_cntr[-1])
+    # making_plots_perf(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
+    #                   exper_no_cntr[-1])
 
     # making_plots_eff(ARCHS[1], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
     #                   exper_no_cntr[-1])
+
+    making_plots_pcorr(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
+                      exper_no_cntr[-1])
 
 if __name__ == '__main__':
     main()
