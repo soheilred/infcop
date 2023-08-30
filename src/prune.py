@@ -370,12 +370,11 @@ class Pruner:
 
     def control_diff_conn(self, corrs, layers_dim, imp_iter):
         layers_list = self.controller.c_layers
-        import ipdb; ipdb.set_trace()
         for i in range(len(layers_list)):
             # 1. create the masking using correlations
             mask = np.abs((corrs[0][i] - corrs[1][i] > 0.001).astype("float32"))
             mask += np.ones_like(corrs[0][i])
-            kernel_size = layers_dim[ind][-1]
+            kernel_size = layers_dim[layers_list[i]][-1]
             mask = np.tile(mask, reps=(kernel_size, kernel_size, 1, 1)).\
                                 transpose(3, 2, 1, 0)
             # 2. apply the masking to the network

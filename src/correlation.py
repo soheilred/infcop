@@ -266,10 +266,10 @@ class Activations:
         act_sq_sum = [torch.zeros(layers_dim[i][0]).to(self.device)
                          for i in range(num_layers)]
         act_max = torch.zeros(num_layers).to(self.device)
+        log.debug("Compute the activations")
 
         with torch.no_grad():
             # Compute the mean of activations
-            log.debug("Compute the mean and sd of activations")
             for batch, (X, y) in enumerate(self.dataloader):
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
