@@ -371,7 +371,8 @@ class Pruner:
     def control_diff_conn(self, corrs, layers_dim, imp_iter):
         for ind in self.controller.c_layers:
             # 1. create the masking using correlations
-            mask = torch.abs(corrs[0][ind] - corrs[1][ind] > 0.001)
+            import ipdb; ipdb.set_trace()
+            mask = torch.abs((corrs[0][ind] - corrs[1][ind] > 0.001).float())
             mask += torch.ones_like(corrs[0][ind])
             # 2. apply the masking to the network
             self.apply_controller(mask, ind)
