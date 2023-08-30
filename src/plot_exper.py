@@ -29,9 +29,11 @@ def making_plots_perf(arch, dataset, exper_cntr, exper_no_cntr):
     cntr_conn = np.mean(cntr_conn, axis=0)
     cntr_all_acc = pickle.load(open(cntr_dir + "all_accuracies.pkl", "rb"))
     cntr_all_acc = np.mean(cntr_all_acc, axis=0)
+    np.set_printoptions(precision=1)
 
     print(cntr_all_acc)
     print(no_cntr_all_acc)
+    print(np.mean(np.abs(cntr_all_acc - no_cntr_all_acc)))
     # print(cntr_conn)
     # print(no_cntr_conn)
 
@@ -83,10 +85,10 @@ def main():
     ARCHS=["resnet18", "vgg16"]
     DATASETS=["MNIST", "CIFAR10", "CIFAR100"]
 
-    exper_cntr = ["", "22-21/"]
+    exper_cntr = ["", "08-34/"]
     exper_no_cntr = ["", "22-11/"]
 
-    layer = 3
+    layer = 234569
 
     # exper_cntr = ""
     # exper_no_cntr = ""

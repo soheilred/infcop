@@ -368,6 +368,12 @@ class Pruner:
                     break
                 idx += 1
 
+    def control_diff_conn(self, corrs, layers_dim, imp_iter):
+        for ind in self.controller.c_layers:
+            # 1. create the masking using correlations
+            mask = torch.abs(corrs[0][ind] - corrs[1][ind] > 0.001)
+            # 2. apply the masking to the network
+            self.apply_controller(mask, ind)
 
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
         # the + 1 is for matching to the connectivity's dimension
@@ -480,18 +486,16 @@ def perf_correlation_lth(logger, device, args, controller):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     # warm up the pretrained model
-    acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
+    # acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
     connectivity = []
+    corrs = []
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
-            # act = Activations(model, test_dl, device, args.batch_size)
-            # corr = act.get_correlations()
-            # layers_idx = act.get_layers_idx()
             # pruning.prune_once(init_state_dict, corr_con=[corr, layers_idx])
             pruning.prune_once(init_state_dict)
             optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
@@ -504,15 +508,23 @@ def perf_correlation_lth(logger, device, args, controller):
         pruning.comp_level[imp_iter] = comp_level
         logger.debug(f"Compression level: {comp_level}")
 
+        if imp_iter == 0:
+            if train_iter == 0:
+                act = Activations(model, test_dl, device, args.batch_size)
+                corrs[0] = act.get_correlations()
+
+            elif train_iter == 1:
+                act = Activations(model, test_dl, device, args.batch_size)
+                corrs[1] = act.get_correlations()
+
         # Training the network
         for train_iter in range(args.train_epochs):
             # apply the controller after some epochs and some iterations
             if (train_iter == controller.c_epoch) and \
                 (imp_iter in controller.c_iter):
-                act = Activations(model, test_dl, device, args.batch_size)
-                # corr = act.get_corrs()
-                corr = act.get_correlations()
-                pruning.control(corr, act.layers_dim, imp_iter)
+                # act = Activations(model, test_dl, device, args.batch_size)
+                # corr = act.get_correlations()
+                pruning.control_diff_conn(corrs, act.layers_dim, imp_iter)
                 optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
