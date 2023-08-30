@@ -370,6 +370,7 @@ class Pruner:
 
     def control_diff_conn(self, corrs, layers_dim, imp_iter):
         layers_list = self.controller.c_layers
+        import ipdb; ipdb.set_trace()
         for i in range(len(layers_list)):
             # 1. create the masking using correlations
             mask = np.abs((corrs[0][i] - corrs[1][i] > 0.001).astype("float32"))
