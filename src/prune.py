@@ -372,6 +372,7 @@ class Pruner:
         for ind in self.controller.c_layers:
             # 1. create the masking using correlations
             mask = torch.abs(corrs[0][ind] - corrs[1][ind] > 0.001)
+            mask += torch.ones_like(corrs[0][ind])
             # 2. apply the masking to the network
             self.apply_controller(mask, ind)
 
@@ -508,17 +509,18 @@ def perf_correlation_lth(logger, device, args, controller):
         pruning.comp_level[imp_iter] = comp_level
         logger.debug(f"Compression level: {comp_level}")
 
-        if imp_iter == 0:
-            if train_iter == 0:
-                act = Activations(model, test_dl, device, args.batch_size)
-                corrs[0] = act.get_correlations()
-
-            elif train_iter == 1:
-                act = Activations(model, test_dl, device, args.batch_size)
-                corrs[1] = act.get_correlations()
-
         # Training the network
         for train_iter in range(args.train_epochs):
+
+            if imp_iter == 0:
+                if train_iter == 0:
+                    act = Activations(model, test_dl, device, args.batch_size)
+                    corrs[0] = act.get_correlations()
+
+                elif train_iter == 1:
+                    act = Activations(model, test_dl, device, args.batch_size)
+                    corrs[1] = act.get_correlations()
+
             # apply the controller after some epochs and some iterations
             if (train_iter == controller.c_epoch) and \
                 (imp_iter in controller.c_iter):
