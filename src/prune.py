@@ -375,6 +375,9 @@ class Pruner:
             # 1. create the masking using correlations
             mask = np.abs((corrs[0][i] - corrs[1][i] > 0.001).astype("float32"))
             mask += np.ones_like(corrs[0][i])
+            kernel_size = layers_dim[ind][-1]
+            mask = np.tile(mask, reps=(kernel_size, kernel_size, 1, 1)).\
+                                transpose(3, 2, 1, 0)
             # 2. apply the masking to the network
             self.apply_controller(mask, layers_list[i])
 
