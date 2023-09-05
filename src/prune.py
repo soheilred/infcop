@@ -366,6 +366,7 @@ class Pruner:
                     print("old weight", torch.linalg.norm(weight))
                     print("new weight", torch.linalg.norm(new_weight))
                     weight = normalize(new_weight, p=2.0)
+                    module[1].weight = weight
                     break
                 idx += 1
 
