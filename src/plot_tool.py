@@ -1,16 +1,18 @@
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D 
 from matplotlib import rc
 import numpy as np
 import pickle
 import sys
+import utils
 import constants as C
 # rc('font',**{'family':'serif','serif':['Times']})
 # # rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 # rc('text', usetex=True)
 plt.rcParams.update({
     "font.family": "serif",
-    "font.size": 20.0,
+    "font.size": 10.0,
     "font.weight": "bold",
     "xtick.labelsize": "large",
     # "ytick.labelsize": "large",
@@ -243,8 +245,34 @@ def compare_connectivities(conns, no_conns, filename):
     # axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.savefig(filename + ".png")
 
+def plot_grad_flow(named_parameters, axs):
+    ave_grads = []
+    layers = []
+    max_grads= []
+    for n, p in named_parameters:
+        if(p.requires_grad) and ("bias" not in n):
+            layers.append(n)
+            ave_grads.append(p.grad.abs().mean().cpu().numpy())
+            max_grads.append(p.grad.abs().max().cpu().numpy())
+    # axs.plot(ave_grads, alpha=0.3, color="b")
+    plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
+    plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
 
- 
+    axs.hlines(0, 0, len(ave_grads)+1, linewidth=1, color="k" )
+    axs.set_xticks(range(0,len(ave_grads), 1), layers, rotation="vertical")
+    axs.set_xlim(xmin=0, xmax=len(ave_grads))
+    axs.set_ylim(bottom = -0.001, top=0.2) # zoom in on the lower gradient regions
+    axs.set(xlabel="Layers", ylabel="average gradient")
+    axs.set_title("Gradient flow")
+    axs.grid(True)
+    axs.legend([
+        Line2D([0], [0], color="c", lw=4),
+        Line2D([0], [0], color="b", lw=4),
+        Line2D([0], [0], color="k", lw=4)],
+        ['max-gradient', 'mean-gradient', 'zero-gradient'] # 
+               )
+    return axs
+
 def compare_correlations():
     out_dir = sys.argv[1]
     all_accuracy = pickle.load(open(out_dir + "_accuracy.pkl", "rb"))
