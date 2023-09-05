@@ -11,6 +11,7 @@ import sys
 
 import utils
 import plot_tool
+import matplotlib.pyplot as plt
 from data_loader import Data
 from network import Network, train, test
 from correlation import Activations
@@ -423,7 +424,7 @@ def perf_lth(logger, device, args, controller):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     # warm up the pretrained model
-    acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
+    acc, _, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
@@ -443,14 +444,16 @@ def perf_lth(logger, device, args, controller):
         pruning.comp_level[imp_iter] = comp_level
         logger.debug(f"Nonzero percentage: {comp_level}")
 
+        # plot the gradient flow
+        fig, grad_axs = plt.subplots(1, figsize=(12, 10))
+
         # Training the network
         for train_iter in range(args.train_epochs):
 
             # Training
-            logger.debug(f"Training iteration {train_iter} / {args.train_epochs}")
-            acc, loss = train(model, train_dl, loss_fn, optimizer, 
-                              args.train_per_epoch, device)
-
+            logger.debug(f"Training iteration {train_iter + 1} / {args.train_epochs}")
+            acc, loss, grad_axs = train(model, train_dl, loss_fn, optimizer, 
+                              args.train_per_epoch, device, grad_axs)
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
 
@@ -466,6 +469,8 @@ def perf_lth(logger, device, args, controller):
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
+        grad_flow_fig = run_dir + str(imp_iter)
+        fig.savefig(grad_flow_fig + ".png")
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 

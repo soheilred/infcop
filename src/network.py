@@ -2,6 +2,7 @@ import torch
 import sys
 from torch import nn
 from torch.utils.data import DataLoader
+from plot_tool import plot_grad_flow
 import torch.nn.functional as F
 from torchvision import datasets, transforms, models
 from torchvision.models import resnet50, ResNet18_Weights, ResNet50_Weights,\
@@ -157,7 +158,7 @@ class Network():
 
         # self.fc = nn.Linear(512 * block.expansion, num_classes)
 
-def train(model, dataloader, loss_fn, optimizer, epochs, device):
+def train(model, dataloader, loss_fn, optimizer, epochs, device, grad_axs=None):
     model.train()
     log.debug('Training...')
     size = len(dataloader.dataset)
@@ -173,6 +174,9 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
             X, y = X.to(device), y.to(device)
             pred = model(X)
             loss = loss_fn(pred, y)
+
+            if grad_axs:
+                grad_axs = plot_grad_flow(model.named_parameters(), grad_axs)
 
             # Backpropagation
             optimizer.zero_grad()
@@ -191,7 +195,8 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
         correct /= size
         log.debug(f"Epoch {t+1} accuracy: {(100*correct):>0.1f}%")
-    return 100.0 * correct, loss
+
+    return 100.0 * correct, loss, grad_axs
 
 
 def test(model, dataloader, loss_fn, device):
