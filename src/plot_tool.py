@@ -261,7 +261,7 @@ def plot_grad_flow(named_parameters, axs):
     axs.hlines(0, 0, len(ave_grads)+1, linewidth=1, color="k" )
     axs.set_xticks(range(0,len(ave_grads), 1), layers, rotation="vertical")
     axs.set_xlim(xmin=0, xmax=len(ave_grads))
-    axs.set_ylim(bottom = -0.001, top=0.2) # zoom in on the lower gradient regions
+    # axs.set_ylim(bottom = -0.001, top=0.2) # zoom in on the lower gradient regions
     axs.set(xlabel="Layers", ylabel="average gradient")
     axs.set_title("Gradient flow")
     axs.grid(True)
