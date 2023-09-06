@@ -446,7 +446,7 @@ def perf_lth(logger, device, args, controller):
         logger.debug(f"Nonzero percentage: {comp_level}")
 
         # plot the gradient flow
-        fig, grad_axs = plt.subplots(1, figsize=(12, 10))
+        fig, grad_axs = plt.subplots(1, figsize=(12, 7))
 
         # Training the network
         for train_iter in range(args.train_epochs):
