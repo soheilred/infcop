@@ -7,8 +7,8 @@
 #SBATCH --mem=128gb                     # Job memory request
 #SBATCH --time=100:00:00                # Time limit hrs:min:sec
 #SBATCH --gres=gpu:1                    # Request one GPU
-#SBATCH --output=../output/errors/tbst_%j.log   # Standard output and error log
-#SBATCH --error=../output/errors/error_%j
+#SBATCH --output=output/errors/tbst_%j.log   # Standard output and error log
+#SBATCH --error=output/errors/error_%j
 #SBATCH --mail-type=BEGIN,END,FAIL          # Mail events
 #SBATCH --mail-user=soheil.gharatappeh@maine.edu
 
