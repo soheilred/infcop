@@ -256,7 +256,7 @@ def get_args():
                         choices=["performance","efficiency"],
                         help='What type of LTH experiment you are running?')
 
-    parser.add_argument('--yaml_config', type=str, default="no",
+    parser.add_argument('--yaml_config', type=str, default="config.ini",
                         help="Address to the config file")
 
     args = parser.parse_args()
