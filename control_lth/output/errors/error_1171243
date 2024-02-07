@@ -1,30 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 470.129.06
-  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [20:36<1:22:24, 1236.14s/it] 20%|██        | 1/5 [24:43<1:38:52, 1483.17s/it]
-Traceback (most recent call last):
-  File "prune.py", line 665, in <module>
-    main()
-  File "prune.py", line 661, in main
-    run_experiment(logger, args, device, run_dir)
-  File "prune.py", line 634, in run_experiment
-    all_acc, conn = perf_lth(logger, device, args, controller)
-  File "prune.py", line 450, in perf_lth
-    act = Activations(model, test_dl, device, args.batch_size)
-  File "prune.py", line 450, in perf_lth
-    act = Activations(model, test_dl, device, args.batch_size)
-  File "/usr/lib/python3.8/bdb.py", line 88, in trace_dispatch
-    return self.dispatch_line(frame)
-  File "/usr/lib/python3.8/bdb.py", line 113, in dispatch_line
-    if self.quitting: raise BdbQuit
-bdb.BdbQuit
-
-If you suspect this is an IPython 8.6.0 bug, please report it at:
-    https://github.com/ipython/ipython/issues
-or send an email to the mailing list at ipython-dev@python.org
-
-You can print a more detailed traceback right now with "%tb", or use "%debug"
-to interactively debug it.
-
-Extra-detailed tracebacks for bug-reporting purposes can be enabled via:
-    %config Application.verbose_crash=True
-

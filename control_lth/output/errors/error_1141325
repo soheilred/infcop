@@ -1,15 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 470.129.06
-  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [21:12<1:24:51, 1272.83s/it] 20%|██        | 1/5 [25:49<1:43:18, 1549.74s/it]
-Traceback (most recent call last):
-  File "prune.py", line 659, in <module>
-    main()
-  File "prune.py", line 655, in main
-    run_experiment(logger, args, device, run_dir)
-  File "prune.py", line 628, in run_experiment
-    all_acc, conn = perf_lth(logger, device, args, controller)
-  File "prune.py", line 448, in perf_lth
-    pruning.control(corr, act.layers_dim, imp_iter)
-  File "prune.py", line 327, in control
-    control_weights = abs(torch.mul(prev_corr, prev_weight)) / max(connectivity)
-TypeError: mul(): argument 'input' (position 1) must be Tensor, not numpy.ndarray
