@@ -25,13 +25,7 @@ echo "Modules loaded"
 . $CONDA_BIN/conda-init
 conda activate ib
 
-# time srun singularity run ~/pytorch-sing.simg python correlation.py train
-# singularity run ~/pytorch-sing.simg python correlation.py correlation
-# singularity exec --nv ~/pytorch-sing.sif python ~/ib_dl/src/correlation.py train
-# singularity run --nv ~/images/pytorch.sif python ~/ib_dl/src/correlation.py train
-singularity run --nv ~/images/pytorch.sif python ~/ib_dl/src/experiments.py
-# singularity run --nv ~/images/bare.simg python ~/ib_dl/src/correlation.py train
-# srun python ~/ib_dl/src/correlation.py train
+singularity run --nv ~/images/tensorflow.simg python "$@"
 echo "====================================================="
 date
 
