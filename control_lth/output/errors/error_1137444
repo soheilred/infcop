@@ -1,34 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 470.129.06
-  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [44:41<2:58:47, 2681.86s/it] 20%|██        | 1/5 [45:12<3:00:49, 2712.48s/it]
-Traceback (most recent call last):
-  File "prune.py", line 646, in <module>
-    main()
-  File "prune.py", line 642, in main
-    run_experiment(logger, args, device, run_dir)
-  File "prune.py", line 621, in run_experiment
-    all_acc, conn = perf_correlation_lth(logger, device, args, controller)
-  File "prune.py", line 479, in perf_correlation_lth
-    pruning.prune_once(init_state_dict, correlation=corr)
-  File "prune.py", line 234, in prune_once
-    self.prune_by_correlation(correlation)
-  File "prune.py", line 198, in prune_by_correlation
-    percentile_value = np.percentile(abs(correlation), self.prune_perc)
-  File "prune.py", line 198, in prune_by_correlation
-    percentile_value = np.percentile(abs(correlation), self.prune_perc)
-  File "/usr/lib/python3.8/bdb.py", line 88, in trace_dispatch
-    return self.dispatch_line(frame)
-  File "/usr/lib/python3.8/bdb.py", line 113, in dispatch_line
-    if self.quitting: raise BdbQuit
-bdb.BdbQuit
-
-If you suspect this is an IPython 8.6.0 bug, please report it at:
-    https://github.com/ipython/ipython/issues
-or send an email to the mailing list at ipython-dev@python.org
-
-You can print a more detailed traceback right now with "%tb", or use "%debug"
-to interactively debug it.
-
-Extra-detailed tracebacks for bug-reporting purposes can be enabled via:
-    %config Application.verbose_crash=True
-
