@@ -228,7 +228,6 @@ class Pruner:
                 layer_id += 1
 
     def prune_by_sap(self):
-        # Calculate percentile value
         layer_id = 0
         pivot_param = []
         pivot_mask = []
@@ -267,7 +266,6 @@ class Pruner:
         # new_mask = OrderedDict()
         for name, param in self.model.named_parameters():
 
-            # We do not prune bias term
             if 'weight' in name and param.dim() > 1:
                 # tensor = param.data.cpu().numpy()
                 # alive = tensor[np.nonzero(tensor)]
