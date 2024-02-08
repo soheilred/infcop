@@ -150,7 +150,7 @@ def process_control():
     if model_name in ['linear', 'mlp', 'cnn']:
         cfg[model_name]['num_epochs'] = 200
     elif model_name in ['resnet9', 'resnet18', 'wresnet28x2', 'wresnet28x8']:
-        cfg[model_name]['num_epochs'] = 200
+        cfg[model_name]['num_epochs'] = 2
     elif model_name in ['resnet50']:
         cfg[model_name]['num_epochs'] = 200
     else:
