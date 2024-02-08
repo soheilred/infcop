@@ -244,29 +244,33 @@ class Pruner:
 
         pivot_param = torch.cat(pivot_param, dim=0).data.abs()
         pivot_mask = torch.cat(pivot_mask, dim=0)
-
-        p, q, eta_m, gamma = self.prune_mode[1:] # TODO
-        p, q, eta_m, gamma = float(p), float(q), float(eta_m), float(gamma)
-        p_idx = (sparsity_index.p == p).nonzero().item()
-        q_idx = (sparsity_index.q == q).nonzero().item()
+        # p, q, eta_m, gamma = self.prune_mode[1:] # TODO
+        p, q, eta_m, gamma = float(.5), float(1.), float(0.), float(1.)
+        beta = 0.9
+        sparsity_index = {"p": torch.arange(0.1, 1.1, 0.1),
+                          "q": torch.arange(1.0, 2.1, 0.1)}
+        p_idx = (sparsity_index["p"] == p).nonzero().item()
+        q_idx = (sparsity_index["q"] == q).nonzero().item()
         mask_i = pivot_mask
-        si_i = sparsity_index.si[self.prune_scope][-1]['global'][p_idx, q_idx]
+        si = self.make_si_(self.model, self.mask)
+        si_i = si[p_idx, q_idx]
         d = mask_i.float().sum().to(self.device)
         m = d * (1 + eta_m) ** (q / (p - q)) * (1 - si_i) ** ((q * p) / (q - p))
         m = torch.ceil(m).long()
         retain_ratio = m / d
-        prune_ratio = torch.clamp(gamma * (1 - retain_ratio), 0, cfg['beta'])
+        prune_ratio = torch.clamp(gamma * (1 - retain_ratio), 0, beta)
         num_prune = torch.floor(d * prune_ratio).long()
         pivot_value = torch.sort(pivot_param.view(-1))[0][num_prune]
 
+        # new_mask = [None] * self.num_layers
         layer_id = 0
-        new_mask = OrderedDict()
+        # new_mask = OrderedDict()
         for name, param in self.model.named_parameters():
 
             # We do not prune bias term
             if 'weight' in name and param.dim() > 1:
-                tensor = param.data.cpu().numpy()
-                # alive = tensor[np.nonzero(tensor)]  # flattened array of nonzeros
+                # tensor = param.data.cpu().numpy()
+                # alive = tensor[np.nonzero(tensor)]
                 # percentile_value = np.percentile(abs(alive), self.prune_perc)
 
                 # Convert Tensors to numpy and calculate
@@ -274,27 +278,49 @@ class Pruner:
                 # new_mask = np.where(abs(tensor) < percentile_value, 0,
                 #                     self.mask[layer_id])
 
+                mask_i = self.mask[layer_id]
                 pivot_mask = (param.data.abs() < pivot_value).to(weight_dev)
+                new_mask = torch.where(pivot_mask, False, mask_i)
 
                 # Apply new weight and mask
-                param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
+                # param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
+                param.data = torch.where(new_mask[name].to(param.device),
+                                         param.data,
+                                         torch.tensor(0, dtype=torch.float,
+                                                      device=param.device))
+
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
-            else:
-                prune_ratio = float(self.prune_mode[1])
-                pivot_value = np.quantile(pivot_param.data.abs().cpu().numpy(), prune_ratio)
-            for name, param in model.named_parameters():
-                parameter_type = name.split('.')[-1]
-                if 'weight' in parameter_type and param.dim() > 1:
-                    mask_i = mask.state_dict()[name]
-                    pivot_mask = (param.data.abs() < pivot_value).to('cpu')
-                    new_mask[name] = torch.where(pivot_mask, False, mask_i)
-                    param.data = torch.where(new_mask[name].to(param.device), param.data,
-                                             torch.tensor(0, dtype=torch.float, device=param.device))
-        else:
-            raise ValueError('Not valid prune mode')
-        mask.load_state_dict(new_mask)
+    def make_si_(self, model, mask):
+        sparsity_index = OrderedDict()
+        param_all = []
+        mask_all = []
+        for name, param in model.state_dict().items():
+            parameter_type = name.split('.')[-1]
+            if 'weight' in parameter_type and param.dim() > 1:
+                param_all.append(param.view(-1))
+                mask_all.append(mask.state_dict()[name].view(-1))
+        param_all = torch.cat(param_all, dim=0)
+        mask_all = torch.cat(mask_all, dim=0)
+        sparsity_index_i = []
+        for i in range(len(self.p)):
+            for j in range(len(self.q)):
+                sparsity_index_i.append(self.make_si(param_all, mask_all, -1, self.p[i], self.q[j]))
+        sparsity_index_i = torch.tensor(sparsity_index_i)
+        sparsity_index['global'] = sparsity_index_i.reshape((len(self.p), len(self.q), -1))
+
+        return sparsity_index
+
+    def make_si(self, x, mask, dim, p, q):
+        d = mask.to(x.device).float().sum(dim=dim)
+        x = x * mask.to(x.device).float()
+        si = 1 - (torch.linalg.norm(x, p, dim=dim).pow(p) / d).pow(1 / p) / \
+            (torch.linalg.norm(x, q, dim=dim).pow(q) / d).pow(1 / q)
+        si[d == 0] = 0
+        si[si == -float('inf')] = 0
+        si[torch.logical_and(si > - 1e-5, si < 0)] = 0
+        return si
 
     def prune_once(self, initial_state_dict, correlation=None):
 
