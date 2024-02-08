@@ -7,6 +7,7 @@ import torchvision.datasets as datasets
 import torch.nn.init as init
 import pickle
 import sys
+from collections import OrderedDict
 
 import utils
 import plot_tool
@@ -169,7 +170,6 @@ class Pruner:
                 # self.mask[layer_id] = torch.ones_like(param.data)
                 layer_id += 1
 
-
     def reset_weights_to_init(self, initial_state_dict):
         """Reset the remaining weights in the network to the initial values.
         """
@@ -227,9 +227,78 @@ class Pruner:
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
+    def prune_by_sap(self):
+        # Calculate percentile value
+        layer_id = 0
+        pivot_param = []
+        pivot_mask = []
+
+        for name, param in self.model.named_parameters():
+            parameter_type = name.split('.')[-1]
+            if 'weight' in parameter_type and param.dim() > 1:
+                # mask_i = mask.state_dict()[name]
+                pivot_param_i = param[self.mask[layer_id]].abs()
+                pivot_param.append(pivot_param_i.view(-1))
+                pivot_mask.append(self.mask[layer_id].view(-1))
+                layer_id += 1
+
+        pivot_param = torch.cat(pivot_param, dim=0).data.abs()
+        pivot_mask = torch.cat(pivot_mask, dim=0)
+
+        p, q, eta_m, gamma = self.prune_mode[1:] # TODO
+        p, q, eta_m, gamma = float(p), float(q), float(eta_m), float(gamma)
+        p_idx = (sparsity_index.p == p).nonzero().item()
+        q_idx = (sparsity_index.q == q).nonzero().item()
+        mask_i = pivot_mask
+        si_i = sparsity_index.si[self.prune_scope][-1]['global'][p_idx, q_idx]
+        d = mask_i.float().sum().to(self.device)
+        m = d * (1 + eta_m) ** (q / (p - q)) * (1 - si_i) ** ((q * p) / (q - p))
+        m = torch.ceil(m).long()
+        retain_ratio = m / d
+        prune_ratio = torch.clamp(gamma * (1 - retain_ratio), 0, cfg['beta'])
+        num_prune = torch.floor(d * prune_ratio).long()
+        pivot_value = torch.sort(pivot_param.view(-1))[0][num_prune]
+
+        layer_id = 0
+        new_mask = OrderedDict()
+        for name, param in self.model.named_parameters():
+
+            # We do not prune bias term
+            if 'weight' in name and param.dim() > 1:
+                tensor = param.data.cpu().numpy()
+                # alive = tensor[np.nonzero(tensor)]  # flattened array of nonzeros
+                # percentile_value = np.percentile(abs(alive), self.prune_perc)
+
+                # Convert Tensors to numpy and calculate
+                weight_dev = param.device
+                # new_mask = np.where(abs(tensor) < percentile_value, 0,
+                #                     self.mask[layer_id])
+
+                pivot_mask = (param.data.abs() < pivot_value).to(weight_dev)
+
+                # Apply new weight and mask
+                param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
+                self.mask[layer_id] = new_mask
+                layer_id += 1
+
+            else:
+                prune_ratio = float(self.prune_mode[1])
+                pivot_value = np.quantile(pivot_param.data.abs().cpu().numpy(), prune_ratio)
+            for name, param in model.named_parameters():
+                parameter_type = name.split('.')[-1]
+                if 'weight' in parameter_type and param.dim() > 1:
+                    mask_i = mask.state_dict()[name]
+                    pivot_mask = (param.data.abs() < pivot_value).to('cpu')
+                    new_mask[name] = torch.where(pivot_mask, False, mask_i)
+                    param.data = torch.where(new_mask[name].to(param.device), param.data,
+                                             torch.tensor(0, dtype=torch.float, device=param.device))
+        else:
+            raise ValueError('Not valid prune mode')
+        mask.load_state_dict(new_mask)
+
     def prune_once(self, initial_state_dict, correlation=None):
 
-        if correlation != None:
+        if correlation is not None:
             self.prune_by_correlation(correlation)
         else:
             self.prune_by_percentile()
@@ -240,7 +309,7 @@ class Pruner:
             During training this is called to avoid storing gradients for the
             frozen weights, to prevent updating.
             This is unaffected in the shared masks since shared weights always
-            have the current index unless frozen 
+            have the current index unless frozen.
         """
         # assert self.current_masks
 
@@ -250,13 +319,13 @@ class Pruner:
                 # Set grads of all weights not belonging to current dataset to 0.
                 if module.weight.grad is not None:
                     module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
-                if self.task_num>0 and module.bias is not None:
+                if self.task_num > 0 and module.bias is not None:
                     module.bias.grad.data.fill_(0)
-                    
-            elif 'BatchNorm' in str(type(module)) and self.task_num>0:
-                    # Set grads of batchnorm params to 0.
-                    module.weight.grad.data.fill_(0)
-                    module.bias.grad.data.fill_(0)
+
+            elif 'BatchNorm' in str(type(module)) and self.task_num > 0:
+                # Set grads of batchnorm params to 0.
+                module.weight.grad.data.fill_(0)
+                module.bias.grad.data.fill_(0)
 
     def make_pruned_zero(self):
         """Set all pruned weights to 0.
