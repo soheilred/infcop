@@ -322,10 +322,11 @@ class Pruner:
 
     def prune_once(self, initial_state_dict, correlation=None):
 
-        if correlation is not None:
-            self.prune_by_correlation(correlation)
-        else:
-            self.prune_by_percentile()
+        # if correlation is not None:
+        #     self.prune_by_correlation(correlation)
+        # else:
+        #     self.prune_by_percentile()
+        self.prune_by_sap()
         self.reset_weights_to_init(initial_state_dict)
 
     def make_grads_zero(self):
@@ -445,7 +446,6 @@ class Pruner:
                     break
                 idx += 1
 
-
     def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
         # the + 1 is for matching to the connectivity's dimension
         # weights = control_corrs[imp_iter - 1][ind - 1]
@@ -459,7 +459,6 @@ class Pruner:
                                transpose(3, 2, 1, 0)
         print("controller weight shape", weights.shape)
         return weights
-
 
     def get_prev_iter_weights(self, imp_iter):
         run_dir = utils.get_run_dir(self.args)
@@ -496,11 +495,11 @@ def perf_lth(logger, device, args, controller):
     connectivity = []
 
     for imp_iter in tqdm(range(ITERATION)):
-        # except for the first iteration, cuz we don't prune in the first iteration
+        # except for the first iteration, we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
-                                         weight_decay=1e-4)
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+                                        weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -522,13 +521,13 @@ def perf_lth(logger, device, args, controller):
 
             # apply the controller after some epochs and some iterations
             if (train_iter == controller.c_epoch) and \
-                (imp_iter in controller.c_iter):
+               (imp_iter in controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
                 # corr = act.get_corrs()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
-                                             weight_decay=1e-4)
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+                                            weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
@@ -544,7 +543,8 @@ def perf_lth(logger, device, args, controller):
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
     return pruning.all_acc, connectivity
-    
+
+
 def perf_connectivity_lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
@@ -569,8 +569,8 @@ def perf_connectivity_lth(logger, device, args, controller):
             act = Activations(model, test_dl, device, args.batch_size)
             corr = act.get_correlations()
             pruning.prune_once(init_state_dict, correlation=corr)
-            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
-                                         weight_decay=1e-4)
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+                                        weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -597,8 +597,8 @@ def perf_connectivity_lth(logger, device, args, controller):
                 # corr = act.get_corrs()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
-                                             weight_decay=1e-4)
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+                                            weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
@@ -614,7 +614,8 @@ def perf_connectivity_lth(logger, device, args, controller):
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
     return pruning.all_acc, connectivity
-    
+
+
 def effic_lth(logger, device, args, controller):
     ITERATION = args.imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
@@ -640,7 +641,7 @@ def effic_lth(logger, device, args, controller):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -674,7 +675,7 @@ def effic_lth(logger, device, args, controller):
                 act = Activations(model, test_dl, device, args.batch_size)
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
 
             # increment the training iterator
@@ -694,7 +695,8 @@ def effic_lth(logger, device, args, controller):
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
     return all_acc, connectivity
-    
+
+
 def perf_exper(logger, args, device, run_dir):
     logger.debug("####### In performance experiment #######")
     controller = Controller(args)
@@ -717,6 +719,7 @@ def perf_exper(logger, args, device, run_dir):
     # utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
     utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list)
 
+
 def effic_exper(logger, args, device, run_dir):
     logger.debug("####### In efficiency experiemnt #######")
     controller = Controller(args)
@@ -737,6 +740,7 @@ def effic_exper(logger, args, device, run_dir):
     # conn = np.mean(conn_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
+
 
 def main():
     args = utils.get_args()
