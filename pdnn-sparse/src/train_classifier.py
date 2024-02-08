@@ -87,6 +87,7 @@ def runExperiment():
                 else:
                     model_state_dict.append(to_device(model.state_dict(), 'cpu'))
                 mask_state_dict.append(mask.state_dict())
+        import ipdb; ipdb.set_trace()
         for epoch in range(last_epoch[-1] + 1, cfg[cfg['model_name']]['num_epochs'] + 1):
             logger.save(True)
             train(data_loader['train'], model, optimizer, mask, metric, logger, iter, epoch)
