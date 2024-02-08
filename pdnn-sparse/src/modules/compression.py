@@ -100,6 +100,7 @@ class Compression:
             pivot_param = torch.cat(pivot_param, dim=0).data.abs()
             pivot_mask = torch.cat(pivot_mask, dim=0)
             if self.prune_mode[0] == 'si':
+                import ipdb; ipdb.set_trace()
                 p, q, eta_m, gamma = self.prune_mode[1:]
                 p, q, eta_m, gamma = float(p), float(q), float(eta_m), float(gamma)
                 p_idx = (sparsity_index.p == p).nonzero().item()

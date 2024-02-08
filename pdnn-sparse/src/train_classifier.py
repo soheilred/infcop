@@ -87,7 +87,6 @@ def runExperiment():
                 else:
                     model_state_dict.append(to_device(model.state_dict(), 'cpu'))
                 mask_state_dict.append(mask.state_dict())
-        import ipdb; ipdb.set_trace()
         for epoch in range(last_epoch[-1] + 1, cfg[cfg['model_name']]['num_epochs'] + 1):
             logger.save(True)
             train(data_loader['train'], model, optimizer, mask, metric, logger, iter, epoch)
@@ -123,6 +122,7 @@ def runExperiment():
                     model.load_state_dict(result['model_state_dict'][-1])
             else:
                 raise ValueError('Not valid prune mode')
+            import ipdb; ipdb.set_trace()
             if cfg['world_size'] > 1:
                 sparsity_index.make_sparsity_index(model.module, mask)
                 compression.compress(model.module, mask, sparsity_index)
