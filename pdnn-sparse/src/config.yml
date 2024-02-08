@@ -3,7 +3,7 @@
 control:
   data_name: MNIST
   model_name: mlp
-  prune_iters: 30
+  prune_iters: 0
   prune_scope: layer
   prune_mode: si-0.5-1-0-1 # p-q-eta_r-gamma
 # experiment
