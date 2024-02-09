@@ -1,0 +1,16 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+Traceback (most recent call last):
+  File "../src/prune.py", line 666, in <module>
+    main()
+  File "../src/prune.py", line 651, in main
+    args = utils.get_yaml_args(args)
+  File "/home/gharatappeh/efficient_pruning/control_lth/src/utils.py", line 277, in get_yaml_args
+    network_conf = config_obj["network"]
+  File "/usr/lib/python3.8/configparser.py", line 960, in __getitem__
+    raise KeyError(key)
+KeyError: 'network'
+
+real	2m34.141s
+user	0m3.323s
+sys	0m4.814s
