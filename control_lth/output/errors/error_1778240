@@ -1,0 +1,16 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+Traceback (most recent call last):
+  File "../src/prune.py", line 666, in <module>
+    main()
+  File "../src/prune.py", line 651, in main
+    args = utils.get_yaml_args(args)
+  File "/home/gharatappeh/efficient_pruning/control_lth/src/utils.py", line 286, in get_yaml_args
+    args.warmup_train = int(network_conf["warmup_train"])
+  File "/usr/lib/python3.8/configparser.py", line 1254, in __getitem__
+    raise KeyError(key)
+KeyError: 'warmup_train'
+
+real	0m8.519s
+user	0m1.989s
+sys	0m3.516s
