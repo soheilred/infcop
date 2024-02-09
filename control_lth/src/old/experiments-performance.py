@@ -11,7 +11,7 @@ import utils
 from data_loader import Data
 from network import Network, train, test
 from correlation import Activations
-from lth import LTPruning
+from prune import LTPruning
 import constants as C
 
 
