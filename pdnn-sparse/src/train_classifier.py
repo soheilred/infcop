@@ -122,7 +122,6 @@ def runExperiment():
                     model.load_state_dict(result['model_state_dict'][-1])
             else:
                 raise ValueError('Not valid prune mode')
-            import ipdb; ipdb.set_trace()
             if cfg['world_size'] > 1:
                 sparsity_index.make_sparsity_index(model.module, mask)
                 compression.compress(model.module, mask, sparsity_index)
