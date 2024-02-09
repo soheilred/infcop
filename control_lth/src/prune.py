@@ -164,9 +164,11 @@ class Pruner:
         self.mask = [None] * self.num_layers
         layer_id = 0
         for name, param in self.model.named_parameters():
-            if 'weight' in name:
-                tensor = param.data.cpu().numpy()
-                self.mask[layer_id] = np.ones_like(tensor)
+            if 'weight' in name and param.dim() > 1:
+                # tensor = param.data.cpu().numpy()
+                # self.mask[layer_id] = np.ones_like(tensor)
+                self.mask[layer_id] = param.new_ones(param.size(),
+                                                     dtype=torch.bool)
                 # self.mask[layer_id] = torch.ones_like(param.data)
                 layer_id += 1
 
@@ -176,12 +178,10 @@ class Pruner:
         step = 0
         mask_temp = self.mask
         for name, param in self.model.named_parameters():
-            if "weight" in name:
+            if "weight" in name and param.dim() > 1:
                 weight_dev = param.device
-                param.data = torch.from_numpy(mask_temp[step] *
-                                              initial_state_dict[name].
-                                              cpu().numpy()).to(weight_dev)
-                step = step + 1
+                param.data = (mask_temp[step] * initial_state_dict[name]).to(weight_dev)
+                step += 1
             if "bias" in name:
                 param.data = initial_state_dict[name]
 
@@ -241,8 +241,6 @@ class Pruner:
                 pivot_mask.append(self.mask[layer_id].view(-1))
                 layer_id += 1
 
-        import ipdb; ipdb.set_trace()
-
         pivot_param = torch.cat(pivot_param, dim=0).data.abs()
         pivot_mask = torch.cat(pivot_mask, dim=0)
         # p, q, eta_m, gamma = self.prune_mode[1:] # TODO
@@ -253,9 +251,9 @@ class Pruner:
         p_idx = (sparsity_index["p"] == p).nonzero().item()
         q_idx = (sparsity_index["q"] == q).nonzero().item()
         mask_i = pivot_mask
-        si = self.make_si_(self.model, self.mask)
+        si = self.make_si_(self.model, self.mask, sparsity_index)
         si_i = si[p_idx, q_idx]
-        d = mask_i.float().sum().to(self.device)
+        d = mask_i.float().sum().to('cpu')
         m = d * (1 + eta_m) ** (q / (p - q)) * (1 - si_i) ** ((q * p) / (q - p))
         m = torch.ceil(m).long()
         retain_ratio = m / d
@@ -284,31 +282,35 @@ class Pruner:
 
                 # Apply new weight and mask
                 # param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
-                param.data = torch.where(new_mask[name].to(param.device),
-                                         param.data,
+                param.data = torch.where(new_mask.to(param.device), param.data,
                                          torch.tensor(0, dtype=torch.float,
                                                       device=param.device))
 
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
-    def make_si_(self, model, mask):
+    def make_si_(self, model, mask, si_dict):
         sparsity_index = OrderedDict()
         param_all = []
         mask_all = []
+        layer_id = 0
         for name, param in model.state_dict().items():
             parameter_type = name.split('.')[-1]
             if 'weight' in parameter_type and param.dim() > 1:
                 param_all.append(param.view(-1))
-                mask_all.append(mask.state_dict()[name].view(-1))
+                mask_all.append(self.mask[layer_id].view(-1))
+                layer_id += 1
         param_all = torch.cat(param_all, dim=0)
         mask_all = torch.cat(mask_all, dim=0)
         sparsity_index_i = []
-        for i in range(len(self.p)):
-            for j in range(len(self.q)):
-                sparsity_index_i.append(self.make_si(param_all, mask_all, -1, self.p[i], self.q[j]))
+        for i in range(len(si_dict["p"])):
+            for j in range(len(si_dict["q"])):
+                sparsity_index_i.append(self.make_si(param_all, mask_all, -1,
+                                                     si_dict["p"][i],
+                                                     si_dict["q"][j]))
         sparsity_index_i = torch.tensor(sparsity_index_i)
-        sparsity_index['global'] = sparsity_index_i.reshape((len(self.p), len(self.q), -1))
+        sparsity_index = sparsity_index_i.reshape(
+            (len(si_dict["p"]), len(si_dict["q"]), -1))
 
         return sparsity_index
 
@@ -489,7 +491,7 @@ def perf_lth(logger, device, args, controller):
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
-    # warm up the pretrained model
+    logger.debug("Warming up the pretrained model")
     acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
@@ -515,7 +517,7 @@ def perf_lth(logger, device, args, controller):
 
             # Training
             logger.debug(f"Training iteration {train_iter} / {args.train_epochs}")
-            acc, loss = train(model, train_dl, loss_fn, optimizer, 
+            acc, loss = train(model, train_dl, loss_fn, optimizer,
                               args.train_per_epoch, device)
 
             # Test and save the most accurate model
@@ -544,7 +546,7 @@ def perf_lth(logger, device, args, controller):
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
-    return pruning.all_acc, connectivity
+    return pruning.all_acc, connectivity, pruning.comp_level
 
 
 def perf_connectivity_lth(logger, device, args, controller):
@@ -704,14 +706,16 @@ def perf_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
+    comp_level_list = []
 
     for i in range(args.num_trial):
         logger.debug(f"In experiment {i} / {args.num_trial}")
-        all_acc, conn = perf_lth(logger, device, args, controller)
+        all_acc, conn, comp = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
-        utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
-                        all_accuracies=all_acc)
+        comp_level_list.append(comp)
+        utils.save_vars(save_dir=run_dir+str(i)+"_", conn=conn,
+                        all_accuracies=all_acc, comp_level=comp)
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
 
@@ -719,7 +723,8 @@ def perf_exper(logger, args, device, run_dir):
     # conn = np.mean(conn_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     # utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
-    utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list)
+    utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list,
+                    comp_level=comp_level_list)
 
 
 def effic_exper(logger, args, device, run_dir):
