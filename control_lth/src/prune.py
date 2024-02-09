@@ -241,6 +241,8 @@ class Pruner:
                 pivot_mask.append(self.mask[layer_id].view(-1))
                 layer_id += 1
 
+        import ipdb; ipdb.set_trace()
+
         pivot_param = torch.cat(pivot_param, dim=0).data.abs()
         pivot_mask = torch.cat(pivot_mask, dim=0)
         # p, q, eta_m, gamma = self.prune_mode[1:] # TODO
