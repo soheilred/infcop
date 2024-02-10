@@ -212,15 +212,25 @@ class Pruner:
         for name, param in self.model.named_parameters():
 
             # We do not prune bias term
-            if 'weight' in name:
-                tensor = param.data.cpu().numpy()
-                alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
+            if 'weight' in name and param.dim() > 1:
+                tensor = param.data
+                import ipdb; ipdb.set_trace()
+                alive = tensor[tensor.nonzero()] # flattened array of nonzero values
                 percentile_value = np.percentile(abs(alive), self.prune_perc)
 
                 # Convert Tensors to numpy and calculate
                 weight_dev = param.device
                 new_mask = np.where(abs(tensor) < percentile_value, 0,
                                     self.mask[layer_id])
+
+                # tensor = param.data.cpu().numpy()
+                # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
+                # percentile_value = np.percentile(abs(alive), self.prune_perc)
+
+                # # Convert Tensors to numpy and calculate
+                # weight_dev = param.device
+                # new_mask = np.where(abs(tensor) < percentile_value, 0,
+                #                     self.mask[layer_id])
 
                 # Apply new weight and mask
                 param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
