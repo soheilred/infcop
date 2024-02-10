@@ -214,7 +214,6 @@ class Pruner:
             # We do not prune bias term
             if 'weight' in name and param.dim() > 1:
                 tensor = param.data
-                import ipdb; ipdb.set_trace()
                 # alive = tensor[tensor.nonzero()].abs() # flattened array of nonzero values
                 # percentile_value = torch.percentile(alive, self.prune_perc)
                 percentile_value = torch.quantile(tensor.abs(),
