@@ -340,8 +340,8 @@ class Pruner:
         # if correlation is not None:
         #     self.prune_by_correlation(correlation)
         # else:
-        self.prune_by_percentile()
-        # self.prune_by_sap()
+        # self.prune_by_percentile()
+        self.prune_by_sap()
         self.reset_weights_to_init(initial_state_dict)
 
     def make_grads_zero(self):
