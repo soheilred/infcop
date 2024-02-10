@@ -215,13 +215,15 @@ class Pruner:
             if 'weight' in name and param.dim() > 1:
                 tensor = param.data
                 import ipdb; ipdb.set_trace()
-                alive = tensor[tensor.nonzero()] # flattened array of nonzero values
-                percentile_value = np.percentile(abs(alive), self.prune_perc)
+                # alive = tensor[tensor.nonzero()].abs() # flattened array of nonzero values
+                # percentile_value = torch.percentile(alive, self.prune_perc)
+                percentile_value = torch.quantile(tensor.abs(),
+                                                  self.prune_perc/100.0).item()
 
                 # Convert Tensors to numpy and calculate
                 weight_dev = param.device
-                new_mask = np.where(abs(tensor) < percentile_value, 0,
-                                    self.mask[layer_id])
+                new_mask = torch.where(tensor.abs() < percentile_value, 0,
+                                       self.mask[layer_id])
 
                 # tensor = param.data.cpu().numpy()
                 # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
@@ -233,7 +235,7 @@ class Pruner:
                 #                     self.mask[layer_id])
 
                 # Apply new weight and mask
-                param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
+                param.data = (tensor * new_mask).to(weight_dev)
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
