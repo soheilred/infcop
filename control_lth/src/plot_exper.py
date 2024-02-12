@@ -24,11 +24,15 @@ def making_plots_perf(arch, dataset, layer, exper_cntr, exper_no_cntr):
     no_cntr_conn = np.mean(no_cntr_conn, axis=0)
     no_cntr_all_acc = pickle.load(open(no_cntr_dir + "all_accuracies.pkl", "rb"))
     no_cntr_all_acc = np.mean(no_cntr_all_acc, axis=0)
+    no_cntr_comp_level = pickle.load(open(no_cntr_dir + "comp_level.pkl", "rb"))
+    no_cntr_comp_level = np.mean(no_cntr_comp_level, axis=0)
 
     cntr_conn = pickle.load(open(cntr_dir + "conn.pkl", "rb"))
     cntr_conn = np.mean(cntr_conn, axis=0)
     cntr_all_acc = pickle.load(open(cntr_dir + "all_accuracies.pkl", "rb"))
     cntr_all_acc = np.mean(cntr_all_acc, axis=0)
+    cntr_comp_level = pickle.load(open(cntr_dir + "comp_level.pkl", "rb"))
+    cntr_comp_level = np.mean(cntr_comp_level, axis=0)
 
     print(cntr_all_acc)
     print(no_cntr_all_acc)
