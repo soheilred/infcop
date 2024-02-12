@@ -137,7 +137,7 @@ def get_mean_accuracy(arch, exper_dirs):
     return acc_mean
 
 
-def print_nonzeros(model):
+def count_nonzeros(model):
     nonzero = total = 0
     for name, p in model.named_parameters():
         tensor = p.data.to('cpu')

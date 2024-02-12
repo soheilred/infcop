@@ -176,12 +176,12 @@ class Pruner:
         """Reset the remaining weights in the network to the initial values.
         """
         step = 0
-        mask_temp = self.mask
         for name, param in self.model.named_parameters():
             if "weight" in name and param.dim() > 1:
                 weight_dev = param.device
-                param.data = (mask_temp[step] * initial_state_dict[name]).to(weight_dev)
+                param.data = (self.mask[step] * initial_state_dict[name]).to(weight_dev)
                 step += 1
+
             if "bias" in name:
                 param.data = initial_state_dict[name]
 
@@ -224,7 +224,6 @@ class Pruner:
                 new_mask = torch.where(tensor.abs() < percentile_value, 0,
                                        self.mask[layer_id])
                 new_mask = new_mask.type(torch.bool).to(weight_dev)
-                import ipdb; ipdb.set_trace()
 
                 # tensor = param.data.cpu().numpy()
                 # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
@@ -547,6 +546,9 @@ def perf_lth(logger, device, args, controller):
                                             weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
+
+        comp_level = utils.count_nonzeros(model)
+        logger.debug(f"Compression level: {comp_level}")
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
