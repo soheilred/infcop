@@ -218,6 +218,7 @@ class Pruner:
                 # percentile_value = torch.percentile(alive, self.prune_perc)
                 percentile_value = torch.quantile(tensor.abs(),
                                                   self.prune_perc/100.0).item()
+                import ipdb; ipdb.set_trace()
 
                 # Convert Tensors to numpy and calculate
                 weight_dev = param.device
