@@ -142,7 +142,7 @@ def print_nonzeros(model):
     for name, p in model.named_parameters():
         tensor = p.data
         nz_count = torch.count_nonzero(tensor)
-        total_params = torch.prod(tensor.size())
+        total_params = torch.prod(torch.tensor(tensor.shape))
         nonzero += nz_count
         total += total_params
         # print(f'{name:10} | nz = {nz_count:4} / {total_params:5} ({100 * nz_count / total_params:6.2f}%) | pruned = {total_params - nz_count :4} | shape = {tensor.shape}')
