@@ -236,7 +236,7 @@ class Pruner:
 
                 # Apply new weight and mask
                 param.data = (tensor * new_mask)
-                param.grad.mul_(new_mask)
+                param.grad[new_mask] = 0
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
@@ -299,6 +299,7 @@ class Pruner:
                                          torch.tensor(0, dtype=torch.float,
                                                       device=param.device))
 
+                param.grad.mul_(new_mask)
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
