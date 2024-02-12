@@ -1,0 +1,24 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [02:59<11:59, 179.78s/it] 20%|██        | 1/5 [02:59<11:59, 179.79s/it]
+Traceback (most recent call last):
+  File "../src/prune.py", line 770, in <module>
+    main()
+  File "../src/prune.py", line 760, in main
+    perf_exper(logger, args, device, run_dir)
+  File "../src/prune.py", line 713, in perf_exper
+    all_acc, conn, comp = perf_lth(logger, device, args, controller)
+  File "../src/prune.py", line 504, in perf_lth
+    pruning.prune_once(init_state_dict)
+  File "../src/prune.py", line 332, in prune_once
+    self.prune_by_percentile()
+  File "../src/prune.py", line 222, in prune_by_percentile
+    new_mask = np.where(abs(tensor) < percentile_value, 0,
+  File "<__array_function__ internals>", line 180, in where
+  File "/home/gharatappeh/.local/lib/python3.8/site-packages/torch/_tensor.py", line 955, in __array__
+    return self.numpy()
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
+
+real	4m25.123s
+user	5m51.539s
+sys	2m26.692s
