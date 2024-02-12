@@ -341,8 +341,8 @@ class Pruner:
         # if correlation is not None:
         #     self.prune_by_correlation(correlation)
         # else:
-        # self.prune_by_percentile()
-        self.prune_by_sap()
+        self.prune_by_percentile()
+        # self.prune_by_sap()
         self.reset_weights_to_init(initial_state_dict)
 
     def make_grads_zero(self):
@@ -397,7 +397,7 @@ class Pruner:
                 weight[mask.eq(0)] = 0.0
 
         self.model.eval()
-   
+
     def control(self, corr, layers_dim, imp_iter):
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
@@ -584,7 +584,7 @@ def perf_connectivity_lth(logger, device, args, controller):
         if imp_iter != 0:
             act = Activations(model, test_dl, device, args.batch_size)
             corr = act.get_correlations()
-            pruning.prune_once(init_state_dict, correlation=corr)
+            pruning.prune_once(init_state_dict)
             optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                         weight_decay=1e-4)
 
