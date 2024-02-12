@@ -236,7 +236,7 @@ class Pruner:
 
                 # Apply new weight and mask
                 param.data = (tensor * new_mask)
-                param.grad.data[new_mask] = 0
+                param.grad *= new_mask
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
