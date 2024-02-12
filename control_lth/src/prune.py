@@ -236,7 +236,6 @@ class Pruner:
 
                 # Apply new weight and mask
                 param.data = (tensor * new_mask)
-                import ipdb; ipdb.set_trace()
                 param.grad.data[new_mask] = 0
                 self.mask[layer_id] = new_mask
                 layer_id += 1
@@ -517,7 +516,8 @@ def perf_lth(logger, device, args, controller):
         # except for the first iteration, we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+            non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
+            optimizer = torch.optim.SGD(non_frozen_parameters, lr=args.lr,
                                         weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
