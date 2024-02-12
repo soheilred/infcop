@@ -224,6 +224,7 @@ class Pruner:
                 new_mask = torch.where(tensor.abs() < percentile_value, 0,
                                        self.mask[layer_id])
                 new_mask = new_mask.type(torch.bool).to(weight_dev)
+                import ipdb; ipdb.set_trace()
 
                 # tensor = param.data.cpu().numpy()
                 # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
