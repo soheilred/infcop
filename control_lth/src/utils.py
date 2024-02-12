@@ -140,7 +140,7 @@ def get_mean_accuracy(arch, exper_dirs):
 def print_nonzeros(model):
     nonzero = total = 0
     for name, p in model.named_parameters():
-        tensor = p.data
+        tensor = p.data.to('cpu')
         nz_count = torch.count_nonzero(tensor)
         total_params = torch.prod(torch.tensor(tensor.shape))
         nonzero += nz_count
@@ -152,8 +152,7 @@ def print_nonzeros(model):
     # for name, param in model.named_parameters():
     #     print(name, param.size())
 
-    import ipdb; ipdb.set_trace()
-    return torch.round((nonzero / total) * 100, 1)
+    return round((nonzero / total).item() * 100, 1)
 
 def setup_logger_dir(args):
     Path(C.RUN_DIR).mkdir(parents=True, exist_ok=True)
