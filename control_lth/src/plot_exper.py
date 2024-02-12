@@ -84,7 +84,7 @@ def main():
     # exper_cntr = ""
     # exper_no_cntr = ""
 
-    making_plots_perf(ARCHS[0], DATASETS[2], layer, exper_cntr[-1],
+    making_plots_perf(ARCHS[0], DATASETS[1], layer, exper_cntr[-1],
                       exper_no_cntr[-1])
     # making_plots_efficiency(ARCHS[2], DATASETS[1])
     # for arch in ARCHS:
