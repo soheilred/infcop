@@ -151,7 +151,9 @@ def print_nonzeros(model):
     # # Layer Looper
     # for name, param in model.named_parameters():
     #     print(name, param.size())
-    return (round((nonzero / total) * 100, 1))
+
+    import ipdb; ipdb.set_trace()
+    return torch.round((nonzero / total) * 100, 1)
 
 def setup_logger_dir(args):
     Path(C.RUN_DIR).mkdir(parents=True, exist_ok=True)
