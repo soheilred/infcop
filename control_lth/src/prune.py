@@ -236,7 +236,7 @@ class Pruner:
 
                 # Apply new weight and mask
                 param.data = (tensor * new_mask)
-                param.grad *= new_mask
+                # param.grad *= new_mask
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
@@ -346,29 +346,6 @@ class Pruner:
         self.prune_by_percentile()
         # self.prune_by_sap()
         self.reset_weights_to_init(initial_state_dict)
-
-    def make_grads_zero(self):
-        """Sets grads of fixed weights to 0.
-            During training this is called to avoid storing gradients for the
-            frozen weights, to prevent updating.
-            This is unaffected in the shared masks since shared weights always
-            have the current index unless frozen.
-        """
-        # assert self.current_masks
-
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                layer_mask = self.mask[module_idx]
-                # Set grads of all weights not belonging to current dataset to 0.
-                if module.weight.grad is not None:
-                    module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
-                if self.task_num > 0 and module.bias is not None:
-                    module.bias.grad.data.fill_(0)
-
-            elif 'BatchNorm' in str(type(module)) and self.task_num > 0:
-                # Set grads of batchnorm params to 0.
-                module.weight.grad.data.fill_(0)
-                module.bias.grad.data.fill_(0)
 
     def make_pruned_zero(self):
         """Set all pruned weights to 0.
@@ -532,7 +509,7 @@ def perf_lth(logger, device, args, controller):
 
             # Training
             logger.debug(f"Training iteration {train_iter} / {args.train_epochs}")
-            acc, loss = train(model, train_dl, loss_fn, optimizer,
+            acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.train_per_epoch, device)
 
             # Test and save the most accurate model
