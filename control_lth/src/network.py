@@ -170,12 +170,12 @@ def make_grads_zero(model, mask):
     # assert self.current_masks
     for name, param in model.named_parameters():
         if 'weight' in name and param.dim() > 1:
-            param.grad *= mask[layer_id]
-            layer_id += 1
+            param.grad.data *= mask[layer_id]
             # tensor = p.data.cpu().numpy()
             # grad_tensor = p.grad.data.cpu().numpy()
             # grad_tensor = np.where(tensor < EPS, 0, grad_tensor)
             # p.grad.data = torch.from_numpy(grad_tensor).to(device)
+            layer_id += 1
 
     # for module_idx, module in enumerate(self.model.shared.modules()):
     #     if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
