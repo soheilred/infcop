@@ -214,9 +214,9 @@ class Pruner:
             # We do not prune bias term
             if 'weight' in name and param.dim() > 1:
                 tensor = param.data
-                # alive = tensor[tensor.nonzero()].abs() # flattened array of nonzero values
+                alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
                 # percentile_value = torch.percentile(alive, self.prune_perc)
-                percentile_value = torch.quantile(tensor.abs(),
+                percentile_value = torch.quantile(alive.abs(),
                                                   self.prune_perc/100.0).item()
 
                 # Convert Tensors to numpy and calculate
@@ -492,7 +492,7 @@ def perf_lth(logger, device, args, controller):
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, we don't prune in the first iteration
         if imp_iter != 0:
-            import ipdb; ipdb.set_trace()
+            # import ipdb; ipdb.set_trace()
             pruning.prune_once(init_state_dict)
             # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
             optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
