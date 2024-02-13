@@ -217,7 +217,6 @@ def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
                 # Set frozen param grads to 0.
                 # make_grads_zero(model, mask)
                 layer_id = 0
-                # assert self.current_masks
                 for name, param in model.named_parameters():
                     if 'weight' in name and param.dim() > 1:
                         param.grad *= mask[layer_id]
