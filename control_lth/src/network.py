@@ -171,10 +171,6 @@ def make_grads_zero(model, mask):
     for name, param in model.named_parameters():
         if 'weight' in name and param.dim() > 1:
             param.grad.data *= mask[layer_id]
-            # tensor = p.data.cpu().numpy()
-            # grad_tensor = p.grad.data.cpu().numpy()
-            # grad_tensor = np.where(tensor < EPS, 0, grad_tensor)
-            # p.grad.data = torch.from_numpy(grad_tensor).to(device)
             layer_id += 1
 
     # for module_idx, module in enumerate(self.model.shared.modules()):
@@ -191,6 +187,10 @@ def make_grads_zero(model, mask):
     #         module.weight.grad.data.fill_(0)
     #         module.bias.grad.data.fill_(0)
 
+            # tensor = p.data.cpu().numpy()
+            # grad_tensor = p.grad.data.cpu().numpy()
+            # grad_tensor = np.where(tensor < EPS, 0, grad_tensor)
+            # p.grad.data = torch.from_numpy(grad_tensor).to(device)
 
 def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
     model.train()
@@ -215,12 +215,7 @@ def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
 
             if mask is not None:
                 # Set frozen param grads to 0.
-                # make_grads_zero(model, mask)
-                layer_id = 0
-                for name, param in model.named_parameters():
-                    if 'weight' in name and param.dim() > 1:
-                        param.grad *= mask[layer_id]
-                        layer_id += 1
+                make_grads_zero(model, mask)
 
             optimizer.step()
 

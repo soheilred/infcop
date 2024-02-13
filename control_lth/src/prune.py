@@ -492,7 +492,6 @@ def perf_lth(logger, device, args, controller):
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, we don't prune in the first iteration
         if imp_iter != 0:
-            # import ipdb; ipdb.set_trace()
             pruning.prune_once(init_state_dict)
             # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
             optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
@@ -527,9 +526,6 @@ def perf_lth(logger, device, args, controller):
                                              weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
-
-        comp_level = utils.count_nonzeros(model)
-        logger.debug(f"Compression level: {comp_level}")
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
