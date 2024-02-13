@@ -166,10 +166,12 @@ def make_grads_zero(model, mask):
         have the current index unless frozen.
     """
     EPS = 1e-6
+    layer_id = 0
     # assert self.current_masks
     for name, param in model.named_parameters():
         if 'weight' in name and param.dim() > 1:
-            param.grad *= mask
+            param.grad *= mask[layer_id]
+            layer_id += 1
             # tensor = p.data.cpu().numpy()
             # grad_tensor = p.grad.data.cpu().numpy()
             # grad_tensor = np.where(tensor < EPS, 0, grad_tensor)
