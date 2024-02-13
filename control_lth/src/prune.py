@@ -496,6 +496,7 @@ def perf_lth(logger, device, args, controller):
             # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
             optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                          weight_decay=1e-4)
+            import ipdb; ipdb.set_trace()
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -522,8 +523,8 @@ def perf_lth(logger, device, args, controller):
                 # corr = act.get_corrs()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.Adam(non_frozen_parameters, lr=args.lr,
-                                            weight_decay=1e-4)
+                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                             weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
