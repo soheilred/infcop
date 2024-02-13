@@ -236,6 +236,7 @@ class Pruner:
 
                 # Apply new weight and mask
                 param.data = (tensor * new_mask)
+                import ipdb; ipdb.set_trace()
                 param.grad *= new_mask
                 self.mask[layer_id] = new_mask
                 layer_id += 1
