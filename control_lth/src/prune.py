@@ -505,7 +505,7 @@ def perf_lth(logger, device, args, controller):
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     logger.debug("Warming up the pretrained model")
     acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
 
@@ -518,7 +518,7 @@ def perf_lth(logger, device, args, controller):
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
             non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
-            optimizer = torch.optim.SGD(non_frozen_parameters, lr=args.lr,
+            optimizer = torch.optim.Adam(non_frozen_parameters, lr=args.lr,
                                         weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -546,7 +546,7 @@ def perf_lth(logger, device, args, controller):
                 # corr = act.get_corrs()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                             weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
