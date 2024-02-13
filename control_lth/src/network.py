@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 import sys
 from torch import nn
 from torch.utils.data import DataLoader
@@ -196,6 +197,7 @@ def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
     model.train()
     log.debug('Training...')
     size = len(dataloader.dataset)
+    EPS = 1e-6
 
     for t in range(epochs):
         # log.debug(f"Epoch {t+1}")
@@ -220,7 +222,11 @@ def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
                 # assert self.current_masks
                 for name, param in model.named_parameters():
                     if 'weight' in name and param.dim() > 1:
-                        param.grad *= mask[layer_id]
+                        # param.grad *= mask[layer_id]
+                        tensor = param.data.cpu().numpy()
+                        grad_tensor = param.grad.data.cpu().numpy()
+                        grad_tensor = np.where(tensor < EPS, 0, grad_tensor)
+                        param.grad.data = torch.from_numpy(grad_tensor).to(device)
                         layer_id += 1
 
             optimizer.step()
