@@ -211,8 +211,9 @@ def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
             optimizer.zero_grad()
             loss.backward()
 
-            # Set frozen param grads to 0.
-            make_grads_zero(model, mask)
+            if mask is not None:
+                # Set frozen param grads to 0.
+                make_grads_zero(model, mask)
 
             optimizer.step()
 
