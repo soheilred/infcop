@@ -289,9 +289,8 @@ class Pruner:
                 # new_mask = np.where(abs(tensor) < percentile_value, 0,
                 #                     self.mask[layer_id])
 
-                mask_i = self.mask[layer_id]
                 pivot_mask = (param.data.abs() < pivot_value).to(weight_dev)
-                new_mask = torch.where(pivot_mask, False, mask_i)
+                new_mask = torch.where(pivot_mask, False, self.mask[layer_id])
 
                 # Apply new weight and mask
                 # param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
