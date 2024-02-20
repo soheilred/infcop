@@ -127,6 +127,7 @@ class Activations:
         return self.layers_idx
 
     def set_act_keys(self):
+        import ipdb; ipdb.set_trace()
         layers_dim = []
         hook_handles = []
 
