@@ -9,7 +9,7 @@ import logging
 import logging.config
 from torch import nn
 from models import ResidualBlock
-from torchvision.models.resnet import Bottleneck
+from torchvision.models.resnet import Bottleneck, BasicBlock
 
 import utils
 import plot_tool
@@ -74,6 +74,16 @@ class Activations:
                     hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                     self.layers_dim.append(module[1].weight.shape)
 
+    def get_parent_child_pairs(self, net):
+        for name, layer in net.named_children():
+            if isinstance(layer, nn.Sequential) or \
+               isinstance(layer, BasicBlock):
+                print('outer', name, layer)
+                self.get_parent_child_pairs(layer)
+            elif isinstance(layer, nn.Conv2d) or isinstance(layer, nn.Linear):
+                print('inner', name, layer)
+                self.hook_handles.append(layer.register_forward_hook(self.hook_fn))
+
     def hook_all_layers(self, layers_dim, hook_handles):
         """ Hook a handle to all layers that are interesting to us, such as
         Linear or Conv2d.
@@ -128,6 +138,7 @@ class Activations:
 
     def set_act_keys(self):
         import ipdb; ipdb.set_trace()
+        self.get_parent_child_pairs(self.model)
         layers_dim = []
         hook_handles = []
 
