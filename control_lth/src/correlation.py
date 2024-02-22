@@ -250,6 +250,10 @@ class Activations:
         for module in self.model.named_modules():
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
+
+                if "downsample" in module[0]:
+                    continue
+
                 hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                 self.layers_dim.append(module[1].weight.shape)
 
@@ -297,10 +301,12 @@ class Activations:
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
                 for i in range(num_layers):
-                    act_means[i] += torch.sum(torch.nan_to_num(self.activation[act_keys[i]]),
+                    act_means[i] += torch.sum(torch.nan_to_num(
+                                              self.activation[act_keys[i]]),
                                               dim=0)
-                    act_sq_sum[i] += torch.sum(
-                            torch.pow(torch.nan_to_num(self.activation[act_keys[i]]), 2), dim=0)
+                    act_sq_sum[i] += torch.sum(torch.pow(torch.nan_to_num(
+                                               self.activation[act_keys[i]]), 2),
+                                               dim=0)
                     act_max[i] = abs(torch.max(act_max[i],
                                      abs(torch.max(self.activation[act_keys[i]]))))
 
@@ -317,9 +323,9 @@ class Activations:
                                       torch.ones(act_sd[i].shape).to(self.device))
                 # logging.debug(f"nans in activation sd layer {i}: {torch.isnan(act_sd[i]).any()}")
                 # logging.debug(f"nans in activation sd layer {i}: {torch.sum(torch.isnan(act_sd[i].view(-1)))}")
-            # logging.debug(f"activation mean: {act_means}")
-            # logging.debug(f"# nans in activation sd: {torch.nonzero(torch.isnan(act_sd.view(-1)))}")
-            # logging.debug(f"activation max: {act_max}")
+            log.debug(f"activation mean: {act_means}")
+            log.debug(f"# nans in activation sd: {torch.nonzero(torch.isnan(act_sd.view(-1)))}")
+            log.debug(f"activation max: {act_max}")
 
             for batch, (X, y) in enumerate(self.dataloader):
                 # if batch % 100 == 0:
@@ -337,7 +343,7 @@ class Activations:
 
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
-        self.model.train()
+
         return corrs
 
     def get_connectivity(self):
