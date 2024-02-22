@@ -74,15 +74,24 @@ class Activations:
                     hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                     self.layers_dim.append(module[1].weight.shape)
 
-    def get_parent_child_pairs(self, net):
-        for name, layer in net.named_children():
-            if isinstance(layer, nn.Sequential) or \
-               isinstance(layer, BasicBlock):
-                print('outer', name, layer)
-                self.get_parent_child_pairs(layer)
-            elif isinstance(layer, nn.Conv2d) or isinstance(layer, nn.Linear):
-                print('inner', name, layer)
-                self.hook_handles.append(layer.register_forward_hook(self.hook_fn))
+    def get_parent_child_pairs(self, net, parent, child, pc_dict):
+        for name, module in net.named_children():
+            if isinstance(module, nn.Sequential) or \
+               isinstance(module, BasicBlock) or \
+               isinstance(module, Bottleneck):
+
+                print('outer', name, module)
+                self.get_parent_child_pairs(module)
+
+            elif isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                print('inner', name, module)
+                if len(pc_dict) == 0:
+                    parent = name
+                    pc_dict[parent] = []
+                else:
+                    pc_dict[parent].append(child)
+                    parent = child
+                self.hook_handles.append(module.register_forward_hook(self.hook_fn))
 
     def hook_all_layers(self, layers_dim, hook_handles):
         """ Hook a handle to all layers that are interesting to us, such as
@@ -100,8 +109,11 @@ class Activations:
         register hook on all it's module children
         """
         for module in self.model.named_modules():
+            import ipdb; ipdb.set_trace()
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
+                if "downsample" in module[0]:
+                    continue
                 hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                 layers_dim.append(module[1].weight.shape)
 
@@ -137,7 +149,6 @@ class Activations:
         return self.layers_idx
 
     def set_act_keys(self):
-        import ipdb; ipdb.set_trace()
         self.get_parent_child_pairs(self.model)
         layers_dim = []
         hook_handles = []
