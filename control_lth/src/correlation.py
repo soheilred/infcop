@@ -109,7 +109,6 @@ class Activations:
         register hook on all it's module children
         """
         for module in self.model.named_modules():
-            import ipdb; ipdb.set_trace()
             if isinstance(module[1], nn.Conv2d) or \
                isinstance(module[1], nn.Linear):
                 if "downsample" in module[0]:
@@ -137,6 +136,8 @@ class Activations:
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
+                if "downsample" in module[0]:
+                    continue
                 layers_idx.append(module_idx)
                 layers_dim.append(module[1].weight.shape)
 
@@ -273,6 +274,7 @@ class Activations:
         """
         self.model.eval()
         ds_size = len(self.dataloader.dataset)
+        import ipdb; ipdb.set_trace()
 
         layers_idx = self.get_layers_idx()
         layers_dim = self.layers_dim
