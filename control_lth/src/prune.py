@@ -422,7 +422,8 @@ class Pruner:
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
-                if (idx == layer_idx):
+
+                if (idx == layer_idx) and ("downsample" not in module[0]):
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
                     print("network's weight shape", weight.shape)
