@@ -430,7 +430,7 @@ class Pruner:
                     weight_dev = module[1].weight.device
                     control_weights = control_weights.to(weight_dev)
                     # control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
-                    new_weight = (mod_weight * control_weights).astype("float32"))
+                    new_weight = (weight * control_weights).astype("float32")
                     # module[1].weight = torch.nn.Parameter(new_weight,
                     #                                        dtype=torch.float,
                     #                                        device=weight_dev)
