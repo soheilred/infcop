@@ -278,7 +278,6 @@ class Activations:
         """
         self.model.eval()
         ds_size = len(self.dataloader.dataset)
-        import ipdb; ipdb.set_trace()
 
         layers_idx = self.get_layers_idx()
         layers_dim = self.layers_dim
