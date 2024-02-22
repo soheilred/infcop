@@ -322,9 +322,9 @@ class Activations:
                                       torch.ones(act_sd[i].shape).to(self.device))
                 # logging.debug(f"nans in activation sd layer {i}: {torch.isnan(act_sd[i]).any()}")
                 # logging.debug(f"nans in activation sd layer {i}: {torch.sum(torch.isnan(act_sd[i].view(-1)))}")
-            log.debug(f"activation mean: {act_means}")
-            log.debug(f"# nans in activation sd: {torch.nonzero(torch.isnan(act_sd.view(-1)))}")
-            log.debug(f"activation max: {act_max}")
+            # log.debug(f"activation mean: {act_means}")
+            # log.debug(f"# nans in activation sd: {torch.nonzero(torch.isnan(act_sd.view(-1)))}")
+            # log.debug(f"activation max: {act_max}")
 
             for batch, (X, y) in enumerate(self.dataloader):
                 # if batch % 100 == 0:
