@@ -384,7 +384,7 @@ class Pruner:
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
 
         # get connectivity
-        connectivity = [(np.mean(control_corrs[imp_iter - 1][i]) /
+        connectivity = [(torch.mean(control_corrs[imp_iter - 1][i]) /
                         (layers_dim[i][0] * layers_dim[i + 1][0]))
                         for i in range(len(layers_dim) - 1)]
 
@@ -409,11 +409,11 @@ class Pruner:
             # type 4
             elif (self.controller.c_type == 4):
                 control_weights = abs(prev_corr)
-                control_weights = np.exp(control_weights) /\
+                control_weights = torch.exp(control_weights) /\
                     np.exp(control_weights).sum()
 
             elif (self.controller.c_type == 5):
-                control_weights = np.exp(abs(prev_corr))
+                control_weights = torch.exp(abs(prev_corr))
 
             self.apply_controller(control_weights, ind)
 
@@ -426,10 +426,11 @@ class Pruner:
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
                     print("network's weight shape", weight.shape)
-                    mod_weight = weight.cpu().numpy()
+                    # mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
+                    control_weights = control_weights.to(weight_dev)
                     # control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
-                    new_weight = torch.from_numpy((mod_weight * control_weights).astype("float32")).to(weight_dev)
+                    new_weight = (mod_weight * control_weights).astype("float32"))
                     # module[1].weight = torch.nn.Parameter(new_weight,
                     #                                        dtype=torch.float,
                     #                                        device=weight_dev)
@@ -440,17 +441,21 @@ class Pruner:
                     break
                 idx += 1
 
-    def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
+    def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, layer_ind):
         # the + 1 is for matching to the connectivity's dimension
-        # weights = control_corrs[imp_iter - 1][ind - 1]
-        weights = control_corrs[0][ind - 1]
+        weights = control_corrs[imp_iter - 1][layer_ind - 1]
+        # weights = control_corrs[0][layer_ind - 1]
         print("controller weight shape", weights.shape)
-        kernel_size = layers_dim[ind][-1]
+        kernel_size = layers_dim[layer_ind][-1]
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(1, 2).transpose(0, 3)
                                # transpose(1, 2).transpose(0, 3).transpose(0, 1)
-        weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
-                               transpose(3, 2, 1, 0)
+        import ipdb; ipdb.set_trace()
+        weights = torch.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
+                               permute(3, 2, 1, 0)
+
+        # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
+        #                        transpose(3, 2, 1, 0)
         print("controller weight shape", weights.shape)
         return weights
 
