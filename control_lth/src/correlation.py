@@ -111,7 +111,7 @@ class Activations:
         for module in self.model.named_modules():
             import ipdb; ipdb.set_trace()
             if isinstance(module[1], nn.Conv2d) or \
-                         isinstance(module[1], nn.Linear):
+               isinstance(module[1], nn.Linear):
                 if "downsample" in module[0]:
                     continue
                 hook_handles.append(module[1].register_forward_hook(self.hook_fn))
@@ -144,12 +144,12 @@ class Activations:
         self.layers_idx = layers_idx
 
     def get_layers_idx(self):
-        if self.layers_idx == None:
+        if self.layers_idx is None:
             self.set_layers_idx()
         return self.layers_idx
 
     def set_act_keys(self):
-        self.get_parent_child_pairs(self.model)
+        # self.get_parent_child_pairs(self.model)
         layers_dim = []
         hook_handles = []
 
@@ -165,7 +165,7 @@ class Activations:
         self.hook_handles = hook_handles
 
     def get_act_keys(self):
-        if self.act_keys == None:
+        if self.act_keys is None:
             self.set_act_keys()
         return self.act_keys
 
