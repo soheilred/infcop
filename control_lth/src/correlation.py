@@ -284,7 +284,7 @@ class Activations:
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
 
-        corrs = [np.zeros((layers_dim[i][0], layers_dim[i + 1][0]))
+        corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0]))
                  for i in range(num_layers - 1)]
 
         act_means = [torch.zeros(layers_dim[i][0]).to(self.device)
