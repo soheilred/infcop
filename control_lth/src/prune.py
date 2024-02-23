@@ -435,7 +435,7 @@ class Pruner:
                     # module[1].weight = torch.nn.Parameter(new_weight,
                     #                                        dtype=torch.float,
                     #                                        device=weight_dev)
-                    print("control weight", np.linalg.norm(control_weights))
+                    print("control weight", torch.linalg.norm(control_weights))
                     print("old weight", torch.linalg.norm(weight))
                     print("new weight", torch.linalg.norm(new_weight))
                     weight = new_weight
