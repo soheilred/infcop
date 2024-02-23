@@ -451,9 +451,8 @@ class Pruner:
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(1, 2).transpose(0, 3)
                                # transpose(1, 2).transpose(0, 3).transpose(0, 1)
-        import ipdb; ipdb.set_trace()
-        weights = torch.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
-                               permute(3, 2, 1, 0)
+        weights = weights.repeat([kernel_size, kernel_size, 1, 1]).\
+            permute(3, 2, 1, 0)
 
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(3, 2, 1, 0)
