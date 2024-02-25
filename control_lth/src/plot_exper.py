@@ -38,8 +38,8 @@ def perf_plots(cntr_dir, no_cntr_dir):
 
 def making_plots_perf(arch, dataset, exper_cntr, exper_no_cntr):
     print(arch, dataset)
-    no_cntr_dir = f"../output/performance/{arch}/{dataset}/no_cntr/" + exper_no_cntr
-    cntr_dir = f"../output/performance/{arch}/{dataset}/no_cntr/" + exper_cntr
+    no_cntr_dir = f"../output/performance/{arch}/{dataset}/no_cntr/{exper_no_cntr}"
+    cntr_dir = f"../output/performance/{arch}/{dataset}/no_cntr/{exper_cntr}"
 
     labels = [f"{arch} w. $\phi$", f"{arch} w.o. $\phi$"]
     if not os.path.exists(no_cntr_dir):
