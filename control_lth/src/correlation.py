@@ -9,7 +9,7 @@ import logging
 import logging.config
 from torch import nn
 from models import ResidualBlock
-from torchvision.models.resnet import Bottleneck
+from torchvision.models.resnet import Bottleneck, BasicBlock
 
 import utils
 import plot_tool
@@ -43,7 +43,7 @@ class Activations:
         self.layers_dim = None
         self.layers_idx = None
         self.act_keys = None
-        self.hook_handles = None
+        self.hook_handles = []
 
     def hook_fn(self, m, i, o):
         """Assign the activations/mean of activations to a matrix
@@ -74,6 +74,25 @@ class Activations:
                     hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                     self.layers_dim.append(module[1].weight.shape)
 
+    def get_parent_child_pairs(self, net, parent, child, pc_dict):
+        for name, module in net.named_children():
+            if isinstance(module, nn.Sequential) or \
+               isinstance(module, BasicBlock) or \
+               isinstance(module, Bottleneck):
+
+                print('outer', name, module)
+                self.get_parent_child_pairs(module)
+
+            elif isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+                print('inner', name, module)
+                if len(pc_dict) == 0:
+                    parent = name
+                    pc_dict[parent] = []
+                else:
+                    pc_dict[parent].append(child)
+                    parent = child
+                self.hook_handles.append(module.register_forward_hook(self.hook_fn))
+
     def hook_all_layers(self, layers_dim, hook_handles):
         """ Hook a handle to all layers that are interesting to us, such as
         Linear or Conv2d.
@@ -91,7 +110,9 @@ class Activations:
         """
         for module in self.model.named_modules():
             if isinstance(module[1], nn.Conv2d) or \
-                         isinstance(module[1], nn.Linear):
+               isinstance(module[1], nn.Linear):
+                if "downsample" in module[0]:
+                    continue
                 hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                 layers_dim.append(module[1].weight.shape)
 
@@ -115,6 +136,8 @@ class Activations:
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
+                if "downsample" in module[0]:
+                    continue
                 layers_idx.append(module_idx)
                 layers_dim.append(module[1].weight.shape)
 
@@ -122,11 +145,12 @@ class Activations:
         self.layers_idx = layers_idx
 
     def get_layers_idx(self):
-        if self.layers_idx == None:
+        if self.layers_idx is None:
             self.set_layers_idx()
         return self.layers_idx
 
     def set_act_keys(self):
+        # self.get_parent_child_pairs(self.model)
         layers_dim = []
         hook_handles = []
 
@@ -142,7 +166,7 @@ class Activations:
         self.hook_handles = hook_handles
 
     def get_act_keys(self):
-        if self.act_keys == None:
+        if self.act_keys is None:
             self.set_act_keys()
         return self.act_keys
 
@@ -226,6 +250,10 @@ class Activations:
         for module in self.model.named_modules():
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
+
+                if "downsample" in module[0]:
+                    continue
+
                 hook_handles.append(module[1].register_forward_hook(self.hook_fn))
                 self.layers_dim.append(module[1].weight.shape)
 
@@ -250,21 +278,19 @@ class Activations:
         """
         self.model.eval()
         ds_size = len(self.dataloader.dataset)
-        num_batch = len(self.dataloader)
-        # params = list(self.model.parameters())
 
         layers_idx = self.get_layers_idx()
         layers_dim = self.layers_dim
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
 
-        corrs = [np.zeros((layers_dim[i][0], layers_dim[i + 1][0]))
+        corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0]))
                  for i in range(num_layers - 1)]
 
         act_means = [torch.zeros(layers_dim[i][0]).to(self.device)
-                            for i in range(num_layers)]
+                     for i in range(num_layers)]
         act_sq_sum = [torch.zeros(layers_dim[i][0]).to(self.device)
-                         for i in range(num_layers)]
+                      for i in range(num_layers)]
         act_max = torch.zeros(num_layers).to(self.device)
 
         with torch.no_grad():
@@ -274,17 +300,19 @@ class Activations:
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
                 for i in range(num_layers):
-                    act_means[i] += torch.sum(torch.nan_to_num(self.activation[act_keys[i]]),
-                                              dim=0) 
-                    act_sq_sum[i] += torch.sum(
-                            torch.pow(torch.nan_to_num(self.activation[act_keys[i]]), 2), dim=0)
+                    act_means[i] += torch.sum(torch.nan_to_num(
+                                              self.activation[act_keys[i]]),
+                                              dim=0)
+                    act_sq_sum[i] += torch.sum(torch.pow(torch.nan_to_num(
+                                               self.activation[act_keys[i]]), 2),
+                                               dim=0)
                     act_max[i] = abs(torch.max(act_max[i],
                                      abs(torch.max(self.activation[act_keys[i]]))))
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
             act_sd = [torch.pow(act_sq_sum[i] / ds_size -
-                                       torch.pow(act_means[i], 2), 0.5)
-                             for i in range(num_layers)]
+                                torch.pow(act_means[i], 2), 0.5)
+                      for i in range(num_layers)]
 
             # fix maximum activation for layers that are too close to zero
             for i in range(num_layers):
@@ -294,9 +322,9 @@ class Activations:
                                       torch.ones(act_sd[i].shape).to(self.device))
                 # logging.debug(f"nans in activation sd layer {i}: {torch.isnan(act_sd[i]).any()}")
                 # logging.debug(f"nans in activation sd layer {i}: {torch.sum(torch.isnan(act_sd[i].view(-1)))}")
-            # logging.debug(f"activation mean: {act_means}")
-            # logging.debug(f"# nans in activation sd: {torch.nonzero(torch.isnan(act_sd.view(-1)))}")
-            # logging.debug(f"activation max: {act_max}")
+            # log.debug(f"activation mean: {act_means}")
+            # log.debug(f"# nans in activation sd: {torch.nonzero(torch.isnan(act_sd.view(-1)))}")
+            # log.debug(f"activation max: {act_max}")
 
             for batch, (X, y) in enumerate(self.dataloader):
                 # if batch % 100 == 0:
@@ -314,7 +342,7 @@ class Activations:
 
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
-        self.model.train()
+
         return corrs
 
     def get_connectivity(self):
@@ -403,52 +431,28 @@ class Activations:
 
 
 def main():
-    # preparing the hardware
     args = utils.get_args()
+    logger = utils.setup_logger_dir(args)
+    args = utils.get_yaml_args(args)
     device = utils.get_device(args)
-    logger = utils.setup_logger()
-    num_exper = 5
-
+    run_dir = utils.get_run_dir(args)
+    ITERATION = args.imp_total_iter               # 35 was the default
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
-    num_classes = data.get_num_classes()
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    num_classes = data.get_num_classes()
+
     network = Network(device, args.arch, num_classes, args.pretrained)
-    preprocess = network.preprocess
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    logger.debug("Warming up the pretrained model")
+    acc, _ = train(model, train_dl, loss_fn, optimizer, None, 1, device)
 
-
-    corr = []
-    test_acc = torch.zeros(num_exper)
-
-    for i in range(num_exper):
-        logger.debug("=" * 10 + " experiment " + str(i + 1) + "=" * 10)
-        train_acc, _ = train(model, train_dl, loss_fn, optimizer,
-                             args.train_epochs, device)
-        test_acc[i] = test(model, test_dl, loss_fn, device)
-
-        activations = Activations(model, test_dl, device, args.batch_size)
-        # corr.append(activations.get_connectivity())
-        corrs = activations.get_corrs()
-        my_corrs = activations.get_correlations()
-        conns = activations.get_conns(corrs)
-        my_conns = activations.get_conns(my_corrs)
-
-        diff = [np.sum(np.abs(corrs[i] - my_corrs[i])) for i in
-                range(len(corrs))]
-        print(diff)
-        diff_cons = np.array(conns) - np.array(my_conns)
-        print(diff_cons)
-        corr.append(corrs)
-
-        utils.save_model(model, C.OUTPUT_DIR, args.arch + f'-{i}-model.pt')
-        logger.debug('model is saved...!')
-
-        utils.save_vars(test_acc=test_acc, corr=corr)
+    act = Activations(model, test_dl, device, args.batch_size)
+    corr = act.get_correlations()
 
     print(corr)
-    plot_tool.plot_connectivity(test_acc, corr)
+    # plot_tool.plot_connectivity(test_acc, corr)
 
 
 if __name__ == '__main__':

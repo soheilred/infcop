@@ -164,9 +164,11 @@ class Pruner:
         self.mask = [None] * self.num_layers
         layer_id = 0
         for name, param in self.model.named_parameters():
-            if 'weight' in name:
-                tensor = param.data.cpu().numpy()
-                self.mask[layer_id] = np.ones_like(tensor)
+            if 'weight' in name and param.dim() > 1:
+                # tensor = param.data.cpu().numpy()
+                # self.mask[layer_id] = np.ones_like(tensor)
+                self.mask[layer_id] = param.new_ones(param.size(),
+                                                     dtype=torch.bool)
                 # self.mask[layer_id] = torch.ones_like(param.data)
                 layer_id += 1
 
@@ -174,14 +176,12 @@ class Pruner:
         """Reset the remaining weights in the network to the initial values.
         """
         step = 0
-        mask_temp = self.mask
         for name, param in self.model.named_parameters():
-            if "weight" in name:
+            if "weight" in name and param.dim() > 1:
                 weight_dev = param.device
-                param.data = torch.from_numpy(mask_temp[step] *
-                                              initial_state_dict[name].
-                                              cpu().numpy()).to(weight_dev)
-                step = step + 1
+                param.data = (self.mask[step] * initial_state_dict[name]).to(weight_dev)
+                step += 1
+
             if "bias" in name:
                 param.data = initial_state_dict[name]
 
@@ -212,18 +212,31 @@ class Pruner:
         for name, param in self.model.named_parameters():
 
             # We do not prune bias term
-            if 'weight' in name:
-                tensor = param.data.cpu().numpy()
-                alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
-                percentile_value = np.percentile(abs(alive), self.prune_perc)
+            if 'weight' in name and param.dim() > 1:
+                tensor = param.data
+                alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
+                # percentile_value = torch.percentile(alive, self.prune_perc)
+                percentile_value = torch.quantile(alive.abs(),
+                                                  self.prune_perc/100.0).item()
 
                 # Convert Tensors to numpy and calculate
                 weight_dev = param.device
-                new_mask = np.where(abs(tensor) < percentile_value, 0,
-                                    self.mask[layer_id])
+                new_mask = torch.where(tensor.abs() < percentile_value, 0,
+                                       self.mask[layer_id])
+                new_mask = new_mask.type(torch.bool).to(weight_dev)
+
+                # tensor = param.data.cpu().numpy()
+                # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
+                # percentile_value = np.percentile(abs(alive), self.prune_perc)
+
+                # # Convert Tensors to numpy and calculate
+                # weight_dev = param.device
+                # new_mask = np.where(abs(tensor) < percentile_value, 0,
+                #                     self.mask[layer_id])
 
                 # Apply new weight and mask
-                param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
+                param.data = (tensor * new_mask)
+                # param.grad *= new_mask
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
@@ -241,8 +254,6 @@ class Pruner:
                 pivot_mask.append(self.mask[layer_id].view(-1))
                 layer_id += 1
 
-        import ipdb; ipdb.set_trace()
-
         pivot_param = torch.cat(pivot_param, dim=0).data.abs()
         pivot_mask = torch.cat(pivot_mask, dim=0)
         # p, q, eta_m, gamma = self.prune_mode[1:] # TODO
@@ -253,9 +264,9 @@ class Pruner:
         p_idx = (sparsity_index["p"] == p).nonzero().item()
         q_idx = (sparsity_index["q"] == q).nonzero().item()
         mask_i = pivot_mask
-        si = self.make_si_(self.model, self.mask)
+        si = self.make_si_(self.model, self.mask, sparsity_index)
         si_i = si[p_idx, q_idx]
-        d = mask_i.float().sum().to(self.device)
+        d = mask_i.float().sum().to('cpu')
         m = d * (1 + eta_m) ** (q / (p - q)) * (1 - si_i) ** ((q * p) / (q - p))
         m = torch.ceil(m).long()
         retain_ratio = m / d
@@ -278,37 +289,41 @@ class Pruner:
                 # new_mask = np.where(abs(tensor) < percentile_value, 0,
                 #                     self.mask[layer_id])
 
-                mask_i = self.mask[layer_id]
                 pivot_mask = (param.data.abs() < pivot_value).to(weight_dev)
-                new_mask = torch.where(pivot_mask, False, mask_i)
+                new_mask = torch.where(pivot_mask, False, self.mask[layer_id])
 
                 # Apply new weight and mask
                 # param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
-                param.data = torch.where(new_mask[name].to(param.device),
-                                         param.data,
+                param.data = torch.where(new_mask.to(param.device), param.data,
                                          torch.tensor(0, dtype=torch.float,
                                                       device=param.device))
 
+                param.grad.mul_(new_mask)
                 self.mask[layer_id] = new_mask
                 layer_id += 1
 
-    def make_si_(self, model, mask):
+    def make_si_(self, model, mask, si_dict):
         sparsity_index = OrderedDict()
         param_all = []
         mask_all = []
+        layer_id = 0
         for name, param in model.state_dict().items():
             parameter_type = name.split('.')[-1]
             if 'weight' in parameter_type and param.dim() > 1:
                 param_all.append(param.view(-1))
-                mask_all.append(mask.state_dict()[name].view(-1))
+                mask_all.append(self.mask[layer_id].view(-1))
+                layer_id += 1
         param_all = torch.cat(param_all, dim=0)
         mask_all = torch.cat(mask_all, dim=0)
         sparsity_index_i = []
-        for i in range(len(self.p)):
-            for j in range(len(self.q)):
-                sparsity_index_i.append(self.make_si(param_all, mask_all, -1, self.p[i], self.q[j]))
+        for i in range(len(si_dict["p"])):
+            for j in range(len(si_dict["q"])):
+                sparsity_index_i.append(self.make_si(param_all, mask_all, -1,
+                                                     si_dict["p"][i],
+                                                     si_dict["q"][j]))
         sparsity_index_i = torch.tensor(sparsity_index_i)
-        sparsity_index['global'] = sparsity_index_i.reshape((len(self.p), len(self.q), -1))
+        sparsity_index = sparsity_index_i.reshape(
+            (len(si_dict["p"]), len(si_dict["q"]), -1))
 
         return sparsity_index
 
@@ -327,32 +342,9 @@ class Pruner:
         # if correlation is not None:
         #     self.prune_by_correlation(correlation)
         # else:
-        #     self.prune_by_percentile()
+        # self.prune_by_percentile()
         self.prune_by_sap()
         self.reset_weights_to_init(initial_state_dict)
-
-    def make_grads_zero(self):
-        """Sets grads of fixed weights to 0.
-            During training this is called to avoid storing gradients for the
-            frozen weights, to prevent updating.
-            This is unaffected in the shared masks since shared weights always
-            have the current index unless frozen.
-        """
-        # assert self.current_masks
-
-        for module_idx, module in enumerate(self.model.shared.modules()):
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                layer_mask = self.composite_mask[module_idx]
-                # Set grads of all weights not belonging to current dataset to 0.
-                if module.weight.grad is not None:
-                    module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
-                if self.task_num > 0 and module.bias is not None:
-                    module.bias.grad.data.fill_(0)
-
-            elif 'BatchNorm' in str(type(module)) and self.task_num > 0:
-                # Set grads of batchnorm params to 0.
-                module.weight.grad.data.fill_(0)
-                module.bias.grad.data.fill_(0)
 
     def make_pruned_zero(self):
         """Set all pruned weights to 0.
@@ -383,7 +375,7 @@ class Pruner:
                 weight[mask.eq(0)] = 0.0
 
         self.model.eval()
-   
+
     def control(self, corr, layers_dim, imp_iter):
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
@@ -392,14 +384,14 @@ class Pruner:
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
 
         # get connectivity
-        connectivity = [(np.mean(control_corrs[imp_iter - 1][i]) /
+        connectivity = [(torch.mean(control_corrs[imp_iter - 1][i]) /
                         (layers_dim[i][0] * layers_dim[i + 1][0]))
                         for i in range(len(layers_dim) - 1)]
 
         # get the coefficient based on connectivity
         for ind in self.controller.c_layers:
             prev_corr = self.get_prev_iter_correlation(control_corrs, layers_dim,
-                                                         imp_iter, ind)
+                                                       imp_iter, ind)
             prev_weight = prev_iter_weights[ind]
 
             # type 1
@@ -412,16 +404,16 @@ class Pruner:
 
             # type 3
             elif (self.controller.c_type == 3):
-                control_weights = 100 * abs(connectivity[ind]) / max(connectivity) # * prev_weight
+                control_weights = abs(connectivity[ind]) / max(connectivity) # * prev_weight
 
             # type 4
             elif (self.controller.c_type == 4):
                 control_weights = abs(prev_corr)
-                control_weights = np.exp(control_weights) /\
+                control_weights = torch.exp(control_weights) /\
                     np.exp(control_weights).sum()
 
             elif (self.controller.c_type == 5):
-                control_weights = np.exp(abs(prev_corr))
+                control_weights = torch.exp(abs(prev_corr))
 
             self.apply_controller(control_weights, ind)
 
@@ -430,35 +422,40 @@ class Pruner:
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
-                if (idx == layer_idx):
+
+                if (idx == layer_idx) and ("downsample" not in module[0]):
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
                     print("network's weight shape", weight.shape)
-                    mod_weight = weight.cpu().numpy()
+                    # mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
+                    control_weights = control_weights.to(weight_dev)
                     # control_weights = torch.from_numpy(control_weights.astype("float32")).to(weight_dev)
-                    new_weight = torch.from_numpy((mod_weight * control_weights).astype("float32")).to(weight_dev)
+                    new_weight = (weight * control_weights).type(torch.cuda.FloatTensor)
                     # module[1].weight = torch.nn.Parameter(new_weight,
                     #                                        dtype=torch.float,
                     #                                        device=weight_dev)
-                    print("control weight", np.linalg.norm(control_weights))
+                    print("control weight", torch.linalg.norm(control_weights))
                     print("old weight", torch.linalg.norm(weight))
                     print("new weight", torch.linalg.norm(new_weight))
                     weight = new_weight
                     break
                 idx += 1
 
-    def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, ind):
+    def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, layer_ind):
         # the + 1 is for matching to the connectivity's dimension
-        # weights = control_corrs[imp_iter - 1][ind - 1]
-        weights = control_corrs[0][ind - 1]
+        weights = control_corrs[imp_iter - 1][layer_ind - 1]
+        # weights = control_corrs[0][layer_ind - 1]
         print("controller weight shape", weights.shape)
-        kernel_size = layers_dim[ind][-1]
+        kernel_size = layers_dim[layer_ind][-1]
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(1, 2).transpose(0, 3)
                                # transpose(1, 2).transpose(0, 3).transpose(0, 1)
-        weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
-                               transpose(3, 2, 1, 0)
+        weights = weights.repeat([kernel_size, kernel_size, 1, 1]).\
+            permute(3, 2, 1, 0)
+
+        # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
+        #                        transpose(3, 2, 1, 0)
         print("controller weight shape", weights.shape)
         return weights
 
@@ -488,9 +485,9 @@ def perf_lth(logger, device, args, controller):
     network = Network(device, args.arch, num_classes, args.pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
-    # warm up the pretrained model
-    acc, _ = train(model, train_dl, loss_fn, optimizer, args.warmup_train, device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    logger.debug("Warming up the pretrained model")
+    acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.warmup_train, device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
@@ -500,13 +497,14 @@ def perf_lth(logger, device, args, controller):
         # except for the first iteration, we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
-                                        weight_decay=1e-4)
+            # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
+            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                         weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
         # Print the table of Nonzeros in each layer
-        comp_level = utils.print_nonzeros(model)
+        comp_level = utils.count_nonzeros(model)
         pruning.comp_level[imp_iter] = comp_level
         logger.debug(f"Compression level: {comp_level}")
 
@@ -515,7 +513,7 @@ def perf_lth(logger, device, args, controller):
 
             # Training
             logger.debug(f"Training iteration {train_iter} / {args.train_epochs}")
-            acc, loss = train(model, train_dl, loss_fn, optimizer, 
+            acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.train_per_epoch, device)
 
             # Test and save the most accurate model
@@ -528,8 +526,8 @@ def perf_lth(logger, device, args, controller):
                 # corr = act.get_corrs()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
-                                            weight_decay=1e-4)
+                optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
+                                             weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
@@ -544,7 +542,7 @@ def perf_lth(logger, device, args, controller):
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
-    return pruning.all_acc, connectivity
+    return pruning.all_acc, connectivity, pruning.comp_level
 
 
 def perf_connectivity_lth(logger, device, args, controller):
@@ -570,7 +568,7 @@ def perf_connectivity_lth(logger, device, args, controller):
         if imp_iter != 0:
             act = Activations(model, test_dl, device, args.batch_size)
             corr = act.get_correlations()
-            pruning.prune_once(init_state_dict, correlation=corr)
+            pruning.prune_once(init_state_dict)
             optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                         weight_decay=1e-4)
 
@@ -704,14 +702,16 @@ def perf_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
+    comp_level_list = []
 
     for i in range(args.num_trial):
         logger.debug(f"In experiment {i} / {args.num_trial}")
-        all_acc, conn = perf_lth(logger, device, args, controller)
+        all_acc, conn, comp = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
-        utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
-                        all_accuracies=all_acc)
+        comp_level_list.append(comp)
+        utils.save_vars(save_dir=run_dir+str(i)+"_", conn=conn,
+                        all_accuracies=all_acc, comp_level=comp)
         # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
         #                             "all_accuracies")
 
@@ -719,7 +719,8 @@ def perf_exper(logger, args, device, run_dir):
     # conn = np.mean(conn_list, axis=0)
     # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     # utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
-    utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list)
+    utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list,
+                    comp_level=comp_level_list)
 
 
 def effic_exper(logger, args, device, run_dir):

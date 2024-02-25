@@ -7,10 +7,11 @@ __pycache__/
 *.pth.tar
 *.pt
 *.tar.gz
+# *.pkl
 
 *.jpg
 *.png
-# *.log
+*.log
 *.csv
 data/
 

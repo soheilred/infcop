@@ -39,7 +39,7 @@ def perf_plots(cntr_dir, no_cntr_dir):
 def making_plots_perf(arch, dataset, exper_cntr, exper_no_cntr):
     print(arch, dataset)
     no_cntr_dir = f"../output/performance/{arch}/{dataset}/no_cntr/" + exper_no_cntr
-    cntr_dir = f"../output/performance/{arch}/{dataset}/cntr/" + exper_cntr
+    cntr_dir = f"../output/performance/{arch}/{dataset}/no_cntr/" + exper_cntr
 
     labels = [f"{arch} w. $\phi$", f"{arch} w.o. $\phi$"]
     if not os.path.exists(no_cntr_dir):
@@ -52,11 +52,15 @@ def making_plots_perf(arch, dataset, exper_cntr, exper_no_cntr):
     no_cntr_conn = np.mean(no_cntr_conn, axis=0)
     no_cntr_all_acc = pickle.load(open(no_cntr_dir + "all_accuracies.pkl", "rb"))
     no_cntr_all_acc = np.mean(no_cntr_all_acc, axis=0)
+    no_cntr_comp_level = pickle.load(open(no_cntr_dir + "comp_level.pkl", "rb"))
+    no_cntr_comp_level = np.mean(no_cntr_comp_level, axis=0)
 
     cntr_conn = pickle.load(open(cntr_dir + "conn.pkl", "rb"))
     cntr_conn = np.mean(cntr_conn, axis=0)
     cntr_all_acc = pickle.load(open(cntr_dir + "all_accuracies.pkl", "rb"))
     cntr_all_acc = np.mean(cntr_all_acc, axis=0)
+    cntr_comp_level = pickle.load(open(cntr_dir + "comp_level.pkl", "rb"))
+    cntr_comp_level = np.mean(cntr_comp_level, axis=0)
 
     print(cntr_all_acc)
     print(no_cntr_all_acc)
@@ -104,16 +108,21 @@ def main():
     ARCHS=["resnet18", "vgg16"]
     DATASETS=["MNIST", "CIFAR10", "CIFAR100"]
 
-    exper_cntr = ["", "22-37/"]
-    exper_no_cntr = ["", "22-39/"]
+    exper_cntr = ["", "11-10/"]
+    exper_no_cntr = ["", "11-15/"]
 
-    layer = 23456
+    layer = ""
 
     # exper_cntr = ""
     # exper_no_cntr = ""
 
+<<<<<<< HEAD
     # making_plots_perf(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
                       # exper_no_cntr[-1])
+=======
+    making_plots_perf(ARCHS[0], DATASETS[1], layer, exper_cntr[-1],
+                      exper_no_cntr[-1])
+>>>>>>> origin/soheil
     # making_plots_efficiency(ARCHS[2], DATASETS[1])
     # for arch in ARCHS:
     #     for dataset in DATASETS:
