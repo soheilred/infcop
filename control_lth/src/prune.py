@@ -32,7 +32,7 @@ class Controller:
 
 class Pruner:
     def __init__(self, args, model, train_dataloader=None, test_dataloader=None,
-                 controller=None, correlation=None): 
+                 controller=None, correlation=None):
         """Prune the network.
         Parameters
         ----------
