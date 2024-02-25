@@ -157,7 +157,42 @@ class Network():
 
         # self.fc = nn.Linear(512 * block.expansion, num_classes)
 
-def train(model, dataloader, loss_fn, optimizer, epochs, device):
+
+def make_grads_zero(model, mask):
+    """Sets grads of fixed weights to 0.
+        During training this is called to avoid storing gradients for the
+        frozen weights, to prevent updating.
+        This is unaffected in the shared masks since shared weights always
+        have the current index unless frozen.
+    """
+    EPS = 1e-6
+    layer_id = 0
+    # assert self.current_masks
+    for name, param in model.named_parameters():
+        if 'weight' in name and param.dim() > 1:
+            param.grad.data *= mask[layer_id]
+            layer_id += 1
+
+    # for module_idx, module in enumerate(self.model.shared.modules()):
+    #     if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+    #         layer_mask = self.mask[module_idx]
+    #         # Set grads of all weights not belonging to current dataset to 0.
+    #         if module.weight.grad is not None:
+    #             module.weight.grad.data[layer_mask.ne(self.task_num)] = 0
+    #         if self.task_num > 0 and module.bias is not None:
+    #             module.bias.grad.data.fill_(0)
+
+    #     elif 'BatchNorm' in str(type(module)) and self.task_num > 0:
+    #         # Set grads of batchnorm params to 0.
+    #         module.weight.grad.data.fill_(0)
+    #         module.bias.grad.data.fill_(0)
+
+            # tensor = p.data.cpu().numpy()
+            # grad_tensor = p.grad.data.cpu().numpy()
+            # grad_tensor = np.where(tensor < EPS, 0, grad_tensor)
+            # p.grad.data = torch.from_numpy(grad_tensor).to(device)
+
+def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
     model.train()
     log.debug('Training...')
     size = len(dataloader.dataset)
@@ -178,8 +213,9 @@ def train(model, dataloader, loss_fn, optimizer, epochs, device):
             optimizer.zero_grad()
             loss.backward()
 
-            # Set frozen param grads to 0.
-            # pruner.make_grads_zero()
+            if mask is not None:
+                # Set frozen param grads to 0.
+                make_grads_zero(model, mask)
 
             optimizer.step()
 
