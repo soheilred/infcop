@@ -116,13 +116,10 @@ def main():
     # exper_cntr = ""
     # exper_no_cntr = ""
 
-<<<<<<< HEAD
     # making_plots_perf(ARCHS[0], DATASETS[2], f"{layer}/{exper_cntr[-1]}",
                       # exper_no_cntr[-1])
-=======
-    making_plots_perf(ARCHS[0], DATASETS[1], layer, exper_cntr[-1],
-                      exper_no_cntr[-1])
->>>>>>> origin/soheil
+    # making_plots_perf(ARCHS[0], DATASETS[1], layer, exper_cntr[-1],
+    #                   exper_no_cntr[-1])
     # making_plots_efficiency(ARCHS[2], DATASETS[1])
     # for arch in ARCHS:
     #     for dataset in DATASETS:
