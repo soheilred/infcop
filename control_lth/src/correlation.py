@@ -138,7 +138,7 @@ class Activations:
                          isinstance(module[1], nn.Linear):
                 if "downsample" in module[0]:
                     continue
-                layers_idx.append(module_idx)
+                layers_idx.append((module_idx, module[0]))
                 layers_dim.append(module[1].weight.shape)
 
         self.layers_dim = layers_dim
