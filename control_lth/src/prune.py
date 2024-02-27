@@ -380,6 +380,9 @@ class Pruner:
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
 
+        import ipdb; ipdb.set_trace()
+        print([corr.shape for corr in control_corrs])
+
         # get the weights from previous iteration
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
 
@@ -447,7 +450,6 @@ class Pruner:
         # the + 1 is for matching to the connectivity's dimension
         weights = control_corrs[imp_iter - 1][layer_ind - 1]
         # weights = control_corrs[0][layer_ind - 1]
-        # print("controller weight shape", weights.shape)
         kernel_size = layers_dim[layer_ind][-1]
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(1, 2).transpose(0, 3)
@@ -457,7 +459,6 @@ class Pruner:
 
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(3, 2, 1, 0)
-        # print("controller weight shape", weights.shape)
         return weights
 
     def get_prev_iter_weights(self, imp_iter):
