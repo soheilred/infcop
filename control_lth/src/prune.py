@@ -380,7 +380,7 @@ class Pruner:
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
 
-        print([corr.shape for corr in control_corrs[-1]])
+        # print([corr.shape for corr in control_corrs[-1]])
 
         # get the weights from previous iteration
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
@@ -430,7 +430,7 @@ class Pruner:
                 if (idx == layer_idx):
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
-                    print("network's weight shape", module[0], weight.shape)
+                    # print("network's weight shape", module[0], weight.shape)
                     # mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
                     control_weights = control_weights.to(weight_dev)
@@ -454,7 +454,7 @@ class Pruner:
         weights = weights.repeat([kernel_size, kernel_size, 1, 1]).\
             permute(3, 2, 1, 0)
 
-        print("controller weight shape", weights.shape, layers_dim[layer_ind])
+        # print(layer_ind, "controller weight shape", weights.shape, layers_dim[layer_ind])
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
     #                        transpose(1, 2).transpose(0, 3)
                             # transpose(1, 2).transpose(0, 3).transpose(0, 1)

@@ -280,20 +280,21 @@ class Activations:
         ds_size = len(self.dataloader.dataset)
 
         layers_idx = self.get_layers_idx()
-        print(layers_idx)
+        # print(layers_idx)
         layers_dim = self.layers_dim
-        print(layers_dim)
+        # print(layers_dim)
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
+        device = 'cpu'
 
         corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).
-                 to(self.device) for i in range(num_layers - 1)]
+                 to(device) for i in range(num_layers - 1)]
 
-        act_means = [torch.zeros(layers_dim[i][0]).to(self.device)
+        act_means = [torch.zeros(layers_dim[i][0]).to(device)
                      for i in range(num_layers)]
-        act_sq_sum = [torch.zeros(layers_dim[i][0]).to(self.device)
+        act_sq_sum = [torch.zeros(layers_dim[i][0]).to(device)
                       for i in range(num_layers)]
-        act_max = torch.zeros(num_layers).to(self.device)
+        act_max = torch.zeros(num_layers).to(device)
 
         with torch.no_grad():
             # Compute the mean of activations
@@ -321,7 +322,7 @@ class Activations:
                 sign = torch.sign(act_max[i])
                 act_max[i] = sign * max(abs(act_max[i]), 0.001)
                 act_sd[i] = torch.max(act_sd[i], 0.001 * \
-                                      torch.ones(act_sd[i].shape).to(self.device))
+                                      torch.ones(act_sd[i].shape).to(device))
                 # logging.debug(f"nans in activation sd layer {i}: {torch.isnan(act_sd[i]).any()}")
                 # logging.debug(f"nans in activation sd layer {i}: {torch.sum(torch.isnan(act_sd[i].view(-1)))}")
             # log.debug(f"activation mean: {act_means}")
@@ -336,11 +337,11 @@ class Activations:
                 self.model(X)
 
                 for i in range(num_layers - 1):
-                    f0 = ((self.activation[act_keys[i]] - act_means[i]) /\
+                    f0 = ((self.activation[act_keys[i]] - act_means[i]) /
                           act_sd[i]).T
-                    f1 = (self.activation[act_keys[i + 1]] - act_means[i + 1])/\
-                          act_sd[i + 1]
-                    corrs[i] += torch.matmul(f0, f1) # .detach().cpu().numpy()
+                    f1 = ((self.activation[act_keys[i + 1]] - act_means[i + 1]) /
+                          act_sd[i + 1])
+                    corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
 
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
