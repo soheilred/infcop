@@ -437,9 +437,9 @@ class Pruner:
                     # module[1].weight = torch.nn.Parameter(new_weight,
                     #                                        dtype=torch.float,
                     #                                        device=weight_dev)
-                    print("control weight", torch.linalg.norm(control_weights))
-                    print("old weight", torch.linalg.norm(weight))
-                    print("new weight", torch.linalg.norm(new_weight))
+                    # print("control weight", torch.linalg.norm(control_weights))
+                    # print("old weight", torch.linalg.norm(weight))
+                    # print("new weight", torch.linalg.norm(new_weight))
                     weight = new_weight
                     break
                 idx += 1
@@ -448,11 +448,11 @@ class Pruner:
         # the + 1 is for matching to the connectivity's dimension
         weights = control_corrs[imp_iter - 1][layer_ind - 1]
         # weights = control_corrs[0][layer_ind - 1]
-        kernel_size = layers_dim[layer_ind - 1][-1]
+        kernel_size = layers_dim[layer_ind][-1]
         weights = weights.repeat([kernel_size, kernel_size, 1, 1]).\
             permute(3, 2, 1, 0)
 
-        print("controller weight shape", weights.shape, layers_dim[layer_ind - 1])
+        print("controller weight shape", weights.shape, layers_dim[layer_ind])
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
     #                        transpose(1, 2).transpose(0, 3)
                             # transpose(1, 2).transpose(0, 3).transpose(0, 1)
