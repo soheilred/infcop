@@ -426,7 +426,7 @@ class Pruner:
                 if (idx == layer_idx) and ("downsample" not in module[0]):
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
-                    print("network's weight shape", weight.shape)
+                    print("network's weight shape", module[0], weight.shape)
                     print("controller weight shape", control_weights.shape)
                     # mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
@@ -447,7 +447,7 @@ class Pruner:
         # the + 1 is for matching to the connectivity's dimension
         weights = control_corrs[imp_iter - 1][layer_ind - 1]
         # weights = control_corrs[0][layer_ind - 1]
-        print("controller weight shape", weights.shape)
+        # print("controller weight shape", weights.shape)
         kernel_size = layers_dim[layer_ind][-1]
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(1, 2).transpose(0, 3)
@@ -457,7 +457,7 @@ class Pruner:
 
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(3, 2, 1, 0)
-        print("controller weight shape", weights.shape)
+        # print("controller weight shape", weights.shape)
         return weights
 
     def get_prev_iter_weights(self, imp_iter):

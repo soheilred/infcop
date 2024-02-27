@@ -280,7 +280,9 @@ class Activations:
         ds_size = len(self.dataloader.dataset)
 
         layers_idx = self.get_layers_idx()
+        print(layers_idx)
         layers_dim = self.layers_dim
+        print(layers_dim)
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
 
@@ -338,7 +340,7 @@ class Activations:
                           act_sd[i]).T
                     f1 = (self.activation[act_keys[i + 1]] - act_means[i + 1])/\
                           act_sd[i + 1]
-                    corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
+                    corrs[i] += torch.matmul(f0, f1) # .detach().cpu().numpy()
 
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
