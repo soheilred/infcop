@@ -427,6 +427,7 @@ class Pruner:
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
                     print("network's weight shape", weight.shape)
+                    print("controller weight shape", control_weights.shape)
                     # mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
                     control_weights = control_weights.to(weight_dev)
