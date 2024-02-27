@@ -418,7 +418,7 @@ class Pruner:
             self.apply_controller(control_weights, ind)
 
     def apply_controller(self, control_weights, layer_idx):
-        idx = 0
+        idx = -1
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
