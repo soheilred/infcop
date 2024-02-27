@@ -419,7 +419,6 @@ class Pruner:
 
     def apply_controller(self, control_weights, layer_idx):
         idx = 0
-        import ipdb; ipdb.set_trace()
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
                          isinstance(module[1], nn.Linear):
