@@ -286,8 +286,8 @@ class Activations:
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
 
-        corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0]))
-                 for i in range(num_layers - 1)]
+        corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).
+                 to(self.device) for i in range(num_layers - 1)]
 
         act_means = [torch.zeros(layers_dim[i][0]).to(self.device)
                      for i in range(num_layers)]
@@ -340,7 +340,6 @@ class Activations:
                           act_sd[i]).T
                     f1 = (self.activation[act_keys[i + 1]] - act_means[i + 1])/\
                           act_sd[i + 1]
-                    import ipdb; ipdb.set_trace()
                     corrs[i] += torch.matmul(f0, f1) # .detach().cpu().numpy()
 
         for i in range(num_layers - 1):
