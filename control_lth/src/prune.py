@@ -380,8 +380,7 @@ class Pruner:
         control_corrs = self.corrs + [corr]
         log.debug(f"apply controller at layer {self.controller.c_layers}")
 
-        import ipdb; ipdb.set_trace()
-        print([corr.shape for corr in control_corrs])
+        print([corr.shape for corr in control_corrs[-1]])
 
         # get the weights from previous iteration
         prev_iter_weights = self.get_prev_iter_weights(imp_iter)
@@ -393,8 +392,8 @@ class Pruner:
 
         # get the coefficient based on connectivity
         for ind in self.controller.c_layers:
-            prev_corr = self.get_prev_iter_correlation(control_corrs, layers_dim,
-                                                       imp_iter, ind)
+            prev_corr = self.correlation_to_weights(control_corrs, layers_dim,
+                                                    imp_iter, ind)
             prev_weight = prev_iter_weights[ind]
 
             # type 1
@@ -430,7 +429,6 @@ class Pruner:
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
                     print("network's weight shape", module[0], weight.shape)
-                    print("controller weight shape", control_weights.shape)
                     # mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
                     control_weights = control_weights.to(weight_dev)
@@ -446,17 +444,18 @@ class Pruner:
                     break
                 idx += 1
 
-    def get_prev_iter_correlation(self, control_corrs, layers_dim, imp_iter, layer_ind):
+    def correlation_to_weights(self, control_corrs, layers_dim, imp_iter, layer_ind):
         # the + 1 is for matching to the connectivity's dimension
         weights = control_corrs[imp_iter - 1][layer_ind - 1]
         # weights = control_corrs[0][layer_ind - 1]
-        kernel_size = layers_dim[layer_ind][-1]
-        # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
-        #                        transpose(1, 2).transpose(0, 3)
-                               # transpose(1, 2).transpose(0, 3).transpose(0, 1)
+        kernel_size = layers_dim[layer_ind - 1][-1]
         weights = weights.repeat([kernel_size, kernel_size, 1, 1]).\
             permute(3, 2, 1, 0)
 
+        print("controller weight shape", weights.shape, layers_dim[layer_ind - 1])
+        # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
+    #                        transpose(1, 2).transpose(0, 3)
+                            # transpose(1, 2).transpose(0, 3).transpose(0, 1)
         # weights = np.tile(weights, reps=(kernel_size, kernel_size, 1, 1)).\
         #                        transpose(3, 2, 1, 0)
         return weights
@@ -521,7 +520,7 @@ def perf_lth(logger, device, args, controller):
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
 
-            # apply the controller after some epochs and some iterations
+            # apply the controller at specific epochs and iteration
             if (train_iter == controller.c_epoch) and \
                (imp_iter in controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
