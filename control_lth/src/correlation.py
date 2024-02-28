@@ -61,10 +61,10 @@ class Activations:
 
         tmp = o.detach()
         if len(tmp.shape) > 2:
-            self.activation[m] = torch.mean(tmp, axis=(2, 3))
+            self.activation[m] = torch.mean(tmp, axis=(2, 3)).detach().cpu()
             # activation[m] = tmp
         else:
-            self.activation[m] = tmp
+            self.activation[m] = tmp.detach().cpu()
 
     def hook_layer_idx(self, item_key, hook_handles):
         for module_idx, module in enumerate(self.model.named_modules()):
