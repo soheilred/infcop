@@ -285,7 +285,7 @@ class Activations:
         # print(layers_dim)
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
-        device = 'cpu'
+        device = self.activation[act_keys[0]].device
 
         corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).
                  to(device) for i in range(num_layers - 1)]
