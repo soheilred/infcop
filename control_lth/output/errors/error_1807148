@@ -1,0 +1,3 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+slurmstepd: error: *** JOB 1807148 ON grtx-1 CANCELLED AT 2024-02-27T21:02:38 ***
