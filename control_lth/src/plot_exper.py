@@ -8,7 +8,7 @@ import os
 import numpy as np
 
 
-def perf_plots(cntr_dir, no_cntr_dir):
+def perf_plots(no_cntr_dir, cntr_dir):
     print("control:", cntr_dir)
     print("wo. control:", no_cntr_dir)
     labels = ["w. $\phi$", "w.o. $\phi$"]
