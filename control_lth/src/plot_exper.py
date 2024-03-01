@@ -25,10 +25,15 @@ def perf_plots(no_cntr_dir, cntr_dir):
     cntr_all_acc = pickle.load(open(cntr_dir + "all_accuracies.pkl", "rb"))
     cntr_all_acc = np.mean(cntr_all_acc, axis=0)
 
-    print(cntr_all_acc)
+    no_cntr_comp = pickle.load(open(no_cntr_dir + "comp_level.pkl", "rb"))
+    no_cntr_comp = np.mean(no_cntr_comp, axis=0)
+    cntr_comp = pickle.load(open(no_cntr_dir + "comp_level.pkl", "rb"))
+    cntr_comp = np.mean(cntr_comp, axis=0)
+
     print(no_cntr_all_acc)
-    # print(cntr_conn)
-    # print(no_cntr_conn)
+    print(cntr_all_acc)
+    print(no_cntr_comp)
+    print(cntr_comp)
 
     plot_tool.plot_multi_all_accuracy([no_cntr_all_acc, cntr_all_acc], labels,
                                       args, cntr_dir + "all_accuracies")
