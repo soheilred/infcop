@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import os
 import numpy as np
+np.set_printoptions(precision=2)
 
 
 def perf_plots(no_cntr_dir, cntr_dir):
