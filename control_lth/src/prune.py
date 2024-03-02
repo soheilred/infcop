@@ -528,6 +528,7 @@ def perf_lth(logger, device, args, controller):
                 act = Activations(model, train_dl, device, args.batch_size)
                 corr_0, act_means_0 = act.get_corrs()
                 corr_1, act_means_1 = act.get_correlations()
+                import ipdb; ipdb.set_trace()
                 pruning.control(corr_1, act.layers_dim, imp_iter)
                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                              weight_decay=1e-4)
