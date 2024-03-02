@@ -198,10 +198,10 @@ class Activations:
                 for batch, (X, y) in enumerate(self.dataloader):
                     X, y = X.to(self.device), y.to(self.device)
                     self.model(X)
-                    parent_arr.append(self.activation[act_keys[idx]].\
-                                  detach().cpu().numpy())
-                    child_arr.append(self.activation[act_keys[idx + 1]].\
-                                 detach().cpu().numpy())
+                    parent_arr.append(self.activation[act_keys[idx]].
+                                      detach().cpu().numpy())
+                    child_arr.append(self.activation[act_keys[idx + 1]].
+                                     detach().cpu().numpy())
 
             del self.activation[act_keys[idx]]
             self.hook_handles.pop(0)
