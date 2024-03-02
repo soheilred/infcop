@@ -526,6 +526,7 @@ def perf_lth(logger, device, args, controller):
             if (train_iter == controller.c_epoch) and \
                (imp_iter in controller.c_iter):
                 act = Activations(model, test_dl, device, args.batch_size)
+                import ipdb; ipdb.set_trace()
                 corr_0 = act.get_corrs()
                 corr_1 = act.get_correlations()
                 pruning.control(corr_1, act.layers_dim, imp_iter)
