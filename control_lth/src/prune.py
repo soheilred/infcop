@@ -542,7 +542,7 @@ def perf_lth(logger, device, args, controller):
         # if (imp_iter <= controller.c_iter):
         activations = Activations(model, train_dl, device, args.batch_size)
         # pruning.corrs.append(activations.get_corrs())
-        pruning.corrs.append(activations.get_correlations())
+        pruning.corrs.append(activations.get_correlations()[0])
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
