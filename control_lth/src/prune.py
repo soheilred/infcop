@@ -525,7 +525,7 @@ def perf_lth(logger, device, args, controller):
             # apply the controller at specific epochs and iteration
             if (train_iter == controller.c_epoch) and \
                (imp_iter in controller.c_iter):
-                act = Activations(model, test_dl, device, args.batch_size)
+                act = Activations(model, train_dl, device, args.batch_size)
                 import ipdb; ipdb.set_trace()
                 corr_0 = act.get_corrs()
                 corr_1 = act.get_correlations()
@@ -540,7 +540,7 @@ def perf_lth(logger, device, args, controller):
 
         # Calculate the connectivity
         # if (imp_iter <= controller.c_iter):
-        activations = Activations(model, test_dl, device, args.batch_size)
+        activations = Activations(model, train_dl, device, args.batch_size)
         # pruning.corrs.append(activations.get_corrs())
         pruning.corrs.append(activations.get_correlations())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))

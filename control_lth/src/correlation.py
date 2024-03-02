@@ -16,6 +16,7 @@ import plot_tool
 from data_loader import Data
 from network import Network, train, test
 import constants as C
+torch.set_printoptions(precision=6)
 
 log = logging.getLogger("sampleLogger")
 log.debug("In " + os.uname()[1])
@@ -185,6 +186,7 @@ class Activations:
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
         corrs = []
+        p_means, c_means = [], []
 
         for idx in range(num_layers - 1):
             logging.debug(f"working on layer {layers_idx[idx]} {str(act_keys[idx])[:18]}...")
@@ -205,9 +207,11 @@ class Activations:
             self.hook_handles.pop(0)
 
             parent = np.vstack(parent_arr)
+            p_means.append(parent.mean(axis=0))
             parent = (parent - parent.mean(axis=0))
             parent /= np.abs(np.max(parent))
             child = np.vstack(child_arr)
+            c_means.append(child.mean(axis=0))
             child = (child - child.mean(axis=0))
             child /= np.abs(np.max(child)) # child.std(axis=0)
             if np.any(np.isnan(parent)):
@@ -223,7 +227,6 @@ class Activations:
             corrs.append(corr)
 
         # print(corrs)
-        self.model.train()
         return corrs
 
     def get_conns(self, corrs):
@@ -303,6 +306,7 @@ class Activations:
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
                 for i in range(num_layers):
+                    import ipdb; ipdb.set_trace()
                     act_means[i] += torch.sum(torch.nan_to_num(
                                               self.activation[act_keys[i]]),
                                               dim=0)
@@ -313,6 +317,7 @@ class Activations:
                                      abs(torch.max(self.activation[act_keys[i]]))))
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
+            print([torch.mean(act_mean) for act_mean in act_means])
             act_sd = [torch.pow(act_sq_sum[i] / ds_size -
                                 torch.pow(act_means[i], 2), 0.5)
                       for i in range(num_layers)]
@@ -331,7 +336,7 @@ class Activations:
 
             for batch, (X, y) in enumerate(self.dataloader):
                 # if batch % 100 == 0:
-                    # log.debug(f"batch [{batch}/{num_batch}]")
+                #     log.debug(f"batch [{batch}/{num_batch}]")
 
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
@@ -341,7 +346,7 @@ class Activations:
                           act_sd[i]).T
                     f1 = ((self.activation[act_keys[i + 1]] - act_means[i + 1]) /
                           act_sd[i + 1])
-                    corrs[i] += torch.matmul(f0, f1).detach().cpu().numpy()
+                    corrs[i] += torch.matmul(f0, f1).detach().cpu()
 
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
