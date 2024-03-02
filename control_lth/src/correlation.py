@@ -206,7 +206,6 @@ class Activations:
             del self.activation[act_keys[idx]]
             self.hook_handles.pop(0)
 
-            import ipdb; ipdb.set_trace()
             parent = np.vstack(parent_arr)
             p_means.append(parent.mean(axis=0))
             parent = (parent - parent.mean(axis=0))
