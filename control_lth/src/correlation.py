@@ -206,6 +206,7 @@ class Activations:
             del self.activation[act_keys[idx]]
             self.hook_handles.pop(0)
 
+            import ipdb; ipdb.set_trace()
             parent = np.vstack(parent_arr)
             p_means.append(parent.mean(axis=0))
             parent = (parent - parent.mean(axis=0))
@@ -306,7 +307,7 @@ class Activations:
                 X, y = X.to(self.device), y.to(self.device)
                 self.model(X)
                 for i in range(num_layers):
-                    import ipdb; ipdb.set_trace()
+                    # summing over all data points in a batch (dim=0)
                     act_means[i] += torch.sum(torch.nan_to_num(
                                               self.activation[act_keys[i]]),
                                               dim=0)
