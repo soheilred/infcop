@@ -188,7 +188,7 @@ class Activations:
         corrs = []
         p_means = []
 
-        for idx in range(num_layers - 1):
+        for idx in range(num_layers - 5):
             logging.debug(f"working on layer {layers_idx[idx]} {str(act_keys[idx])[:18]}...")
             # prepare an array with the right dimension
             parent_arr = []
@@ -219,8 +219,6 @@ class Activations:
             if np.any(np.isnan(child)):
                 print("nan in layer {layers_idx[idx + 1]}")
             # corr = np.corrcoef(parent, child, rowvar=False)
-            # x_len = corr.shape[0] // 2
-            # y_len = corr.shape[1] // 2
             corr = utils.batch_mul(parent, child)
             logging.debug(f"correlation dimension: {corr.shape}, conn: {np.mean(corr):.6f}")
             corrs.append(corr)
