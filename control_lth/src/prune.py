@@ -439,9 +439,9 @@ class Pruner:
                     # module[1].weight = torch.nn.Parameter(new_weight,
                     #                                        dtype=torch.float,
                     #                                        device=weight_dev)
-                    # print("control weight", torch.linalg.norm(control_weights))
-                    # print("old weight", torch.linalg.norm(weight))
-                    # print("new weight", torch.linalg.norm(new_weight))
+                    print("control weight", torch.linalg.norm(control_weights))
+                    print("old weight", torch.linalg.norm(weight))
+                    print("new weight", torch.linalg.norm(new_weight))
                     weight = new_weight
                     break
                 idx += 1
@@ -528,6 +528,7 @@ def perf_lth(logger, device, args, controller):
                 act = Activations(model, train_dl, device, args.batch_size)
                 corr_0, act_means_0 = act.get_corrs()
                 corr_1, act_means_1 = act.get_correlations()
+                print([torch.sum(act_means_0[i] - act_means_1[i]) for i in range(len(act_means_0))])
                 import ipdb; ipdb.set_trace()
                 corr, act_means_1 = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
