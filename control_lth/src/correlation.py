@@ -322,8 +322,8 @@ class Activations:
             # fix maximum activation for layers that are too close to zero
             for i in range(num_layers):
                 sign = torch.sign(act_max[i])
-                act_max[i] = sign * max(abs(act_max[i]), 0.001)
-                act_sd[i] = torch.max(act_sd[i], 0.001 *
+                act_max[i] = sign * max(abs(act_max[i]), 0.00001)
+                act_sd[i] = torch.max(act_sd[i], 0.00001 *
                                       torch.ones_like(act_sd[i]).to(device))
                 # logging.debug(f"nans in activation sd layer {i}: {torch.isnan(act_sd[i]).any()}")
                 # logging.debug(f"nans in activation sd layer {i}: {torch.sum(torch.isnan(act_sd[i].view(-1)))}")
