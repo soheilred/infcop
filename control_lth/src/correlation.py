@@ -207,7 +207,7 @@ class Activations:
             self.hook_handles.pop(0)
 
             parent = np.vstack(parent_arr)
-            p_means.append(parent.mean(axis=0))
+            p_means.append(parent.std(axis=0))
             parent = (parent - parent.mean(axis=0))
             parent /= np.abs(np.max(parent))
             child = np.vstack(child_arr)
@@ -276,6 +276,7 @@ class Activations:
         List of 2d tensors, each representing the connectivity between two
         consecutive layer.
         """
+        EPS = 0.00001
         self.model.eval()
         ds_size = len(self.dataloader.dataset)
 
@@ -314,16 +315,15 @@ class Activations:
                                      abs(torch.max(self.activation[act_keys[i]]))))
 
             act_means = [act_means[i] / ds_size for i in range(num_layers)]
-            print([torch.mean(act_mean) for act_mean in act_means])
-            act_sd = [torch.pow(act_sq_sum[i] / ds_size -
-                                torch.pow(act_means[i], 2), 0.5)
+            act_sd = [torch.sqrt(act_sq_sum[i] / ds_size -
+                                 torch.pow(act_means[i], 2))
                       for i in range(num_layers)]
 
             # fix maximum activation for layers that are too close to zero
             for i in range(num_layers):
                 sign = torch.sign(act_max[i])
-                act_max[i] = sign * max(abs(act_max[i]), 0.00001)
-                act_sd[i] = torch.max(act_sd[i], 0.00001 *
+                act_max[i] = sign * max(abs(act_max[i]), EPS)
+                act_sd[i] = torch.max(act_sd[i], EPS *
                                       torch.ones_like(act_sd[i]).to(device))
                 # logging.debug(f"nans in activation sd layer {i}: {torch.isnan(act_sd[i]).any()}")
                 # logging.debug(f"nans in activation sd layer {i}: {torch.sum(torch.isnan(act_sd[i].view(-1)))}")
@@ -348,7 +348,7 @@ class Activations:
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
 
-        return corrs, act_means
+        return corrs, act_sd
 
     def get_connectivity(self):
         """Find the connectivity of each layer, the mean of correlation matrix.
