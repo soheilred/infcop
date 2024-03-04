@@ -186,7 +186,6 @@ class Activations:
         num_layers = len(layers_dim)
         act_keys = self.get_act_keys()
         corrs = []
-        p_means = []
 
         for idx in range(num_layers - 5):
             logging.debug(f"working on layer {layers_idx[idx]} {str(act_keys[idx])[:18]}...")
@@ -207,7 +206,6 @@ class Activations:
             self.hook_handles.pop(0)
 
             parent = np.vstack(parent_arr)
-            p_means.append(parent.std(axis=0))
             parent = (parent - parent.mean(axis=0))
             # parent /= np.abs(np.max(parent))
             parent /= parent.std(axis=0)
@@ -226,7 +224,7 @@ class Activations:
             corrs.append(corr)
 
         # print(corrs)
-        return corrs, p_means
+        return corrs
 
     def get_conns(self, corrs):
         conns = []
@@ -350,7 +348,7 @@ class Activations:
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
 
-        return corrs, act_sd
+        return corrs
 
     def get_connectivity(self):
         """Find the connectivity of each layer, the mean of correlation matrix.

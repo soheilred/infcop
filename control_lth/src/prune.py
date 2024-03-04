@@ -526,9 +526,9 @@ def perf_lth(logger, device, args, controller):
             if (train_iter == controller.c_epoch) and \
                (imp_iter in controller.c_iter):
                 act = Activations(model, train_dl, device, args.batch_size)
-                corr_0, act_means_0 = act.get_corrs()
-                corr_1, act_means_1 = act.get_correlations()
-                print([(torch.from_numpy(act_means_0[i]) - act_means_1[i]).sum() for i in range(len(act_means_0))])
+                corr_0 = act.get_corrs()
+                corr_1 = act.get_correlations()
+                print([(torch.from_numpy(corr_0[i]) - corr_1[i]).sum() for i in range(len(corr_0))])
                 import ipdb; ipdb.set_trace()
                 corr, act_means_1 = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
