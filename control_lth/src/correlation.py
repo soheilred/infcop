@@ -276,7 +276,7 @@ class Activations:
         List of 2d tensors, each representing the connectivity between two
         consecutive layer.
         """
-        EPS = 0.00001
+        EPS = 0.000001
         self.model.eval()
         ds_size = len(self.dataloader.dataset)
 

@@ -49,7 +49,7 @@ class Network():
     
     def set_model(self):
         if self.arch == "vgg11":
-            if self.pretrained == "True":
+            if self.pretrained == 1:
                 self.model = models.vgg11(weights=VGG11_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -58,7 +58,7 @@ class Network():
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
         elif self.arch == "vgg16":
-            if self.pretrained == "True":
+            if self.pretrained == 1:
                 self.model = models.vgg16(weights=VGG16_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -67,7 +67,7 @@ class Network():
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
         elif self.arch == "resnet18":
-            if self.pretrained == "True":
+            if self.pretrained == 1:
                 self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -77,7 +77,7 @@ class Network():
             # self.model = resnet18()
 
         elif self.arch == "alexnet":
-            if self.pretrained == "True":
+            if self.pretrained == 1:
                 self.model = models.alexnet(weights=AlexNet_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -86,7 +86,7 @@ class Network():
             self.model.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
 
         elif self.arch == "squeezenet":
-            if self.pretrained == "True":
+            if self.pretrained == 1:
                 self.model = models.squeezenet1_0(weights=Inception_V3_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -96,7 +96,7 @@ class Network():
                                                  kernel_size=(1,1), stride=(1,1))
 
         elif self.arch == "densenet":
-            if self.pretrained == "True":
+            if self.pretrained == 1:
                 self.model = models.densenet121(weights=Inception_V3_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -105,7 +105,7 @@ class Network():
             self.model.classifier = nn.Conv2d(num_ftrs, self.num_classes)
 
         elif self.arch == "googlenet":
-            if self.pretrained == "True":
+            if self.pretrained == 1:
                 self.model = models.googlenet(weights=GoogLeNet_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:
@@ -114,7 +114,7 @@ class Network():
             self.model.classifier = nn.Linear(num_ftrs, self.num_classes)
 
         elif self.arch == "inception":
-            if self.pretrained == "True":
+            if self.pretrained == 1:
                 self.model = models.inception_v3(weights=Inception_V3_Weights.IMAGENET1K_V1)
                 self.set_parameter_requires_grad()
             else:

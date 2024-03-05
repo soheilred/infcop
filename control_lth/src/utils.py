@@ -2,6 +2,7 @@ import os
 import torch
 import pickle
 import argparse
+from jsonargparse import ArgumentParser #, ActionConfigFile
 import json
 import yaml
 import configparser
@@ -74,9 +75,9 @@ def load_checkpoints(args):
         print("No checkpoint file found")
         return 0
 
-    
+
 def get_device(args):
-    device = f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu"
+    device = f"cuda:{args.exper.gpu_id}" if torch.cuda.is_available() else "cpu"
     logger.debug(f"Using {device} device")
     if torch.cuda.is_available():
         logger.debug("Name of the Cuda Device: " +
@@ -178,95 +179,102 @@ def get_stability(in_measure):
     return stability
 
 def get_run_dir(args):
-    control = "no_cntr/" if args.control_at_iter[0] == -1 else "cntr" + "/" +\
-                        ("").join([str(l) for l in args.control_at_layer]) + "/"
+    control = "cntr/" if args.control.turn else "no_cntr" + "/" +\
+                ("").join([str(layer) for layer in args.control.layer]) + "/"
     cur_folder = (C.cur_time + "/" if C.cur_time != "" else "")
-    run_dir = C.MODEL_ROOT_DIR + args.experiment_type + "/" + args.arch + "/" +\
-                args.dataset + "/" + control + cur_folder
+    run_dir = C.MODEL_ROOT_DIR + args.exper.type + "/" + args.net.arch + "/" +\
+              args.net.dataset + "/" + control + cur_folder
     checkdir(run_dir)
     return run_dir
 
 def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--arch',
+    # parser = argparse.ArgumentParser()
+    parser = ArgumentParser(default_config_files=["config.yaml"],
+                            env_prefix="APP",
+                            default_env=True
+                            )
+    # parser = ArgumentParser()
+    parser.add_argument('--net.arch',
                         choices=['vgg11', 'vgg16', 'resnet18', 'alexnet',
-                                 'densenet', 'googlenet'], 
+                                 'densenet', 'googlenet'],
                         default='resnet18',
                         help='Architectures')
-    parser.add_argument('--pretrained', type=str, default="True",
-                        choices=["False","True"],
+
+    parser.add_argument('--net.pretrained', type=int, default=1,
                         help='Start with a pretrained network?')
-    parser.add_argument('--dataset', type=str,
+
+    parser.add_argument('--net.dataset', type=str,
                         choices=['CIFAR10', 'MNIST', 'IMAGENET', 'pmnist', '6splitcifar', '11splitcifar'],
                         default='MNIST', help='Name of dataset')
-    parser.add_argument('--run_id', type=str, default="000",
-                        help='Id of current run.')
-    parser.add_argument('--cuda', action='store_true', default=True,
-                        help='use CUDA')
-    parser.add_argument('--gpu_id', type=int, default=0,
-                        help='gpu number to use')
-    parser.add_argument('--cores', type=int, default=4,
-                        help='Number of CPU cores.')
 
     # Training options.
-    parser.add_argument('--train_epochs', type=int, default=2,
+    parser.add_argument('--net.train_epochs', type=int, default=100,
                       help='Number of epochs to train for')
 
-    parser.add_argument('--warmup_train', type=int, default=20,
+    parser.add_argument('--net.train_per_epoch', type=int, default=2,
+                      help='Number of epochs to train for')
+
+    parser.add_argument('--net.warmup', type=int, default=20,
                       help='Number of epochs to perform warmup training')
 
-    parser.add_argument('--train_per_epoch', type=int, default=2,
-                      help='Number of epochs to train for')
-
-    parser.add_argument('--lr', type=float, default=0.1,
+    parser.add_argument('--net.lr', type=float, default=0.1,
                       help='Learning rate')
 
-    parser.add_argument('--batch_size', type=int, default=64,
+    parser.add_argument('--net.batch_size', type=int, default=64,
                       help='Batch size')
 
-    parser.add_argument('--weight_decay', type=float, default=0.0,
+    parser.add_argument('--net.weight_decay', type=float, default=0.0005,
                       help='Weight decay')
-    
-    # Pruning options.
-    parser.add_argument('--prune_perc_per_layer', type=float, default=0.1,
-                      help='% of neurons to prune per layer')
 
     # controller
-    parser.add_argument('--control_at_iter', type=str, default="-1",
+    parser.add_argument('--control.turn', type=int, default=0)
+
+    parser.add_argument('--control.iteration', type=str, default="1",
                       help='Iteration at which the controller is applied')
 
-    parser.add_argument('--control_at_epoch', type=int, default=2,
+    parser.add_argument('--control.epoch', type=int, default=1,
                       help='Epoch at which the controller is applied')
 
-    parser.add_argument('--control_at_layer', type=str, default="2",
+    parser.add_argument('--control.layer', type=str, default="1 2 3 4 5",
                       help='Network layer at which the controller is applied')
 
-    parser.add_argument('--acc_thrd', type=int, default=95,
-                      help='Threshold accuracy to stop the training loop')
-
-    parser.add_argument('--control_type', type=int, default=1,
+    parser.add_argument('--control.type', type=int, default=1,
                       help='1: correlation, 2: connectivity, 3: prev weights')
 
-    parser.add_argument('--imp_total_iter', type=int, default=10,
+    parser.add_argument('--exper.imp_total_iter', type=int, default=10,
                       help='Number of iteration at IMP')
 
-    parser.add_argument('--num_trial', type=int, default=1,
+    parser.add_argument('--exper.num_trial', type=int, default=1,
                       help='Number of trials')
 
-    parser.add_argument('--experiment_type', type=str, default="performance",
+    parser.add_argument('--exper.acc_thrd', type=int, default=95,
+                      help='Threshold accuracy to stop the training loop')
+
+    parser.add_argument('--exper.type', type=str, default="performance",
                         choices=["performance","efficiency"],
                         help='What type of LTH experiment you are running?')
 
-    parser.add_argument('--yaml_config', type=str, default="config.ini",
-                        help="Address to the config file")
+    parser.add_argument('--exper.gpu_id', type=int, default=0,
+                        help='gpu number to use')
 
+    # Pruning options.
+    parser.add_argument('--exper.prune_perc_per_layer', type=float, default=0.1,
+                      help='% of neurons to prune per layer')
+
+    # parser.add_argument('--yaml_config', type=str, default="config.ini",
+    #                     help="Address to the config file")
+    # parser.add_argument('--cfg', action=ActionConfigFile)
     args = parser.parse_args()
 
-    args.control_at_layer = [int(l) for l in args.control_at_layer.split(" ")]
-    args.control_at_iter = [int(l) for l in args.control_at_iter.split(" ")]
+    args.control.layer = [int(layer) for layer in args.control.layer.split(" ")]
+    args.control.iteration = [int(iteration) for iteration in
+                              args.control.iteration.split(" ")]
 
-    # run_dir = get_run_dir(args)
+    run_dir = get_run_dir(args)
     # json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
+    print(args)
+    yaml.dump(args, stream=open(run_dir + "exper.json", 'w'),
+              default_flow_style=False, sort_keys=False)
     return args
 
 
@@ -280,13 +288,14 @@ def get_yaml_args(args):
     exper_conf = config_obj["experiment"]
     args.arch = network_conf["arch"]
     args.dataset = network_conf["dataset"]
-    args.pretrained = network_conf["pretrained"]
+    args.pretrained = int(network_conf["pretrained"])
     args.lr = float(network_conf["lr"])
     args.train_epochs = int(network_conf["train_epochs"])
     args.train_per_epoch = int(network_conf["train_per_epoch"])
     args.warmup_train = int(network_conf["warmup_train"])
     args.batch_size = int(network_conf["batch_size"])
     args.weight_decay = float(network_conf["weight_decay"])
+    args.controller = int(control_conf["controller"])
     args.control_type = int(control_conf["control_type"])
     args.control_at_iter = control_conf["control_at_iter"]
     args.control_at_epoch = int(control_conf["control_at_epoch"])
