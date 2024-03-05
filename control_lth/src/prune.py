@@ -24,10 +24,10 @@ class Controller:
     def __init__(self, args):
         """Control the IMP's connectivity.
         """
-        self.c_type = args.control.type
-        self.c_layers = args.control.layer
-        self.c_iter = args.control.iteration
-        self.c_epoch = args.control.epoch
+        self.c_type = args.control_type
+        self.c_layers = args.control_layer
+        self.c_iter = args.control_iteration
+        self.c_epoch = args.control_epoch
 
 
 class Pruner:
@@ -52,15 +52,15 @@ class Pruner:
         self.model = model
         self.mask = None
         self.args = args
-        self.prune_perc = args.exper.prune_perc_per_layer * 100
+        self.prune_perc = args.exper_prune_perc_per_layer * 100
         self.corrs = []
         self.controller = controller
         self.correlation = correlation
         self.num_layers = 0
         self.train_loader = train_dataloader
         self.test_loader = test_dataloader
-        self.comp_level = np.zeros(args.exper.imp_total_iter, float)
-        self.all_acc = np.zeros([args.exper.imp_total_iter, args.net.train_epochs], float)
+        self.comp_level = np.zeros(args.exper_imp_total_iter, float)
+        self.all_acc = np.zeros([args.exper_imp_total_iter, args.net_train_epochs], float)
         self.init_state_dict = None
         # self.init_dump()
 
@@ -139,7 +139,7 @@ class Pruner:
         """
 
         # Weight Initialization
-        if self.args.net.pretrained == "False":
+        if self.args.net_pretrained == "False":
             self.model.apply(self.weight_init)
 
         # Copying and Saving Initial State
@@ -417,6 +417,7 @@ class Pruner:
             elif (self.controller.c_type == 5):
                 control_weights = torch.exp(abs(prev_corr))
 
+            print(ind, control_weights.shape)
             self.apply_controller(control_weights, ind)
 
     def apply_controller(self, control_weights, layer_idx):
@@ -430,7 +431,7 @@ class Pruner:
                 if (idx == layer_idx):
                     # weight = module[1].weight.detach().cpu().numpy()
                     weight = module[1].weight.data
-                    # print("network's weight shape", module[0], weight.shape)
+                    print("network's weight shape", module[0], weight.shape)
                     # mod_weight = weight.cpu().numpy()
                     weight_dev = module[1].weight.device
                     control_weights = control_weights.to(weight_dev)
@@ -479,18 +480,18 @@ class Pruner:
 
 
 def perf_lth(logger, device, args, controller):
-    ITERATION = args.exper.imp_total_iter               # 35 was the default
+    ITERATION = args.exper_imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
-    data = Data(args.net.batch_size, C.DATA_DIR, args.net.dataset)
+    data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
     num_classes = data.get_num_classes()
 
-    network = Network(device, args.net.arch, num_classes, args.net.pretrained)
+    network = Network(device, args.net_arch, num_classes, args.net_pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.net.lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr)
     logger.debug("Warming up the pretrained model")
-    acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net.warmup, device)
+    acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net_warmup, device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
@@ -501,8 +502,8 @@ def perf_lth(logger, device, args, controller):
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
             # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
-            optimizer = torch.optim.SGD(model.parameters(), lr=args.net.lr,
-                                        weight_decay=args.net.weight_decay)
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
+                                        weight_decay=args.net_weight_decay)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -512,12 +513,12 @@ def perf_lth(logger, device, args, controller):
         logger.debug(f"Compression level: {comp_level}")
 
         # Training the network
-        for train_iter in range(args.net.train_epochs):
+        for train_iter in range(args.net_train_epochs):
 
             # Training
-            logger.debug(f"Training iteration {train_iter} / {args.net.train_epochs}")
+            logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
-                              args.net.train_per_epoch, device)
+                              args.net_train_per_epoch, device)
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
@@ -525,15 +526,13 @@ def perf_lth(logger, device, args, controller):
             # apply the controller at specific epochs and iteration
             if (train_iter == controller.c_epoch) and \
                (imp_iter in controller.c_iter):
-                act = Activations(model, train_dl, device, args.net.batch_size)
+                act = Activations(model, train_dl, device, args.net_batch_size)
                 # corr_0 = act.get_corrs()
                 # corr_1 = act.get_correlations()
                 # print([(torch.from_numpy(corr_0[i]) - corr_1[i]).sum() for i in range(len(corr_0))])
                 # import ipdb; ipdb.set_trace()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.Adam(model.parameters(), lr=args.net.lr,
-                                             weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
@@ -542,7 +541,7 @@ def perf_lth(logger, device, args, controller):
 
         # Calculate the connectivity
         # if (imp_iter <= controller.c_iter):
-        activations = Activations(model, train_dl, device, args.net.batch_size)
+        activations = Activations(model, train_dl, device, args.net_batch_size)
         # pruning.corrs.append(activations.get_corrs())
         pruning.corrs.append(activations.get_correlations()[0])
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
@@ -552,18 +551,18 @@ def perf_lth(logger, device, args, controller):
 
 
 def perf_connectivity_lth(logger, device, args, controller):
-    ITERATION = args.exper.imp_total_iter               # 35 was the default
+    ITERATION = args.exper_imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
-    data = Data(args.net.batch_size, C.DATA_DIR, args.net.dataset)
+    data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
     num_classes = data.get_num_classes()
 
-    network = Network(device, args.net.arch, num_classes, args.net.pretrained)
+    network = Network(device, args.net_arch, num_classes, args.net_pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.net.lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr)
     # warm up the pretrained model
-    acc, _ = train(model, train_dl, loss_fn, optimizer, args.net.warmup_train, device)
+    acc, _ = train(model, train_dl, loss_fn, optimizer, args.net_warmup_train, device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
@@ -572,10 +571,10 @@ def perf_connectivity_lth(logger, device, args, controller):
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
-            act = Activations(model, test_dl, device, args.net.batch_size)
+            act = Activations(model, test_dl, device, args.net_batch_size)
             corr = act.get_correlations()
             pruning.prune_once(init_state_dict)
-            optimizer = torch.optim.SGD(model.parameters(), lr=args.net.lr,
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
                                         weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -586,12 +585,12 @@ def perf_connectivity_lth(logger, device, args, controller):
         logger.debug(f"Compression level: {comp_level}")
 
         # Training the network
-        for train_iter in range(args.net.train_epochs):
+        for train_iter in range(args.net_train_epochs):
 
             # Training
-            logger.debug(f"Training iteration {train_iter} / {args.net.train_epochs}")
+            logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
-                              args.net.train_per_epoch, device)
+                              args.net_train_per_epoch, device)
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
@@ -599,11 +598,11 @@ def perf_connectivity_lth(logger, device, args, controller):
             # apply the controller after some epochs and some iterations
             if (train_iter == controller.c_epoch) and \
                 (imp_iter in controller.c_iter):
-                act = Activations(model, test_dl, device, args.net.batch_size)
+                act = Activations(model, test_dl, device, args.net_batch_size)
                 # corr = act.get_corrs()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.SGD(model.parameters(), lr=args.net.lr,
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
                                             weight_decay=1e-4)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
@@ -613,7 +612,7 @@ def perf_connectivity_lth(logger, device, args, controller):
 
         # Calculate the connectivity
         # if (imp_iter <= controller.c_iter):
-        activations = Activations(model, test_dl, device, args.net.batch_size)
+        activations = Activations(model, test_dl, device, args.net_batch_size)
         # pruning.corrs.append(activations.get_corrs())
         pruning.corrs.append(activations.get_correlations())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
@@ -623,16 +622,16 @@ def perf_connectivity_lth(logger, device, args, controller):
 
 
 def effic_lth(logger, device, args, controller):
-    ITERATION = args.net.imp_total_iter               # 35 was the default
+    ITERATION = args.net_imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
-    data = Data(args.net.batch_size, C.DATA_DIR, args.net.dataset)
+    data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
     train_dl, test_dl = data.train_dataloader, data.test_dataloader
     num_classes = data.get_num_classes()
 
-    network = Network(device, args.net.arch, num_classes, args.net.pretrained)
+    network = Network(device, args.net_arch, num_classes, args.net_pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.net.lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
@@ -647,7 +646,7 @@ def effic_lth(logger, device, args, controller):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            optimizer = torch.optim.SGD(model.parameters(), lr=args.net.lr,
+            optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
                                          weight_decay=1e-4)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -660,15 +659,15 @@ def effic_lth(logger, device, args, controller):
         # Training loop
         while (train_iter[imp_iter] < 30):
             if train_iter[imp_iter] > controller.c_epoch:
-                if (accuracy > args.net.acc_thrd * max_acc / 100.0):
+                if (accuracy > args.net_acc_thrd * max_acc / 100.0):
                     break
 
             # Training
             logger.debug(f"Accuracy {accuracy:.2f} at training iteration "
                          f"{train_iter[imp_iter]}, thsd: "
-                         f"{args.net.acc_thrd * max_acc / 100.0}")
+                         f"{args.net_acc_thrd * max_acc / 100.0}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, 
-                              args.net.train_per_epoch, device)
+                              args.net_train_per_epoch, device)
 
             # Test and save the most accurate model
             logger.debug("Testing...")
@@ -678,10 +677,10 @@ def effic_lth(logger, device, args, controller):
             # apply the controller after some epochs and some iterations
             if (train_iter[imp_iter] == controller.c_epoch) and \
                 (imp_iter == controller.c_iter):
-                act = Activations(model, test_dl, device, args.net.batch_size)
+                act = Activations(model, test_dl, device, args.net_batch_size)
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
-                optimizer = torch.optim.SGD(model.parameters(), lr=args.net.lr,
+                optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
                                              weight_decay=1e-4)
 
             # increment the training iterator
@@ -695,7 +694,7 @@ def effic_lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
-        activations = Activations(model, test_dl, device, args.net.batch_size)
+        activations = Activations(model, test_dl, device, args.net_batch_size)
         pruning.corrs.append(activations.get_correlations())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
@@ -710,8 +709,8 @@ def perf_exper(logger, args, device, run_dir):
     conn_list = []
     comp_level_list = []
 
-    for i in range(args.exper.num_trial):
-        logger.debug(f"In experiment {i} / {args.exper.num_trial}")
+    for i in range(args.exper_num_trial):
+        logger.debug(f"In experiment {i} / {args.exper_num_trial}")
         all_acc, conn, comp = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
@@ -735,7 +734,7 @@ def effic_exper(logger, args, device, run_dir):
     acc_list = []
     conn_list = []
 
-    for i in range(args.exper.num_trial):
+    for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.num_trial}")
         all_acc, conn = effic_lth(logger, device, args, controller)
         acc_list.append(all_acc)
@@ -758,10 +757,10 @@ def main():
     device = utils.get_device(args)
 
     run_dir = utils.get_run_dir(args)
-    if args.exper.type == "performance":
+    if args.exper_type == "performance":
         perf_exper(logger, args, device, run_dir)
 
-    elif args.exper.type == "efficiency":
+    elif args.exper_type == "efficiency":
         effic_exper(logger, args, device, run_dir)
 
     else:
