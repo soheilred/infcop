@@ -449,6 +449,7 @@ class Pruner:
 
     def correlation_to_weights(self, control_corrs, layers_dim, imp_iter, layer_ind):
         # the + 1 is for matching to the connectivity's dimension
+        import ipdb; ipdb.set_trace()
         weights = control_corrs[imp_iter - 1][layer_ind - 1]
         # weights = control_corrs[0][layer_ind - 1]
         kernel_size = layers_dim[layer_ind][-1]
