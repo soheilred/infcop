@@ -246,7 +246,7 @@ def get_args():
     parser.add_argument('--exper_imp_total_iter', type=int, default=5,
                       help='Number of iteration at IMP')
 
-    parser.add_argument('--exper_num_trial', type=int, default=1,
+    parser.add_argument('--exper_num_trial', type=int, default=3,
                       help='Number of trials')
 
     parser.add_argument('--exper_acc_thrd', type=int, default=95,
