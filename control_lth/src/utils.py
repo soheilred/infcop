@@ -253,7 +253,7 @@ def get_args():
                       help='Threshold accuracy to stop the training loop')
 
     parser.add_argument('--exper_type', type=str, default="performance",
-                        choices=["performance","efficiency"],
+                        choices=["performance", "test", "efficiency"],
                         help='What type of LTH experiment you are running?')
 
     parser.add_argument('--exper_gpu_id', type=int, default=0,
@@ -273,6 +273,7 @@ def get_args():
 
     run_dir = get_run_dir(args)
     logger.debug(yaml.dump(args.__dict__, default_flow_style=False))
+    print(yaml.dump(args.__dict__, default_flow_style=False))
     json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
     # yaml.dump(args, stream=open(run_dir + "exper.json", 'w'),
     #           default_flow_style=False, sort_keys=False)
