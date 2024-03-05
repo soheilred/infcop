@@ -30,9 +30,9 @@ echo "$@" >> $NOCNTLOG
 cd ../src/
 # conda activate ib
 source /home/soheil/anaconda3/bin/activate tf
-python prune.py $@ --exper.gpu_id=0 --control.turn=1 &>> $CNTLOG &
+python prune.py $@ --exper_gpu_id=0 --control_on=1 &>> $CNTLOG &
 CNTPID=$(echo $!)
-python prune.py $@ --exper.gpu_id=1 --control.turn=0 &>> $NOCNTLOG &
+python prune.py $@ --exper_gpu_id=1 --control_on=0 &>> $NOCNTLOG &
 NOCNTPID=$(echo $!)
 echo $CNTPID >> $CNTLOG
 echo $NOCNTPID >> $NOCNTLOG
