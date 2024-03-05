@@ -634,3 +634,33 @@ Namespace(net=Namespace(arch='resnet18', pretrained=1, dataset='MNIST', train_ep
 2024-03-04 21:08:43,606 - Epoch 1 accuracy: 100.0%
 2024-03-04 21:10:43,967 - Epoch 2 accuracy: 100.0%
 2024-03-04 21:10:43,968 - Testing
+2024-03-04 21:11:04,705 - Test accuracy: 99.7%, Avg loss: 0.01
+2024-03-04 21:11:05,437 - Compute the mean and sd of activations
+2024-03-04 21:22:53,424 - apply controller at layer [1, 2, 3, 4, 5, 6]
+ 20%|██        | 1/5 [7:48:03<31:12:14, 28083.57s/it]
+control weight tensor(21.407120, device='cuda:1')
+old weight tensor(8.534291, device='cuda:1')
+new weight tensor(7.492899, device='cuda:1')
+control weight tensor(21.405712, device='cuda:1')
+old weight tensor(7.218169, device='cuda:1')
+new weight tensor(6.354151, device='cuda:1')
+control weight tensor(6.372942, device='cuda:1')
+old weight tensor(8.119932, device='cuda:1')
+new weight tensor(2.135265, device='cuda:1')
+control weight tensor(21.407223, device='cuda:1')
+old weight tensor(7.014520, device='cuda:1')
+new weight tensor(6.205060, device='cuda:1')
+Traceback (most recent call last):
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 772, in <module>
+    main()
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 762, in main
+    perf_exper(logger, args, device, run_dir)
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 715, in perf_exper
+    all_acc, conn, comp = perf_lth(logger, device, args, controller)
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 534, in perf_lth
+    pruning.control(corr, act.layers_dim, imp_iter)
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 420, in control
+    self.apply_controller(control_weights, ind)
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 438, in apply_controller
+    new_weight = (weight * control_weights).type(torch.cuda.FloatTensor)
+RuntimeError: The size of tensor a (128) must match the size of tensor b (64) at non-singleton dimension 0
