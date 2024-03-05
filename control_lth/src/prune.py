@@ -543,8 +543,7 @@ def perf_lth(logger, device, args, controller):
         # Calculate the connectivity
         # if (imp_iter <= controller.c_iter):
         activations = Activations(model, train_dl, device, args.net_batch_size)
-        # pruning.corrs.append(activations.get_corrs())
-        pruning.corrs.append(activations.get_correlations()[0])
+        pruning.corrs.append(activations.get_correlations())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
 
