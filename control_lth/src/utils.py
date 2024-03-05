@@ -225,18 +225,22 @@ def get_args():
                       help='Weight decay')
 
     # controller
-    parser.add_argument('--control.turn', type=int, default=0)
+    parser.add_argument('--control.turn', type=int, dest="control.turn",
+                        default=0)
 
     parser.add_argument('--control.iteration', type=str, default="1",
                       help='Iteration at which the controller is applied')
 
     parser.add_argument('--control.epoch', type=int, default=1,
+                        dest="control.epoch",
                       help='Epoch at which the controller is applied')
 
     parser.add_argument('--control.layer', type=str, default="1 2 3 4 5",
+                        dest="control.layer",
                       help='Network layer at which the controller is applied')
 
     parser.add_argument('--control.type', type=int, default=1,
+                        dest="control.type",
                       help='1: correlation, 2: connectivity, 3: prev weights')
 
     parser.add_argument('--exper.imp_total_iter', type=int, default=10,
