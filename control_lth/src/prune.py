@@ -417,7 +417,6 @@ class Pruner:
             elif (self.controller.c_type == 5):
                 control_weights = torch.exp(abs(prev_corr))
 
-            print(ind, control_weights.shape)
             self.apply_controller(control_weights, ind)
 
     def apply_controller(self, control_weights, layer_idx):
