@@ -626,3 +626,9 @@ Namespace(net=Namespace(arch='resnet18', pretrained=1, dataset='MNIST', train_ep
 2024-03-04 21:02:56,390 - Training iteration 0 / 100
 2024-03-04 21:02:56,390 - Training...
 2024-03-04 21:04:56,731 - Epoch 1 accuracy: 100.0%
+2024-03-04 21:06:56,946 - Epoch 2 accuracy: 100.0%
+2024-03-04 21:06:56,947 - Testing
+2024-03-04 21:07:17,585 - Test accuracy: 99.7%, Avg loss: 0.01
+2024-03-04 21:07:17,587 - Training iteration 1 / 100
+2024-03-04 21:07:17,588 - Training...
+2024-03-04 21:09:17,962 - Epoch 1 accuracy: 100.0%
