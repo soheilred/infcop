@@ -192,7 +192,7 @@ def get_args():
     #                         env_prefix="APP",
     #                         default_env=True
     #                         )
-    parser.add_argument_group("net")
+    net = parser.add_argument_group("net")
     parser.add_argument('--net.arch',
                         choices=['vgg11', 'vgg16', 'resnet18', 'alexnet',
                                  'densenet', 'googlenet'],
@@ -226,22 +226,22 @@ def get_args():
                       help='Weight decay')
 
     # controller
-    parser.add_argument('--control.turn', type=int, dest="control.turn",
+    control = parser.add_argument_group("control")
+
+    control.add_argument('--control.turn', type=int, dest="control.turn",
                         default=0)
 
-    parser.add_argument('--control.iteration', type=str, default="1",
+    control.add_argument('--control.iteration', type=str, default="1",
                       help='Iteration at which the controller is applied')
 
-    parser.add_argument_group("control")
-
-    parser.add_argument('--control.epoch', type=int, default=1,
+    control.add_argument('--control.epoch', type=int, default=1,
                         # dest="control.epoch",
                       help='Epoch at which the controller is applied')
 
-    parser.add_argument('--control.layer', type=str, default="1 2 3 4 5",
+    control.add_argument('--control.layer', type=str, default="1 2 3 4 5",
                       help='Network layer at which the controller is applied')
 
-    parser.add_argument('--control.type', type=int, default=1,
+    control.add_argument('--control.type', type=int, default=1,
                       help='1: correlation, 2: connectivity, 3: prev weights')
 
     parser.add_argument('--exper.imp_total_iter', type=int, default=10,
