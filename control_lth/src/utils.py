@@ -76,7 +76,7 @@ def load_checkpoints(args):
 
 
 def get_device(args):
-    device = f"cuda:{args.exper.gpu_id}" if torch.cuda.is_available() else "cpu"
+    device = f"cuda:{args.exper_gpu_id}" if torch.cuda.is_available() else "cpu"
     logger.debug(f"Using {device} device")
     if torch.cuda.is_available():
         logger.debug("Name of the Cuda Device: " +
@@ -178,11 +178,11 @@ def get_stability(in_measure):
     return stability
 
 def get_run_dir(args):
-    control = "cntr/" if args.control.turn else "no_cntr" + "/" +\
-                ("").join([str(layer) for layer in args.control.layer]) + "/"
+    control = "cntr/" if args.control_on else "no_cntr" + "/" +\
+                ("").join([str(layer) for layer in args.control_layer]) + "/"
     cur_folder = (C.cur_time + "/" if C.cur_time != "" else "")
-    run_dir = C.MODEL_ROOT_DIR + args.exper.type + "/" + args.net.arch + "/" +\
-              args.net.dataset + "/" + control + cur_folder
+    run_dir = C.MODEL_ROOT_DIR + args.exper_type + "/" + args.net_arch + "/" +\
+              args.net_dataset + "/" + control + cur_folder
     checkdir(run_dir)
     return run_dir
 
@@ -193,87 +193,86 @@ def get_args():
     #                         default_env=True
     #                         )
     net = parser.add_argument_group("net")
-    parser.add_argument('--net.arch',
+    parser.add_argument('--net_arch',
                         choices=['vgg11', 'vgg16', 'resnet18', 'alexnet',
                                  'densenet', 'googlenet'],
                         default='resnet18',
                         help='Architectures')
 
-    parser.add_argument('--net.pretrained', type=int, default=1,
+    parser.add_argument('--net_pretrained', type=int, default=1,
                         help='Start with a pretrained network?')
 
-    parser.add_argument('--net.dataset', type=str,
+    parser.add_argument('--net_dataset', type=str,
                         choices=['CIFAR10', 'MNIST', 'IMAGENET', 'pmnist', '6splitcifar', '11splitcifar'],
-                        default='MNIST', help='Name of dataset')
+                        default='CIFAR10', help='Name of dataset')
 
     # Training options.
-    parser.add_argument('--net.train_epochs', type=int, default=100,
+    parser.add_argument('--net_train_epochs', type=int, default=100,
                       help='Number of epochs to train for')
 
-    parser.add_argument('--net.train_per_epoch', type=int, default=2,
+    parser.add_argument('--net_train_per_epoch', type=int, default=2,
                       help='Number of epochs to train for')
 
-    parser.add_argument('--net.warmup', type=int, default=20,
+    parser.add_argument('--net_warmup', type=int, default=20,
                       help='Number of epochs to perform warmup training')
 
-    parser.add_argument('--net.lr', type=float, default=0.1,
+    parser.add_argument('--net_lr', type=float, default=0.1,
                       help='Learning rate')
 
-    parser.add_argument('--net.batch_size', type=int, default=64,
+    parser.add_argument('--net_batch_size', type=int, default=64,
                       help='Batch size')
 
-    parser.add_argument('--net.weight_decay', type=float, default=0.0005,
+    parser.add_argument('--net_weight_decay', type=float, default=0.0005,
                       help='Weight decay')
 
     # controller
-    control = parser.add_argument_group("control")
+    # control = parser.add_argument_group("control")
 
-    control.add_argument('--control.turn', type=int, dest="control.turn",
-                        default=0)
+    parser.add_argument('--control_on', type=int, default=0)
 
-    control.add_argument('--control.iteration', type=str, default="1",
+    parser.add_argument('--control_iteration', type=str, default="1",
                       help='Iteration at which the controller is applied')
 
-    control.add_argument('--control.epoch', type=int, default=1,
+    parser.add_argument('--control_epoch', type=int, default=1,
                         # dest="control.epoch",
                       help='Epoch at which the controller is applied')
 
-    control.add_argument('--control.layer', type=str, default="1 2 3 4 5",
+    parser.add_argument('--control_layer', type=str, default="1 2 3 4 5",
                       help='Network layer at which the controller is applied')
 
-    control.add_argument('--control.type', type=int, default=1,
+    parser.add_argument('--control_type', type=int, default=1,
                       help='1: correlation, 2: connectivity, 3: prev weights')
 
-    parser.add_argument('--exper.imp_total_iter', type=int, default=10,
+    parser.add_argument('--exper_imp_total_iter', type=int, default=5,
                       help='Number of iteration at IMP')
 
-    parser.add_argument('--exper.num_trial', type=int, default=1,
+    parser.add_argument('--exper_num_trial', type=int, default=1,
                       help='Number of trials')
 
-    parser.add_argument('--exper.acc_thrd', type=int, default=95,
+    parser.add_argument('--exper_acc_thrd', type=int, default=95,
                       help='Threshold accuracy to stop the training loop')
 
-    parser.add_argument('--exper.type', type=str, default="performance",
+    parser.add_argument('--exper_type', type=str, default="performance",
                         choices=["performance","efficiency"],
                         help='What type of LTH experiment you are running?')
 
-    parser.add_argument('--exper.gpu_id', type=int, default=0,
+    parser.add_argument('--exper_gpu_id', type=int, default=0,
                         help='gpu number to use')
 
     # Pruning options.
-    parser.add_argument('--exper.prune_perc_per_layer', type=float, default=0.1,
+    parser.add_argument('--exper_prune_perc_per_layer', type=float, default=0.1,
                       help='% of neurons to prune per layer')
 
     # parser.add_argument('--yaml_config', type=str, default="config.ini",
     #                     help="Address to the config file")
     args = parser.parse_args()
-    print(args._get_kwargs())
 
-    args.control.layer = [int(layer) for layer in args.control.layer.split(" ")]
-    args.control.iteration = [int(iteration) for iteration in
-                              args.control.iteration.split(" ")]
+    args.control_layer = [int(layer) for layer in args.control_layer.split(" ")]
+    args.control_iteration = [int(iteration) for iteration in
+                              args.control_iteration.split(" ")]
 
     run_dir = get_run_dir(args)
+    logger.debug(yaml.dump(args.__dict__, default_flow_style=False))
     json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
     # yaml.dump(args, stream=open(run_dir + "exper.json", 'w'),
     #           default_flow_style=False, sort_keys=False)
