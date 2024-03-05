@@ -188,12 +188,11 @@ def get_run_dir(args):
     return run_dir
 
 def get_args():
-    # parser = argparse.ArgumentParser()
-    parser = ArgumentParser(default_config_files=["config.yaml"],
-                            env_prefix="APP",
-                            default_env=True
-                            )
-    # parser = ArgumentParser()
+    parser = argparse.ArgumentParser()
+    # parser = ArgumentParser(default_config_files=["config.yaml"],
+    #                         env_prefix="APP",
+    #                         default_env=True
+    #                         )
     parser.add_argument('--net.arch',
                         choices=['vgg11', 'vgg16', 'resnet18', 'alexnet',
                                  'densenet', 'googlenet'],
@@ -263,7 +262,6 @@ def get_args():
 
     # parser.add_argument('--yaml_config', type=str, default="config.ini",
     #                     help="Address to the config file")
-    # parser.add_argument('--cfg', action=ActionConfigFile)
     args = parser.parse_args()
 
     args.control.layer = [int(layer) for layer in args.control.layer.split(" ")]
@@ -271,10 +269,9 @@ def get_args():
                               args.control.iteration.split(" ")]
 
     run_dir = get_run_dir(args)
-    # json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
-    print(args)
-    yaml.dump(args, stream=open(run_dir + "exper.json", 'w'),
-              default_flow_style=False, sort_keys=False)
+    json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
+    # yaml.dump(args, stream=open(run_dir + "exper.json", 'w'),
+    #           default_flow_style=False, sort_keys=False)
     return args
 
 

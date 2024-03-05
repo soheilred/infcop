@@ -632,3 +632,35 @@ Namespace(net=Namespace(arch='resnet18', pretrained=1, dataset='MNIST', train_ep
 2024-03-04 21:07:17,587 - Training iteration 1 / 100
 2024-03-04 21:07:17,588 - Training...
 2024-03-04 21:09:17,962 - Epoch 1 accuracy: 100.0%
+2024-03-04 21:11:19,190 - Epoch 2 accuracy: 100.0%
+2024-03-04 21:11:19,191 - Testing
+2024-03-04 21:11:41,403 - Test accuracy: 99.7%, Avg loss: 0.01
+2024-03-04 21:11:42,187 - Compute the mean and sd of activations
+2024-03-04 21:23:11,294 - apply controller at layer [1, 2, 3, 4, 5, 6]
+ 20%|██        | 1/5 [7:48:59<31:15:56, 28139.04s/it]
+control weight tensor(22.336819, device='cuda:0')
+old weight tensor(8.528100, device='cuda:0')
+new weight tensor(7.859499, device='cuda:0')
+control weight tensor(21.972279, device='cuda:0')
+old weight tensor(7.213308, device='cuda:0')
+new weight tensor(6.588786, device='cuda:0')
+control weight tensor(6.649581, device='cuda:0')
+old weight tensor(8.116174, device='cuda:0')
+new weight tensor(2.238933, device='cuda:0')
+control weight tensor(22.336359, device='cuda:0')
+old weight tensor(7.011391, device='cuda:0')
+new weight tensor(6.488930, device='cuda:0')
+Traceback (most recent call last):
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 772, in <module>
+    main()
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 762, in main
+    perf_exper(logger, args, device, run_dir)
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 715, in perf_exper
+    all_acc, conn, comp = perf_lth(logger, device, args, controller)
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 534, in perf_lth
+    pruning.control(corr, act.layers_dim, imp_iter)
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 420, in control
+    self.apply_controller(control_weights, ind)
+  File "/home/soheil/Sync/efficient_pruning/control_lth/src/prune.py", line 438, in apply_controller
+    new_weight = (weight * control_weights).type(torch.cuda.FloatTensor)
+RuntimeError: The size of tensor a (128) must match the size of tensor b (64) at non-singleton dimension 0
