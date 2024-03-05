@@ -267,6 +267,7 @@ def get_args():
     # parser.add_argument('--yaml_config', type=str, default="config.ini",
     #                     help="Address to the config file")
     args = parser.parse_args()
+    print(args._get_kwargs())
 
     args.control.layer = [int(layer) for layer in args.control.layer.split(" ")]
     args.control.iteration = [int(iteration) for iteration in
