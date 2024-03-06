@@ -7,7 +7,7 @@ __pycache__/
 *.pth.tar
 *.pt
 *.tar.gz
-# *.pkl
+*.pkl
 
 *.jpg
 *.png
