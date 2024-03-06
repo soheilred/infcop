@@ -9,10 +9,11 @@ import constants as C
 # # rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 # rc('text', usetex=True)
 plt.rcParams.update({
-    "font.family": "serif",
-    "font.size": 20.0,
-    "font.weight": "bold",
-    "xtick.labelsize": "large",
+    "font.family": "Times New Roman",
+    # "font.family": "serif",
+    # "font.size": 20.0,
+    # "font.weight": "bold",
+    # "xtick.labelsize": "large",
     # "ytick.labelsize": "large",
     # "legend.loc": "upper right",
     # "axes.labelweight": "bold",
