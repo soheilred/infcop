@@ -9,7 +9,7 @@ import constants as C
 # # rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 # rc('text', usetex=True)
 plt.rcParams.update({
-    "font.family": "Times New Roman",
+    "font.family": "Times",
     # "font.family": "serif",
     # "font.size": 20.0,
     # "font.weight": "bold",
