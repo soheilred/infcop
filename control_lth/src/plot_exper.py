@@ -32,8 +32,8 @@ def perf_plots(no_cntr_dir, cntr_dir):
     cntr_comp = np.mean(cntr_comp, axis=0)
 
     # print(no_cntr_all_acc)
-    print(cntr_all_acc)
-    # print(no_cntr_comp)
+    # print(cntr_all_acc)
+    print(no_cntr_comp)
     print(cntr_comp)
 
     plot_tool.plot_multi_all_accuracy([no_cntr_all_acc, cntr_all_acc], labels,
