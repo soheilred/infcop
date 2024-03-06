@@ -15,11 +15,11 @@ plt.rcParams.update({
     "xtick.labelsize": "large",
     # "ytick.labelsize": "large",
     # "legend.loc": "upper right",
-    "axes.labelweight": "bold",
-    "text.usetex": True,
-    "savefig.dpi": 100,     # higher resolution output.
-    "pgf.rcfonts": True,
-    "pgf.texsystem": 'pdflatex', # default is xetex
+    # "axes.labelweight": "bold",
+    # "text.usetex": True,
+    # "savefig.dpi": 100,     # higher resolution output.
+    # "pgf.rcfonts": True,
+    # "pgf.texsystem": 'pdflatex', # default is xetex
     # "pgf.preamble": [
     #      r"\usepackage[T1]{fontenc}",
     #      # r"\usepackage{unicode-math}",   # unicode math setup
