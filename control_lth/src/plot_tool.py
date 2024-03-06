@@ -11,8 +11,8 @@ from tueplots import figsizes, fonts
 # rc('text', usetex=True)
 # plt.rcParams.update(fonts.jmlr2001_tex(family="serif"))
 plt.rcParams.update({
-    "font.family": "serif",
-    "font.serif": "Liberation",
+    # "font.family": "serif",
+    "font.family": "Liberation Sans",
     # "font.size": 20.0,
     # "font.weight": "bold",
     # "xtick.labelsize": "large",
