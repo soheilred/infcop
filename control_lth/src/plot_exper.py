@@ -31,16 +31,16 @@ def perf_plots(no_cntr_dir, cntr_dir):
     cntr_comp = pickle.load(open(no_cntr_dir + "comp_level.pkl", "rb"))
     cntr_comp = np.mean(cntr_comp, axis=0)
 
-    print(no_cntr_all_acc)
+    # print(no_cntr_all_acc)
     print(cntr_all_acc)
-    print(no_cntr_comp)
+    # print(no_cntr_comp)
     print(cntr_comp)
 
     plot_tool.plot_multi_all_accuracy([no_cntr_all_acc, cntr_all_acc], labels,
                                       args, cntr_dir + "all_accuracies")
     plot_tool.plot_connectivity(cntr_conn, cntr_dir + "conn")
     plot_tool.plot_connectivity(no_cntr_conn, cntr_dir + "no_conn")
-    print("plots saved in:", cntr_dir)
+    print("plots saved in:\n", cntr_dir)
 
 
 def making_plots_perf(arch, dataset, exper_cntr, exper_no_cntr):
