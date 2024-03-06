@@ -5,6 +5,7 @@ import numpy as np
 import pickle
 import sys
 import constants as C
+from tueplots import figsizes, fonts
 # rc('font',**{'family':'serif','serif':['Times']})
 # # rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 # rc('text', usetex=True)
