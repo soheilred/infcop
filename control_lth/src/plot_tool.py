@@ -210,21 +210,16 @@ def plot_connectivity(conns, filename):
     axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.grid()
     plt.savefig(filename + ".png")
-
-
  
-def compare_correlations():
-    out_dir = sys.argv[1]
-    all_accuracy = pickle.load(open(out_dir + "_accuracy.pkl", "rb"))
-    soheil_corrs = pickle.load(open(out_dir + "soheil" + "_correlation.pkl", "rb"))
-    josh_corrs = pickle.load(open(out_dir + "josh" + "_correlation.pkl", "rb"))
-    print(soheil_corrs)
-    print(josh_corrs)
+
+def plot_correlations(filename):
+    corrs = pickle.load(open(filename, "rb"))
+
+    import ipdb; ipdb.set_trace()
 
 def main():
     # plot_accuracy()
-    plot_three()
-    # compare_correlations()
+    plot_correlations(sys.argv[1])
     
 if __name__ == '__main__':
     main()
