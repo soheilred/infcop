@@ -9,9 +9,10 @@ from tueplots import figsizes, fonts
 # rc('font',**{'family':'serif','serif':['Times']})
 # # rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 # rc('text', usetex=True)
-plt.rcParams.update(fonts.jmlr2001_tex(family="serif"))
-# plt.rcParams.update({
-#     "font.family": "serif",
+# plt.rcParams.update(fonts.jmlr2001_tex(family="serif"))
+plt.rcParams.update({
+    "font.family": "serif",
+    "font.serif": "Times New Roman",
     # "font.size": 20.0,
     # "font.weight": "bold",
     # "xtick.labelsize": "large",
@@ -27,7 +28,7 @@ plt.rcParams.update(fonts.jmlr2001_tex(family="serif"))
     #      # r"\usepackage{unicode-math}",   # unicode math setup
     #      r"\usepackage{mathpazo}"
     #      ]
-# })
+})
 
 # matplotlib.use('tkagg')
 
