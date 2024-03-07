@@ -2555,3 +2555,40 @@ new weight tensor(3.482672, device='cuda:1')
 2024-03-06 23:48:09,889 - Test accuracy: 94.9%, Avg loss: 0.17
 2024-03-06 23:48:09,891 - Training iteration 9 / 30
 2024-03-06 23:48:09,892 - Training...
+2024-03-06 23:50:12,835 - Epoch 1 accuracy: 100.0%
+2024-03-06 23:52:15,418 - Epoch 2 accuracy: 100.0%
+2024-03-06 23:52:15,419 - Testing
+2024-03-06 23:52:40,869 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-06 23:52:40,871 - Training iteration 10 / 30
+2024-03-06 23:52:40,872 - Training...
+2024-03-06 23:54:42,896 - Epoch 1 accuracy: 100.0%
+2024-03-06 23:56:44,230 - Epoch 2 accuracy: 100.0%
+2024-03-06 23:56:44,231 - Testing
+2024-03-06 23:57:09,259 - Test accuracy: 92.7%, Avg loss: 0.24
+2024-03-06 23:57:09,261 - Training iteration 11 / 30
+2024-03-06 23:57:09,261 - Training...
+2024-03-06 23:59:11,252 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:01:13,182 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:01:13,183 - Testing
+2024-03-07 00:01:38,522 - Test accuracy: 95.8%, Avg loss: 0.13
+2024-03-07 00:01:38,524 - Training iteration 12 / 30
+2024-03-07 00:01:38,525 - Training...
+2024-03-07 00:03:40,121 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:05:42,028 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:05:42,029 - Testing
+2024-03-07 00:06:07,067 - Test accuracy: 95.9%, Avg loss: 0.14
+2024-03-07 00:06:07,069 - Training iteration 13 / 30
+2024-03-07 00:06:07,070 - Training...
+2024-03-07 00:08:09,454 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:10:11,462 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:10:11,463 - Testing
+2024-03-07 00:10:36,549 - Test accuracy: 95.7%, Avg loss: 0.13
+2024-03-07 00:10:36,551 - Training iteration 14 / 30
+2024-03-07 00:10:36,552 - Training...
+2024-03-07 00:12:38,504 - Epoch 1 accuracy: 98.9%
+2024-03-07 00:14:40,785 - Epoch 2 accuracy: 92.5%
+2024-03-07 00:14:40,786 - Testing
+2024-03-07 00:15:06,234 - Test accuracy: 75.8%, Avg loss: 0.96
+2024-03-07 00:15:06,236 - Training iteration 15 / 30
+2024-03-07 00:15:06,237 - Training...
+2024-03-07 00:17:08,173 - Epoch 1 accuracy: 96.5%

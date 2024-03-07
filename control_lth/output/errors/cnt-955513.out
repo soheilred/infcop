@@ -2550,3 +2550,44 @@ new weight tensor(3.636005, device='cuda:0')
 2024-03-06 23:46:06,620 - Training iteration 8 / 30
 2024-03-06 23:46:06,621 - Training...
 2024-03-06 23:48:09,283 - Epoch 1 accuracy: 99.3%
+2024-03-06 23:50:15,456 - Epoch 2 accuracy: 98.9%
+2024-03-06 23:50:15,457 - Testing
+2024-03-06 23:50:41,676 - Test accuracy: 26.9%, Avg loss: 8.18
+2024-03-06 23:50:41,677 - Training iteration 9 / 30
+2024-03-06 23:50:41,678 - Training...
+2024-03-06 23:52:44,663 - Epoch 1 accuracy: 99.0%
+2024-03-06 23:54:52,124 - Epoch 2 accuracy: 99.5%
+2024-03-06 23:54:52,125 - Testing
+2024-03-06 23:55:17,383 - Test accuracy: 64.7%, Avg loss: 2.21
+2024-03-06 23:55:17,385 - Training iteration 10 / 30
+2024-03-06 23:55:17,386 - Training...
+2024-03-06 23:57:20,986 - Epoch 1 accuracy: 99.1%
+2024-03-06 23:59:26,935 - Epoch 2 accuracy: 99.5%
+2024-03-06 23:59:26,936 - Testing
+2024-03-06 23:59:52,138 - Test accuracy: 36.2%, Avg loss: 3.68
+2024-03-06 23:59:52,140 - Training iteration 11 / 30
+2024-03-06 23:59:52,141 - Training...
+2024-03-07 00:01:54,570 - Epoch 1 accuracy: 99.1%
+2024-03-07 00:03:58,200 - Epoch 2 accuracy: 99.1%
+2024-03-07 00:03:58,201 - Testing
+2024-03-07 00:04:24,638 - Test accuracy: 40.9%, Avg loss: 2.63
+2024-03-07 00:04:24,640 - Training iteration 12 / 30
+2024-03-07 00:04:24,641 - Training...
+2024-03-07 00:06:28,186 - Epoch 1 accuracy: 99.2%
+2024-03-07 00:08:31,340 - Epoch 2 accuracy: 99.8%
+2024-03-07 00:08:31,341 - Testing
+2024-03-07 00:08:57,631 - Test accuracy: 94.2%, Avg loss: 0.20
+2024-03-07 00:08:57,633 - Training iteration 13 / 30
+2024-03-07 00:08:57,634 - Training...
+2024-03-07 00:11:00,672 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:13:04,816 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:13:04,817 - Testing
+2024-03-07 00:13:29,976 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-07 00:13:29,978 - Training iteration 14 / 30
+2024-03-07 00:13:29,979 - Training...
+2024-03-07 00:15:33,583 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:17:36,502 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:17:36,503 - Testing
+2024-03-07 00:18:01,623 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-07 00:18:01,625 - Training iteration 15 / 30
+2024-03-07 00:18:01,626 - Training...
