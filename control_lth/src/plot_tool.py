@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 import numpy as np
 import pickle
+import torch
 import sys
 import constants as C
 # from tueplots import figsizes, fonts
@@ -218,8 +219,9 @@ def plot_correlations(filename):
     fig, axs = plt.subplots(1, figsize=(12, 8))
     xdata = np.arange(1, len(corrs[0][0]) + 1)
 
-    for i in range(len(corrs[0][0])):
-        axs.plot(xdata, corrs[0][0][i],
+    for i in range(len(corrs[0])):
+        axs.plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
+                         range(len(corrs[0][i]))],
                  # marker=filled_markers[i],
                  # linestyle=linestyles[i % len(linestyles)],
                  # label=f"Iter {i}",
@@ -229,7 +231,7 @@ def plot_correlations(filename):
     fig.tight_layout(pad=2.0)
     plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    major_ticks = np.arange(1, len(corrs[0]) + 1)
+    major_ticks = np.arange(1, len(corrs[0][0]) + 1)
     axs.set_xticks(major_ticks)
     axs.set_title("Norm Correlation")
     axs.set(xlabel="Layer index", ylabel="Correlations")

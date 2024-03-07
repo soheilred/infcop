@@ -559,7 +559,8 @@ def perf_connectivity_lth(logger, device, args, controller):
     network = Network(device, args.net_arch, num_classes, args.net_pretrained)
     model = network.set_model()
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
+                                weight_decay=args.net_weight_decay)
     # warm up the pretrained model
     acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net_warmup,
                    device)
@@ -576,8 +577,6 @@ def perf_connectivity_lth(logger, device, args, controller):
             pruning.prune_once(init_state_dict)
             corr = act.get_correlations()
             corrs.append(corr)
-            optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
-                                        weight_decay=args.net_weight_decay)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
