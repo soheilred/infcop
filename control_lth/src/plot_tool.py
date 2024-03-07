@@ -214,19 +214,33 @@ def plot_connectivity(conns, filename):
 
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
-    major_ticks = np.arange(1, len(conns[0]) + 1)
+    import ipdb; ipdb.set_trace()
+    fig, axs = plt.subplots(1, figsize=(12, 8))
+    xdata = np.arange(1, len(corrs[0][0]) + 1)
+
+    for i in range(len(corrs[0][0])):
+        axs.plot(xdata, corrs[0][0][i],
+                 # marker=filled_markers[i],
+                 # linestyle=linestyles[i % len(linestyles)],
+                 # label=f"Iter {i}",
+                 c='#A50062',
+                 lw=1,
+                 alpha=.1)
+    fig.tight_layout(pad=2.0)
+    plt.legend()
+    # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
+    major_ticks = np.arange(1, len(corrs[0]) + 1)
     axs.set_xticks(major_ticks)
     axs.set_title("Norm Correlation")
     axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.grid()
     plt.savefig(filename + ".png")
- 
 
-    import ipdb; ipdb.set_trace()
 
 def main():
     # plot_accuracy()
     plot_correlations(sys.argv[1])
-    
+
+
 if __name__ == '__main__':
     main()
