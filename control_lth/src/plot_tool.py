@@ -215,7 +215,6 @@ def plot_connectivity(conns, filename):
 
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
-    import ipdb; ipdb.set_trace()
     fig, axs = plt.subplots(1, figsize=(12, 8))
     xdata = np.arange(1, len(corrs[0][0]) + 1)
 
@@ -236,7 +235,7 @@ def plot_correlations(filename):
     axs.set_title("Norm Correlation")
     axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.grid()
-    plt.savefig(filename + ".png")
+    plt.savefig(filename[:-4] + ".png")
 
 
 def main():
