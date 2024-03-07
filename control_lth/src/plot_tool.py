@@ -224,11 +224,11 @@ def plot_correlations(filename):
                  # marker=filled_markers[i],
                  # linestyle=linestyles[i % len(linestyles)],
                  # label=f"Iter {i}",
-                 c='#A50062',
+                 c='f#A50{i:3d}',
                  lw=1,
-                 alpha=.1)
+                 alpha=.4)
     fig.tight_layout(pad=2.0)
-    plt.legend()
+    # plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
     major_ticks = np.arange(1, len(corrs[0][0]) + 1)
     axs.set_xticks(major_ticks)
