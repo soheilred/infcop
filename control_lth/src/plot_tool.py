@@ -224,7 +224,7 @@ def plot_correlations(filename):
                  # marker=filled_markers[i],
                  # linestyle=linestyles[i % len(linestyles)],
                  # label=f"Iter {i}",
-                 c=f'#A50{i:3d}',
+                 c=f'#A50{i:0>3}',
                  lw=1,
                  alpha=.4)
     fig.tight_layout(pad=2.0)
