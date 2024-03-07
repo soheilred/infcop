@@ -3,6 +3,7 @@
 # touch ../output/errors/batch-run.out
 
 PID=$(echo $$)
+echo $PID
 
 CNTLOG="../output/errors/cnt-${PID}.out"
 NOCNTLOG="../output/errors/nocnt-${PID}.out"
