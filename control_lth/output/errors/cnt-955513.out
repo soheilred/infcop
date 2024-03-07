@@ -2591,3 +2591,21 @@ new weight tensor(3.636005, device='cuda:0')
 2024-03-07 00:18:01,623 - Test accuracy: 95.7%, Avg loss: 0.14
 2024-03-07 00:18:01,625 - Training iteration 15 / 30
 2024-03-07 00:18:01,626 - Training...
+2024-03-07 00:20:05,114 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:22:07,997 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:22:07,998 - Testing
+2024-03-07 00:22:33,179 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-07 00:22:33,181 - Training iteration 16 / 30
+2024-03-07 00:22:33,182 - Training...
+2024-03-07 00:24:37,068 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:26:39,179 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:26:39,180 - Testing
+2024-03-07 00:27:04,321 - Test accuracy: 95.7%, Avg loss: 0.13
+2024-03-07 00:27:04,323 - Training iteration 17 / 30
+2024-03-07 00:27:04,324 - Training...
+2024-03-07 00:29:06,932 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:31:13,820 - Epoch 2 accuracy: 92.9%
+2024-03-07 00:31:13,821 - Testing
+2024-03-07 00:31:39,780 - Test accuracy: 42.2%, Avg loss: 3.60
+2024-03-07 00:31:39,782 - Training iteration 18 / 30
+2024-03-07 00:31:39,783 - Training...
