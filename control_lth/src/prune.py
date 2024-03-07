@@ -523,8 +523,9 @@ def perf_lth(logger, device, args, controller):
             accuracy = test(model, test_dl, loss_fn, device)
 
             # apply the controller at specific epochs and iteration
-            if (train_iter == controller.c_epoch) and \
-               (imp_iter in controller.c_iter):
+            if ((args.control_on == 1) and
+                (train_iter == controller.c_epoch) and
+               (imp_iter in controller.c_iter)):
                 act = Activations(model, train_dl, device, args.net_batch_size)
                 # corr_0 = act.get_corrs()
                 # corr_1 = act.get_correlations()

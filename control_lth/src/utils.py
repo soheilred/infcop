@@ -272,6 +272,8 @@ def get_args():
                               args.control_iteration.split(" ")]
 
     run_dir = get_run_dir(args)
+    logger.debug(f"In dir: {run_dir}")
+    print(f"In dir: {run_dir}")
     logger.debug(yaml.dump(args.__dict__, default_flow_style=False))
     print(yaml.dump(args.__dict__, default_flow_style=False))
     json.dump(args.__dict__, open(run_dir + "exper.json", 'w'), indent=2)
