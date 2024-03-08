@@ -71,7 +71,7 @@ def plot_multi_all_accuracy(accuracies, labels, args, filename):
 
     fig.tight_layout(pad=2.0)
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    major_ticks = np.arange(0, args['train_per_epoch']* args['train_epochs'] *
+    major_ticks = np.arange(0, args['net_train_per_epoch']* args['net_train_epochs'] *
                             len(accuracies[0]),
                             args['net_train_per_epoch'] * args['net_train_epochs'])
     axs.set_xticks(major_ticks)
