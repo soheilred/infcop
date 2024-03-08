@@ -215,7 +215,7 @@ def plot_connectivity(conns, filename):
 
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
-    c_colors = plt.get_cmap('Blues')
+    c_colors = plt.get_cmap('YlGnBu')
     values = np.linspace(0, 1, 31)
     colors = c_colors(values)
 
@@ -234,7 +234,7 @@ def plot_correlations(filename):
     for i in range(5):
         axs[i].set_xticks(major_ticks)
         axs[i].set_title(f"Iter {i}")
-        axs[i].set_ylim(bottom=0, top=400)
+        axs[i].set_ylim(bottom=0, top=500)
         axs[i].set_xlim(left=1, right=len(corrs[0][0]))
         axs[i].set(xlabel="Layer index", ylabel="Norm Correlations")
         axs[i].grid()
