@@ -234,23 +234,23 @@ def plot_correlations(filename):
         if i < 30:
             color = blues[i]
         elif i == 30:
-            color = reds[i - 30]
+            color = reds[30]
         elif i < 61:
             color = greens[i - 31]
         elif i == 61:
-            color = reds[i - 61]
+            color = reds[30]
         elif i < 92:
             color = reds[i - 62]
         elif i == 92:
-            color = reds[i - 92]
+            color = reds[30]
         elif i < 123:
             color = purples[i - 93]
         elif i == 123:
-            color = reds[i - 123]
+            color = reds[30]
         elif i < 154:
             color = greys[i - 124]
         elif i == 154:
-            color = reds[i - 154]
+            color = reds[30]
 
         axs.plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
                          range(len(corrs[0][i]))],
@@ -259,7 +259,7 @@ def plot_correlations(filename):
                  # label=f"Iter {i}",
                  c=color,
                  lw=1,
-                 alpha=.4)
+                 alpha=.9)
     fig.tight_layout(pad=2.0)
     # plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
