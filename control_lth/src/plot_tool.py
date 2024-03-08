@@ -215,7 +215,7 @@ def plot_connectivity(conns, filename):
 
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
-    c_colors = plt.get_cmap('magma')
+    c_colors = plt.get_cmap('Blues')
     values = np.linspace(0, 1, 31)
     colors = c_colors(values)
 
@@ -226,18 +226,18 @@ def plot_correlations(filename):
     for i in range(len(corrs[0])):
         axs[(i+1)//31].plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
                             range(len(corrs[0][i]))],
-                            # marker=filled_markers[i],
-                            # linestyle=linestyles[i % len(linestyles)],
                             # label=f"Iter {(i+1)//31}",
                             c=colors[i % 31],
                             lw=1,
                             alpha=.9)
-        axs[(i+1)//31].set_xticks(major_ticks)
-        axs[(i+1)//31].set_title(f"Iter {(i+1)//31}")
-        axs[(i+1)//31].set_ylim(bottom=0, top=400)
-        axs[(i+1)//31].set_xlim(left=1, right=len(corrs[0][0]))
-        axs[(i+1)//31].set(xlabel="Layer index", ylabel="Norm Correlations")
-        axs[(i+1)//31].grid()
+
+    for i in range(5):
+        axs[i].set_xticks(major_ticks)
+        axs[i].set_title(f"Iter {i}")
+        axs[i].set_ylim(bottom=0, top=400)
+        axs[i].set_xlim(left=1, right=len(corrs[0][0]))
+        axs[i].set(xlabel="Layer index", ylabel="Norm Correlations")
+        axs[i].grid()
     fig.tight_layout(pad=2.0)
     # plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
