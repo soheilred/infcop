@@ -219,7 +219,7 @@ def plot_correlations(filename):
     xdata = np.arange(1, len(corrs[0][0]) + 1)
 
     for i in range(len(corrs[0])):
-        color = f"#{(i//31)*5:0<2}{i%30:0<2}00"
+        color = f"#{(i//31)*15:0<2}{i%30:0<2}00"
         axs.plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
                          range(len(corrs[0][i]))],
                  # marker=filled_markers[i],
