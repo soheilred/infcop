@@ -216,20 +216,39 @@ def plot_connectivity(conns, filename):
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
     c_colors = plt.get_cmap('Blues')
-    # c_greens = plt.get_cmap('Greens')
-    # c_reds = plt.get_cmap('Reds')
-    # c_purples = plt.get_cmap('Purples')
-    # c_greys = plt.get_cmap('Greys')
     values = np.linspace(0, 1, 31)
-    # blues, greens, reds, purples, greys = c_blues(values), c_greens(values),
-    # c_reds(values), c_purples(values), c_greys(values)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(5, figsize=(12, 8))
+    fig, axs = plt.subplots(5, figsize=(12, 20))
     xdata = np.arange(1, len(corrs[0][0]) + 1)
     major_ticks = np.arange(1, len(corrs[0][0]) + 1)
 
     for i in range(len(corrs[0])):
+        axs[(i+1)//31].plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
+                            range(len(corrs[0][i]))],
+                            # marker=filled_markers[i],
+                            # linestyle=linestyles[i % len(linestyles)],
+                            # label=f"Iter {i}",
+                            c=colors[i % 31],
+                            lw=1,
+                            alpha=.9)
+        axs[(i+1)//31].set_xticks(major_ticks)
+        axs[(i+1)//31].set_title("Norm Correlation")
+        axs[(i+1)//31].set_ylim(bottom=0, top=400)
+        axs[(i+1)//31].set_xlim(left=1, right=len(corrs[0][0]) + 1)
+        axs[(i+1)//31].set(xlabel="Layer index", ylabel="Correlations")
+        axs[(i+1)//31].grid()
+    fig.tight_layout(pad=2.0)
+    # plt.legend()
+    # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
+    # plt.grid()
+    plt.savefig(filename[:-4] + ".png")
+    # c_greens = plt.get_cmap('Greens')
+    # c_reds = plt.get_cmap('Reds')
+    # c_purples = plt.get_cmap('Purples')
+    # c_greys = plt.get_cmap('Greys')
+    # blues, greens, reds, purples, greys = c_blues(values), c_greens(values),
+    # c_reds(values), c_purples(values), c_greys(values)
         # if (i - 30) % 31 == 0:
         #     color = (1, 0, 0)
         # else:
@@ -255,23 +274,6 @@ def plot_correlations(filename):
         #     color = greys[i - 124]
         # elif i == 154:
         #     color = greys[30]
-
-        axs[(i+1)//31].plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
-                            range(len(corrs[0][i]))],
-                            # marker=filled_markers[i],
-                            # linestyle=linestyles[i % len(linestyles)],
-                            # label=f"Iter {i}",
-                            c=colors[i % 31],
-                            lw=1,
-                            alpha=.9)
-        axs[(i+1)//31].set_xticks(major_ticks)
-        axs[(i+1)//31].set_title("Norm Correlation")
-        axs[(i+1)//31].set(xlabel="Layer index", ylabel="Correlations")
-    fig.tight_layout(pad=2.0)
-    # plt.legend()
-    # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    plt.grid()
-    plt.savefig(filename[:-4] + ".png")
 
 
 def main():
