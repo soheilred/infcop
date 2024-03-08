@@ -219,12 +219,13 @@ def plot_correlations(filename):
     xdata = np.arange(1, len(corrs[0][0]) + 1)
 
     for i in range(len(corrs[0])):
+        color = f"#{i//5:0>1}0{i%30-i//5:0<2}00"
         axs.plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
                          range(len(corrs[0][i]))],
                  # marker=filled_markers[i],
                  # linestyle=linestyles[i % len(linestyles)],
                  # label=f"Iter {i}",
-                 c=f'#F0{i*40:0>4}',
+                 c=color,
                  lw=1,
                  alpha=.4)
     fig.tight_layout(pad=2.0)
