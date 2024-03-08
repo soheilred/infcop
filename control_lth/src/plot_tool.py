@@ -222,7 +222,7 @@ def plot_correlations(filename):
         if (i - 30) % 31 == 0:
             color = (1, 0, 0)
         else:
-            color = ((i//31) / len(corrs[0]), i % 30 / len(corrs[0]), 0)
+            color = ((i//31) * 5 / len(corrs[0]), i % 30 * 5 / len(corrs[0]), 0)
         axs.plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
                          range(len(corrs[0][i]))],
                  # marker=filled_markers[i],
