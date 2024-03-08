@@ -215,7 +215,7 @@ def plot_connectivity(conns, filename):
 
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
-    c_colors = plt.get_cmap('Greens')
+    c_colors = plt.get_cmap('plasma')
     values = np.linspace(0, 1, 31)
     colors = c_colors(values)
 
@@ -228,12 +228,12 @@ def plot_correlations(filename):
                             range(len(corrs[0][i]))],
                             # marker=filled_markers[i],
                             # linestyle=linestyles[i % len(linestyles)],
-                            label=f"Iter {(i+1)//31}",
+                            # label=f"Iter {(i+1)//31}",
                             c=colors[i % 31],
                             lw=1,
                             alpha=.9)
         axs[(i+1)//31].set_xticks(major_ticks)
-        # axs[(i+1)//31].set_title("Norm Correlation")
+        axs[(i+1)//31].set_title(f"Iter {(i+1)//31}")
         axs[(i+1)//31].set_ylim(bottom=0, top=400)
         axs[(i+1)//31].set_xlim(left=1, right=len(corrs[0][0]))
         axs[(i+1)//31].set(xlabel="Layer index", ylabel="Norm Correlations")
