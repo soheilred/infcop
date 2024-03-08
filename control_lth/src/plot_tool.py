@@ -238,19 +238,19 @@ def plot_correlations(filename):
         elif i < 61:
             color = greens[i - 31]
         elif i == 61:
-            color = reds[i - 30]
+            color = reds[i - 61]
         elif i < 92:
             color = reds[i - 62]
         elif i == 92:
-            color = reds[i - 30]
+            color = reds[i - 92]
         elif i < 123:
             color = purples[i - 93]
         elif i == 123:
-            color = reds[i - 30]
+            color = reds[i - 123]
         elif i < 154:
             color = greys[i - 124]
         elif i == 154:
-            color = reds[i - 30]
+            color = reds[i - 154]
 
         axs.plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
                          range(len(corrs[0][i]))],
