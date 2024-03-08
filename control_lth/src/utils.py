@@ -178,7 +178,7 @@ def get_stability(in_measure):
     return stability
 
 def get_run_dir(args):
-    control = "cntr/" if args.control_on else "no_cntr" + "/" +\
+    control = "no_cntr/" if args.control_on == 0 else "cntr" + "/" +\
                 ("").join([str(layer) for layer in args.control_layer]) + "/"
     cur_folder = (C.cur_time + "/" if C.cur_time != "" else "")
     run_dir = C.MODEL_ROOT_DIR + args.exper_type + "/" + args.net_arch + "/" +\
