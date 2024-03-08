@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 import numpy as np
 import pickle
+import torch
 import sys
 import constants as C
 # from tueplots import figsizes, fonts
@@ -214,19 +215,71 @@ def plot_connectivity(conns, filename):
 
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
-    major_ticks = np.arange(1, len(conns[0]) + 1)
-    axs.set_xticks(major_ticks)
-    axs.set_title("Norm Correlation")
-    axs.set(xlabel="Layer index", ylabel="Correlations")
-    plt.grid()
-    plt.savefig(filename + ".png")
- 
+    c_colors = plt.get_cmap('YlGnBu')
+    values = np.linspace(0, 1, 31)
+    colors = c_colors(values)
 
-    import ipdb; ipdb.set_trace()
+    fig, axs = plt.subplots(5, figsize=(12, 20))
+    xdata = np.arange(1, len(corrs[0][0]) + 1)
+    major_ticks = np.arange(1, len(corrs[0][0]) + 1)
+
+    for i in range(len(corrs[0])):
+        axs[(i+1)//31].plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
+                            range(len(corrs[0][i]))],
+                            # label=f"Iter {(i+1)//31}",
+                            c=colors[i % 31],
+                            lw=1,
+                            alpha=.9)
+
+    for i in range(5):
+        axs[i].set_xticks(major_ticks)
+        axs[i].set_title(f"Iter {i}")
+        axs[i].set_ylim(bottom=0, top=500)
+        axs[i].set_xlim(left=1, right=len(corrs[0][0]))
+        axs[i].set(xlabel="Layer index", ylabel="Norm Correlations")
+        axs[i].grid()
+    fig.tight_layout(pad=2.0)
+    # plt.legend()
+    # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
+    # plt.grid()
+    plt.savefig(filename[:-4] + ".png")
+    # c_greens = plt.get_cmap('Greens')
+    # c_reds = plt.get_cmap('Reds')
+    # c_purples = plt.get_cmap('Purples')
+    # c_greys = plt.get_cmap('Greys')
+    # blues, greens, reds, purples, greys = c_blues(values), c_greens(values),
+    # c_reds(values), c_purples(values), c_greys(values)
+        # if (i - 30) % 31 == 0:
+        #     color = (1, 0, 0)
+        # else:
+        #     color = ((i // 31) * 31 / len(corrs[0]),
+        #              i % 31 * 5 / len(corrs[0]), 0)
+        # if i < 30:
+        #     color = blues[i]
+        # elif i == 30:
+        #     color = blues[30]
+        # elif i < 61:
+        #     color = greens[i - 31]
+        # elif i == 61:
+        #     color = greens[30]
+        # elif i < 92:
+        #     color = reds[i - 62]
+        # elif i == 92:
+        #     color = reds[30]
+        # elif i < 123:
+        #     color = purples[i - 93]
+        # elif i == 123:
+        #     color = purples[30]
+        # elif i < 154:
+        #     color = greys[i - 124]
+        # elif i == 154:
+        #     color = greys[30]
+
 
 def main():
     # plot_accuracy()
     plot_correlations(sys.argv[1])
-    
+
+
 if __name__ == '__main__':
     main()
