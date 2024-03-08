@@ -232,25 +232,25 @@ def plot_correlations(filename):
         #     color = ((i // 31) * 31 / len(corrs[0]),
                      # i % 31 * 5 / len(corrs[0]), 0)
         if i < 30:
-            color = blues(i)
+            color = blues[i]
         elif i == 30:
-            color = reds(i - 30)
+            color = reds[i - 30]
         elif i < 61:
-            color = greens(i - 30)
+            color = greens[i - 31]
         elif i == 61:
-            color = reds(i - 30)
+            color = reds[i - 30]
         elif i < 92:
-            color = reds(i - 30)
+            color = reds[i - 62]
         elif i == 92:
-            color = reds(i - 30)
+            color = reds[i - 30]
         elif i < 123:
-            color = purples(i - 30)
+            color = purples[i - 93]
         elif i == 123:
-            color = reds(i - 30)
+            color = reds[i - 30]
         elif i < 154:
-            color = greys(i - 30)
+            color = greys[i - 124]
         elif i == 154:
-            color = reds(i - 30)
+            color = reds[i - 30]
 
         axs.plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
                          range(len(corrs[0][i]))],
