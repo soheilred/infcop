@@ -215,16 +215,43 @@ def plot_connectivity(conns, filename):
 
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
+    c_blues = plt.get_cmap('Blues')
+    c_greens = plt.get_cmap('Greens')
+    c_reds = plt.get_cmap('Reds')
+    c_purples = plt.get_cmap('Purples')
+    c_greys = plt.get_cmap('Greys')
+    values = np.linspace(0, 1, 31)
+    blues, greens, reds, purples, greys = c_blues(values), c_greens(values), c_reds(values), c_purples(values), c_greys(values)
     fig, axs = plt.subplots(1, figsize=(12, 8))
     xdata = np.arange(1, len(corrs[0][0]) + 1)
 
     for i in range(len(corrs[0])):
-        if (i - 30) % 31 == 0:
-            color = (1, 0, 0)
-        else:
-            color = ((i // 31) * 31 / len(corrs[0]),
-                     i % 31 * 5 / len(corrs[0]),
-                     i % 31 * 5 / len(corrs[0]))
+        # if (i - 30) % 31 == 0:
+        #     color = (1, 0, 0)
+        # else:
+        #     color = ((i // 31) * 31 / len(corrs[0]),
+                     # i % 31 * 5 / len(corrs[0]), 0)
+        if i < 30:
+            color = blues(i)
+        elif i == 30:
+            color = reds(i - 30)
+        elif i < 61:
+            color = greens(i - 30)
+        elif i == 61:
+            color = reds(i - 30)
+        elif i < 92:
+            color = reds(i - 30)
+        elif i == 92:
+            color = reds(i - 30)
+        elif i < 123:
+            color = purples(i - 30)
+        elif i == 123:
+            color = reds(i - 30)
+        elif i < 154:
+            color = greys(i - 30)
+        elif i == 154:
+            color = reds(i - 30)
+
         axs.plot(xdata, [torch.norm(corrs[0][i][layer]) for layer in
                          range(len(corrs[0][i]))],
                  # marker=filled_markers[i],
