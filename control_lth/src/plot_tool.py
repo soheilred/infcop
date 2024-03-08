@@ -227,6 +227,7 @@ def plot_correlations(filename):
 
     fig, axs = plt.subplots(5, figsize=(12, 8))
     xdata = np.arange(1, len(corrs[0][0]) + 1)
+    major_ticks = np.arange(1, len(corrs[0][0]) + 1)
 
     for i in range(len(corrs[0])):
         # if (i - 30) % 31 == 0:
@@ -263,13 +264,12 @@ def plot_correlations(filename):
                             c=colors[i % 31],
                             lw=1,
                             alpha=.9)
+        axs[(i+1)//31].set_xticks(major_ticks)
+        axs[(i+1)//31].set_title("Norm Correlation")
+        axs[(i+1)//31].set(xlabel="Layer index", ylabel="Correlations")
     fig.tight_layout(pad=2.0)
     # plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    major_ticks = np.arange(1, len(corrs[0][0]) + 1)
-    axs.set_xticks(major_ticks)
-    axs.set_title("Norm Correlation")
-    axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.grid()
     plt.savefig(filename[:-4] + ".png")
 
