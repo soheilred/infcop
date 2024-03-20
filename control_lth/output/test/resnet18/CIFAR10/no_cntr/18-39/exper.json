@@ -1,0 +1,30 @@
+{
+  "net_arch": "resnet18",
+  "net_pretrained": 1,
+  "net_dataset": "CIFAR10",
+  "net_train_epochs": 50,
+  "net_train_per_epoch": 2,
+  "net_warmup": 10,
+  "net_lr": 0.1,
+  "net_batch_size": 64,
+  "net_weight_decay": 0.0005,
+  "control_on": 0,
+  "control_iteration": [
+    1
+  ],
+  "control_epoch": 1,
+  "control_layer": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "control_type": 1,
+  "exper_imp_total_iter": 5,
+  "exper_num_trial": 1,
+  "exper_acc_thrd": 95,
+  "exper_type": "test",
+  "exper_gpu_id": 0,
+  "exper_prune_perc_per_layer": 0.1
+}

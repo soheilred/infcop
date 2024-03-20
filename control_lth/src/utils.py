@@ -28,7 +28,12 @@ def checkdir(directory):
 
 def save_model(model, directory, name):
     checkdir(directory)
-    torch.save(model, directory + name)
+    torch.save(model.state_dict(), directory + name)
+
+def load_model(model, directory, name):
+    checkdir(directory)
+    model.load_state_dict(torch.load(directory + name))
+    return model
 
 def retrieve_name(var):
     import inspect

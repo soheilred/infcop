@@ -45,6 +45,8 @@ class Activations:
         self.layers_idx = None
         self.act_keys = None
         self.hook_handles = []
+        self.set_layers_idx()
+        self.set_act_keys()
 
     def hook_fn(self, m, i, o):
         """Assign the activations/mean of activations to a matrix
