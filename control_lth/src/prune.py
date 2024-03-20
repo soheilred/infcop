@@ -665,6 +665,7 @@ def perf_connectivity_lth(logger, device, args, controller):
         base_model.eval()
         base_act = Activations(base_model, train_dl, device, args.net_batch_size)
         similarities.append(pruning.get_cosine_similarity(act, base_act, device))
+        logger.debug(f"similarities: {similarities}")
 
     return pruning.all_acc, similarities, pruning.comp_level
 
