@@ -284,7 +284,7 @@ def plot_similarity(filename):
     fig, axs = plt.subplots(1, figsize=(12, 8))
     exper_len = len(similarity[0][0])
     xdata = np.arange(1, exper_len + 1)
-    c_colors = plt.get_cmap("cool")
+    c_colors = plt.get_cmap("hsv")
     values = np.linspace(0, 1, len(similarity[0]))
     colors = c_colors(values)
     major_ticks = np.arange(1, exper_len + 1)
