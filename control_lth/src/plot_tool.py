@@ -289,7 +289,7 @@ def plot_similarity(filename):
     colors = c_colors(values)
     major_ticks = np.arange(1, exper_len + 1)
 
-    for i in range(1, len(similarity[0])):
+    for i in range(0, len(similarity[0])):
         axs.plot(xdata, similarity[0][i], label=f"Iter {i}", c=colors[i])
 
     fig.tight_layout(pad=2.0)
