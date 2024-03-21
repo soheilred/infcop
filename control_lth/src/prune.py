@@ -12,6 +12,7 @@ from collections import OrderedDict
 import utils
 import plot_tool
 from data_loader import Data
+from similarity import Similarity
 from network import Network, train, test
 from correlation import Activations
 import constants as C
@@ -470,7 +471,7 @@ class Pruner:
         similarities = torch.zeros(num_layers)
         with torch.no_grad():
             # Compute the mean of activations
-            log.debug("Compute the mean and sd of activations")
+            log.debug("Compute similarity of activations")
             for batch, (X, y) in enumerate(act.dataloader):
                 X, y = X.to(device), y.to(device)
                 act.model(X)
@@ -607,11 +608,12 @@ def perf_connectivity_lth(logger, device, args, controller):
                    device)
 
     pruning = Pruner(args, model, train_dl, test_dl, controller)
-    act = Activations(model, train_dl, device, args.net_batch_size)
     init_state_dict = pruning.init_lth()
+    similarity = Similarity(args, test_dl, device, run_dir, num_classes)
+    # act = Activations(model, train_dl, device, args.net_batch_size)
+    # similarities = []
     # connectivity = []
     # corrs = []
-    similarities = []
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
@@ -619,6 +621,7 @@ def perf_connectivity_lth(logger, device, args, controller):
             pruning.prune_once(init_state_dict)
             # corr = act.get_correlations()
             # corrs.append(corr)
+            similarity.set_cosine_similarity(model, imp_iter)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -636,26 +639,18 @@ def perf_connectivity_lth(logger, device, args, controller):
                               args.net_train_per_epoch, device)
             # corr = act.get_correlations()
             # corrs.append(corr)
-
-            if imp_iter != 0:
-                base_network = Network(device, args.net_arch, num_classes,
-                                    args.net_pretrained)
-                base_model = base_network.set_model()
-                base_model = utils.load_model(base_model, run_dir, "1_model.pth.tar")
-                base_model.eval()
-                base_act = Activations(base_model, train_dl, device, args.net_batch_size)
-                similarities.append(pruning.get_cosine_similarity(act, base_act, device))
+            similarity.set_cosine_similarity(model, imp_iter)
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
 
             # apply the controller after some epochs and some iterations
 
-            if ((args.control_on == 1) and
-                (train_iter == controller.c_epoch) and
-               (imp_iter in controller.c_iter)):
-                corr = act.get_correlations()
-                pruning.control(corr, act.layers_dim, imp_iter)
+            # if ((args.control_on == 1) and
+            #     (train_iter == controller.c_epoch) and
+            #    (imp_iter in controller.c_iter)):
+            #     corr = act.get_correlations()
+            #     pruning.control(corr, act.layers_dim, imp_iter)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
@@ -666,18 +661,17 @@ def perf_connectivity_lth(logger, device, args, controller):
         # pruning.corrs.append(act.get_correlations())
         # connectivity.append(act.get_conns(pruning.corrs[imp_iter]))
 
-        # Setting up the base network for activations
-        base_network = Network(device, args.net_arch, num_classes,
-                               args.net_pretrained)
+        # base_network = Network(device, args.net_arch, num_classes,
+        #                        args.net_pretrained)
 
-        base_model = base_network.set_model()
-        base_model = utils.load_model(base_model, run_dir, "1_model.pth.tar")
-        base_model.eval()
-        base_act = Activations(base_model, train_dl, device, args.net_batch_size)
-        similarities.append(pruning.get_cosine_similarity(act, base_act, device))
-        # logger.debug(f"similarities: {similarities}")
+        # base_model = base_network.set_model()
+        # base_model = utils.load_model(base_model, run_dir, "1_model.pth.tar")
+        # base_model.eval()
+        # base_act = Activations(base_model, train_dl, device, args.net_batch_size)
+        # similarities.append(pruning.get_cosine_similarity(act, base_act, device))
+        logger.debug(f"similarities: {similarity.get_similarity()}")
 
-    return pruning.all_acc, similarities, pruning.comp_level
+    return pruning.all_acc, similarity.get_similarity(), pruning.comp_level
 
 
 def effic_lth(logger, device, args, controller):
