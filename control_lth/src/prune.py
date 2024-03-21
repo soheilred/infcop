@@ -636,6 +636,16 @@ def perf_connectivity_lth(logger, device, args, controller):
                               args.net_train_per_epoch, device)
             # corr = act.get_correlations()
             # corrs.append(corr)
+
+            if imp_iter != 0:
+                base_network = Network(device, args.net_arch, num_classes,
+                                    args.net_pretrained)
+                base_model = base_network.set_model()
+                base_model = utils.load_model(base_model, run_dir, "1_model.pth.tar")
+                base_model.eval()
+                base_act = Activations(base_model, train_dl, device, args.net_batch_size)
+                similarities.append(pruning.get_cosine_similarity(act, base_act, device))
+
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
 
@@ -665,7 +675,7 @@ def perf_connectivity_lth(logger, device, args, controller):
         base_model.eval()
         base_act = Activations(base_model, train_dl, device, args.net_batch_size)
         similarities.append(pruning.get_cosine_similarity(act, base_act, device))
-        logger.debug(f"similarities: {similarities}")
+        # logger.debug(f"similarities: {similarities}")
 
     return pruning.all_acc, similarities, pruning.comp_level
 
