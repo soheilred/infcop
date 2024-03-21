@@ -305,7 +305,7 @@ def plot_similarity(filename):
 
 def main():
     # plot_accuracy()
-    plot_correlations(sys.argv[1])
+    # plot_correlations(sys.argv[1])
     plot_similarity(sys.argv[1])
 
 
