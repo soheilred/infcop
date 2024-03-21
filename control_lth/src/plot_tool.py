@@ -296,7 +296,7 @@ def plot_similarity(filename):
     plt.legend()
     # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
     axs.set_xticks(major_ticks)
-    axs.set_ylim(0.01, .02)
+    axs.set_ylim(0.001, .02)
     # axs.set_title("Accuracy of network in training")
     axs.set(xlabel="Layer index", ylabel="Similarities")
     plt.grid()
