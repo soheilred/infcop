@@ -211,7 +211,7 @@ def plot_connectivity(conns, filename):
     axs.set(xlabel="Layer index", ylabel="Correlations")
     plt.grid()
     plt.savefig(filename + ".png")
- 
+
 
 def plot_correlations(filename):
     corrs = pickle.load(open(filename, "rb"))
@@ -276,9 +276,37 @@ def plot_correlations(filename):
         #     color = greys[30]
 
 
+def plot_similarity(filename):
+    similarity = pickle.load(open(filename, "rb"))
+    # print(similarity[0][0].max(), similarity[0][0].min())
+    # print(similarity)
+
+    fig, axs = plt.subplots(1, figsize=(12, 8))
+    exper_len = len(similarity[0][0])
+    xdata = np.arange(1, exper_len + 1)
+    c_colors = plt.get_cmap("RdYlGn")
+    values = np.linspace(0, 1, len(similarity[0]))
+    colors = c_colors(values)
+    major_ticks = np.arange(1, exper_len + 1)
+
+    for i in range(1, len(similarity[0])):
+        axs.plot(xdata, similarity[0][i], label=f"Iter {i}", c=colors[i])
+
+    fig.tight_layout(pad=2.0)
+    plt.legend()
+    # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
+    axs.set_xticks(major_ticks)
+    axs.set_ylim(0.01, .02)
+    # axs.set_title("Accuracy of network in training")
+    axs.set(xlabel="Layer index", ylabel="Similarities")
+    plt.grid()
+    plt.savefig(filename[:-4] + ".png")
+
+
 def main():
     # plot_accuracy()
     plot_correlations(sys.argv[1])
+    plot_similarity(sys.argv[1])
 
 
 if __name__ == '__main__':
