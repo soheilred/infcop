@@ -45,6 +45,7 @@ class Activations:
         self.layers_idx = None
         self.act_keys = None
         self.hook_handles = []
+        self.correlations = []
         self.set_layers_idx()
         self.set_act_keys()
 
@@ -226,7 +227,7 @@ class Activations:
             corrs.append(corr)
 
         # print(corrs)
-        return corrs
+        self.correlations.append(corrs)
 
     def get_conns(self, corrs):
         conns = []
@@ -272,6 +273,9 @@ class Activations:
         #         layers_dim.append(layer.weight.shape)
 
     def get_correlations(self):
+        return self.correlations
+
+    def compute_correlations(self):
         """ Compute the individual correlation
         Returns
         -------
@@ -350,7 +354,7 @@ class Activations:
         for i in range(num_layers - 1):
             corrs[i] = corrs[i] / ds_size # (layers_dim[i][0] * layers_dim[i + 1][0])
 
-        return corrs
+        self.correlations.append(corrs)
 
     def get_connectivity(self):
         """Find the connectivity of each layer, the mean of correlation matrix.

@@ -1,9 +1,12 @@
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.colorbar import ColorbarBase
+from matplotlib.colors import ListedColormap
 from matplotlib import rc
 import numpy as np
 import pickle
 import torch
+import json
 import sys
 import constants as C
 # from tueplots import figsizes, fonts
@@ -107,30 +110,6 @@ def plot_experiment(train_acc, ydata, filename):
     fig.tight_layout(pad=2.0)
     plt.savefig(filename + ".png")
     # plt.show()
-
-
-def plot_accuracy():
-    # out_dir = "../output/05-02-21-28/"
-    out_dir = sys.argv[1]
-    # train_acc = pickle.load(open("vgg16" + "_training_acc.pkl", "rb"))
-    corrs = pickle.load(open(out_dir + "vgg16" + "_correlation.pkl", "rb"))
-    all_accuracy = pickle.load(open(out_dir + "vgg16" + "_all_accuracy.pkl", "rb"))
-    max_accuracy = np.max(all_accuracy, axis=1)
-    best_accuracy = pickle.load(open(out_dir + "vgg16" + "_best_accuracy.pkl", "rb"))
-    all_loss = pickle.load(open(out_dir + "vgg16" + "_all_accuracy.pkl", "rb"))
-    # compression = pickle.load(open(out_dir + "vgg16" + "_compression.pkl", "rb"))
-    perf_stability = pickle.load(open(out_dir + "vgg16" + "_performance_stability.pkl", "rb")) 
-    connect_stability = pickle.load(open(out_dir + "vgg16" + "_connectivity_stability.pkl", "rb")) 
-
-    plot_experiment(best_accuracy, corrs, out_dir + "vgg16_correlation")
-    plot_experiment(best_accuracy, connect_stability, out_dir + "vgg16_connectivity_instability")
-
-    # plot_experiment(max_accuracy, corrs, out_dir + "vgg16_correlation")
-    # plot_experiment(max_accuracy, connect_stability, out_dir + "vgg16_connectivity_instability")
-
-    plot_all_accuracy(all_accuracy, out_dir + "accuracies")
-    print(np.round(corrs, 3))
-    print(np.round(connect_stability, 3))
 
 
 def plot_max_accuracy(accuracies, labels, filename):
@@ -276,31 +255,87 @@ def plot_correlations(filename):
         #     color = greys[30]
 
 
-def plot_similarity(filename):
-    similarity = pickle.load(open(filename, "rb"))
+def plot_accuracy():
+    # out_dir = "../output/05-02-21-28/"
+    out_dir = sys.argv[1]
+    # train_acc = pickle.load(open("vgg16" + "_training_acc.pkl", "rb"))
+    corrs = pickle.load(open(out_dir + "vgg16" + "_correlation.pkl", "rb"))
+    all_accuracy = pickle.load(open(out_dir + "vgg16" + "_all_accuracy.pkl", "rb"))
+    max_accuracy = np.max(all_accuracy, axis=1)
+    best_accuracy = pickle.load(open(out_dir + "vgg16" + "_best_accuracy.pkl", "rb"))
+    all_loss = pickle.load(open(out_dir + "vgg16" + "_all_accuracy.pkl", "rb"))
+    # compression = pickle.load(open(out_dir + "vgg16" + "_compression.pkl", "rb"))
+    perf_stability = pickle.load(open(out_dir + "vgg16" + "_performance_stability.pkl", "rb")) 
+    connect_stability = pickle.load(open(out_dir + "vgg16" + "_connectivity_stability.pkl", "rb")) 
+
+    plot_experiment(best_accuracy, corrs, out_dir + "vgg16_correlation")
+    plot_experiment(best_accuracy, connect_stability, out_dir + "vgg16_connectivity_instability")
+
+    # plot_experiment(max_accuracy, corrs, out_dir + "vgg16_correlation")
+    # plot_experiment(max_accuracy, connect_stability, out_dir + "vgg16_connectivity_instability")
+
+    plot_all_accuracy(all_accuracy, out_dir + "accuracies")
+    print(np.round(corrs, 3))
+    print(np.round(connect_stability, 3))
+
+
+def plot_similarity(exper_dir):
+    args = json.loads(open(exper_dir + "exper.json", "rb").read())
+    all_accuracy = pickle.load(open(exper_dir + "all_accuracies.pkl", "rb"))
+    comp_level = pickle.load(open(exper_dir + "comp_level.pkl", "rb"))
+    train_epochs = args["net_train_epochs"] + 1
+    similarity = pickle.load(open(exper_dir + "similarity.pkl", "rb"))
     # print(similarity[0][0].max(), similarity[0][0].min())
     # print(similarity)
 
-    fig, axs = plt.subplots(1, figsize=(12, 8))
-    exper_len = len(similarity[0][0])
-    xdata = np.arange(1, exper_len + 1)
-    c_colors = plt.get_cmap("hsv")
-    values = np.linspace(0, 1, len(similarity[0]))
+    fig, axs = plt.subplots(4, 3, figsize=(12, 16),
+                            gridspec_kw={'width_ratios': [10, 10, 0.5]})
+    network_len = len(similarity[0][0])
+    net_layers = np.arange(1, network_len + 1)
+    c_colors = plt.get_cmap("coolwarm")
+    values = np.linspace(0, 1, train_epochs)  # len(similarity[0]))
     colors = c_colors(values)
-    major_ticks = np.arange(1, exper_len + 1)
+    major_ticks = np.arange(1, network_len + 1)
 
     for i in range(0, len(similarity[0])):
-        axs.plot(xdata, similarity[0][i], label=f"Iter {i}", c=colors[i])
+        axs[i // train_epochs, 0].plot(net_layers, similarity[0][i],
+                             label=f"Iter {(i+1 % train_epochs)}",
+                             c=colors[i % train_epochs])
+
+    for i in range(4):
+        axs[i, 0].set_xticks(major_ticks)
+        axs[i, 0].set_title(f"Iter {i}")
+        axs[i, 0].set_ylim(bottom=0.0001, top=.02)
+        axs[i, 0].set_xlim(left=1, right=len(similarity[0][0]))
+        axs[i, 0].set(xlabel="Layer index", ylabel="Similarity")
+        axs[i, 0].grid()
+
+    # Plotting the performance
+    exper_len = np.arange(1, len(all_accuracy[0][0]) + 1)
+    # import ipdb; ipdb.set_trace()
+    for i in range(4):
+        axs[i, 1].plot(exper_len, all_accuracy[0][i+1], 'k')
+        # axs[i, 1].set_xticks(major_ticks)
+        axs[i, 1].set_title(f"Rem. Weights {comp_level[i+1]}")
+        # axs[i, 1].set_ylim(bottom=0.0001, top=.02)
+        # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
+        axs[i, 1].set(xlabel="Training Epoch", ylabel="Connectivity")
+        axs[i, 1].grid()
+
+
+    # plt.legend()
+    # cbar.set_label()
+    cmap = ListedColormap(colors)
+    cbar = ColorbarBase(ax=axs[0, 2], cmap=cmap, ticks=np.arange(0, 1.1, .2))
+    cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
+
+    for i in range(1, 4):
+        axs[i, 2].axis("off")
 
     fig.tight_layout(pad=2.0)
-    plt.legend()
-    # axs.set_xticks(xdata, labels=[i for i in range(0, 2 * len(xdata), 20)])
-    axs.set_xticks(major_ticks)
-    axs.set_ylim(0.001, .02)
+
     # axs.set_title("Accuracy of network in training")
-    axs.set(xlabel="Layer index", ylabel="Similarities")
-    plt.grid()
-    plt.savefig(filename[:-4] + ".png")
+    plt.savefig(exper_dir + "similarity.png")
 
 
 def main():

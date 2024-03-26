@@ -610,7 +610,7 @@ def perf_connectivity_lth(logger, device, args, controller):
     pruning = Pruner(args, model, train_dl, test_dl, controller)
     init_state_dict = pruning.init_lth()
     similarity = Similarity(args, test_dl, device, run_dir, num_classes)
-    # act = Activations(model, train_dl, device, args.net_batch_size)
+    act = Activations(model, train_dl, device, args.net_batch_size)
     # similarities = []
     # connectivity = []
     # corrs = []
@@ -619,7 +619,7 @@ def perf_connectivity_lth(logger, device, args, controller):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            # corr = act.get_correlations()
+            act.compute_correlations()
             # corrs.append(corr)
             similarity.set_cosine_similarity(model, imp_iter)
 
@@ -637,6 +637,7 @@ def perf_connectivity_lth(logger, device, args, controller):
             logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
+            act.compute_correlations()
             # corr = act.get_correlations()
             # corrs.append(corr)
             similarity.set_cosine_similarity(model, imp_iter)
@@ -646,11 +647,12 @@ def perf_connectivity_lth(logger, device, args, controller):
 
             # apply the controller after some epochs and some iterations
 
-            # if ((args.control_on == 1) and
-            #     (train_iter == controller.c_epoch) and
-            #    (imp_iter in controller.c_iter)):
-            #     corr = act.get_correlations()
-            #     pruning.control(corr, act.layers_dim, imp_iter)
+            if ((args.control_on == 1) and
+                (train_iter == controller.c_epoch) and
+               (imp_iter in controller.c_iter)):
+                act.compute_correlations()
+                corr = act.get_correlations()
+                pruning.control(corr, act.layers_dim, imp_iter)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
@@ -658,20 +660,12 @@ def perf_connectivity_lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
+        act.compute_correlations()
         # pruning.corrs.append(act.get_correlations())
         # connectivity.append(act.get_conns(pruning.corrs[imp_iter]))
-
-        # base_network = Network(device, args.net_arch, num_classes,
-        #                        args.net_pretrained)
-
-        # base_model = base_network.set_model()
-        # base_model = utils.load_model(base_model, run_dir, "1_model.pth.tar")
-        # base_model.eval()
-        # base_act = Activations(base_model, train_dl, device, args.net_batch_size)
-        # similarities.append(pruning.get_cosine_similarity(act, base_act, device))
         logger.debug(f"similarities: {similarity.get_similarity()}")
 
-    return pruning.all_acc, similarity.get_similarity(), pruning.comp_level
+    return pruning.all_acc, similarity.get_similarity(), act.get_correlations(), pruning.comp_level
 
 
 def effic_lth(logger, device, args, controller):
@@ -808,19 +802,23 @@ def test_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     similarity = []
+    corrs = []
     comp_level_list = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, comp = perf_connectivity_lth(logger, device, args,
+        all_acc, sim, corr, comp = perf_connectivity_lth(logger, device, args,
                                                     controller)
         acc_list.append(all_acc)
         similarity.append(sim)
+        corrs.append(corr)
         comp_level_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        all_accuracies=all_acc, comp_level=comp)
+                        all_accuracies=all_acc, corr=corr, comp_level=comp)
 
-    utils.save_vars(save_dir=run_dir, similarity=similarity, all_accuracies=acc_list,
+    utils.save_vars(save_dir=run_dir, similarity=similarity,
+                    all_accuracies=acc_list,
+                    corrs=corrs,
                     comp_level=comp)
 
 

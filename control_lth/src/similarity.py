@@ -84,4 +84,3 @@ class Similarity:
 
     def get_similarity(self):
         return self.similarities
-
