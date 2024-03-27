@@ -46,6 +46,7 @@ class Activations:
         self.act_keys = None
         self.hook_handles = []
         self.correlations = []
+        self.grads = []
         self.set_layers_idx()
         self.set_act_keys()
 
@@ -439,6 +440,25 @@ class Activations:
         self.model.train()
         return [torch.mean(corrs[i]).item()/(layers_dim[i][0] * layers_dim[i + 1][0])
                 for i in range(num_layers - 1)]
+
+    def gradient_flow(self):
+        # for name, param in self.model.named_parameters():
+
+        #     # We do not prune bias term
+        #     if 'weight' in name and param.dim() > 1:
+        #         self.grads.append(param.grad.abs().mean())
+        grads = []
+        for module_idx, module in enumerate(self.model.named_modules()):
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                if "downsample" in module[0]:
+                    continue
+                grads.append(module[1].weight.grad.abs().mean())
+
+        self.grads.append(grads)
+
+    def get_gradient(self):
+        return self.grads
 
 
 def main():

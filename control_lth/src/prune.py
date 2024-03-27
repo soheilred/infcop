@@ -638,6 +638,7 @@ def perf_connectivity_lth(logger, device, args, controller):
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
             act.compute_correlations()
+            act.gradient_flow()
             # corr = act.get_correlations()
             # corrs.append(corr)
             similarity.set_cosine_similarity(model, imp_iter)
@@ -665,7 +666,7 @@ def perf_connectivity_lth(logger, device, args, controller):
         # connectivity.append(act.get_conns(pruning.corrs[imp_iter]))
         logger.debug(f"similarities: {similarity.get_similarity()}")
 
-    return pruning.all_acc, similarity.get_similarity(), act.get_correlations(), pruning.comp_level
+    return pruning.all_acc, similarity.get_similarity(), act.get_correlations(), act.get_gradient(), pruning.comp_level
 
 
 def effic_lth(logger, device, args, controller):
@@ -803,22 +804,26 @@ def test_exper(logger, args, device, run_dir):
     acc_list = []
     similarity = []
     corrs = []
+    grads = []
     comp_level_list = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, corr, comp = perf_connectivity_lth(logger, device, args,
+        all_acc, sim, corr, grad, comp = perf_connectivity_lth(logger, device, args,
                                                     controller)
         acc_list.append(all_acc)
         similarity.append(sim)
         corrs.append(corr)
+        grads.append(grad)
         comp_level_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        all_accuracies=all_acc, corr=corr, comp_level=comp)
+                        all_accuracies=all_acc, corr=corr,
+                        grad=grad, comp_level=comp)
 
     utils.save_vars(save_dir=run_dir, similarity=similarity,
                     all_accuracies=acc_list,
                     corrs=corrs,
+                    grads=grads,
                     comp_level=comp)
 
 
