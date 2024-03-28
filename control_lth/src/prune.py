@@ -652,8 +652,8 @@ def perf_connectivity_lth(logger, device, args, controller):
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
             act.compute_correlations()
-            # act.gradient_flow()
-            # similarity.cosine_similarity(model, imp_iter)
+            act.gradient_flow()
+            similarity.cosine_similarity(model, imp_iter)
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
