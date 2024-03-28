@@ -265,9 +265,11 @@ def get_args():
                         help='gpu number to use')
 
     # Pruning options.
-    parser.add_argument('--exper_prune_perc_per_layer', type=float, default=0.1,
+    parser.add_argument('--prune_perc_per_layer', type=float, default=0.1,
                       help='% of neurons to prune per layer')
 
+    parser.add_argument('--prune_method', type=str, default="percentile",
+                      help='% of neurons to prune per layer')
     # parser.add_argument('--yaml_config', type=str, default="config.ini",
     #                     help="Address to the config file")
     args = parser.parse_args()

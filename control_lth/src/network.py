@@ -166,12 +166,12 @@ def make_grads_zero(model, mask):
         have the current index unless frozen.
     """
     EPS = 1e-6
-    layer_id = 0
+    # layer_id = 0
     # assert self.current_masks
     for name, param in model.named_parameters():
         if 'weight' in name and param.dim() > 1:
-            param.grad.data *= mask[layer_id]
-            layer_id += 1
+            param.grad.data *= mask[name[:-7]]
+            # layer_id += 1
 
     # for module_idx, module in enumerate(self.model.shared.modules()):
     #     if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):

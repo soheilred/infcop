@@ -31,7 +31,7 @@ class Similarity:
                                     self.args.net_batch_size)
         self.iteration += 1
 
-    def set_cosine_similarity(self, model, imp_iter):
+    def cosine_similarity(self, model, imp_iter):
         """ Compute the cosine similarity between the optimal network and the
         prunned network's activity.
 
@@ -46,6 +46,7 @@ class Similarity:
         if imp_iter == 1 and self.iteration == 0:
             self.set_base_model()
 
+        log.debug("Computing the cosine similarity")
         act = Activations(model, self.dataloader, self.device,
                           self.args.net_batch_size)
         act.model.eval()

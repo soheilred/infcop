@@ -21,6 +21,7 @@ import logging.config
 
 log = logging.getLogger("sampleLogger")
 
+
 class Controller:
     def __init__(self, args):
         """Control the IMP's connectivity.
@@ -32,8 +33,7 @@ class Controller:
 
 
 class Pruner:
-    def __init__(self, args, model, train_dataloader=None, test_dataloader=None,
-                 controller=None, correlation=None):
+    def __init__(self, args, model, act, controller=None):
         """Prune the network.
         Parameters
         ----------
@@ -51,15 +51,14 @@ class Pruner:
             which weights to include when evaluating that task 
         """
         self.model = model
-        self.mask = None
+        self.mask = {}
         self.args = args
-        self.prune_perc = args.exper_prune_perc_per_layer * 100
+        self.prune_perc = args.prune_perc_per_layer
         self.corrs = []
+        self.act = act
         self.controller = controller
-        self.correlation = correlation
+        # self.correlation = correlation
         self.num_layers = 0
-        self.train_loader = train_dataloader
-        self.test_loader = test_dataloader
         self.comp_level = np.zeros(args.exper_imp_total_iter, float)
         self.all_acc = np.zeros([args.exper_imp_total_iter, args.net_train_epochs], float)
         self.init_state_dict = None
@@ -161,55 +160,67 @@ class Pruner:
 
     def init_mask(self):
         """Make an empty mask of the same size as the model."""
-        self.num_layers = self.count_layers()
-        self.mask = [None] * self.num_layers
-        layer_id = 0
+        # self.num_layers = self.count_layers()
+        # self.mask = [None] * self.num_layers
+        # layer_id = 0
         for name, param in self.model.named_parameters():
             if 'weight' in name and param.dim() > 1:
                 # tensor = param.data.cpu().numpy()
                 # self.mask[layer_id] = np.ones_like(tensor)
-                self.mask[layer_id] = param.new_ones(param.size(),
-                                                     dtype=torch.bool)
-                # self.mask[layer_id] = torch.ones_like(param.data)
-                layer_id += 1
+                # self.mask[layer_id] = param.new_ones(param.size(),
+                #                                      dtype=torch.bool)
+                self.mask[name[:-7]] = torch.ones_like(param.data,
+                                                       dtype=torch.bool)
+                # layer_id += 1
 
     def reset_weights_to_init(self, initial_state_dict):
         """Reset the remaining weights in the network to the initial values.
         """
-        step = 0
+        # step = 0
         for name, param in self.model.named_parameters():
             if "weight" in name and param.dim() > 1:
                 weight_dev = param.device
-                param.data = (self.mask[step] * initial_state_dict[name]).to(weight_dev)
-                step += 1
+                param.data = (self.mask[name[:-7]] * initial_state_dict[name]).to(weight_dev)
+                # step += 1
 
             if "bias" in name:
                 param.data = initial_state_dict[name]
 
-    def prune_by_correlation(self, correlation):
+    def prune_by_correlation(self):
+        correlations = self.act.get_correlations()[-1]
         # Calculate percentile value
         layer_id = 0
-        for name, param in self.model.named_parameters():
 
-            # We do not prune bias term
-            if 'weight' in name:
-                tensor = param.data.cpu().numpy()
-                # alive = tensor[np.nonzero(tensor)] # flattened array of nonzero values
-                percentile_value = np.percentile(abs(correlation), self.prune_perc)
+        for module_idx, module in enumerate(self.model.named_modules()):
+            if isinstance(module[1], nn.Conv2d) or \
+                         isinstance(module[1], nn.Linear):
+                if "downsample" in module[0]:
+                    continue
 
-                # Convert Tensors to numpy and calculate
-                weight_dev = param.device
-                new_mask = np.where(abs(correlation[layer_id]) < percentile_value, 0,
-                                    self.mask[layer_id])
+        # for name, param in self.model.named_parameters():
+
+        #     # We do not prune bias term
+        #     if 'weight' in name:
+
+                weight = module[1].weight.data
+                correlation = correlations[layer_id]
+                import ipdb; ipdb.set_trace()
+                alive = correlation[correlation.nonzero(as_tuple=True)]  # flattened array of nonzero values
+                percentile_value = torch.quantile(alive.abs(),
+                                                  self.prune_perc).item()
+                weight_dev = module[1].weight.device
+                new_mask = torch.where(correlation.abs() < percentile_value, 0,
+                                       self.mask[module[0]])
+                new_mask = new_mask.type(torch.bool).to(weight_dev)
 
                 # Apply new weight and mask
-                param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
-                self.mask[layer_id] = new_mask
+                weight = (weight * new_mask).to(weight_dev)
+                self.mask[module[0]] = new_mask
                 layer_id += 1
 
     def prune_by_percentile(self):
         # Calculate percentile value
-        layer_id = 0
+        # layer_id = 0
         for name, param in self.model.named_parameters():
 
             # We do not prune bias term
@@ -218,12 +229,12 @@ class Pruner:
                 alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
                 # percentile_value = torch.percentile(alive, self.prune_perc)
                 percentile_value = torch.quantile(alive.abs(),
-                                                  self.prune_perc/100.0).item()
+                                                  self.prune_perc).item()
 
                 # Convert Tensors to numpy and calculate
                 weight_dev = param.device
                 new_mask = torch.where(tensor.abs() < percentile_value, 0,
-                                       self.mask[layer_id])
+                                       self.mask[name[:-7]])
                 new_mask = new_mask.type(torch.bool).to(weight_dev)
 
                 # tensor = param.data.cpu().numpy()
@@ -238,8 +249,8 @@ class Pruner:
                 # Apply new weight and mask
                 param.data = (tensor * new_mask)
                 # param.grad *= new_mask
-                self.mask[layer_id] = new_mask
-                layer_id += 1
+                self.mask[name[:-7]] = new_mask
+                # layer_id += 1
 
     def prune_by_sap(self):
         layer_id = 0
@@ -250,9 +261,9 @@ class Pruner:
             parameter_type = name.split('.')[-1]
             if 'weight' in parameter_type and param.dim() > 1:
                 # mask_i = mask.state_dict()[name]
-                pivot_param_i = param[self.mask[layer_id]].abs()
+                pivot_param_i = param[self.mask[name[:-7]]].abs()
                 pivot_param.append(pivot_param_i.view(-1))
-                pivot_mask.append(self.mask[layer_id].view(-1))
+                pivot_mask.append(self.mask[name[:-7]].view(-1))
                 layer_id += 1
 
         pivot_param = torch.cat(pivot_param, dim=0).data.abs()
@@ -276,7 +287,7 @@ class Pruner:
         pivot_value = torch.sort(pivot_param.view(-1))[0][num_prune]
 
         # new_mask = [None] * self.num_layers
-        layer_id = 0
+        # layer_id = 0
         # new_mask = OrderedDict()
         for name, param in self.model.named_parameters():
 
@@ -291,7 +302,7 @@ class Pruner:
                 #                     self.mask[layer_id])
 
                 pivot_mask = (param.data.abs() < pivot_value).to(weight_dev)
-                new_mask = torch.where(pivot_mask, False, self.mask[layer_id])
+                new_mask = torch.where(pivot_mask, False, self.mask[name[:-7]])
 
                 # Apply new weight and mask
                 # param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
@@ -300,20 +311,20 @@ class Pruner:
                                                       device=param.device))
 
                 param.grad.mul_(new_mask)
-                self.mask[layer_id] = new_mask
-                layer_id += 1
+                self.mask[name[:-7]] = new_mask
+                # layer_id += 1
 
     def make_si_(self, model, mask, si_dict):
         sparsity_index = OrderedDict()
         param_all = []
         mask_all = []
-        layer_id = 0
+        # layer_id = 0
         for name, param in model.state_dict().items():
             parameter_type = name.split('.')[-1]
             if 'weight' in parameter_type and param.dim() > 1:
                 param_all.append(param.view(-1))
-                mask_all.append(self.mask[layer_id].view(-1))
-                layer_id += 1
+                mask_all.append(self.mask[name[:-7]].view(-1))
+                # layer_id += 1
         param_all = torch.cat(param_all, dim=0)
         mask_all = torch.cat(mask_all, dim=0)
         sparsity_index_i = []
@@ -338,13 +349,20 @@ class Pruner:
         si[torch.logical_and(si > - 1e-5, si < 0)] = 0
         return si
 
-    def prune_once(self, initial_state_dict, correlation=None):
+    def prune_once(self, initial_state_dict):
 
-        # if correlation is not None:
-        #     self.prune_by_correlation(correlation)
-        # else:
-        # self.prune_by_percentile()
-        self.prune_by_sap()
+        if self.args.prune_method == "percentile":
+            self.prune_by_percentile()
+
+        elif self.args.prune_method == "sap":
+            self.prune_by_sap()
+
+        elif self.args.prune_method == "corr":
+            self.prune_by_correlation()
+
+        else:
+            sys.exit("Wrong pruning method!")
+
         self.reset_weights_to_init(initial_state_dict)
 
     def make_pruned_zero(self):
@@ -377,8 +395,8 @@ class Pruner:
 
         self.model.eval()
 
-    def control(self, corr, layers_dim, imp_iter):
-        control_corrs = self.corrs + [corr]
+    def control(self, layers_dim, imp_iter):
+        control_corrs = self.corrs
         log.debug(f"apply controller at layer {self.controller.c_layers}")
 
         # print([corr.shape for corr in control_corrs[-1]])
@@ -572,7 +590,6 @@ def perf_lth(logger, device, args, controller):
                 # corr_0 = act.get_corrs()
                 # corr_1 = act.get_correlations()
                 # print([(torch.from_numpy(corr_0[i]) - corr_1[i]).sum() for i in range(len(corr_0))])
-                # import ipdb; ipdb.set_trace()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
 
@@ -607,21 +624,18 @@ def perf_connectivity_lth(logger, device, args, controller):
     acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net_warmup,
                    device)
 
-    pruning = Pruner(args, model, train_dl, test_dl, controller)
-    init_state_dict = pruning.init_lth()
     similarity = Similarity(args, test_dl, device, run_dir, num_classes)
     act = Activations(model, train_dl, device, args.net_batch_size)
-    # similarities = []
-    # connectivity = []
-    # corrs = []
+    pruning = Pruner(args, model, act, controller)
+    init_state_dict = pruning.init_lth()
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
             act.compute_correlations()
-            # corrs.append(corr)
-            similarity.set_cosine_similarity(model, imp_iter)
+            act.gradient_flow()
+            similarity.cosine_similarity(model, imp_iter)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -638,20 +652,16 @@ def perf_connectivity_lth(logger, device, args, controller):
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
             act.compute_correlations()
-            act.gradient_flow()
-            # corr = act.get_correlations()
-            # corrs.append(corr)
-            similarity.set_cosine_similarity(model, imp_iter)
+            # act.gradient_flow()
+            # similarity.cosine_similarity(model, imp_iter)
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
 
             # apply the controller after some epochs and some iterations
-
             if ((args.control_on == 1) and
                 (train_iter == controller.c_epoch) and
                (imp_iter in controller.c_iter)):
-                act.compute_correlations()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
 
@@ -662,9 +672,7 @@ def perf_connectivity_lth(logger, device, args, controller):
 
         # Calculate the connectivity
         act.compute_correlations()
-        # pruning.corrs.append(act.get_correlations())
-        # connectivity.append(act.get_conns(pruning.corrs[imp_iter]))
-        logger.debug(f"similarities: {similarity.get_similarity()}")
+        # logger.debug(f"similarities: {similarity.get_similarity()}")
 
     return pruning.all_acc, similarity.get_similarity(), act.get_correlations(), act.get_gradient(), pruning.comp_level
 
@@ -809,8 +817,8 @@ def test_exper(logger, args, device, run_dir):
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, corr, grad, comp = perf_connectivity_lth(logger, device, args,
-                                                    controller)
+        all_acc, sim, corr, grad, comp = perf_connectivity_lth(logger, device,
+                                                               args, controller)
         acc_list.append(all_acc)
         similarity.append(sim)
         corrs.append(corr)

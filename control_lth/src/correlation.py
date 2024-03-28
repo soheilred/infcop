@@ -447,6 +447,7 @@ class Activations:
         #     # We do not prune bias term
         #     if 'weight' in name and param.dim() > 1:
         #         self.grads.append(param.grad.abs().mean())
+        log.debug("Computing the gradient flow")
         grads = []
         for module_idx, module in enumerate(self.model.named_modules()):
             if isinstance(module[1], nn.Conv2d) or \
