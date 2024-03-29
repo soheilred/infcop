@@ -366,14 +366,14 @@ def plot_similarity(exper_dir):
 
    # Accuracy
     exper_len = np.arange(1, len(all_accuracy[0][0]) + 1)
-    # import ipdb; ipdb.set_trace()
+    import ipdb; ipdb.set_trace()
     for i in range(imp_num):
         axs[i, 3].plot(exper_len, all_accuracy[0][i], 'k')
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 3].set_title(f"Rem. Weights {comp_level[i]}")
         # axs[i, 1].set_ylim(bottom=0.0001, top=.02)
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
-        axs[i, 3].set(xlabel="Training Epoch", ylabel="Connectivity")
+        axs[i, 3].set(xlabel="Training Epoch", ylabel="Accuracy")
         axs[i, 3].grid()
 
     # plt.legend()
