@@ -287,7 +287,7 @@ def plot_similarity(exper_dir):
     comp_level = pickle.load(open(exper_dir + "comp_level.pkl", "rb"))
     similarity = pickle.load(open(exper_dir + "similarity.pkl", "rb"))
     corrs = pickle.load(open(exper_dir + "corrs.pkl", "rb"))
-    grads = torch.load(open(exper_dir + "grads.pkl", "rb"),
+    grads = torch.load(exper_dir + "grads.pkl",
                        map_location=torch.device('cpu'))
     # print(similarity[0][0].max(), similarity[0][0].min())
     # print(similarity)
