@@ -632,6 +632,8 @@ def perf_connectivity_lth(logger, device, args, controller):
     act = Activations(model, train_dl, device, args.net_batch_size)
     pruning = Pruner(args, model, act, controller)
     init_state_dict = pruning.init_lth()
+    act.compute_correlations()
+    act.gradient_flow()
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
@@ -675,7 +677,7 @@ def perf_connectivity_lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
-        act.compute_correlations()
+        # act.compute_correlations()
         # logger.debug(f"similarities: {similarity.get_similarity()}")
 
     return pruning.all_acc, similarity.get_similarity(), act.get_correlations(), act.get_gradient(), pruning.comp_level

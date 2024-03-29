@@ -300,13 +300,19 @@ def plot_similarity(exper_dir):
     colors = c_colors(values)
     major_ticks = np.arange(1, network_len + 1)
 
+    axs[0, 0].axis("off")
     cmap = ListedColormap(colors)
-    cbar = ColorbarBase(ax=axs[0, 2], cmap=cmap, ticks=np.arange(0, 1.1, .2))
+    cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
     cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
     # similarities
-    for i in range(0, len(similarity[0])):
-        axs[(i // train_epochs) + 1, 0].plot(net_layers, similarity[0][i],
+    for i in range(train_epochs + 1):
+        axs[1, 0].plot(net_layers, similarity[0][i],
+                                             label=f"Iter {(i+1 % train_epochs)}",
+                                             c=colors[i % train_epochs])
+
+    for i in range(train_epochs, len(similarity[0])):
+        axs[(i // (train_epochs + 1)) + 1, 0].plot(net_layers, similarity[0][i],
                                              label=f"Iter {(i+1 % train_epochs)}",
                                              c=colors[i % train_epochs])
 
@@ -320,9 +326,13 @@ def plot_similarity(exper_dir):
         axs[i + 1, 0].grid()
 
     # connectivity
-    # import ipdb; ipdb.set_trace()
-    for i in range(len(corrs[0])):
-        axs[(i // train_epochs), 1].plot(net_layers[:-1],
+    for i in range(train_epochs + 1):
+        axs[0, 1].plot(net_layers[:-1], [elem.mean() for elem in corrs[0][i]],
+                                        label=f"Iter {(i+1 % train_epochs)}",
+                                        c=colors[i % train_epochs])
+
+    for i in range(train_epochs + 1, len(corrs[0])):
+        axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1],
                                          [elem.mean() for elem in corrs[0][i]],
                                          label=f"Iter {(i+1 % train_epochs)}",
                                          c=colors[i % train_epochs])
@@ -336,7 +346,26 @@ def plot_similarity(exper_dir):
         axs[i + 1, 1].set(xlabel="Layer index", ylabel="Connectivity")
         axs[i + 1, 1].grid()
 
-    # Plotting the performance
+     # Gradient flow
+    for i in range(train_epochs):
+        axs[0, 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
+                       label=f"Iter {(i+1 % train_epochs)}",
+                       c=colors[i % train_epochs])
+
+    for i in range(train_epochs + 1, len(grads[0])):
+        axs[(i // train_epochs) + 1, 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
+                                             label=f"Iter {(i+1 % train_epochs)}",
+                                             c=colors[i % train_epochs])
+    for i in range(imp_num):
+        # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
+        axs[i, 2].set_xticks(major_ticks)
+        axs[i, 2].set_title(f"Iter {i}")
+        axs[i, 2].set_ylim(bottom=0.0001, top=.02)
+        axs[i, 2].set_xlim(left=1, right=len(similarity[0][0]))
+        axs[i, 2].set(xlabel="Layer index", ylabel="Gradient")
+        axs[i, 2].grid()
+
+   # Accuracy
     exper_len = np.arange(1, len(all_accuracy[0][0]) + 1)
     # import ipdb; ipdb.set_trace()
     for i in range(imp_num):
@@ -353,20 +382,6 @@ def plot_similarity(exper_dir):
 
     # for i in range(1, 4):
     #     axs[i, 2].axis("off")
-
-    # Plotting gradient flow
-    for i in range(0, len(grads[0])):
-        axs[(i // train_epochs) + 1, 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
-                                             label=f"Iter {(i+1 % train_epochs)}",
-                                             c=colors[i % train_epochs])
-    for i in range(imp_num):
-        # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
-        axs[i, 2].set_xticks(major_ticks)
-        axs[i, 2].set_title(f"Iter {i}")
-        axs[i, 2].set_ylim(bottom=0.0001, top=.02)
-        axs[i, 2].set_xlim(left=1, right=len(similarity[0][0]))
-        axs[i, 2].set(xlabel="Layer index", ylabel="Gradient")
-        axs[i, 2].grid()
 
     fig.tight_layout(pad=2.0)
 
