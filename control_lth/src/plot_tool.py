@@ -321,11 +321,11 @@ def plot_similarity(exper_dir):
 
     # connectivity
     # import ipdb; ipdb.set_trace()
-    for i in range(0, len(corrs[0])):
-        axs[(i // train_epochs) + 1, 1].plot(net_layers[:-1],
-                                             [elem.mean() for elem in corrs[0][i]],
-                                             label=f"Iter {(i+1 % train_epochs)}",
-                                             c=colors[i % train_epochs])
+    for i in range(len(corrs[0])):
+        axs[(i // train_epochs), 1].plot(net_layers[:-1],
+                                         [elem.mean() for elem in corrs[0][i]],
+                                         label=f"Iter {(i+1 % train_epochs)}",
+                                         c=colors[i % train_epochs])
 
     axs[0, 0].axis("off")
     for i in range(imp_num - 1):
