@@ -337,13 +337,13 @@ def plot_similarity(exper_dir):
                                          label=f"Iter {(i+1 % train_epochs)}",
                                          c=colors[i % train_epochs])
 
-    for i in range(imp_num - 1):
-        axs[i + 1, 1].set_xticks(major_ticks)
-        axs[i + 1, 1].set_title(f"Iter {i}")
-        # axs[i + 1, 1].set_ylim(bottom=0.0001, top=.02)
+    for i in range(imp_num):
+        axs[i, 1].set_xticks(major_ticks)
+        axs[i, 1].set_title(f"Iter {i}")
+        axs[i, 1].set_ylim(bottom=-0.05, top=.6)
         # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
-        axs[i + 1, 1].set(xlabel="Layer index", ylabel="Connectivity")
-        axs[i + 1, 1].grid()
+        axs[i, 1].set(xlabel="Layer index", ylabel="Connectivity")
+        axs[i, 1].grid()
 
      # Gradient flow
     for i in range(train_epochs):
