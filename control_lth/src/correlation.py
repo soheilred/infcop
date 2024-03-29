@@ -454,7 +454,7 @@ class Activations:
                          isinstance(module[1], nn.Linear):
                 if "downsample" in module[0]:
                     continue
-                grads.append(module[1].weight.grad.abs().mean())
+                grads.append(module[1].weight.grad.cpu().abs().mean())
 
         self.grads.append(grads)
 

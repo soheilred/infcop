@@ -287,8 +287,7 @@ def plot_similarity(exper_dir):
     comp_level = pickle.load(open(exper_dir + "comp_level.pkl", "rb"))
     similarity = pickle.load(open(exper_dir + "similarity.pkl", "rb"))
     corrs = pickle.load(open(exper_dir + "corrs.pkl", "rb"))
-    grads = torch.load(exper_dir + "grads.pkl",
-                       map_location=torch.device('cpu'))
+    grads = pickle.load(open(exper_dir + "grads.pkl", "rb"))
     # print(similarity[0][0].max(), similarity[0][0].min())
     # print(similarity)
 
@@ -353,7 +352,7 @@ def plot_similarity(exper_dir):
                        c=colors[i % train_epochs])
 
     for i in range(train_epochs + 1, len(grads[0])):
-        axs[(i // (train_epochs + 1)), 2].plot(net_layers, grads[0][i],
+        axs[(i // (train_epochs + 1)), 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
                                              label=f"Iter {(i+1 % train_epochs)}",
                                              c=colors[i % train_epochs])
     for i in range(imp_num):
