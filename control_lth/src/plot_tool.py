@@ -291,8 +291,8 @@ def plot_similarity(exper_dir):
     # print(similarity[0][0].max(), similarity[0][0].min())
     # print(similarity)
 
-    fig, axs = plt.subplots(imp_num, 4, figsize=(16, 16),
-                            gridspec_kw={'width_ratios': [10, 10, 10]})
+    fig, axs = plt.subplots(imp_num, 4, figsize=(16, 16))
+                            # gridspec_kw={'width_ratios': [10, 10, 10]})
     network_len = len(similarity[0][0])
     net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
