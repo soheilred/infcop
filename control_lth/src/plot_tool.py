@@ -353,7 +353,7 @@ def plot_similarity(exper_dir):
                        c=colors[i % train_epochs])
 
     for i in range(train_epochs + 1, len(grads[0])):
-        axs[(i // train_epochs) + 1, 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
+        axs[(i // (train_epochs + 1)), 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
                                              label=f"Iter {(i+1 % train_epochs)}",
                                              c=colors[i % train_epochs])
     for i in range(imp_num):
