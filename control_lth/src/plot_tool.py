@@ -366,7 +366,6 @@ def plot_similarity(exper_dir):
 
    # Accuracy
     exper_len = np.arange(1, len(all_accuracy[0][0]) + 1)
-    import ipdb; ipdb.set_trace()
     for i in range(imp_num):
         axs[i, 3].plot(exper_len, all_accuracy[0][i], 'k')
         # axs[i, 1].set_xticks(major_ticks)
