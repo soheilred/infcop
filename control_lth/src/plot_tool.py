@@ -286,11 +286,12 @@ def plot_similarity(exper_dir):
     all_accuracy = pickle.load(open(exper_dir + "all_accuracies.pkl", "rb"))
     comp_level = pickle.load(open(exper_dir + "comp_level.pkl", "rb"))
     similarity = pickle.load(open(exper_dir + "similarity.pkl", "rb"))
+    corrs = pickle.load(open(exper_dir + "corrs.pkl", "rb"))
     grads = pickle.load(open(exper_dir + "grads.pkl", "rb"))
     # print(similarity[0][0].max(), similarity[0][0].min())
     # print(similarity)
 
-    fig, axs = plt.subplots(imp_num, 3, figsize=(12, 16),
+    fig, axs = plt.subplots(imp_num, 4, figsize=(16, 16),
                             gridspec_kw={'width_ratios': [10, 10, 10]})
     network_len = len(similarity[0][0])
     net_layers = np.arange(1, network_len + 1)
@@ -299,10 +300,15 @@ def plot_similarity(exper_dir):
     colors = c_colors(values)
     major_ticks = np.arange(1, network_len + 1)
 
+    cmap = ListedColormap(colors)
+    cbar = ColorbarBase(ax=axs[0, 2], cmap=cmap, ticks=np.arange(0, 1.1, .2))
+    cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
+
+    # similarities
     for i in range(0, len(similarity[0])):
         axs[(i // train_epochs) + 1, 0].plot(net_layers, similarity[0][i],
-                             label=f"Iter {(i+1 % train_epochs)}",
-                             c=colors[i % train_epochs])
+                                             label=f"Iter {(i+1 % train_epochs)}",
+                                             c=colors[i % train_epochs])
 
     axs[0, 0].axis("off")
     for i in range(imp_num - 1):
@@ -313,30 +319,46 @@ def plot_similarity(exper_dir):
         axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
         axs[i + 1, 0].grid()
 
+    # connectivity
+    for i in range(0, len(corrs[0])):
+        axs[(i // train_epochs) + 1, 1].plot(net_layers, corrs[0][i],
+                                             label=f"Iter {(i+1 % train_epochs)}",
+                                             c=colors[i % train_epochs])
+
+    axs[0, 0].axis("off")
+    for i in range(imp_num - 1):
+        axs[i + 1, 1].set_xticks(major_ticks)
+        axs[i + 1, 1].set_title(f"Iter {i}")
+        axs[i + 1, 1].set_ylim(bottom=0.0001, top=.02)
+        axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
+        axs[i + 1, 1].set(xlabel="Layer index", ylabel="Connectivity")
+        axs[i + 1, 1].grid()
+
     # Plotting the performance
     exper_len = np.arange(1, len(all_accuracy[0][0]) + 1)
     # import ipdb; ipdb.set_trace()
     for i in range(imp_num):
-        axs[i, 1].plot(exper_len, all_accuracy[0][i], 'k')
+        axs[i, 2].plot(exper_len, all_accuracy[0][i], 'k')
         # axs[i, 1].set_xticks(major_ticks)
-        axs[i, 1].set_title(f"Rem. Weights {comp_level[i]}")
+        axs[i, 2].set_title(f"Rem. Weights {comp_level[i]}")
         # axs[i, 1].set_ylim(bottom=0.0001, top=.02)
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
-        axs[i, 1].set(xlabel="Training Epoch", ylabel="Connectivity")
-        axs[i, 1].grid()
+        axs[i, 2].set(xlabel="Training Epoch", ylabel="Connectivity")
+        axs[i, 2].grid()
 
     # plt.legend()
     # cbar.set_label()
-    cmap = ListedColormap(colors)
-    cbar = ColorbarBase(ax=axs[0, 2], cmap=cmap, ticks=np.arange(0, 1.1, .2))
-    # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
     # for i in range(1, 4):
     #     axs[i, 2].axis("off")
 
     # Plotting gradient flow
+    for i in range(0, len(grads[0])):
+        axs[(i // train_epochs) + 1, 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
+                                             label=f"Iter {(i+1 % train_epochs)}",
+                                             c=colors[i % train_epochs])
     for i in range(imp_num):
-        axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
+        # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
         axs[i, 2].set_xticks(major_ticks)
         axs[i, 2].set_title(f"Iter {i}")
         axs[i, 2].set_ylim(bottom=0.0001, top=.02)

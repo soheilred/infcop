@@ -202,8 +202,12 @@ class Pruner:
         #     # We do not prune bias term
         #     if 'weight' in name:
 
+                if layer_id > 0:
+                    layer_id += 1
+                    continue
+
+                correlation = correlations[layer_id - 1]
                 weight = module[1].weight.data
-                correlation = correlations[layer_id]
                 import ipdb; ipdb.set_trace()
                 alive = correlation[correlation.nonzero(as_tuple=True)]  # flattened array of nonzero values
                 percentile_value = torch.quantile(alive.abs(),
@@ -269,7 +273,7 @@ class Pruner:
         pivot_param = torch.cat(pivot_param, dim=0).data.abs()
         pivot_mask = torch.cat(pivot_mask, dim=0)
         # p, q, eta_m, gamma = self.prune_mode[1:] # TODO
-        p, q, eta_m, gamma = float(0.5), float(1.0), float(0.), float(1.)
+        p, q, eta_m, gamma = float(1.0), float(2.0), float(0.), float(1.)
         beta = 0.9
         sparsity_index = {"p": torch.arange(0.1, 1.1, 0.1),
                           "q": torch.arange(1.0, 2.1, 0.1)}
