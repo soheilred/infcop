@@ -337,12 +337,11 @@ def plot_similarity(exper_dir):
                                          label=f"Iter {(i+1 % train_epochs)}",
                                          c=colors[i % train_epochs])
 
-    axs[0, 0].axis("off")
     for i in range(imp_num - 1):
         axs[i + 1, 1].set_xticks(major_ticks)
         axs[i + 1, 1].set_title(f"Iter {i}")
-        axs[i + 1, 1].set_ylim(bottom=0.0001, top=.02)
-        axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
+        # axs[i + 1, 1].set_ylim(bottom=0.0001, top=.02)
+        # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
         axs[i + 1, 1].set(xlabel="Layer index", ylabel="Connectivity")
         axs[i + 1, 1].grid()
 
@@ -369,13 +368,13 @@ def plot_similarity(exper_dir):
     exper_len = np.arange(1, len(all_accuracy[0][0]) + 1)
     # import ipdb; ipdb.set_trace()
     for i in range(imp_num):
-        axs[i, 2].plot(exper_len, all_accuracy[0][i], 'k')
+        axs[i, 3].plot(exper_len, all_accuracy[0][i], 'k')
         # axs[i, 1].set_xticks(major_ticks)
-        axs[i, 2].set_title(f"Rem. Weights {comp_level[i]}")
+        axs[i, 3].set_title(f"Rem. Weights {comp_level[i]}")
         # axs[i, 1].set_ylim(bottom=0.0001, top=.02)
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
-        axs[i, 2].set(xlabel="Training Epoch", ylabel="Connectivity")
-        axs[i, 2].grid()
+        axs[i, 3].set(xlabel="Training Epoch", ylabel="Connectivity")
+        axs[i, 3].grid()
 
     # plt.legend()
     # cbar.set_label()
