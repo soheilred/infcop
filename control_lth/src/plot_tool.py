@@ -320,6 +320,7 @@ def plot_similarity(exper_dir):
         axs[i + 1, 0].grid()
 
     # connectivity
+    import ipdb; ipdb.set_trace()
     for i in range(0, len(corrs[0])):
         axs[(i // train_epochs) + 1, 1].plot(net_layers[:-1], corrs[0][i],
                                              label=f"Iter {(i+1 % train_epochs)}",
