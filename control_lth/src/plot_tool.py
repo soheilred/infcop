@@ -306,12 +306,13 @@ def plot_similarity(exper_dir):
     cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
     # similarities
-    for i in range(train_epochs + 1):
-        axs[1, 0].plot(net_layers, similarity[0][i],
-                                             label=f"Iter {(i+1 % train_epochs)}",
-                                             c=colors[i % train_epochs])
+    print("similarity:", len(similarity[0]))
+    # for i in range(train_epochs + 1):
+    #     axs[1, 0].plot(net_layers, similarity[0][i],
+    #                                          label=f"Iter {(i+1 % train_epochs)}",
+    #                                          c=colors[i % train_epochs])
 
-    for i in range(train_epochs, len(similarity[0])):
+    for i in range(len(similarity[0])):
         axs[(i // (train_epochs + 1)) + 1, 0].plot(net_layers, similarity[0][i],
                                              label=f"Iter {(i+1 % train_epochs)}",
                                              c=colors[i % train_epochs])
@@ -326,6 +327,7 @@ def plot_similarity(exper_dir):
         axs[i + 1, 0].grid()
 
     # connectivity
+    print("connectivity:", len(corrs[0]))
     for i in range(train_epochs + 1):
         axs[0, 1].plot(net_layers[:-1], [elem.mean() for elem in corrs[0][i]],
                                         label=f"Iter {(i+1 % train_epochs)}",
@@ -351,6 +353,7 @@ def plot_similarity(exper_dir):
     #                    label=f"Iter {(i+1 % train_epochs)}",
     #                    c=colors[i % train_epochs])
 
+    print("gradient:", len(grads[0]))
     for i in range(len(grads[0])):
         axs[(i // (train_epochs)), 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
                                              label=f"Iter {(i+1 % train_epochs)}",
@@ -370,7 +373,7 @@ def plot_similarity(exper_dir):
         axs[i, 3].plot(exper_len, all_accuracy[0][i], 'k')
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 3].set_title(f"Rem. Weights {comp_level[i]}")
-        # axs[i, 1].set_ylim(bottom=0.0001, top=.02)
+        axs[i, 3].set_ylim(bottom=40, top=100)
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
         axs[i, 3].set(xlabel="Training Epoch", ylabel="Accuracy")
         axs[i, 3].grid()
