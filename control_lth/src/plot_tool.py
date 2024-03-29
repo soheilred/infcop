@@ -296,7 +296,7 @@ def plot_similarity(exper_dir):
     network_len = len(similarity[0][0])
     net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, train_epochs)  # len(similarity[0]))
+    values = np.linspace(0, 1, train_epochs + 2)  # len(similarity[0]))
     colors = c_colors(values)
     major_ticks = np.arange(1, network_len + 1)
 
@@ -315,7 +315,7 @@ def plot_similarity(exper_dir):
     for i in range(len(similarity[0])):
         axs[(i // (train_epochs + 1)) + 1, 0].plot(net_layers, similarity[0][i],
                                              label=f"Iter {(i+1 % train_epochs)}",
-                                             c=colors[i % train_epochs])
+                                             c=colors[i % (train_epochs + 1)])
 
     axs[0, 0].axis("off")
     for i in range(imp_num - 1):
@@ -331,13 +331,13 @@ def plot_similarity(exper_dir):
     for i in range(train_epochs + 1):
         axs[0, 1].plot(net_layers[:-1], [elem.mean() for elem in corrs[0][i]],
                                         label=f"Iter {(i+1 % train_epochs)}",
-                                        c=colors[i % train_epochs])
+                                        c=colors[i % (train_epochs + 2)])
 
     for i in range(train_epochs + 1, len(corrs[0])):
         axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1],
                                          [elem.mean() for elem in corrs[0][i]],
                                          label=f"Iter {(i+1 % train_epochs)}",
-                                         c=colors[i % train_epochs])
+                                         c=colors[i % (train_epochs + 2)])
 
     for i in range(imp_num):
         axs[i, 1].set_xticks(major_ticks)
