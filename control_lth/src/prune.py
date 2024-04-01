@@ -556,9 +556,9 @@ def perf_lth(logger, device, args, controller):
     logger.debug("Warming up the pretrained model")
     acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net_warmup, device)
 
-    pruning = Pruner(args, model, train_dl, test_dl, controller)
+    act = Activations(model, train_dl, device, args.net_batch_size)
+    pruning = Pruner(args, model, act, controller)
     init_state_dict = pruning.init_lth()
-    connectivity = []
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, we don't prune in the first iteration
@@ -590,10 +590,8 @@ def perf_lth(logger, device, args, controller):
             if ((args.control_on == 1) and
                 (train_iter == controller.c_epoch) and
                (imp_iter in controller.c_iter)):
-                act = Activations(model, train_dl, device, args.net_batch_size)
-                # corr_0 = act.get_corrs()
-                # corr_1 = act.get_correlations()
                 # print([(torch.from_numpy(corr_0[i]) - corr_1[i]).sum() for i in range(len(corr_0))])
+                act.compute_correlations()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
 
@@ -604,7 +602,6 @@ def perf_lth(logger, device, args, controller):
 
         # Calculate the connectivity
         # if (imp_iter <= controller.c_iter):
-        activations = Activations(model, train_dl, device, args.net_batch_size)
         pruning.corrs.append(activations.get_correlations())
         connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
         # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
