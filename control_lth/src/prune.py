@@ -3,18 +3,17 @@ import numpy as np
 from tqdm import tqdm
 import torch
 import torch.nn as nn
-import torchvision.datasets as datasets
+# import torchvision.datasets as datasets
 import torch.nn.init as init
-import pickle
 import sys
 from collections import OrderedDict
 
 import utils
-import plot_tool
 from data_loader import Data
 from similarity import Similarity
+import plot_tool as ptool
 from network import Network, train, test
-from correlation import Activations
+from activation import Activations
 import constants as C
 import logging
 import logging.config
@@ -355,6 +354,7 @@ class Pruner:
 
     def prune_once(self, initial_state_dict):
 
+        log.debug(f"Prunning using {self.args.prune_method}")
         if self.args.prune_method == "percentile":
             self.prune_by_percentile()
 
@@ -559,14 +559,16 @@ def perf_lth(logger, device, args, controller):
     act = Activations(model, train_dl, device, args.net_batch_size)
     pruning = Pruner(args, model, act, controller)
     init_state_dict = pruning.init_lth()
+    act.compute_correlations()
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
             # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
-            optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
-                                        weight_decay=args.net_weight_decay)
+            # optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
+            #                             weight_decay=args.net_weight_decay)
+            act.compute_correlations()
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -583,6 +585,8 @@ def perf_lth(logger, device, args, controller):
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
 
+            act.compute_correlations()
+
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
 
@@ -590,7 +594,6 @@ def perf_lth(logger, device, args, controller):
             if ((args.control_on == 1) and
                 (train_iter == controller.c_epoch) and
                (imp_iter in controller.c_iter)):
-                # print([(torch.from_numpy(corr_0[i]) - corr_1[i]).sum() for i in range(len(corr_0))])
                 act.compute_correlations()
                 corr = act.get_correlations()
                 pruning.control(corr, act.layers_dim, imp_iter)
@@ -601,10 +604,7 @@ def perf_lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
-        # if (imp_iter <= controller.c_iter):
-        pruning.corrs.append(activations.get_correlations())
-        connectivity.append(activations.get_conns(pruning.corrs[imp_iter]))
-        # utils.save_vars(corrs=pruning.corrs, all_accuracies=pruning.all_acc)
+    connectivity = act.get_conns()
 
     return pruning.all_acc, connectivity, pruning.comp_level
 
@@ -816,7 +816,7 @@ def test_exper(logger, args, device, run_dir):
     similarity = []
     corrs = []
     grads = []
-    comp_level_list = []
+    comp_list = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
@@ -826,16 +826,20 @@ def test_exper(logger, args, device, run_dir):
         similarity.append(sim)
         corrs.append(corr)
         grads.append(grad)
-        comp_level_list.append(comp)
+        comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
                         all_accuracies=all_acc, corr=corr,
                         grad=grad, comp_level=comp)
 
+    # Save the variables
     utils.save_vars(save_dir=run_dir, similarity=similarity,
-                    all_accuracies=acc_list,
+                    accuracies=acc_list,
                     corrs=corrs,
                     grads=grads,
-                    comp_level=comp)
+                    comp_levels=comp_list)
+
+    # Plot
+    ptool.plot_similarity(run_dir, acc_list, comp_list, similarity, corrs, grads)
 
 
 def main():
@@ -851,7 +855,7 @@ def main():
     elif args.exper_type == "efficiency":
         effic_exper(logger, args, device, run_dir)
 
-    if args.exper_type == "test":
+    elif args.exper_type == "test":
         test_exper(logger, args, device, run_dir)
 
     else:

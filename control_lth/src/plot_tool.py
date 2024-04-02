@@ -279,24 +279,27 @@ def plot_accuracy():
     print(np.round(connect_stability, 3))
 
 
-def plot_similarity(exper_dir):
-    args = json.loads(open(exper_dir + "exper.json", "rb").read())
-    train_epochs = args["net_train_epochs"] + 1
-    imp_num = args["exper_imp_total_iter"]
+def read_variables(exper_dir):
     all_accuracy = pickle.load(open(exper_dir + "all_accuracies.pkl", "rb"))
     comp_level = pickle.load(open(exper_dir + "comp_level.pkl", "rb"))
     similarity = pickle.load(open(exper_dir + "similarity.pkl", "rb"))
     corrs = pickle.load(open(exper_dir + "corrs.pkl", "rb"))
     grads = pickle.load(open(exper_dir + "grads.pkl", "rb"))
-    # print(similarity[0][0].max(), similarity[0][0].min())
-    # print(similarity)
+    return all_accuracy, comp_level, similarity, corrs, grads
+
+
+def plot_similarity(exper_dir, acc, comp_level, sim, corrs, grads):
+    args = json.loads(open(exper_dir + "exper.json", "rb").read())
+    train_epochs = args["net_train_epochs"] + 1
+    imp_num = args["exper_imp_total_iter"]
+    acc, comp_level, sim, corrs, grads = read_variables(exper_dir)
 
     fig, axs = plt.subplots(imp_num, 4, figsize=(16, 16))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
-    network_len = len(similarity[0][0])
+    network_len = len(sim[0][0])
     net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, train_epochs + 2)  # len(similarity[0]))
+    values = np.linspace(0, 1, train_epochs + 2)  # len(sim[0]))
     colors = c_colors(values)
     major_ticks = np.arange(1, network_len + 1)
 
@@ -306,14 +309,14 @@ def plot_similarity(exper_dir):
     cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
     # similarities
-    print("similarity:", len(similarity[0]))
+    print("similarity:", len(sim[0]))
     # for i in range(train_epochs + 1):
     #     axs[1, 0].plot(net_layers, similarity[0][i],
     #                                          label=f"Iter {(i+1 % train_epochs)}",
     #                                          c=colors[i % train_epochs])
 
-    for i in range(len(similarity[0])):
-        axs[(i // (train_epochs + 1)) + 1, 0].plot(net_layers, similarity[0][i],
+    for i in range(len(sim[0])):
+        axs[(i // (train_epochs + 1)) + 1, 0].plot(net_layers, sim[0][i],
                                              label=f"Iter {(i+1 % train_epochs)}",
                                              c=colors[i % (train_epochs + 1)])
 
@@ -322,20 +325,19 @@ def plot_similarity(exper_dir):
         axs[i + 1, 0].set_xticks(major_ticks)
         axs[i + 1, 0].set_title(f"Iter {i}")
         axs[i + 1, 0].set_ylim(bottom=0.0001, top=.02)
-        axs[i + 1, 0].set_xlim(left=1, right=len(similarity[0][0]))
+        axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
         axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
         axs[i + 1, 0].grid()
 
     # connectivity
     print("connectivity:", len(corrs[0]))
     for i in range(train_epochs + 1):
-        axs[0, 1].plot(net_layers[:-1], [elem.mean() for elem in corrs[0][i]],
+        axs[0, 1].plot(net_layers[:-1], corrs[0][i],
                                         label=f"Iter {(i+1 % train_epochs)}",
                                         c=colors[i % (train_epochs + 2)])
 
     for i in range(train_epochs + 1, len(corrs[0])):
-        axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1],
-                                         [elem.mean() for elem in corrs[0][i]],
+        axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1], corrs[0][i],
                                          label=f"Iter {(i+1 % train_epochs)}",
                                          c=colors[i % (train_epochs + 2)])
 
@@ -347,12 +349,7 @@ def plot_similarity(exper_dir):
         axs[i, 1].set(xlabel="Layer index", ylabel="Connectivity")
         axs[i, 1].grid()
 
-     # Gradient flow
-    # for i in range(train_epochs):
-    #     axs[0, 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
-    #                    label=f"Iter {(i+1 % train_epochs)}",
-    #                    c=colors[i % train_epochs])
-
+    # Gradient flow
     print("gradient:", len(grads[0]))
     for i in range(len(grads[0])):
         axs[(i // (train_epochs)), 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
@@ -363,14 +360,14 @@ def plot_similarity(exper_dir):
         axs[i, 2].set_xticks(major_ticks)
         axs[i, 2].set_title(f"Iter {i}")
         axs[i, 2].set_ylim(bottom=0.0001, top=.02)
-        axs[i, 2].set_xlim(left=1, right=len(similarity[0][0]))
+        axs[i, 2].set_xlim(left=1, right=len(sim[0][0]))
         axs[i, 2].set(xlabel="Layer index", ylabel="Gradient")
         axs[i, 2].grid()
 
-   # Accuracy
-    exper_len = np.arange(1, len(all_accuracy[0][0]) + 1)
+    # Accuracy
+    exper_len = np.arange(1, len(acc[0][0]) + 1)
     for i in range(imp_num):
-        axs[i, 3].plot(exper_len, all_accuracy[0][i], 'k')
+        axs[i, 3].plot(exper_len, acc[0][i], 'k')
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 3].set_title(f"Rem. Weights {comp_level[i]}")
         axs[i, 3].set_ylim(bottom=40, top=100)

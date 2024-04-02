@@ -8,7 +8,7 @@ import pickle
 import argparse
 import utils
 from josh_prune import SparsePruner
-from correlation import Activations
+from activation import Activations
 import constants as C
 from network import Network, train, test
 from data_loader import Data

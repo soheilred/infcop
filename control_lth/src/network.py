@@ -192,9 +192,10 @@ def make_grads_zero(model, mask):
             # grad_tensor = np.where(tensor < EPS, 0, grad_tensor)
             # p.grad.data = torch.from_numpy(grad_tensor).to(device)
 
+
 def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
     model.train()
-    log.debug('Training...')
+    # log.debug('Training...')
     size = len(dataloader.dataset)
 
     for t in range(epochs):
@@ -226,12 +227,12 @@ def train(model, dataloader, loss_fn, optimizer, mask, epochs, device):
                 # log.debug(f"loss: {last_loss:>3f}  [{current:>5d}/{size:>5d}]")
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
         correct /= size
-        log.debug(f"Epoch {t+1} accuracy: {(100*correct):>0.1f}%")
+        log.debug(f"Epoch {t+1} training acc.: {(100*correct):>0.1f}%")
     return 100.0 * correct, loss
 
 
 def test(model, dataloader, loss_fn, device):
-    log.debug('Testing')
+    # log.debug('Testing')
     model.eval()
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
@@ -246,7 +247,7 @@ def test(model, dataloader, loss_fn, device):
 
         test_loss /= num_batches
         correct /= size
-    log.debug(f"Test accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:.2f}")
+    log.debug(f"Test acc.: {(100*correct):>0.1f}%, Avg loss: {test_loss:.2f}")
     model.train()
     return 100. * correct
 

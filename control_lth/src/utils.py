@@ -197,7 +197,7 @@ def get_args():
     #                         env_prefix="APP",
     #                         default_env=True
     #                         )
-    net = parser.add_argument_group("net")
+    # net = parser.add_argument_group("net")
     parser.add_argument('--net_arch',
                         choices=['vgg11', 'vgg16', 'resnet18', 'alexnet',
                                  'densenet', 'googlenet'],

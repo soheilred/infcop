@@ -8,8 +8,7 @@ import pickle
 # Custom Libraries
 import utils
 from data_loader import Data
-from network import Network, VGG16
-from correlation import Activations
+from activation import Activations
 from lth import LTPruning
 import constants as C
 import logging

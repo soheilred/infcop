@@ -9,7 +9,7 @@ import pickle
 import utils
 from data_loader import Data
 from network import Network, train, test
-from correlation import Activations
+from activation import Activations
 from lth import LTPruning
 import constants as C
 

@@ -2,7 +2,7 @@ import utils
 import torch
 import torch.nn as nn
 from network import Network
-from correlation import Activations
+from activation import Activations
 import logging
 import logging.config
 
