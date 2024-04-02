@@ -288,11 +288,12 @@ def read_variables(exper_dir):
     return all_accuracy, comp_level, similarity, corrs, grads
 
 
-def plot_similarity(exper_dir, acc, comp_level, sim, corrs, grads):
+def plot_similarity(exper_dir, acc=None, comp_level=None, sim=None, corrs=None, grads=None):
     args = json.loads(open(exper_dir + "exper.json", "rb").read())
     train_epochs = args["net_train_epochs"] + 1
     imp_num = args["exper_imp_total_iter"]
-    acc, comp_level, sim, corrs, grads = read_variables(exper_dir)
+    if not acc:
+        acc, comp_level, sim, corrs, grads = read_variables(exper_dir)
 
     fig, axs = plt.subplots(imp_num, 4, figsize=(16, 16))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
