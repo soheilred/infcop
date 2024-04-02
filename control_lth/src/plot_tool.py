@@ -333,14 +333,17 @@ def plot_similarity(exper_dir, acc=None, comp_level=None, sim=None, corrs=None, 
     # connectivity
     print("connectivity:", len(corrs[0]))
     for i in range(train_epochs + 1):
-        axs[0, 1].plot(net_layers[:-1], corrs[0][i],
-                                        label=f"Iter {(i+1 % train_epochs)}",
-                                        c=colors[i % (train_epochs + 2)])
+        axs[0, 1].plot(net_layers[:-1],
+                       [elem.mean() for elem in corrs[0][i]],
+                       label=f"Iter {(i+1 % train_epochs)}",
+                       c=colors[i % (train_epochs + 2)])
 
     for i in range(train_epochs + 1, len(corrs[0])):
-        axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1], corrs[0][i],
-                                         label=f"Iter {(i+1 % train_epochs)}",
-                                         c=colors[i % (train_epochs + 2)])
+        axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1],
+                                               # corrs[0][i],
+                                               [elem.mean() for elem in corrs[0][i]],
+                                               label=f"Iter {(i+1 % train_epochs)}",
+                                               c=colors[i % (train_epochs + 2)])
 
     for i in range(imp_num):
         axs[i, 1].set_xticks(major_ticks)
