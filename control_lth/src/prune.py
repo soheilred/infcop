@@ -766,25 +766,20 @@ def perf_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     conn_list = []
-    comp_level_list = []
+    comp_list = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
         all_acc, conn, comp = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         conn_list.append(conn)
-        comp_level_list.append(comp)
+        comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", conn=conn,
                         all_accuracies=all_acc, comp_level=comp)
-        # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
-        #                             "all_accuracies")
 
-    # all_acc = np.mean(acc_list, axis=0)
-    # conn = np.mean(conn_list, axis=0)
-    # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
-    # utils.save_vars(save_dir=run_dir, conn=conn, all_accuracies=all_acc)
     utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list,
-                    comp_level=comp_level_list)
+                    comp_level=comp_list)
+    # ptool.plot_similarity(run_dir, acc_list, comp_list, conn_list)
 
 
 def effic_exper(logger, args, device, run_dir):
@@ -800,13 +795,9 @@ def effic_exper(logger, args, device, run_dir):
         conn_list.append(conn)
         utils.save_vars(save_dir=run_dir+str(i)+"_" , conn=conn,
                         all_accuracies=all_acc)
-        # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + str(i) +
-        #                             "all_accuracies")
 
-    # all_acc = np.mean(acc_list, axis=0)
-    # conn = np.mean(conn_list, axis=0)
-    # plot_tool.plot_all_accuracy(all_acc, C.OUTPUT_DIR + "all_accuracies")
     utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list)
+    # ptool.plot_similarity(run_dir, acc_list, comp_list, similarity, corrs, grads)
 
 
 def test_exper(logger, args, device, run_dir):

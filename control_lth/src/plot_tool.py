@@ -354,6 +354,7 @@ def plot_similarity(exper_dir, acc=None, comp_level=None, sim=None, corrs=None, 
         axs[i, 1].grid()
 
     # Gradient flow
+    import ipdb; ipdb.set_trace()
     print("gradient:", len(grads[0]))
     for i in range(len(grads[0])):
         axs[(i // (train_epochs)), 2].plot(net_layers, torch.Tensor(grads[0][i]).cpu(),
