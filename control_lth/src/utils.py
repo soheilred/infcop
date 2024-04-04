@@ -221,7 +221,7 @@ def get_args():
     parser.add_argument('--net_warmup', type=int, default=20,
                       help='Number of epochs to perform warmup training')
 
-    parser.add_argument('--net_lr', type=float, default=0.1,
+    parser.add_argument('--net_lr', type=float, default=0.01,
                       help='Learning rate')
 
     parser.add_argument('--net_batch_size', type=int, default=64,
