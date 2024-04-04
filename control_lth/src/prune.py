@@ -235,7 +235,7 @@ class Pruner:
         for name, param in self.model.named_parameters():
 
             # We do not prune bias term
-            if 'weight' in name:
+            if 'weight' in name and param.dim() > 1:
                 correlation = correlations[layer_id - 1]
                 weight = module[1].weight.data
                 weight_dev = module[1].weight.device
