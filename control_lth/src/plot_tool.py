@@ -356,7 +356,7 @@ def plot_similarity(exper_dir, vars=None):
     # Gradient flow
     print("gradient:", len(grads[0]))
     for i in range(len(grads[0])):
-        axs[(i // (train_epochs)), 2].plot(net_layers, grads[0][i],
+        axs[(i // (train_epochs)), 2].plot(net_layers, grads[0][i][0],
                                              label=f"Iter {(i+1 % train_epochs)}",
                                              c=colors[i % train_epochs])
 
@@ -369,19 +369,19 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 2].set(xlabel="Layer index", ylabel="Gradient Mean")
         axs[i, 2].grid()
 
-    # for i in range(len(grads[0])):
-    #     axs[(i // (train_epochs)), 3].plot(net_layers, grads[0][i][1],
-    #                                          label=f"Iter {(i+1 % train_epochs)}",
-    #                                          c=colors[i % train_epochs])
+    for i in range(len(grads[0])):
+        axs[(i // (train_epochs)), 3].plot(net_layers, grads[0][i][1],
+                                             label=f"Iter {(i+1 % train_epochs)}",
+                                             c=colors[i % train_epochs])
 
-    # for i in range(imp_num):
-    #     # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
-    #     axs[i, 3].set_xticks(major_ticks)
-    #     axs[i, 3].set_title(f"Iter {i}")
-    #     # axs[i, 3].set_ylim(bottom=0.0001, top=.02)
-    #     axs[i, 3].set_xlim(left=1, right=len(sim[0][0]))
-    #     axs[i, 3].set(xlabel="Layer index", ylabel="Gradient Norm")
-    #     axs[i, 3].grid()
+    for i in range(imp_num):
+        # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
+        axs[i, 3].set_xticks(major_ticks)
+        axs[i, 3].set_title(f"Iter {i}")
+        # axs[i, 3].set_ylim(bottom=0.0001, top=.02)
+        axs[i, 3].set_xlim(left=1, right=len(sim[0][0]))
+        axs[i, 3].set(xlabel="Layer index", ylabel="Gradient Norm")
+        axs[i, 3].grid()
 
    # Accuracy
     # import ipdb; ipdb.set_trace()
@@ -389,7 +389,7 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_num):
         axs[i, 4].plot(exper_len, acc[0][i], 'k')
         axs[i, 4].set_title(f"Rem. Weights {comp_level[0][i]}")
-        # axs[i, 4].set_ylim(bottom=40, top=100)
+        axs[i, 4].set_ylim(bottom=40, top=100)
         axs[i, 4].set(xlabel="Training Epoch", ylabel="Accuracy")
         axs[i, 4].grid()
         # axs[i, 1].set_xticks(major_ticks)
