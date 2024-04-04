@@ -624,7 +624,7 @@ def perf_lth(logger, device, args, controller):
     return pruning.all_acc, connectivity, pruning.comp_level
 
 
-def perf_connectivity_lth(logger, device, args, controller):
+def perf_test_lth(logger, device, args, controller):
     ITERATION = args.exper_imp_total_iter  # 35 was the default
     run_dir = utils.get_run_dir(args)
     data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)

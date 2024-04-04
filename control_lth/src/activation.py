@@ -444,23 +444,27 @@ class Activations:
                 for i in range(num_layers - 1)]
 
     def gradient_flow(self):
-        # for name, param in self.model.named_parameters():
-
-        #     # We do not prune bias term
-        #     if 'weight' in name and param.dim() > 1:
-        #         self.grads.append(param.grad.abs().mean())
         log.debug("Computing the gradient flow")
+        self.model.eval()
         grads_mean = []
         grads_norm = []
-        for module_idx, module in enumerate(self.model.named_modules()):
-            if isinstance(module[1], nn.Conv2d) or \
-                         isinstance(module[1], nn.Linear):
-                if "downsample" in module[0]:
-                    continue
-                grads_mean.append(module[1].weight.grad.cpu().abs().mean())
-                grads_norm.append(module[1].weight.grad.cpu().abs().norm())
+        grads = {}
 
-        self.grads.append((grads_mean, grads_norm))
+        for name, param in self.model.named_parameters():
+            if 'weight' in name and param.dim() > 1:
+                grads[name] = param.grad.cpu()
+
+        # for module_idx, module in enumerate(self.model.named_modules()):
+        #     if isinstance(module[1], nn.Conv2d) or \
+        #                  isinstance(module[1], nn.Linear):
+        #         if "downsample" in module[0]:
+        #             continue
+        #         grads_mean.append(module[1].weight.grad.cpu().abs().mean())
+        #         grads_norm.append(module[1].weight.grad.cpu().abs().norm())
+        #         grads.append(module[1].weight.grad.cpu())
+
+        # self.grads.append((grads_mean, grads_norm))
+        self.grads.append(grads)
 
     def get_gradient(self):
         return self.grads

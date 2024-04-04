@@ -185,33 +185,70 @@ class Pruner:
             if "bias" in name:
                 param.data = initial_state_dict[name]
 
+    def prune_by_grads(self):
+        grads = self.act.get_gradient()[0]
+        # for module_idx, module in enumerate(self.model.named_modules()):
+        #     if isinstance(module[1], nn.Conv2d) or \
+        #                  isinstance(module[1], nn.Linear):
+        #         if "downsample" in module[0]:
+        #             continue
+
+        #         if layer_id > 0:
+        #             layer_id += 1
+        #             continue
+        #        weight = module[1].weight.data
+
+        for name, param in self.model.named_parameters():
+
+            # We do not prune bias term
+            if 'weight' in name and param.dim() > 1:
+                weight_dev = param.device
+                grad = grads[name].to(weight_dev)
+                weight = param.data
+                tensor = grad * weight
+                alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
+                percentile_value = torch.quantile(alive.abs(),
+                                                  self.prune_perc).item()
+                new_mask = torch.where(tensor.abs() < percentile_value, 0,
+                                       self.mask[name[:-7]])
+                new_mask = new_mask.type(torch.bool).to(weight_dev)
+
+                # Apply new weight and mask
+                weight = (weight * new_mask).to(weight_dev)
+                self.mask[name[:-7]] = new_mask
+
     def prune_by_correlation(self):
         correlations = self.act.get_correlations()[-1]
         # Calculate percentile value
         layer_id = 0
 
-        for module_idx, module in enumerate(self.model.named_modules()):
-            if isinstance(module[1], nn.Conv2d) or \
-                         isinstance(module[1], nn.Linear):
-                if "downsample" in module[0]:
-                    continue
+        # for module_idx, module in enumerate(self.model.named_modules()):
+        #     if isinstance(module[1], nn.Conv2d) or \
+        #                  isinstance(module[1], nn.Linear):
+        #         if "downsample" in module[0]:
+        #             continue
 
-        # for name, param in self.model.named_parameters():
+        #         if layer_id > 0:
+        #             layer_id += 1
+        #             continue
 
-        #     # We do not prune bias term
-        #     if 'weight' in name:
+        for name, param in self.model.named_parameters():
 
-                if layer_id > 0:
-                    layer_id += 1
-                    continue
-
+            # We do not prune bias term
+            if 'weight' in name:
                 correlation = correlations[layer_id - 1]
                 weight = module[1].weight.data
+                weight_dev = module[1].weight.device
+
+                kernel_size = weight.shape[0]
+                tensor = correlation.repeat([kernel_size, kernel_size, 1,
+                                             1]).permute(3, 2, 1, 0)
+
+                tensor = correlation * weight
                 import ipdb; ipdb.set_trace()
-                alive = correlation[correlation.nonzero(as_tuple=True)]  # flattened array of nonzero values
+                alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
                 percentile_value = torch.quantile(alive.abs(),
                                                   self.prune_perc).item()
-                weight_dev = module[1].weight.device
                 new_mask = torch.where(correlation.abs() < percentile_value, 0,
                                        self.mask[module[0]])
                 new_mask = new_mask.type(torch.bool).to(weight_dev)
@@ -226,7 +263,6 @@ class Pruner:
         # layer_id = 0
         for name, param in self.model.named_parameters():
 
-            # We do not prune bias term
             if 'weight' in name and param.dim() > 1:
                 tensor = param.data
                 alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
@@ -364,6 +400,9 @@ class Pruner:
         elif self.args.prune_method == "corr":
             self.prune_by_correlation()
 
+        elif self.args.prune_method == "grad":
+            self.prune_by_grads()
+
         else:
             sys.exit("Wrong pruning method!")
 
@@ -469,47 +508,6 @@ class Pruner:
                     break
                 idx += 1
 
-    def get_cosine_similarity(self, act, base_act, device):
-        """ Compute the cosine similarity between the optimal network and the
-        prunned network's activity.
-
-        Returns
-        -------
-        List of 2d tensors, each representing the similarity between the
-        activations of two networks.
-        """
-        act.model.eval()
-        ds_size = len(act.dataloader.dataset)
-
-        layers_dim = act.layers_dim
-        # print(layers_dim)
-        num_layers = len(layers_dim)
-        act_keys = act.get_act_keys()
-        # device = act.activation[act_keys[0]].device
-
-        # corrs = [torch.zeros((layers_dim[i][0], layers_dim[i + 1][0])).
-        #          to(device) for i in range(num_layers - 1)]
-        cos = nn.CosineSimilarity(dim=1, eps=1e-6)
-        similarities = torch.zeros(num_layers)
-        with torch.no_grad():
-            # Compute the mean of activations
-            log.debug("Compute similarity of activations")
-            for batch, (X, y) in enumerate(act.dataloader):
-                X, y = X.to(device), y.to(device)
-                act.model(X)
-                base_act.model(X)
-
-                for i in range(num_layers):
-                    f0 = act.activation[act_keys[i]]
-                    f1 = base_act.activation[base_act.act_keys[i]]
-                    # corrs[i] += torch.matmul(f0, f1).detach().cpu()
-                    similarities[i] += torch.mean(cos(f0, f1).detach().cpu())
-
-        for i in range(num_layers - 1):
-            similarities[i] = similarities[i] / ds_size
-
-        return similarities
-
     def correlation_to_weights(self, control_corrs, layers_dim, imp_iter, layer_ind):
         # the + 1 is for matching to the connectivity's dimension
         weights = control_corrs[imp_iter - 1][layer_ind - 1]
@@ -609,7 +607,7 @@ def perf_lth(logger, device, args, controller):
     return pruning.all_acc, connectivity, pruning.comp_level
 
 
-def perf_connectivity_lth(logger, device, args, controller):
+def perf_test_lth(logger, device, args, controller):
     ITERATION = args.exper_imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
     data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
@@ -629,16 +627,16 @@ def perf_connectivity_lth(logger, device, args, controller):
     act = Activations(model, train_dl, device, args.net_batch_size)
     pruning = Pruner(args, model, act, controller)
     init_state_dict = pruning.init_lth()
-    act.compute_correlations()
+    # act.compute_correlations()
     act.gradient_flow()
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            act.compute_correlations()
+            # act.compute_correlations()
             act.gradient_flow()
-            similarity.cosine_similarity(model, imp_iter)
+            # similarity.cosine_similarity(model, imp_iter)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -654,9 +652,9 @@ def perf_connectivity_lth(logger, device, args, controller):
             logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
-            act.compute_correlations()
+            # act.compute_correlations()
             act.gradient_flow()
-            similarity.cosine_similarity(model, imp_iter)
+            # similarity.cosine_similarity(model, imp_iter)
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
@@ -677,7 +675,13 @@ def perf_connectivity_lth(logger, device, args, controller):
         # act.compute_correlations()
         # logger.debug(f"similarities: {similarity.get_similarity()}")
 
-    return pruning.all_acc, similarity.get_similarity(), act.get_correlations(), act.get_gradient(), pruning.comp_level
+    output = [pruning.all_acc,
+              similarity.get_similarity(),
+              act.get_correlations(),
+              act.get_gradient(),
+              pruning.comp_level]
+
+    return output
 
 
 def effic_lth(logger, device, args, controller):
@@ -811,8 +815,8 @@ def test_exper(logger, args, device, run_dir):
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, corr, grad, comp = perf_connectivity_lth(logger, device,
-                                                               args, controller)
+        results = perf_test_lth(logger, device, args, controller)
+        all_acc, sim, corr, grad, comp = results
         acc_list.append(all_acc)
         similarity.append(sim)
         corrs.append(corr)
@@ -830,7 +834,7 @@ def test_exper(logger, args, device, run_dir):
                     comp_levels=comp_list)
 
     # Plot
-    ptool.plot_similarity(run_dir, acc_list, comp_list, similarity, corrs, grads)
+    # ptool.plot_similarity(run_dir, acc_list, comp_list, similarity, corrs, grads)
 
 
 def main():

@@ -280,7 +280,7 @@ def plot_accuracy():
 
 
 def read_variables(exper_dir):
-    all_accuracy = pickle.load(open(exper_dir + "all_accuracies.pkl", "rb"))
+    all_accuracy = pickle.load(open(exper_dir + "accuracies.pkl", "rb"))
     comp_level = pickle.load(open(exper_dir + "comp_level.pkl", "rb"))
     similarity = pickle.load(open(exper_dir + "similarity.pkl", "rb"))
     corrs = pickle.load(open(exper_dir + "corrs.pkl", "rb"))
@@ -288,11 +288,11 @@ def read_variables(exper_dir):
     return all_accuracy, comp_level, similarity, corrs, grads
 
 
-def plot_similarity(exper_dir, acc=None, comp_level=None, sim=None, corrs=None, grads=None):
+def plot_similarity(exper_dir, vars=None):
     args = json.loads(open(exper_dir + "exper.json", "rb").read())
     train_epochs = args["net_train_epochs"] + 1
     imp_num = args["exper_imp_total_iter"]
-    if not acc:
+    if vars is None:
         acc, comp_level, sim, corrs, grads = read_variables(exper_dir)
 
     fig, axs = plt.subplots(imp_num, 4, figsize=(16, 16))
@@ -307,7 +307,7 @@ def plot_similarity(exper_dir, acc=None, comp_level=None, sim=None, corrs=None, 
     axs[0, 0].axis("off")
     cmap = ListedColormap(colors)
     cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
-    cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
+    # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
     # similarities
     print("similarity:", len(sim[0]))
@@ -321,7 +321,7 @@ def plot_similarity(exper_dir, acc=None, comp_level=None, sim=None, corrs=None, 
                                              label=f"Iter {(i+1 % train_epochs)}",
                                              c=colors[i % (train_epochs + 1)])
 
-    axs[0, 0].axis("off")
+    # axs[0, 0].axis("off")
     for i in range(imp_num - 1):
         axs[i + 1, 0].set_xticks(major_ticks)
         axs[i + 1, 0].set_title(f"Iter {i}")
