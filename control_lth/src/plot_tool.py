@@ -384,7 +384,7 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 3].grid()
 
    # Accuracy
-    # import ipdb; ipdb.set_trace()
+    import ipdb; ipdb.set_trace()
     exper_len = np.arange(1, len(acc[0][0]) + 1)
     for i in range(imp_num):
         axs[i, 4].plot(exper_len, acc[0][i], 'k')
