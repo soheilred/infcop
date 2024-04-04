@@ -627,16 +627,16 @@ def perf_test_lth(logger, device, args, controller):
     act = Activations(model, train_dl, device, args.net_batch_size)
     pruning = Pruner(args, model, act, controller)
     init_state_dict = pruning.init_lth()
-    # act.compute_correlations()
+    act.compute_correlations()
     act.gradient_flow()
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, cuz we don't prune in the first iteration
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
-            # act.compute_correlations()
+            act.compute_correlations()
             act.gradient_flow()
-            # similarity.cosine_similarity(model, imp_iter)
+            similarity.cosine_similarity(model, imp_iter)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -652,9 +652,9 @@ def perf_test_lth(logger, device, args, controller):
             logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
-            # act.compute_correlations()
+            act.compute_correlations()
             act.gradient_flow()
-            # similarity.cosine_similarity(model, imp_iter)
+            similarity.cosine_similarity(model, imp_iter)
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
