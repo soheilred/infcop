@@ -281,7 +281,7 @@ def plot_accuracy():
 
 def read_variables(exper_dir):
     all_accuracy = pickle.load(open(exper_dir + "accuracies.pkl", "rb"))
-    comp_level = pickle.load(open(exper_dir + "comp_level.pkl", "rb"))
+    comp_level = pickle.load(open(exper_dir + "comp_levels.pkl", "rb"))
     similarity = pickle.load(open(exper_dir + "similarity.pkl", "rb"))
     corrs = pickle.load(open(exper_dir + "corrs.pkl", "rb"))
     grads = pickle.load(open(exper_dir + "grads.pkl", "rb"))
