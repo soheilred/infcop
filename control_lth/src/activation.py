@@ -448,23 +448,23 @@ class Activations:
         self.model.eval()
         grads_mean = []
         grads_norm = []
-        grads = {}
-
-        for name, param in self.model.named_parameters():
-            if 'weight' in name and param.dim() > 1:
-                grads[name] = param.grad.cpu()
+        # grads = {}
 
         # for module_idx, module in enumerate(self.model.named_modules()):
         #     if isinstance(module[1], nn.Conv2d) or \
         #                  isinstance(module[1], nn.Linear):
         #         if "downsample" in module[0]:
         #             continue
-        #         grads_mean.append(module[1].weight.grad.cpu().abs().mean())
-        #         grads_norm.append(module[1].weight.grad.cpu().abs().norm())
-        #         grads.append(module[1].weight.grad.cpu())
 
-        # self.grads.append((grads_mean, grads_norm))
-        self.grads.append(grads)
+        for name, param in self.model.named_parameters():
+            if 'weight' in name and param.dim() > 1:
+                grads_mean.append(param.grad.cpu().abs().mean())
+                grads_norm.append(param.grad.cpu().abs().norm())
+        #         grads.append(module[1].weight.grad.cpu())
+                # grads[name] = param.grad.cpu()
+
+        self.grads.append((grads_mean, grads_norm))
+        # self.grads.append(grads)
 
     def get_gradient(self):
         return self.grads
