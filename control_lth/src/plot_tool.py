@@ -378,7 +378,7 @@ def plot_similarity(exper_dir, vars=None):
         # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
         axs[i, 3].set_xticks(major_ticks)
         axs[i, 3].set_title(f"Iter {i}")
-        axs[i, 3].set_ylim(bottom=0.0001, top=.02)
+        # axs[i, 3].set_ylim(bottom=0.0001, top=.02)
         axs[i, 3].set_xlim(left=1, right=len(sim[0][0]))
         axs[i, 3].set(xlabel="Layer index", ylabel="Gradient Norm")
         axs[i, 3].grid()
