@@ -354,7 +354,6 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 1].grid()
 
     # Gradient flow
-    import ipdb; ipdb.set_trace()
     print("gradient:", len(grads[0]))
     for i in range(len(grads[0])):
         axs[(i // (train_epochs)), 2].plot(net_layers, grads[0][i][0],
@@ -385,6 +384,7 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 3].grid()
 
    # Accuracy
+    import ipdb; ipdb.set_trace()
     exper_len = np.arange(1, len(acc[0][0]) + 1)
     for i in range(imp_num):
         axs[i, 4].plot(exper_len, acc[0][i], 'k')
