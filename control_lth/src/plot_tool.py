@@ -295,7 +295,7 @@ def plot_similarity(exper_dir, vars=None):
     if vars is None:
         acc, comp_level, sim, corrs, grads = read_variables(exper_dir)
 
-    fig, axs = plt.subplots(imp_num, 4, figsize=(16, 16))
+    fig, axs = plt.subplots(imp_num, 5, figsize=(16, 16))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
     network_len = len(sim[0][0])
     net_layers = np.arange(1, network_len + 1)
