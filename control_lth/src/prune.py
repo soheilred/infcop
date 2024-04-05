@@ -269,10 +269,11 @@ class Pruner:
                 # percentile_value = torch.percentile(alive, self.prune_perc)
                 # percentile_value = torch.quantile(alive.abs(),
                 #                                   self.prune_perc).item()
-                percentile_value = np.quantile(alive.abs().detach().cpu().numpy())
-                # Convert Tensors to numpy and calculate
+                # Convert Tensors to numpy and calculate to avoid runtime error
+                percentile_val = np.quantile(alive.abs().detach().cpu().numpy(),
+                                             self.prune_perc)
                 weight_dev = param.device
-                new_mask = torch.where(tensor.abs() < percentile_value, 0,
+                new_mask = torch.where(tensor.abs() < percentile_val, 0,
                                        self.mask[name[:-7]])
                 new_mask = new_mask.type(torch.bool).to(weight_dev)
 
