@@ -207,9 +207,12 @@ class Pruner:
                 weight = param.data
                 tensor = grad * weight
                 alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
-                percentile_value = torch.quantile(alive.abs(),
-                                                  self.prune_perc).item()
-                new_mask = torch.where(tensor.abs() < percentile_value, 0,
+                # percentile_val = torch.quantile(alive.abs(),
+                #                                   self.prune_perc).item()
+                percentile_val = np.quantile(alive.abs().detach().cpu().numpy(),
+                                             self.prune_perc)
+                weight_dev = param.device
+                new_mask = torch.where(tensor.abs() < percentile_val, 0,
                                        self.mask[name[:-7]])
                 new_mask = new_mask.type(torch.bool).to(weight_dev)
 
