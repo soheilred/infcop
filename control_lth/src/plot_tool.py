@@ -297,12 +297,12 @@ def plot_similarity(exper_dir, vars=None):
 
     fig, axs = plt.subplots(imp_num, 5, figsize=(16, 16))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
-    # network_len = len(sim[0][0])
-    # net_layers = np.arange(1, network_len + 1)
+    network_len = len(sim[0][0])
+    net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
     values = np.linspace(0, 1, train_epochs + 2)  # len(sim[0]))
     colors = c_colors(values)
-    # major_ticks = np.arange(1, network_len + 1)
+    major_ticks = np.arange(1, network_len + 1)
 
     axs[0, 0].axis("off")
     cmap = ListedColormap(colors)
@@ -310,81 +310,81 @@ def plot_similarity(exper_dir, vars=None):
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
     # similarities
-    # print("similarity:", len(sim[0]))
-    # for i in range(train_epochs + 1):
-    #     axs[1, 0].plot(net_layers, similarity[0][i],
-    #                                          label=f"Iter {(i+1 % train_epochs)}",
-    #                                          c=colors[i % train_epochs])
+    print("similarity:", len(sim[0]))
+    for i in range(train_epochs + 1):
+        axs[1, 0].plot(net_layers, sim[0][i], label=f"Iter {(i+1 % train_epochs)}",
+                       c=colors[i % train_epochs])
 
-    # for i in range(len(sim[0])):
-    #     axs[(i // (train_epochs + 1)) + 1, 0].plot(net_layers, sim[0][i],
-    #                                          label=f"Iter {(i+1 % train_epochs)}",
-    #                                          c=colors[i % (train_epochs + 1)])
+    for i in range(len(sim[0])):
+        axs[(i // (train_epochs + 1)) + 1, 0].plot(net_layers, sim[0][i],
+                                             label=f"Iter {(i+1 % train_epochs)}",
+                                             c=colors[i % (train_epochs + 1)])
 
-    # # axs[0, 0].axis("off")
-    # for i in range(imp_num - 1):
-    #     axs[i + 1, 0].set_xticks(major_ticks)
-    #     axs[i + 1, 0].set_title(f"Iter {i}")
-    #     axs[i + 1, 0].set_ylim(bottom=0.0001, top=.02)
-    #     axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
-    #     axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
-    #     axs[i + 1, 0].grid()
+    # axs[0, 0].axis("off")
+    for i in range(imp_num - 1):
+        axs[i + 1, 0].set_xticks(major_ticks)
+        axs[i + 1, 0].set_title(f"Iter {i}")
+        axs[i + 1, 0].set_ylim(bottom=0.0001, top=.02)
+        axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
+        axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
+        axs[i + 1, 0].grid()
 
-    # # connectivity
-    # print("connectivity:", len(corrs[0]))
-    # for i in range(train_epochs + 1):
-    #     axs[0, 1].plot(net_layers[:-1],
-    #                    [elem.mean() for elem in corrs[0][i]],
-    #                    label=f"Iter {(i+1 % train_epochs)}",
-    #                    c=colors[i % (train_epochs + 2)])
+    # connectivity
+    print("connectivity:", len(corrs[0]))
+    for i in range(train_epochs + 1):
+        axs[0, 1].plot(net_layers[:-1],
+                       [elem.mean() for elem in corrs[0][i]],
+                       label=f"Iter {(i+1 % train_epochs)}",
+                       c=colors[i % (train_epochs + 2)])
 
-    # for i in range(train_epochs + 1, len(corrs[0])):
-    #     axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1],
-    #                                            # corrs[0][i],
-    #                                            [elem.mean() for elem in corrs[0][i]],
-    #                                            label=f"Iter {(i+1 % train_epochs)}",
-    #                                            c=colors[i % (train_epochs + 2)])
+    for i in range(train_epochs + 1, len(corrs[0])):
+        axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1],
+                                               # corrs[0][i],
+                                               [elem.mean() for elem in corrs[0][i]],
+                                               label=f"Iter {(i+1 % train_epochs)}",
+                                               c=colors[i % (train_epochs + 2)])
 
-    # for i in range(imp_num):
-    #     axs[i, 1].set_xticks(major_ticks)
-    #     axs[i, 1].set_title(f"Iter {i}")
-    #     axs[i, 1].set_ylim(bottom=-0.05, top=.6)
-    #     # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
-    #     axs[i, 1].set(xlabel="Layer index", ylabel="Connectivity")
-    #     axs[i, 1].grid()
+    for i in range(imp_num):
+        axs[i, 1].set_xticks(major_ticks)
+        axs[i, 1].set_title(f"Iter {i}")
+        axs[i, 1].set_ylim(bottom=-0.05, top=.6)
+        # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
+        axs[i, 1].set(xlabel="Layer index", ylabel="Connectivity")
+        axs[i, 1].grid()
 
     # Gradient flow
     print("gradient:", len(grads[0]))
-    network_len = len(grads[0][0])
-    net_layers = np.arange(1, network_len + 1)
+    grad_network_len = len(grads[0][0][0])
+    net_layers = np.arange(1, grad_network_len + 1)
     for i in range(len(grads[0])):
         axs[(i // (train_epochs)), 2].plot(net_layers,
-                                           [elem.abs().mean() for elem in grads[0][i].values()],
-                                             label=f"Iter {(i+1 % train_epochs)}",
-                                             c=colors[i % train_epochs])
+                                           grads[0][i][0],
+                                           # [elem.abs().mean() for elem in grads[0][i].values()],
+                                           label=f"Iter {(i+1 % train_epochs)}",
+                                           c=colors[i % train_epochs])
 
     for i in range(imp_num):
         # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
         # axs[i, 2].set_xticks(major_ticks)
         axs[i, 2].set_title(f"Iter {i}")
         # axs[i, 2].set_ylim(bottom=0.0001, top=.02)
-        axs[i, 2].set_xlim(left=1, right=len(grads[0][0]))
+        axs[i, 2].set_xlim(left=1, right=grad_network_len)
         axs[i, 2].set(xlabel="Layer index", ylabel="Gradient Mean")
         axs[i, 2].grid()
 
     for i in range(len(grads[0])):
         axs[(i // (train_epochs)), 3].plot(net_layers,
-                                           [elem.abs().norm() for elem in grads[0][i].values()],
-                                           # grads[0][i].values().norm(),
-                                             label=f"Iter {(i+1 % train_epochs)}",
-                                             c=colors[i % train_epochs])
+                                           # [elem.abs().norm() for elem in grads[0][i].values()],
+                                           grads[0][i][1],
+                                           label=f"Iter {(i+1 % train_epochs)}",
+                                           c=colors[i % train_epochs])
 
     for i in range(imp_num):
         # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
         # axs[i, 3].set_xticks(major_ticks)
         axs[i, 3].set_title(f"Iter {i}")
         # axs[i, 3].set_ylim(bottom=0.0001, top=.02)
-        axs[i, 3].set_xlim(left=1, right=len(grads[0][0]))
+        axs[i, 3].set_xlim(left=1, right=grad_network_len)
         axs[i, 3].set(xlabel="Layer index", ylabel="Gradient Norm")
         axs[i, 3].grid()
 
@@ -393,7 +393,7 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_num):
         axs[i, 4].plot(exper_len, acc[0][i], 'k')
         axs[i, 4].set_title(f"Rem. Weights {comp_level[0][i]}")
-        axs[i, 4].set_ylim(bottom=40, top=100)
+        axs[i, 4].set_ylim(bottom=70, top=100)
         axs[i, 4].set(xlabel="Training Epoch", ylabel="Accuracy")
         axs[i, 4].grid()
         # axs[i, 1].set_xticks(major_ticks)

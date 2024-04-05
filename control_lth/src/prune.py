@@ -224,9 +224,8 @@ class Pruner:
                 self.mask[name[:-7]] = new_mask
 
     def prune_by_correlation(self):
-        correlations = self.act.get_correlations()[-1]
-        # Calculate percentile value
-        layer_id = 0
+        corrs = self.act.get_correlations()[-1]
+        layers_idx = [elem[1] for elem in self.act.get_layers_idx()]
 
         # for module_idx, module in enumerate(self.model.named_modules()):
         #     if isinstance(module[1], nn.Conv2d) or \
@@ -242,27 +241,36 @@ class Pruner:
 
             # We do not prune bias term
             if 'weight' in name and param.dim() > 1:
-                correlation = correlations[layer_id - 1]
-                weight = module[1].weight.data
-                weight_dev = module[1].weight.device
+                weight_dev = param.device
+                weight = param.data
+                # if corr existst for the layer
+                if ((name[:-7] in layers_idx) and
+                        (layers_idx.index(name[:-7]) > 0) and
+                        (layers_idx.index(name[:-7]) < len(layers_idx) - 1)):
+                    idx = layers_idx.index(name[:-7]) - 1
+                    # tensor = corr.repeat(fix-dim) * weight
+                    kernel_size = weight.shape[-1]
+                    # correlation = correlations[layer_id - 1]
+                    corr = corrs[idx].repeat([kernel_size, kernel_size, 1, 1])
+                    corr = corr.permute(3, 2, 1, 0).to(weight_dev)
+                    tensor = corr * weight
 
-                kernel_size = weight.shape[0]
-                tensor = correlation.repeat([kernel_size, kernel_size, 1,
-                                             1]).permute(3, 2, 1, 0)
-
-                tensor = correlation * weight
-                import ipdb; ipdb.set_trace()
+                # else, prune based on weights
+                else:
+                    tensor = weight
+                # weight = module[1].weight.data
                 alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
-                percentile_value = torch.quantile(alive.abs(),
-                                                  self.prune_perc).item()
-                new_mask = torch.where(correlation.abs() < percentile_value, 0,
-                                       self.mask[module[0]])
+                # percentile_value = torch.quantile(alive.abs(),
+                #                                   self.prune_perc).item()
+                percentile_val = np.quantile(alive.abs().detach().cpu().numpy(),
+                                             self.prune_perc)
+                new_mask = torch.where(tensor.abs() < percentile_val, 0,
+                                       self.mask[name[:-7]])
                 new_mask = new_mask.type(torch.bool).to(weight_dev)
 
                 # Apply new weight and mask
                 weight = (weight * new_mask).to(weight_dev)
-                self.mask[module[0]] = new_mask
-                layer_id += 1
+                self.mask[name[:-7]] = new_mask
 
     def prune_by_percentile(self):
         # Calculate percentile value
