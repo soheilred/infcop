@@ -207,7 +207,8 @@ class Pruner:
                 # grad = grads[name].to(weight_dev)
                 grad = param.grad
                 weight = param.data
-                tensor = grad * weight
+                # tensor = grad * weight
+                tensor = grad
                 alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
                 # percentile_val = torch.quantile(alive.abs(),
                 #                                   self.prune_perc).item()
