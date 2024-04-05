@@ -186,7 +186,8 @@ class Pruner:
                 param.data = initial_state_dict[name]
 
     def prune_by_grads(self):
-        grads = self.act.get_gradient()[0]
+        # grads = self.act.get_gradient()[0]
+
         # for module_idx, module in enumerate(self.model.named_modules()):
         #     if isinstance(module[1], nn.Conv2d) or \
         #                  isinstance(module[1], nn.Linear):
@@ -203,7 +204,8 @@ class Pruner:
             # We do not prune bias term
             if 'weight' in name and param.dim() > 1:
                 weight_dev = param.device
-                grad = grads[name].to(weight_dev)
+                # grad = grads[name].to(weight_dev)
+                grad = param.grad
                 weight = param.data
                 tensor = grad * weight
                 alive = tensor[tensor.nonzero(as_tuple=True)]  # flattened array of nonzero values
