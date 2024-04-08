@@ -306,6 +306,114 @@ class Pruner:
                 self.mask[name[:-7]] = new_mask
                 # layer_id += 1
 
+    def prune_by_corr_sap(self):
+        layer_id = 0
+        pivot_param = []
+        pivot_mask = []
+
+        for name, param in self.model.named_parameters():
+            parameter_type = name.split('.')[-1]
+            if 'weight' in parameter_type and param.dim() > 1:
+                # mask_i = mask.state_dict()[name]
+                pivot_param_i = param[self.mask[name[:-7]]].abs()
+                pivot_param.append(pivot_param_i.view(-1))
+                pivot_mask.append(self.mask[name[:-7]].view(-1))
+                layer_id += 1
+
+        pivot_param = torch.cat(pivot_param, dim=0).data.abs()
+        pivot_mask = torch.cat(pivot_mask, dim=0)
+        # p, q, eta_m, gamma = self.prune_mode[1:] # TODO
+        p, q, eta_m, gamma = float(1.0), float(2.0), float(0.), float(1.)
+        beta = 0.9
+        sparsity_index = {"p": torch.arange(0.1, 1.1, 0.1),
+                          "q": torch.arange(1.0, 2.1, 0.1)}
+        p_idx = (sparsity_index["p"] == p).nonzero().item()
+        q_idx = (sparsity_index["q"] == q).nonzero().item()
+        mask_i = pivot_mask
+        si = self.make_si_corr(self.model, self.mask, sparsity_index)
+        si_i = si[p_idx, q_idx]
+        d = mask_i.float().sum().to('cpu')
+        m = d * (1 + eta_m) ** (q / (p - q)) * (1 - si_i) ** ((q * p) / (q - p))
+        m = torch.ceil(m).long()
+        retain_ratio = m / d
+        prune_ratio = torch.clamp(gamma * (1 - retain_ratio), 0, beta)
+        num_prune = torch.floor(d * prune_ratio).long()
+        pivot_value = torch.sort(pivot_param.view(-1))[0][num_prune]
+
+        # new_mask = [None] * self.num_layers
+        # layer_id = 0
+        # new_mask = OrderedDict()
+        for name, param in self.model.named_parameters():
+
+            if 'weight' in name and param.dim() > 1:
+                # tensor = param.data.cpu().numpy()
+                # alive = tensor[np.nonzero(tensor)]
+                # percentile_value = np.percentile(abs(alive), self.prune_perc)
+
+                # Convert Tensors to numpy and calculate
+                weight_dev = param.device
+                # new_mask = np.where(abs(tensor) < percentile_value, 0,
+                #                     self.mask[layer_id])
+
+                pivot_mask = (param.data.abs() < pivot_value).to(weight_dev)
+                new_mask = torch.where(pivot_mask, False, self.mask[name[:-7]])
+
+                # Apply new weight and mask
+                # param.data = torch.from_numpy(tensor * new_mask).to(weight_dev)
+                param.data = torch.where(new_mask.to(param.device), param.data,
+                                         torch.tensor(0, dtype=torch.float,
+                                                      device=param.device))
+
+                param.grad.mul_(new_mask)
+                self.mask[name[:-7]] = new_mask
+                # layer_id += 1
+
+    def make_si_corr(self, model, mask, si_dict):
+        corrs = self.act.get_correlations()[-1]
+        layers_idx = [elem[1] for elem in self.act.get_layers_idx()]
+        sparsity_index = OrderedDict()
+        param_all = []
+        mask_all = []
+        # layer_id = 0
+        for name, param in model.state_dict().items():
+            parameter_type = name.split('.')[-1]
+            if 'weight' in parameter_type and param.dim() > 1:
+                weight_dev = param.device
+                weight = param.data
+                if ((name[:-7] in layers_idx) and
+                        (layers_idx.index(name[:-7]) > 0) and
+                        (layers_idx.index(name[:-7]) < len(layers_idx) - 1)):
+                    idx = layers_idx.index(name[:-7]) - 1
+                    # tensor = corr.repeat(fix-dim) * weight
+                    kernel_size = weight.shape[-1]
+                    # correlation = correlations[layer_id - 1]
+                    corr = corrs[idx].repeat([kernel_size, kernel_size, 1, 1])
+                    corr = corr.permute(3, 2, 1, 0).to(weight_dev)
+                    tensor = corr * weight
+
+                # else, prune based on weights
+                else:
+                    tensor = weight
+                # weight = module[1].weight.data
+ 
+                # param_all.append(tensor.view(-1))
+                param_all.append(tensor.flatten())
+                mask_all.append(self.mask[name[:-7]].view(-1))
+                # layer_id += 1
+        param_all = torch.cat(param_all, dim=0)
+        mask_all = torch.cat(mask_all, dim=0)
+        sparsity_index_i = []
+        for i in range(len(si_dict["p"])):
+            for j in range(len(si_dict["q"])):
+                sparsity_index_i.append(self.make_si(param_all, mask_all, -1,
+                                                     si_dict["p"][i],
+                                                     si_dict["q"][j]))
+        sparsity_index_i = torch.tensor(sparsity_index_i)
+        sparsity_index = sparsity_index_i.reshape(
+            (len(si_dict["p"]), len(si_dict["q"]), -1))
+
+        return sparsity_index
+
     def prune_by_sap(self):
         layer_id = 0
         pivot_param = []
@@ -417,6 +525,9 @@ class Pruner:
 
         elif self.args.prune_method == "grad":
             self.prune_by_grads()
+
+        elif self.args.prune_method == "corr_sap":
+            self.prune_by_corr_sap()
 
         else:
             sys.exit("Wrong pruning method!")

@@ -25,7 +25,7 @@
   "exper_num_trial": 1,
   "exper_acc_thrd": 95,
   "exper_type": "test",
-  "exper_gpu_id": 1,
+  "exper_gpu_id": 0,
   "prune_perc_per_layer": 0.1,
-  "prune_method": "corr"
+  "prune_method": "grad"
 }

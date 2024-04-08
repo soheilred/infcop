@@ -324,7 +324,7 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_num - 1):
         axs[i + 1, 0].set_xticks(major_ticks)
         axs[i + 1, 0].set_title(f"Iter {i}")
-        axs[i + 1, 0].set_ylim(bottom=0.0001, top=.02)
+        axs[i + 1, 0].set_ylim(bottom=0.01, top=.02)
         axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
         axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
         axs[i + 1, 0].grid()

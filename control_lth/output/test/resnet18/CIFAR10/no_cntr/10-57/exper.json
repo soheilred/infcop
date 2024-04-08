@@ -2,7 +2,7 @@
   "net_arch": "resnet18",
   "net_pretrained": 1,
   "net_dataset": "CIFAR10",
-  "net_train_epochs": 2,
+  "net_train_epochs": 3,
   "net_train_per_epoch": 2,
   "net_warmup": 1,
   "net_lr": 0.1,

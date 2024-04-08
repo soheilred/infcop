@@ -27,5 +27,5 @@
   "exper_type": "test",
   "exper_gpu_id": 1,
   "prune_perc_per_layer": 0.1,
-  "prune_method": "corr"
+  "prune_method": "percentile"
 }
