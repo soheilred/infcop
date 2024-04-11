@@ -415,7 +415,7 @@ class Pruner:
         return sparsity_index
 
     def prune_by_sap(self):
-        layer_id = 0
+        # layer_id = 0
         pivot_param = []
         pivot_mask = []
 
@@ -426,7 +426,7 @@ class Pruner:
                 pivot_param_i = param[self.mask[name[:-7]]].abs()
                 pivot_param.append(pivot_param_i.view(-1))
                 pivot_mask.append(self.mask[name[:-7]].view(-1))
-                layer_id += 1
+                # layer_id += 1
 
         pivot_param = torch.cat(pivot_param, dim=0).data.abs()
         pivot_mask = torch.cat(pivot_mask, dim=0)
@@ -439,6 +439,7 @@ class Pruner:
         q_idx = (sparsity_index["q"] == q).nonzero().item()
         mask_i = pivot_mask
         si = self.make_si_(self.model, self.mask, sparsity_index)
+        # I(w_t)
         si_i = si[p_idx, q_idx]
         d = mask_i.float().sum().to('cpu')
         m = d * (1 + eta_m) ** (q / (p - q)) * (1 - si_i) ** ((q * p) / (q - p))
@@ -484,7 +485,7 @@ class Pruner:
         for name, param in model.state_dict().items():
             parameter_type = name.split('.')[-1]
             if 'weight' in parameter_type and param.dim() > 1:
-                param_all.append(param.view(-1))
+                param_all.append(2 * param.view(-1))
                 mask_all.append(self.mask[name[:-7]].view(-1))
                 # layer_id += 1
         param_all = torch.cat(param_all, dim=0)

@@ -458,11 +458,26 @@ class Activations:
 
         for name, param in self.model.named_parameters():
             if 'weight' in name and param.dim() > 1:
-                grads_mean.append(param.grad.cpu().abs().mean())
-                grads_norm.append(param.grad.cpu().abs().norm())
+                grads_mean.append(torch.zeros_like(param.grad.cpu().abs().mean()))
+                grads_norm.append(torch.zeros_like(param.grad.cpu().abs().mean()))
+                # grads_norm.append(param.grad.cpu().abs().norm())
         #         grads.append(module[1].weight.grad.cpu())
                 # grads[name] = param.grad.cpu()
 
+        for batch, (X, y) in enumerate(self.dataloader):
+            X, y = X.to(self.device), y.to(self.device)
+            self.model(X)
+            layer_id = 0
+            for name, param in self.model.named_parameters():
+                if 'weight' in name and param.dim() > 1:
+                    grads_mean[layer_id] += param.grad.cpu().abs().mean()
+                    grads_norm[layer_id] += param.grad.cpu().abs().norm()
+                    layer_id += 1
+            #         grads.append(module[1].weight.grad.cpu())
+                    # grads[name] = param.grad.cpu()
+
+        grads_mean = [grad / batch for grad in grads_mean]
+        grads_norm = [grad / batch for grad in grads_norm]
         self.grads.append((grads_mean, grads_norm))
         # self.grads.append(grads)
 
