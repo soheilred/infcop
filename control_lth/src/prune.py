@@ -485,7 +485,7 @@ class Pruner:
         for name, param in model.state_dict().items():
             parameter_type = name.split('.')[-1]
             if 'weight' in parameter_type and param.dim() > 1:
-                param_all.append(2 * param.view(-1))
+                param_all.append(param.view(-1))
                 mask_all.append(self.mask[name[:-7]].view(-1))
                 # layer_id += 1
         param_all = torch.cat(param_all, dim=0)
