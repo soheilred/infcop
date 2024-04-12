@@ -316,9 +316,9 @@ def plot_similarity(exper_dir, vars=None):
     #                    c=colors[i % train_epochs])
 
     for i in range(len(sim[0])):
-        axs[(i // (train_epochs)), 0].plot(net_layers, sim[0][i],
-                                             label=f"Iter {(i+1 % train_epochs)}",
-                                             c=colors[i % (train_epochs + 1)])
+        axs[(i // (train_epochs)) + 1, 0].plot(net_layers, sim[0][i],
+                                               label=f"Iter {(i+1 % train_epochs)}",
+                                               c=colors[i % (train_epochs)])
 
     # axs[0, 0].axis("off")
     for i in range(imp_num - 1):
@@ -342,7 +342,7 @@ def plot_similarity(exper_dir, vars=None):
                                                # corrs[0][i],
                                                [elem.mean() for elem in corrs[0][i]],
                                                label=f"Iter {(i+1 % train_epochs)}",
-                                               c=colors[i % (train_epochs)])
+                                               c=colors[i % train_epochs])
 
     for i in range(imp_num):
         axs[i, 1].set_xticks(major_ticks)
