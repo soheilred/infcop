@@ -300,7 +300,7 @@ def plot_similarity(exper_dir, vars=None):
     network_len = len(sim[0][0])
     net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, train_epochs + 1)  # len(sim[0]))
+    values = np.linspace(0, 1, train_epochs)  # len(sim[0]))
     colors = c_colors(values)
     major_ticks = np.arange(1, network_len + 1)
 
@@ -316,9 +316,11 @@ def plot_similarity(exper_dir, vars=None):
     #                    c=colors[i % train_epochs])
 
     for i in range(len(sim[0])):
-        axs[(i // (train_epochs)) + 1, 0].plot(net_layers, sim[0][i],
+        axs[(i // train_epochs) + 1, 0].plot(net_layers, sim[0][i],
                                                label=f"Iter {(i+1 % train_epochs)}",
                                                c=colors[i % (train_epochs)])
+        print((i // train_epochs) + 1)
+
 
     # axs[0, 0].axis("off")
     for i in range(imp_num - 1):
