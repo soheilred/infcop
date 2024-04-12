@@ -300,7 +300,7 @@ def plot_similarity(exper_dir, vars=None):
     network_len = len(sim[0][0])
     net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, train_epochs + 2)  # len(sim[0]))
+    values = np.linspace(0, 1, train_epochs + 1)  # len(sim[0]))
     colors = c_colors(values)
     major_ticks = np.arange(1, network_len + 1)
 
@@ -311,12 +311,12 @@ def plot_similarity(exper_dir, vars=None):
 
     # similarities
     print("similarity:", len(sim[0]))
-    for i in range(train_epochs + 1):
-        axs[1, 0].plot(net_layers, sim[0][i], label=f"Iter {(i+1 % train_epochs)}",
-                       c=colors[i % train_epochs])
+    # for i in range(train_epochs + 1):
+    #     axs[1, 0].plot(net_layers, sim[0][i], label=f"Iter {(i+1 % train_epochs)}",
+    #                    c=colors[i % train_epochs])
 
     for i in range(len(sim[0])):
-        axs[(i // (train_epochs + 1)) + 1, 0].plot(net_layers, sim[0][i],
+        axs[(i // (train_epochs)), 0].plot(net_layers, sim[0][i],
                                              label=f"Iter {(i+1 % train_epochs)}",
                                              c=colors[i % (train_epochs + 1)])
 
@@ -331,18 +331,18 @@ def plot_similarity(exper_dir, vars=None):
 
     # connectivity
     print("connectivity:", len(corrs[0]))
-    for i in range(train_epochs + 1):
-        axs[0, 1].plot(net_layers[:-1],
-                       [elem.mean() for elem in corrs[0][i]],
-                       label=f"Iter {(i+1 % train_epochs)}",
-                       c=colors[i % (train_epochs + 2)])
+    # for i in range(train_epochs + 1):
+    #     axs[0, 1].plot(net_layers[:-1],
+    #                    [elem.mean() for elem in corrs[0][i]],
+    #                    label=f"Iter {(i+1 % train_epochs)}",
+    #                    c=colors[i % (train_epochs + 2)])
 
-    for i in range(train_epochs + 1, len(corrs[0])):
-        axs[(i // (train_epochs + 2)), 1].plot(net_layers[:-1],
+    for i in range(len(corrs[0])):
+        axs[(i // (train_epochs)), 1].plot(net_layers[:-1],
                                                # corrs[0][i],
                                                [elem.mean() for elem in corrs[0][i]],
                                                label=f"Iter {(i+1 % train_epochs)}",
-                                               c=colors[i % (train_epochs + 2)])
+                                               c=colors[i % (train_epochs)])
 
     for i in range(imp_num):
         axs[i, 1].set_xticks(major_ticks)
@@ -363,16 +363,6 @@ def plot_similarity(exper_dir, vars=None):
                                            label=f"Iter {(i+1 % train_epochs)}",
                                            c=colors[i % train_epochs])
 
-    for i in range(imp_num):
-        # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
-        # axs[i, 2].set_xticks(major_ticks)
-        axs[i, 2].set_title(f"Iter {i}")
-        # axs[i, 2].set_ylim(bottom=0.0001, top=.02)
-        axs[i, 2].set_xlim(left=1, right=grad_network_len)
-        axs[i, 2].set(xlabel="Layer index", ylabel="Gradient Mean")
-        axs[i, 2].grid()
-
-    for i in range(len(grads[0])):
         axs[(i // (train_epochs)), 3].plot(net_layers,
                                            # [elem.abs().norm() for elem in grads[0][i].values()],
                                            grads[0][i][1],
@@ -380,7 +370,13 @@ def plot_similarity(exper_dir, vars=None):
                                            c=colors[i % train_epochs])
 
     for i in range(imp_num):
-        # axs[i, 2].plot(net_layers, torch.FloatTensor(grads[0][i]).cpu(), 'k')
+        # axs[i, 2].set_xticks(major_ticks)
+        axs[i, 2].set_title(f"Iter {i}")
+        # axs[i, 2].set_ylim(bottom=0.0001, top=.02)
+        axs[i, 2].set_xlim(left=1, right=grad_network_len)
+        axs[i, 2].set(xlabel="Layer index", ylabel="Gradient Mean")
+        axs[i, 2].grid()
+
         # axs[i, 3].set_xticks(major_ticks)
         axs[i, 3].set_title(f"Iter {i}")
         # axs[i, 3].set_ylim(bottom=0.0001, top=.02)
