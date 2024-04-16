@@ -46,7 +46,7 @@ class Network():
         self.device = device
         self.feature_extracting = feature_extracting
         self.input_size = 224
-    
+
     def set_model(self):
         if self.arch == "vgg11":
             if self.pretrained == 1:
@@ -74,7 +74,6 @@ class Network():
                 self.model = models.resnet18(weights=None)
             num_ftrs = self.model.fc.in_features
             self.model.fc = nn.Linear(num_ftrs, self.num_classes)
-            # self.model = resnet18()
 
         elif self.arch == "alexnet":
             if self.pretrained == 1:
@@ -252,13 +251,11 @@ def test(model, dataloader, loss_fn, device):
     return 100. * correct
 
 
-
 def main():
     args = utils.get_args()
     logger = utils.setup_logger_dir(args)
     args = utils.get_yaml_args(args)
     device = utils.get_device(args)
-
 
     data = Data(args.batch_size, C.DATA_DIR, args.dataset)
     num_classes = data.get_num_classes()

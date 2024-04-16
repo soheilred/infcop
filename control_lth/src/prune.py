@@ -247,11 +247,15 @@ class Pruner:
                 if ((name[:-7] in layers_idx) and
                         (layers_idx.index(name[:-7]) > 0) and
                         (layers_idx.index(name[:-7]) < len(layers_idx) - 1)):
+                    # -1 because the first correlation is between 1 and 2!
                     idx = layers_idx.index(name[:-7]) - 1
-                    # tensor = corr.repeat(fix-dim) * weight
+                    # fixing the dimension of correlation for multiplication
                     kernel_size = weight.shape[-1]
-                    # correlation = correlations[layer_id - 1]
-                    corr = corrs[idx].repeat([kernel_size, kernel_size, 1, 1])
+                    corr = corrs[idx]
+                    # Normalize the correlations
+                    corr -= corr.min(1, keepdim=True)[0]
+                    corr -= corr.max(1, keepdim=True)[0]
+                    corr = corr.repeat([kernel_size, kernel_size, 1, 1])
                     corr = corr.permute(3, 2, 1, 0).to(weight_dev)
                     tensor = corr * weight
 
