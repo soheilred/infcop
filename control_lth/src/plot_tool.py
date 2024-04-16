@@ -295,7 +295,7 @@ def plot_similarity(exper_dir, vars=None):
     if vars is None:
         acc, comp_level, sim, corrs, grads = read_variables(exper_dir)
 
-    fig, axs = plt.subplots(imp_num, 5, figsize=(9, 16))
+    fig, axs = plt.subplots(imp_num, 5, figsize=(16, 9))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
     network_len = len(sim[0][0])
     net_layers = np.arange(1, network_len + 1)
@@ -345,7 +345,7 @@ def plot_similarity(exper_dir, vars=None):
                                                c=colors[i % train_epochs])
 
     for i in range(imp_num):
-        axs[i, 1].set_xticks(major_ticks)
+        # axs[i, 1].set_xticks(major_ticks)
         axs[i, 1].set_title(f"Iter {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
         # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
