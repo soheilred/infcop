@@ -387,7 +387,6 @@ def plot_similarity(exper_dir, vars=None):
     # Accuracy
     print("accuracy: ", len(acc[0][0]))
     import ipdb; ipdb.set_trace()
-    exper_len = np.arange(1, len(acc[0][0]) + 1)
     for i in range(imp_num):
         axs[i, 4].plot(exper_len, acc[0][i], 'k')
         axs[i, 4].set_title(f"Rem. Weights {comp_level[0][i]}")
