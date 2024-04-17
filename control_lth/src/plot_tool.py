@@ -310,12 +310,12 @@ def plot_similarity(exper_dir, vars=None):
     cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
     rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs]])
-    import ipdb; ipdb.set_trace()
-    tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
-            - rho_opt).norm().item() for j in range(train_epochs)]
+    # import ipdb; ipdb.set_trace()
+    # tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
+    #         - rho_opt).norm().item() for j in range(train_epochs)]
 
     for i in range(imp_num):
-        axs[i, 0].plot(exper_len, [(torch.Tensor(
+        axs[i, 0].plot(np.arange(train_epochs), [(torch.Tensor(
             [elem.mean() for elem in corrs[0][i * train_epochs + j]]) - rho_opt
                                  ).norm().item() for j in range(train_epochs)])
 
