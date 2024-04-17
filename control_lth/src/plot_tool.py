@@ -328,7 +328,7 @@ def plot_similarity(exper_dir, vars=None):
 
     # axs[0, 0].axis("off")
     for i in range(imp_num):
-        axs[i, 0].set_xticks(major_ticks)
+        # axs[i, 0].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i + 1, 0].set_ylim(bottom=0.01, top=.02)
         # axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
