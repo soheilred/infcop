@@ -295,6 +295,7 @@ def plot_similarity(exper_dir, vars=None):
     if vars is None:
         acc, comp_level, sim, corrs, grads = read_variables(exper_dir)
 
+    exper_len = np.arange(1, len(acc[0][0]) + 1)
     fig, axs = plt.subplots(imp_num, 5, figsize=(16, 9))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
     network_len = len(sim[0][0])
@@ -308,26 +309,31 @@ def plot_similarity(exper_dir, vars=None):
     cmap = ListedColormap(colors)
     cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
+    import ipdb; ipdb.set_trace()
+
+    rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs]])
+    for i in range(imp_num):
+        axs[i].plot(exper_len,
+                    (torch.Tensor([elem.mean()
+                                   for elem in corrs[0][i * train_epochs + j]
+                                   for j in range(train_epochs)])
+                                - rho_opt).norm())
 
     # similarities
-    print("similarity:", len(sim[0]))
-    # for i in range(train_epochs + 1):
-    #     axs[1, 0].plot(net_layers, sim[0][i], label=f"Iter {(i+1 % train_epochs)}",
-    #                    c=colors[i % train_epochs])
-
-    for i in range(len(sim[0])):
-        axs[(i // train_epochs) + 1, 0].plot(net_layers, sim[0][i],
-                                               label=f"Iter {(i+1 % train_epochs)}",
-                                               c=colors[i % (train_epochs)])
+    # print("similarity:", len(sim[0]))
+    # for i in range(len(sim[0])):
+    #     axs[(i // train_epochs) + 1, 0].plot(net_layers, sim[0][i],
+    #                                            label=f"Iter {(i+1 % train_epochs)}",
+    #                                            c=colors[i % (train_epochs)])
 
     # axs[0, 0].axis("off")
     for i in range(imp_num - 1):
-        axs[i + 1, 0].set_xticks(major_ticks)
-        axs[i + 1, 0].set_title(f"Iter {i}")
-        axs[i + 1, 0].set_ylim(bottom=0.01, top=.02)
-        axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
-        axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
-        axs[i + 1, 0].grid()
+        axs[i, 0].set_xticks(major_ticks)
+        axs[i, 0].set_title(f"Iter {i}")
+        # axs[i + 1, 0].set_ylim(bottom=0.01, top=.02)
+        # axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
+        # axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
+        axs[i, 0].grid()
 
     # connectivity
     print("connectivity:", len(corrs[0]))
@@ -386,7 +392,6 @@ def plot_similarity(exper_dir, vars=None):
 
     # Accuracy
     print("accuracy: ", len(acc[0][0]))
-    exper_len = np.arange(1, len(acc[0][0]) + 1)
     for i in range(imp_num):
         axs[i, 4].plot(exper_len, acc[0][i], 'k')
         axs[i, 4].set_title(f"Rem. Weights {comp_level[0][i]}")
