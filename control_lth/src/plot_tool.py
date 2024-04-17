@@ -315,8 +315,8 @@ def plot_similarity(exper_dir, vars=None):
             - rho_opt).norm().item() for j in range(train_epochs)]
 
     for i in range(imp_num):
-        axs[i].plot(exper_len, [(torch.Tensor(
-            [elem.mean() for elem in corrs[0][0 * train_epochs + j]]) - rho_opt
+        axs[i, 0].plot(exper_len, [(torch.Tensor(
+            [elem.mean() for elem in corrs[0][i * train_epochs + j]]) - rho_opt
                                  ).norm().item() for j in range(train_epochs)])
 
     # similarities
