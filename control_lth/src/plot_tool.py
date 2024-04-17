@@ -312,13 +312,12 @@ def plot_similarity(exper_dir, vars=None):
     rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs]])
     import ipdb; ipdb.set_trace()
     tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
-            - rho_opt).norm() for j in range(train_epochs)]
+            - rho_opt).norm().item() for j in range(train_epochs)]
 
     for i in range(imp_num):
-        axs[i].plot(exper_len, [(torch.Tensor([elem.mean()
-                                for elem in corrs[0][i * train_epochs + j]])
-                                - rho_opt).norm() for j in range(train_epochs)]
-                    )
+        axs[i].plot(exper_len, [(torch.Tensor(
+            [elem.mean() for elem in corrs[0][0 * train_epochs + j]]) - rho_opt
+                                 ).norm().item() for j in range(train_epochs)])
 
     # similarities
     # print("similarity:", len(sim[0]))
