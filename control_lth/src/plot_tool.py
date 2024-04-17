@@ -305,9 +305,9 @@ def plot_similarity(exper_dir, vars=None):
     colors = c_colors(values)
     major_ticks = np.arange(1, network_len + 1)
 
-    axs[0, 0].axis("off")
-    cmap = ListedColormap(colors)
-    cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
+    # axs[0, 0].axis("off")
+    # cmap = ListedColormap(colors)
+    # cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
     rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs]])
     # import ipdb; ipdb.set_trace()
@@ -327,7 +327,7 @@ def plot_similarity(exper_dir, vars=None):
     #                                            c=colors[i % (train_epochs)])
 
     # axs[0, 0].axis("off")
-    for i in range(imp_num - 1):
+    for i in range(imp_num):
         axs[i, 0].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i + 1, 0].set_ylim(bottom=0.01, top=.02)
