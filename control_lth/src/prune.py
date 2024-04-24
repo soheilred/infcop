@@ -808,7 +808,7 @@ def perf_test_lth(logger, device, args, controller):
 
     output = [pruning.all_acc,
               similarity.get_similarity(),
-              act.get_correlations(),
+              act.get_conns(),
               act.get_gradient(),
               pruning.comp_level]
 
@@ -881,7 +881,7 @@ def effic_lth(logger, device, args, controller):
 
     output = [pruning.all_acc,
               similarity.get_similarity(),
-              act.get_correlations(),
+              act.get_conns(),
               act.get_gradient(),
               pruning.comp_level]
 
