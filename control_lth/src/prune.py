@@ -897,11 +897,11 @@ def perf_exper(logger, args, device, run_dir):
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, corr, grad, comp = perf_lth(logger, device, args, controller)
+        all_acc, sim, conn, grad, comp = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
-        conn_list.append(corr)
+        conn_list.append(conn)
         comp_list.append(comp)
-        utils.save_vars(save_dir=run_dir+str(i)+"_", corr=corr,
+        utils.save_vars(save_dir=run_dir+str(i)+"_", conn=conn,
                         all_accuracies=all_acc, comp_level=comp)
 
     utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list,
@@ -915,24 +915,24 @@ def effic_exper(logger, args, device, run_dir):
     similarity = []
     acc_list = []
     grads = []
-    corrs = []
+    conns = []
     comp_list = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, corr, grad, comp = effic_lth(logger, device, args, controller)
+        all_acc, sim, conn, grad, comp = effic_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         similarity.append(sim)
-        corrs.append(corr)
+        conns.append(conn)
         grads.append(grad)
         comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        all_accuracies=all_acc, corr=corr,
+                        all_accuracies=all_acc, conn=conn,
                         grad=grad, comp_level=comp)
 
     utils.save_vars(save_dir=run_dir, similarity=similarity,
                     accuracies=acc_list,
-                    corrs=corrs,
+                    conns=conns,
                     grads=grads,
                     comp_levels=comp_list)
 
@@ -942,27 +942,27 @@ def test_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     similarity = []
-    corrs = []
+    conns = []
     grads = []
     comp_list = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
         results = perf_test_lth(logger, device, args, controller)
-        all_acc, sim, corr, grad, comp = results
+        all_acc, sim, conn, grad, comp = results
         acc_list.append(all_acc)
         similarity.append(sim)
-        corrs.append(corr)
+        conns.append(conn)
         grads.append(grad)
         comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        all_accuracies=all_acc, corr=corr,
+                        all_accuracies=all_acc, conn=conn,
                         grad=grad, comp_level=comp)
 
     # Save the variables
     utils.save_vars(save_dir=run_dir, similarity=similarity,
                     accuracies=acc_list,
-                    corrs=corrs,
+                    corrs=conns,
                     grads=grads,
                     comp_levels=comp_list)
 
