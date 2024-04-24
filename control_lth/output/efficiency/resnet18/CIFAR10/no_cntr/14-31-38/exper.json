@@ -2,9 +2,9 @@
   "net_arch": "resnet18",
   "net_pretrained": 1,
   "net_dataset": "CIFAR10",
-  "net_train_epochs": 10,
+  "net_train_epochs": 40,
   "net_train_per_epoch": 2,
-  "net_warmup": 10,
+  "net_warmup": 5,
   "net_lr": 0.01,
   "net_batch_size": 64,
   "net_weight_decay": 0.0005,
@@ -24,8 +24,8 @@
   "exper_imp_total_iter": 5,
   "exper_num_trial": 1,
   "exper_acc_thrd": 95,
-  "exper_type": "test",
-  "exper_gpu_id": 1,
-  "prune_perc_per_layer": 0.8,
-  "prune_method": "sap"
+  "exper_type": "efficiency",
+  "exper_gpu_id": 0,
+  "prune_perc_per_layer": 0.5,
+  "prune_method": "percentile"
 }

@@ -128,20 +128,23 @@ class Network():
         self.model = self.model.to(self.device)
         return self.model
 
-
     def set_parameter_requires_grad(self):
         if self.feature_extracting:
             for param in self.model.parameters():
                 param.requires_grad = False
 
+    def trained_enough(self, correlation):
+        # log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
+        opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
+        cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
+        # if there are nans in correlation
+        log.debug(f"Nan in correlations?: {any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]])}")
+        if any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]]):
+            return False
 
-    def trained_enough(self, accuracy, dataloader, loss_fn, optimizer, epochs, device):
-        i = 0
-        while accuracy < .20:
-            accuracy, _ = train(self.model, dataloader, loss_fn, optimizer,
-                                epochs, device)
-            log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
-            i += 1
+        # if the norm difference is less than a threshold
+        log.debug(f"Correlation norm diff: {(cur_corr - opt_corr).norm().item()}")
+        return (cur_corr - opt_corr).norm().item() < .1
 
     def add_dataset(self, dataset, num_outputs):
         """Adds a new dataset to the classifier."""
@@ -249,6 +252,17 @@ def test(model, dataloader, loss_fn, device):
     log.debug(f"Test acc.: {(100*correct):>0.1f}%, Avg loss: {test_loss:.2f}")
     model.train()
     return 100. * correct
+
+
+def warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device):
+    max_acc = -1
+
+    for i in range(args.net_warmup):
+        acc, _ = train(model, train_dl, loss_fn, optimizer, None,
+                       args.net_train_per_epoch, device)
+        max_acc = max(max_acc, test(model, test_dl, loss_fn, device))
+    log.debug(f"Max acc. for warm-up: {max_acc}")
+    return max_acc
 
 
 def main():
