@@ -144,7 +144,7 @@ class Network():
 
         # if the norm difference is less than a threshold
         log.debug(f"Correlation norm diff: {(cur_corr - opt_corr).norm().item()}")
-        return (cur_corr - opt_corr).norm().item() < .1
+        return (cur_corr - opt_corr).norm().item() < .11
 
     def add_dataset(self, dataset, num_outputs):
         """Adds a new dataset to the classifier."""
