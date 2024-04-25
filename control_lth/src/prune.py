@@ -683,7 +683,7 @@ def perf_lth(logger, device, args, controller):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr)
     logger.debug("Warming up the pretrained model")
-    acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net_warmup, device)
+    max_acc = warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device)
 
     act = Activations(model, train_dl, device, args.net_batch_size)
     pruning = Pruner(args, model, act, controller)
@@ -751,8 +751,7 @@ def perf_test_lth(logger, device, args, controller):
     optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
                                 weight_decay=args.net_weight_decay)
     # warm up the pretrained model
-    acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net_warmup,
-                   device)
+    max_acc = warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device)
 
     similarity = Similarity(args, test_dl, device, run_dir, num_classes)
     act = Activations(model, train_dl, device, args.net_batch_size)
