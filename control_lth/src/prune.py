@@ -692,12 +692,12 @@ def perf_lth(logger, device, args, controller):
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, we don't prune in the first iteration
-        if imp_iter != 0:
-            pruning.prune_once(init_state_dict)
-            # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
-            # optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
-            #                             weight_decay=args.net_weight_decay)
-            act.compute_correlations()
+        # if imp_iter != 0:
+        pruning.prune_once(init_state_dict)
+        # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
+        # optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
+        #                             weight_decay=args.net_weight_decay)
+        act.compute_correlations()
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 

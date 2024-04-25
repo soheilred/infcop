@@ -258,6 +258,7 @@ def warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device):
     max_acc = -1
 
     for i in range(args.net_warmup):
+        log.debug(f"warm-up iteration [{i} / {args.net_warmup}]")
         acc, _ = train(model, train_dl, loss_fn, optimizer, None,
                        args.net_train_per_epoch, device)
         max_acc = max(max_acc, test(model, test_dl, loss_fn, device))
