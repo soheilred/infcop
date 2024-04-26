@@ -685,6 +685,7 @@ def perf_lth(logger, device, args, controller):
     logger.debug("Warming up the pretrained model")
     max_acc = warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device)
 
+    similarity = Similarity(args, test_dl, device, run_dir, num_classes)
     act = Activations(model, train_dl, device, args.net_batch_size)
     pruning = Pruner(args, model, act, controller)
     init_state_dict = pruning.init_lth()
@@ -733,9 +734,14 @@ def perf_lth(logger, device, args, controller):
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
 
         # Calculate the connectivity
-    connectivity = act.get_conns()
 
-    return pruning.all_acc, connectivity, pruning.comp_level
+    output = [pruning.all_acc,
+              similarity.get_similarity(),
+              act.get_conns(),
+              act.get_gradient(),
+              pruning.comp_level]
+
+    return output
 
 
 def perf_test_lth(logger, device, args, controller):
