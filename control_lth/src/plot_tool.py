@@ -438,7 +438,7 @@ def main():
     # plot_accuracy()
     # plot_correlations(sys.argv[1])
     # plot_similarity(sys.argv[1])
-    plot_accuracy(sys.argv[1])
+    plot_accuracy(sys.argv[1], sys.argv[2])
 
 
 if __name__ == '__main__':
