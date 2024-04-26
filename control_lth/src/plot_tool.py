@@ -255,28 +255,10 @@ def plot_correlations(filename):
         #     color = greys[30]
 
 
-def plot_accuracy():
-    # out_dir = "../output/05-02-21-28/"
-    out_dir = sys.argv[1]
-    # train_acc = pickle.load(open("vgg16" + "_training_acc.pkl", "rb"))
-    corrs = pickle.load(open(out_dir + "vgg16" + "_correlation.pkl", "rb"))
-    all_accuracy = pickle.load(open(out_dir + "vgg16" + "_all_accuracy.pkl", "rb"))
-    max_accuracy = np.max(all_accuracy, axis=1)
-    best_accuracy = pickle.load(open(out_dir + "vgg16" + "_best_accuracy.pkl", "rb"))
-    all_loss = pickle.load(open(out_dir + "vgg16" + "_all_accuracy.pkl", "rb"))
-    # compression = pickle.load(open(out_dir + "vgg16" + "_compression.pkl", "rb"))
-    perf_stability = pickle.load(open(out_dir + "vgg16" + "_performance_stability.pkl", "rb")) 
-    connect_stability = pickle.load(open(out_dir + "vgg16" + "_connectivity_stability.pkl", "rb")) 
-
-    plot_experiment(best_accuracy, corrs, out_dir + "vgg16_correlation")
-    plot_experiment(best_accuracy, connect_stability, out_dir + "vgg16_connectivity_instability")
-
-    # plot_experiment(max_accuracy, corrs, out_dir + "vgg16_correlation")
-    # plot_experiment(max_accuracy, connect_stability, out_dir + "vgg16_connectivity_instability")
-
-    plot_all_accuracy(all_accuracy, out_dir + "accuracies")
-    print(np.round(corrs, 3))
-    print(np.round(connect_stability, 3))
+def plot_accuracy(exper_dir):
+    all_accuracy = pickle.load(open(exper_dir + "accuracies.pkl", "rb"))
+    comp_level = pickle.load(open(exper_dir + "comp_levels.pkl", "rb"))
+    import ipdb; ipdb.set_trace()
 
 
 def read_variables(exper_dir):
@@ -419,7 +401,8 @@ def plot_similarity(exper_dir, vars=None):
 def main():
     # plot_accuracy()
     # plot_correlations(sys.argv[1])
-    plot_similarity(sys.argv[1])
+    # plot_similarity(sys.argv[1])
+    plot_accuracy(sys.argv[1])
 
 
 if __name__ == '__main__':
