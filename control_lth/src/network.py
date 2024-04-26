@@ -133,10 +133,12 @@ class Network():
             for param in self.model.parameters():
                 param.requires_grad = False
 
-    def trained_enough(self, correlation):
+    def trained_enough(self, correlation, grads):
         # log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
         opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
         cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
+        opt_grad = grads[0]
+        import ipdb; ipdb.set_trace()
         # if there are nans in correlation
         log.debug(f"Nan in correlations?: {any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]])}")
         if any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]]):

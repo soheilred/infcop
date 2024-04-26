@@ -855,7 +855,8 @@ def effic_lth(logger, device, args, controller):
         # for train_iter in range(args.net_train_epochs):
         train_iter, accuracy = 0, 0
         while (train_iter < args.net_train_epochs and accuracy < max_acc):
-            if (network.trained_enough(act.get_correlations())):
+            if (network.trained_enough(act.get_correlations(),
+                                       act.get_gradient())):
                 break
 
             # Training
