@@ -688,7 +688,7 @@ def perf_lth(logger, device, args, controller):
     act = Activations(model, train_dl, device, args.net_batch_size)
     pruning = Pruner(args, model, act, controller)
     init_state_dict = pruning.init_lth()
-    act.compute_correlations()
+    # act.compute_correlations()
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, we don't prune in the first iteration
@@ -697,7 +697,7 @@ def perf_lth(logger, device, args, controller):
         # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
         # optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
         #                             weight_decay=args.net_weight_decay)
-        act.compute_correlations()
+        # act.compute_correlations()
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -714,18 +714,18 @@ def perf_lth(logger, device, args, controller):
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
 
-            act.compute_correlations()
+            # act.compute_correlations()
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
 
             # apply the controller at specific epochs and iteration
-            if ((args.control_on == 1) and
-                (train_iter == controller.c_epoch) and
-               (imp_iter in controller.c_iter)):
-                act.compute_correlations()
-                corr = act.get_correlations()
-                pruning.control(corr, act.layers_dim, imp_iter)
+            # if ((args.control_on == 1) and
+            #     (train_iter == controller.c_epoch) and
+            #    (imp_iter in controller.c_iter)):
+            #     act.compute_correlations()
+            #     corr = act.get_correlations()
+            #     pruning.control(corr, act.layers_dim, imp_iter)
 
             pruning.all_acc[imp_iter, train_iter] = accuracy
 
