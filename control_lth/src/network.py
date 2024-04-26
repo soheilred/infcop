@@ -137,8 +137,9 @@ class Network():
         # log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
         opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
         cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
-        opt_grad = grads[0]
-        import ipdb; ipdb.set_trace()
+        opt_grad = torch.Tensor(grads[0][0])
+        cur_grad = torch.Tensor(grads[-1][-1])
+        log.debug(f"Grad diff {(cur_grad - opt_grad).norm().item()}")
         # if there are nans in correlation
         log.debug(f"Nan in correlations?: {any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]])}")
         if any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]]):
