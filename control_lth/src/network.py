@@ -133,10 +133,12 @@ class Network():
             for param in self.model.parameters():
                 param.requires_grad = False
 
-    def trained_enough(self, correlation):
+    def trained_enough(self, correlation, grads):
         # log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
         opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
         cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
+        opt_grad = grads[0]
+        import ipdb; ipdb.set_trace()
         # if there are nans in correlation
         log.debug(f"Nan in correlations?: {any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]])}")
         if any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]]):
@@ -144,7 +146,7 @@ class Network():
 
         # if the norm difference is less than a threshold
         log.debug(f"Correlation norm diff: {(cur_corr - opt_corr).norm().item()}")
-        return (cur_corr - opt_corr).norm().item() < .1
+        return (cur_corr - opt_corr).norm().item() < .11
 
     def add_dataset(self, dataset, num_outputs):
         """Adds a new dataset to the classifier."""
@@ -258,6 +260,7 @@ def warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device):
     max_acc = -1
 
     for i in range(args.net_warmup):
+        log.debug(f"warm-up epoch [{i} / {args.net_warmup}]")
         acc, _ = train(model, train_dl, loss_fn, optimizer, None,
                        args.net_train_per_epoch, device)
         max_acc = max(max_acc, test(model, test_dl, loss_fn, device))

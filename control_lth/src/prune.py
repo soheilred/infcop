@@ -683,7 +683,7 @@ def perf_lth(logger, device, args, controller):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr)
     logger.debug("Warming up the pretrained model")
-    acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net_warmup, device)
+    max_acc = warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device)
 
     act = Activations(model, train_dl, device, args.net_batch_size)
     pruning = Pruner(args, model, act, controller)
@@ -692,12 +692,12 @@ def perf_lth(logger, device, args, controller):
 
     for imp_iter in tqdm(range(ITERATION)):
         # except for the first iteration, we don't prune in the first iteration
-        if imp_iter != 0:
-            pruning.prune_once(init_state_dict)
-            # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
-            # optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
-            #                             weight_decay=args.net_weight_decay)
-            act.compute_correlations()
+        # if imp_iter != 0:
+        pruning.prune_once(init_state_dict)
+        # non_frozen_parameters = [p for p in model.parameters() if p.requires_grad]
+        # optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
+        #                             weight_decay=args.net_weight_decay)
+        act.compute_correlations()
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
 
@@ -751,8 +751,7 @@ def perf_test_lth(logger, device, args, controller):
     optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
                                 weight_decay=args.net_weight_decay)
     # warm up the pretrained model
-    acc, _ = train(model, train_dl, loss_fn, optimizer, None, args.net_warmup,
-                   device)
+    max_acc = warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device)
 
     similarity = Similarity(args, test_dl, device, run_dir, num_classes)
     act = Activations(model, train_dl, device, args.net_batch_size)
@@ -808,7 +807,7 @@ def perf_test_lth(logger, device, args, controller):
 
     output = [pruning.all_acc,
               similarity.get_similarity(),
-              act.get_correlations(),
+              act.get_conns(),
               act.get_gradient(),
               pruning.comp_level]
 
@@ -856,7 +855,8 @@ def effic_lth(logger, device, args, controller):
         # for train_iter in range(args.net_train_epochs):
         train_iter, accuracy = 0, 0
         while (train_iter < args.net_train_epochs and accuracy < max_acc):
-            if (network.trained_enough(act.get_correlations())):
+            if (network.trained_enough(act.get_correlations(),
+                                       act.get_gradient())):
                 break
 
             # Training
@@ -881,7 +881,7 @@ def effic_lth(logger, device, args, controller):
 
     output = [pruning.all_acc,
               similarity.get_similarity(),
-              act.get_correlations(),
+              act.get_conns(),
               act.get_gradient(),
               pruning.comp_level]
 
@@ -897,11 +897,11 @@ def perf_exper(logger, args, device, run_dir):
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, corr, grad, comp = perf_lth(logger, device, args, controller)
+        all_acc, sim, conn, grad, comp = perf_lth(logger, device, args, controller)
         acc_list.append(all_acc)
-        conn_list.append(corr)
+        conn_list.append(conn)
         comp_list.append(comp)
-        utils.save_vars(save_dir=run_dir+str(i)+"_", corr=corr,
+        utils.save_vars(save_dir=run_dir+str(i)+"_", conn=conn,
                         all_accuracies=all_acc, comp_level=comp)
 
     utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list,
@@ -915,24 +915,24 @@ def effic_exper(logger, args, device, run_dir):
     similarity = []
     acc_list = []
     grads = []
-    corrs = []
+    conns = []
     comp_list = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, corr, grad, comp = effic_lth(logger, device, args, controller)
+        all_acc, sim, conn, grad, comp = effic_lth(logger, device, args, controller)
         acc_list.append(all_acc)
         similarity.append(sim)
-        corrs.append(corr)
+        conns.append(conn)
         grads.append(grad)
         comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        all_accuracies=all_acc, corr=corr,
+                        all_accuracies=all_acc, conn=conn,
                         grad=grad, comp_level=comp)
 
     utils.save_vars(save_dir=run_dir, similarity=similarity,
                     accuracies=acc_list,
-                    corrs=corrs,
+                    conns=conns,
                     grads=grads,
                     comp_levels=comp_list)
 
@@ -942,27 +942,27 @@ def test_exper(logger, args, device, run_dir):
     controller = Controller(args)
     acc_list = []
     similarity = []
-    corrs = []
+    conns = []
     grads = []
     comp_list = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
         results = perf_test_lth(logger, device, args, controller)
-        all_acc, sim, corr, grad, comp = results
+        all_acc, sim, conn, grad, comp = results
         acc_list.append(all_acc)
         similarity.append(sim)
-        corrs.append(corr)
+        conns.append(conn)
         grads.append(grad)
         comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        all_accuracies=all_acc, corr=corr,
+                        all_accuracies=all_acc, conn=conn,
                         grad=grad, comp_level=comp)
 
     # Save the variables
     utils.save_vars(save_dir=run_dir, similarity=similarity,
                     accuracies=acc_list,
-                    corrs=corrs,
+                    corrs=conns,
                     grads=grads,
                     comp_levels=comp_list)
 
