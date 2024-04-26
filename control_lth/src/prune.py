@@ -855,10 +855,6 @@ def effic_lth(logger, device, args, controller):
         # for train_iter in range(args.net_train_epochs):
         train_iter, accuracy = 0, 0
         while (train_iter < args.net_train_epochs and accuracy < max_acc):
-            if (network.trained_enough(act.get_correlations(),
-                                       act.get_gradient())):
-                break
-
             # Training
             logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
@@ -871,6 +867,10 @@ def effic_lth(logger, device, args, controller):
             accuracy = test(model, test_dl, loss_fn, device)
             pruning.all_acc[imp_iter, train_iter] = accuracy
             train_iter += 1
+            if (network.trained_enough(act.get_correlations(),
+                                       act.get_gradient())):
+                break
+
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
