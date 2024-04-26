@@ -255,21 +255,46 @@ def plot_correlations(filename):
         #     color = greys[30]
 
 
-def plot_accuracy(exper_dir):
+def plot_accuracy(cc_dir, sap_dir):
     # accuracy of CC-LTH
-    all_accuracy = pickle.load(open(exper_dir + "accuracies.pkl", "rb"))
-    all_accuracy = np.mean(all_accuracy, axis=0)
-    end_inds = np.zeros(all_accuracy[0].shape[0])
-    cc_accuracy = np.zeros(all_accuracy.shape[0])
-    import ipdb; ipdb.set_trace()
-    for i in range(all_accuracy.shape[0]):
-        for j in range(all_accuracy.shape[1]):
-            if abs(all_accuracy[i][j]) < .001:
+    cc_acc = pickle.load(open(cc_dir + "accuracies.pkl", "rb"))
+    cc_acc = np.mean(cc_acc, axis=0)
+    end_inds = np.zeros(cc_acc[0].shape[0])
+    cc_accuracy = np.zeros(cc_acc.shape[0])
+    cc_comp = pickle.load(open(cc_dir + "comp_levels.pkl", "rb"))
+
+    for i in range(cc_acc.shape[0]):
+        for j in range(cc_acc.shape[1]):
+            if abs(cc_acc[i][j]) < .001:
                 break
             end_inds[i] = j+1
-            cc_accuracy[i] = all_accuracy[i][j]
+            cc_accuracy[i] = cc_acc[i][j]
 
-    comp_level = pickle.load(open(exper_dir + "comp_levels.pkl", "rb"))
+    # accuracy of SAP
+    sap_acc = pickle.load(open(sap_dir + "accuracies.pkl", "rb"))
+    sap_acc = np.mean(sap_acc, axis=0)
+    import ipdb; ipdb.set_trace()
+    sap_acc = np.array([acc[-1] for acc in sap_acc])
+    sap_comp = pickle.load(open(sap_dir + "comp_levels.pkl", "rb"))
+
+    fig, axs = plt.subplots(2, 1, figsize=(16, 9))
+    # plot the performance vs. remaining weights
+    axs[0, 0].plot(cc_comp, cc_accuracy, label="CC-LTH", c="b")
+    axs[0, 0].plot(sap_comp, sap_acc, label="SAP", c="b")
+
+    # plot number of epochs vs. remaining weights
+    axs[0, 0].plot(cc_comp, end_inds, label="CC-LTH", c="b")
+    axs[1, 0].plot(sap_comp, sap_acc.shape[1] * np.ones(sap_acc.shape[0]),
+                   label="SAP", c="tab:purple")
+
+    # axs[0, 1].set_xticks(major_ticks)
+    # axs[0, 1].set_title(f"Iter {i}")
+    # axs[0, 1].set_ylim(bottom=-0.05, top=.4)
+    # axs[0, 1].set_xlim(left=1, right=len(similarity[0][0]))
+    # axs[0, 1].set(xlabel="Layer index", ylabel="Connectivity")
+    axs[0, 0].grid()
+    axs[1, 0].grid()
+    plt.savefig(sap_dir + "accuracy.png")
 
 
 def read_variables(exper_dir):
