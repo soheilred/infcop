@@ -258,14 +258,15 @@ def plot_correlations(filename):
 def plot_accuracy(exper_dir):
     # accuracy of CC-LTH
     all_accuracy = pickle.load(open(exper_dir + "accuracies.pkl", "rb"))
+    all_accuracy = np.mean(all_accuracy, axis=0)
     end_inds = np.zeros(all_accuracy[0].shape[0])
-    cc_accuracy = np.zeros(all_accuracy[0].shape[0])
-    for i in range(all_accuracy[0].shape[0]):
-        for j in range(all_accuracy[0].shape[1]):
+    cc_accuracy = np.zeros(all_accuracy.shape[0])
+    for i in range(all_accuracy.shape[0]):
+        for j in range(all_accuracy.shape[1]):
             if abs(all_accuracy[0][i][j]) < .001:
                 break
             end_inds[i] = j+1
-            cc_accuracy[i] = all_accuracy[0][i][j]
+            cc_accuracy[i] = all_accuracy[i][j]
 
     comp_level = pickle.load(open(exper_dir + "comp_levels.pkl", "rb"))
     import ipdb; ipdb.set_trace()
