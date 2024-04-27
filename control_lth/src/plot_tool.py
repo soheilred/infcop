@@ -285,16 +285,20 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[0].plot(x_acc, sap_acc, label="SAP", c="tab:blue")
     # axs[0].set_xscale('log')
     # axs[0].set_xticks(cc_comp)
-    axs[0].set(xlabel="Rem. Weights", ylabel="Accuracy")
+    axs[0].set(xlabel="Iteration", ylabel="Accuracy")
     axs[0].set_title("CIAP vs. SAP")
 
     # plot number of epochs vs. remaining weights
     axs[1].plot(x_acc, end_inds, label="CC-LTH", c="tab:red")
     axs[1].plot(x_acc, [sap_len] * sap_acc.shape[0], label="SAP",
                 c="tab:blue")
+    axs[0].set(xlabel="Iteration", ylabel="Epochs")
+    axs[0].set_title("#epochs in each iterations")
 
     # plot the remaining weight
     axs[2].plot(x_acc, cc_comp, label="CC-LTH", c="tab:purple")
+    axs[0].set(xlabel="Iteration", ylabel="Remaining Weights %")
+    axs[0].set_title("#epochs in each iterations")
 
     # axs[0, 1].set_xticks(major_ticks)
     # axs[0, 1].set_title(f"Iter {i}")
