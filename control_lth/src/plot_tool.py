@@ -261,7 +261,7 @@ def plot_accuracy(cc_dir, sap_dir):
     cc_acc = np.mean(cc_acc, axis=0)
     end_inds = np.zeros(cc_acc.shape[0])
     cc_accuracy = np.zeros(cc_acc.shape[0])
-    cc_comp = pickle.load(open(cc_dir + "comp_levels.pkl", "rb"))
+    cc_comp = np.mean(pickle.load(open(cc_dir + "comp_levels.pkl", "rb")), axis=0)
 
     for i in range(cc_acc.shape[0]):
         for j in range(cc_acc.shape[1]):
@@ -275,7 +275,7 @@ def plot_accuracy(cc_dir, sap_dir):
     sap_acc = np.mean(sap_acc, axis=0)
     import ipdb; ipdb.set_trace()
     sap_acc = np.array([acc[-1] for acc in sap_acc])
-    sap_comp = pickle.load(open(sap_dir + "comp_levels.pkl", "rb"))
+    sap_comp = np.mean(pickle.load(open(sap_dir + "comp_levels.pkl", "rb")), axis=0)
 
     fig, axs = plt.subplots(2, 1, figsize=(16, 9))
     # plot the performance vs. remaining weights
@@ -292,8 +292,8 @@ def plot_accuracy(cc_dir, sap_dir):
     # axs[0, 1].set_ylim(bottom=-0.05, top=.4)
     # axs[0, 1].set_xlim(left=1, right=len(similarity[0][0]))
     # axs[0, 1].set(xlabel="Layer index", ylabel="Connectivity")
-    axs[0, 0].grid()
-    axs[1, 0].grid()
+    axs[0].grid()
+    axs[1].grid()
     plt.savefig(sap_dir + "accuracy.png")
 
 
