@@ -271,9 +271,8 @@ def plot_accuracy(cc_dir, sap_dir):
             cc_accuracy[i] = cc_acc[i][j]
 
     # accuracy of SAP
-    sap_acc = pickle.load(open(sap_dir + "accuracies.pkl", "rb"))
-    sap_acc = np.mean(sap_acc, axis=0)
-    import ipdb; ipdb.set_trace()
+    sap_acc = np.mean(pickle.load(open(sap_dir + "accuracies.pkl", "rb")), axis=0)
+    sap_len = sap_acc.shape[1]
     sap_acc = np.array([acc[-1] for acc in sap_acc])
     sap_comp = np.mean(pickle.load(open(sap_dir + "comp_levels.pkl", "rb")), axis=0)
 
@@ -284,7 +283,7 @@ def plot_accuracy(cc_dir, sap_dir):
 
     # plot number of epochs vs. remaining weights
     axs[0].plot(cc_comp, end_inds, label="CC-LTH", c="b")
-    axs[1].plot(sap_comp, sap_acc.shape[1] * np.ones(sap_acc.shape[0]),
+    axs[1].plot(sap_comp, [sap_len] * sap_acc.shape[0]),
                    label="SAP", c="tab:purple")
 
     # axs[0, 1].set_xticks(major_ticks)
