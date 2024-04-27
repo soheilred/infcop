@@ -283,8 +283,8 @@ def plot_accuracy(cc_dir, sap_dir):
     # plot the performance vs. remaining weights
     axs[0].plot(x_acc, cc_accuracy, label="CC-LTH", c="b")
     axs[0].plot(x_acc, sap_acc, label="SAP", c="b")
-    axs[0].set_xscale('log')
-    axs[0].set_xticks(cc_comp)
+    # axs[0].set_xscale('log')
+    # axs[0].set_xticks(cc_comp)
     axs[0].set(xlabel="Rem. Weights", ylabel="Accuracy")
     axs[0].set_title("CIAP vs. SAP")
 
