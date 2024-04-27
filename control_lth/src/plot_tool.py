@@ -285,7 +285,7 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[0].plot(cc_comp, cc_accuracy, label="CC-LTH", c="tab:red")
     axs[0].plot(cc_comp, sap_acc, label="SAP", c="tab:blue")
     axs[0].set_xscale('log')
-    # axs[0].set_xticks(cc_comp)
+    axs[0].set_xticks(cc_comp)
     axs[0].set(xlabel="Rem. Weights", ylabel="Accuracy")
     axs[0].set_title("CIAP vs. SAP")
 
