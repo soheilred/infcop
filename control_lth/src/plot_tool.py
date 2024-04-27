@@ -282,7 +282,7 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[0].plot(sap_comp, sap_acc, label="SAP", c="b")
 
     # plot number of epochs vs. remaining weights
-    axs[0].plot(cc_comp, end_inds, label="CC-LTH", c="b")
+    axs[1].plot(cc_comp, end_inds, label="CC-LTH", c="b")
     axs[1].plot(sap_comp, [sap_len] * sap_acc.shape[0], label="SAP",
                 c="tab:purple")
 
@@ -293,6 +293,7 @@ def plot_accuracy(cc_dir, sap_dir):
     # axs[0, 1].set(xlabel="Layer index", ylabel="Connectivity")
     axs[0].grid()
     axs[1].grid()
+    fig.tight_layout(pad=2.0)
     plt.savefig(sap_dir + "accuracy.png")
 
 
