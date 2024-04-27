@@ -771,7 +771,7 @@ def perf_test_lth(logger, device, args, controller):
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
             act.compute_correlations()
-            act.gradient_flow()
+            # act.gradient_flow()
             similarity.cosine_similarity(model, imp_iter)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -789,7 +789,7 @@ def perf_test_lth(logger, device, args, controller):
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
             act.compute_correlations()
-            act.gradient_flow()
+            # act.gradient_flow()
             similarity.cosine_similarity(model, imp_iter)
 
             # Test and save the most accurate model
@@ -847,7 +847,7 @@ def effic_lth(logger, device, args, controller):
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
             act.compute_correlations()
-            act.gradient_flow()
+            # act.gradient_flow()
             # similarity.cosine_similarity(model, imp_iter)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -866,7 +866,7 @@ def effic_lth(logger, device, args, controller):
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
             act.compute_correlations()
-            act.gradient_flow()
+            # act.gradient_flow()
             # similarity.cosine_similarity(model, imp_iter)
 
             # Test and save the most accurate model
