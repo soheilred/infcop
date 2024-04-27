@@ -262,6 +262,7 @@ def plot_accuracy(cc_dir, sap_dir):
     end_inds = np.zeros(cc_acc.shape[0])
     cc_accuracy = np.zeros(cc_acc.shape[0])
     cc_comp = np.mean(pickle.load(open(cc_dir + "comp_levels.pkl", "rb")), axis=0)
+    cc_comp = cc_comp[::-1]
 
     for i in range(cc_acc.shape[0]):
         for j in range(cc_acc.shape[1]):
@@ -281,10 +282,10 @@ def plot_accuracy(cc_dir, sap_dir):
     print(sap_acc.shape, cc_accuracy.shape)
     import ipdb; ipdb.set_trace()
     # plot the performance vs. remaining weights
-    axs[0].plot(x_acc, cc_accuracy, label="CC-LTH", c="tab:red")
-    axs[0].plot(x_acc, sap_acc, label="SAP", c="tab:blue")
-    # axs[0].set_xscale('log')
-    axs[0].set_xticks(cc_comp)
+    axs[0].plot(cc_comp, cc_accuracy, label="CC-LTH", c="tab:red")
+    axs[0].plot(cc_comp, sap_acc, label="SAP", c="tab:blue")
+    axs[0].set_xscale('log')
+    # axs[0].set_xticks(cc_comp)
     axs[0].set(xlabel="Rem. Weights", ylabel="Accuracy")
     axs[0].set_title("CIAP vs. SAP")
 
