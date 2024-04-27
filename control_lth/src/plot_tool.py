@@ -278,7 +278,6 @@ def plot_accuracy(cc_dir, sap_dir):
 
     fig, axs = plt.subplots(3, 1, figsize=(4, 8))
     x_acc = np.arange(1, len(cc_comp) + 1)
-    print(sap_acc.shape, cc_accuracy.shape)
 
     # plot the performance vs. remaining weights
     axs[0].plot(x_acc, cc_accuracy, label="CC-LTH", c="tab:red")
@@ -292,13 +291,13 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[1].plot(x_acc, end_inds, label="CC-LTH", c="tab:red")
     axs[1].plot(x_acc, [sap_len] * sap_acc.shape[0], label="SAP",
                 c="tab:blue")
-    axs[0].set(xlabel="Iteration", ylabel="Epochs")
-    axs[0].set_title("#epochs in each iterations")
+    axs[1].set(xlabel="Iteration", ylabel="Epochs")
+    axs[1].set_title("#epochs in each iterations")
 
     # plot the remaining weight
     axs[2].plot(x_acc, cc_comp, label="CC-LTH", c="tab:purple")
-    axs[0].set(xlabel="Iteration", ylabel="Remaining Weights %")
-    axs[0].set_title("#epochs in each iterations")
+    axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
+    axs[2].set_title("#epochs in each iterations")
 
     # axs[0, 1].set_xticks(major_ticks)
     # axs[0, 1].set_title(f"Iter {i}")
