@@ -296,7 +296,7 @@ def plot_accuracy(cc_dir, sap_dir):
 
     # plot the remaining weight
     axs[2].plot(x_acc, cc_comp, label="CC-LTH", c="tab:purple", marker='o')
-    axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %", marker='o')
+    axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
     axs[2].set_title("Epochs in each iterations")
 
     # axs[0, 1].set_xticks(major_ticks)
