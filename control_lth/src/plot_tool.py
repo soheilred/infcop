@@ -307,7 +307,8 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[0].grid()
     axs[1].grid()
     axs[2].grid()
-    fig.tight_layout(pad=2.0)
+    # fig.tight_layout(pad=2.0)
+    plt.legend()
     plt.savefig(sap_dir + "accuracy.png")
 
 
