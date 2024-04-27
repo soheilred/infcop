@@ -277,7 +277,7 @@ def plot_accuracy(cc_dir, sap_dir):
     sap_comp = np.mean(pickle.load(open(sap_dir + "comp_levels.pkl", "rb")), axis=0)
 
     fig, axs = plt.subplots(2, 1, figsize=(8, 8))
-    x_acc = np.arange(len(cc_comp))
+    x_acc = np.arange(1, len(cc_comp) + 1)
     print(sap_acc.shape, cc_accuracy.shape)
     import ipdb; ipdb.set_trace()
     # plot the performance vs. remaining weights
@@ -290,7 +290,7 @@ def plot_accuracy(cc_dir, sap_dir):
 
     # plot number of epochs vs. remaining weights
     axs[1].plot(x_acc, end_inds, label="CC-LTH", c="tab:red")
-    axs[1].plot(x_acc, [sap_len] * sap_acc.shape[1], label="SAP",
+    axs[1].plot(x_acc, [sap_len] * sap_acc.shape[0], label="SAP",
                 c="tab:blue")
 
     # axs[0, 1].set_xticks(major_ticks)
