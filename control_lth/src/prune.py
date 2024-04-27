@@ -435,7 +435,7 @@ class Pruner:
         pivot_param = torch.cat(pivot_param, dim=0).data.abs()
         pivot_mask = torch.cat(pivot_mask, dim=0)
         # p, q, eta_m, gamma = self.prune_mode[1:] # TODO
-        p, q, eta_m, gamma = float(1.0), float(2.0), float(0.), float(1.)
+        p, q, eta_m, gamma = self.args.prune_p, self.args.prune_q, float(0.), float(1.)
         beta = 0.9
         sparsity_index = {"p": torch.arange(0.1, 1.1, 0.1),
                           "q": torch.arange(1.0, 2.1, 0.1)}
@@ -908,9 +908,9 @@ def perf_exper(logger, args, device, run_dir):
         conn_list.append(conn)
         comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", conn=conn,
-                        all_accuracies=all_acc, comp_level=comp)
+                        accuracies=all_acc, comp_level=comp)
 
-    utils.save_vars(save_dir=run_dir, conn=conn_list, all_accuracies=acc_list,
+    utils.save_vars(save_dir=run_dir, conn=conn_list, accuracies=acc_list,
                     comp_level=comp_list)
     # ptool.plot_similarity(run_dir, acc_list, comp_list, conn_list)
 
@@ -933,7 +933,7 @@ def effic_exper(logger, args, device, run_dir):
         grads.append(grad)
         comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        all_accuracies=all_acc, conn=conn,
+                        accuracies=all_acc, conn=conn,
                         grad=grad, comp_level=comp)
 
     utils.save_vars(save_dir=run_dir, similarity=similarity,
@@ -962,7 +962,7 @@ def test_exper(logger, args, device, run_dir):
         grads.append(grad)
         comp_list.append(comp)
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        all_accuracies=all_acc, conn=conn,
+                        accuracies=all_acc, conn=conn,
                         grad=grad, comp_level=comp)
 
     # Save the variables

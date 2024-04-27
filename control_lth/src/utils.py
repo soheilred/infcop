@@ -268,6 +268,9 @@ def get_args():
     parser.add_argument('--prune_perc_per_layer', type=float, default=0.1,
                       help='% of neurons to prune per layer')
 
+    parser.add_argument('--prune_p', type=float, default=0.5)
+    parser.add_argument('--prune_q', type=float, default=1.0)
+
     parser.add_argument('--prune_method', type=str, default="percentile",
                       help='% of neurons to prune per layer')
     # parser.add_argument('--yaml_config', type=str, default="config.ini",
