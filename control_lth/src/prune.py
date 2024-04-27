@@ -911,7 +911,7 @@ def perf_exper(logger, args, device, run_dir):
                         accuracies=all_acc, comp_level=comp)
 
     utils.save_vars(save_dir=run_dir, conn=conn_list, accuracies=acc_list,
-                    comp_level=comp_list)
+                    comp_levels=comp_list)
     # ptool.plot_similarity(run_dir, acc_list, comp_list, conn_list)
 
 
