@@ -292,12 +292,12 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[1].plot(x_acc, [sap_len] * sap_acc.shape[0], label="SAP",
                 c="tab:blue", marker='o')
     axs[1].set(xlabel="Iteration", ylabel="Epochs")
-    axs[1].set_title("#epochs in each iterations")
+    axs[1].set_title("Epochs in each iterations")
 
     # plot the remaining weight
     axs[2].plot(x_acc, cc_comp, label="CC-LTH", c="tab:purple", marker='o')
     axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
-    axs[2].set_title("Epochs in each iterations")
+    # axs[2].set_title("Epochs in each iterations")
 
     # axs[0, 1].set_xticks(major_ticks)
     # axs[0, 1].set_title(f"Iter {i}")
