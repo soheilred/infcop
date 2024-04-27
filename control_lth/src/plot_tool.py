@@ -286,6 +286,7 @@ def plot_accuracy(cc_dir, sap_dir):
     # axs[0].set_xticks(cc_comp)
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
     axs[0].set_title("CIAP vs. SAP")
+    axs[0].legend()
 
     # plot number of epochs vs. remaining weights
     axs[1].plot(x_acc, end_inds, label="CC-LTH", c="tab:red", marker='o')
@@ -293,11 +294,13 @@ def plot_accuracy(cc_dir, sap_dir):
                 c="tab:blue", marker='o')
     axs[1].set(xlabel="Iteration", ylabel="Epochs")
     axs[1].set_title("Epochs in each iterations")
+    axs[1].legend()
 
     # plot the remaining weight
-    axs[2].plot(x_acc, cc_comp, label="CC-LTH", c="tab:purple", marker='o')
+    axs[2].plot(x_acc, cc_comp, label="SAP & CIAP", c="tab:purple", marker='o')
     axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
     # axs[2].set_title("Epochs in each iterations")
+    axs[2].legend()
 
     # axs[0, 1].set_xticks(major_ticks)
     # axs[0, 1].set_title(f"Iter {i}")
@@ -307,8 +310,7 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[0].grid()
     axs[1].grid()
     axs[2].grid()
-    # fig.tight_layout(pad=2.0)
-    plt.legend()
+    fig.tight_layout(pad=2.0)
     plt.savefig(sap_dir + "accuracy.png")
 
 
