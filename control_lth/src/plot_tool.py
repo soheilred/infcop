@@ -281,17 +281,17 @@ def plot_accuracy(cc_dir, sap_dir):
     print(sap_acc.shape, cc_accuracy.shape)
     import ipdb; ipdb.set_trace()
     # plot the performance vs. remaining weights
-    axs[0].plot(x_acc, cc_accuracy, label="CC-LTH", c="b")
-    axs[0].plot(x_acc, sap_acc, label="SAP", c="b")
+    axs[0].plot(x_acc, cc_accuracy, label="CC-LTH", c="tab:red")
+    axs[0].plot(x_acc, sap_acc, label="SAP", c="tab:blue")
     # axs[0].set_xscale('log')
     # axs[0].set_xticks(cc_comp)
     axs[0].set(xlabel="Rem. Weights", ylabel="Accuracy")
     axs[0].set_title("CIAP vs. SAP")
 
     # plot number of epochs vs. remaining weights
-    axs[1].plot(cc_comp, end_inds, label="CC-LTH", c="b")
-    axs[1].plot(sap_comp, [sap_len] * sap_acc.shape[0], label="SAP",
-                c="tab:purple")
+    axs[1].plot(x_acc, end_inds, label="CC-LTH", c="tab:red")
+    axs[1].plot(x_acc, [sap_len] * sap_acc.shape[1], label="SAP",
+                c="tab:blue")
 
     # axs[0, 1].set_xticks(major_ticks)
     # axs[0, 1].set_title(f"Iter {i}")
