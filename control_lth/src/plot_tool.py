@@ -278,11 +278,12 @@ def plot_accuracy(cc_dir, sap_dir):
 
     fig, axs = plt.subplots(2, 1, figsize=(8, 8))
     x_acc = np.arange(len(cc_comp))
-    print(sap_acc.shape, cc_acc.shape)
+    print(sap_acc.shape, cc_accuracy.shape)
     import ipdb; ipdb.set_trace()
     # plot the performance vs. remaining weights
     axs[0].plot(x_acc, cc_accuracy, label="CC-LTH", c="b")
     axs[0].plot(x_acc, sap_acc, label="SAP", c="b")
+    axs[0].set_xscale('log')
     axs[0].set_xticks(cc_comp)
     axs[0].set(xlabel="Rem. Weights", ylabel="Accuracy")
     axs[0].set_title("CIAP vs. SAP")
