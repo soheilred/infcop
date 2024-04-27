@@ -259,7 +259,7 @@ def plot_accuracy(cc_dir, sap_dir):
     # accuracy of CC-LTH
     cc_acc = pickle.load(open(cc_dir + "accuracies.pkl", "rb"))
     cc_acc = np.mean(cc_acc, axis=0)
-    end_inds = np.zeros(cc_acc[0].shape[0])
+    end_inds = np.zeros(cc_acc.shape[0])
     cc_accuracy = np.zeros(cc_acc.shape[0])
     cc_comp = pickle.load(open(cc_dir + "comp_levels.pkl", "rb"))
 
@@ -279,12 +279,12 @@ def plot_accuracy(cc_dir, sap_dir):
 
     fig, axs = plt.subplots(2, 1, figsize=(16, 9))
     # plot the performance vs. remaining weights
-    axs[0, 0].plot(cc_comp, cc_accuracy, label="CC-LTH", c="b")
-    axs[0, 0].plot(sap_comp, sap_acc, label="SAP", c="b")
+    axs[0].plot(cc_comp, cc_accuracy, label="CC-LTH", c="b")
+    axs[0].plot(sap_comp, sap_acc, label="SAP", c="b")
 
     # plot number of epochs vs. remaining weights
-    axs[0, 0].plot(cc_comp, end_inds, label="CC-LTH", c="b")
-    axs[1, 0].plot(sap_comp, sap_acc.shape[1] * np.ones(sap_acc.shape[0]),
+    axs[0].plot(cc_comp, end_inds, label="CC-LTH", c="b")
+    axs[1].plot(sap_comp, sap_acc.shape[1] * np.ones(sap_acc.shape[0]),
                    label="SAP", c="tab:purple")
 
     # axs[0, 1].set_xticks(major_ticks)
