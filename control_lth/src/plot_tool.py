@@ -276,7 +276,7 @@ def plot_accuracy(cc_dir, sap_dir):
     sap_acc = np.array([acc[-1] for acc in sap_acc])
     sap_comp = np.mean(pickle.load(open(sap_dir + "comp_levels.pkl", "rb")), axis=0)
 
-    fig, axs = plt.subplots(2, 1, figsize=(8, 8))
+    fig, axs = plt.subplots(2, 1, figsize=(8, 5))
     x_acc = np.arange(1, len(cc_comp) + 1)
     print(sap_acc.shape, cc_accuracy.shape)
     import ipdb; ipdb.set_trace()
@@ -284,7 +284,7 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[0].plot(x_acc, cc_accuracy, label="CC-LTH", c="tab:red")
     axs[0].plot(x_acc, sap_acc, label="SAP", c="tab:blue")
     # axs[0].set_xscale('log')
-    # axs[0].set_xticks(cc_comp)
+    axs[0].set_xticks(cc_comp)
     axs[0].set(xlabel="Rem. Weights", ylabel="Accuracy")
     axs[0].set_title("CIAP vs. SAP")
 
