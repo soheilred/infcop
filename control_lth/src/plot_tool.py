@@ -294,7 +294,7 @@ def plot_accuracy(cc_dir, sap_dir):
                 c="tab:blue")
 
     # plot the remaining weight
-    axs[2].plot(x_acc, cc_comp, label="CC-LTH", c="tab:black")
+    axs[2].plot(x_acc, cc_comp, label="CC-LTH", c="tab:purple")
 
     # axs[0, 1].set_xticks(major_ticks)
     # axs[0, 1].set_title(f"Iter {i}")
