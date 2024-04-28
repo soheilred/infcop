@@ -135,11 +135,16 @@ class Network():
 
     def trained_enough(self, correlation, grads=None):
         # log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
-        opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
+        method = "grads"
+
+        if method == "grads":
+            opt_grad = torch.Tensor(grads[0][0])
+            cur_grad = torch.Tensor(grads[-1][-1])
+            log.debug(f"Grad diff {(cur_grad - opt_grad).norm().item()}")
+            return (cur_grad - opt_grad).norm().item() < .5
+
         cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
-        # opt_grad = torch.Tensor(grads[0][0])
-        # cur_grad = torch.Tensor(grads[-1][-1])
-        # log.debug(f"Grad diff {(cur_grad - opt_grad).norm().item()}")
+        opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
         # if there are nans in correlation
         log.debug(f"Nan in correlations?: {any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]])}")
         if any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]]):
