@@ -263,6 +263,8 @@ def plot_accuracy(cc_dir, sap_dir):
     cc_accuracy = np.zeros(cc_acc.shape[0])
     cc_comp = np.mean(pickle.load(open(cc_dir + "comp_levels.pkl", "rb")), axis=0)
 
+    print(cc_acc)
+    import ipdb; ipdb.set_trace()
     for i in range(cc_acc.shape[0]):
         for j in range(cc_acc.shape[1]):
             if abs(cc_acc[i][j]) < .001:
@@ -311,6 +313,7 @@ def plot_accuracy(cc_dir, sap_dir):
     axs[1].grid()
     axs[2].grid()
     fig.tight_layout(pad=2.0)
+    print("saved in:", sap_dir)
     plt.savefig(sap_dir + "accuracy.png")
 
 
