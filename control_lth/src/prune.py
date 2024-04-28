@@ -841,13 +841,13 @@ def effic_lth(logger, device, args, controller):
     pruning = Pruner(args, model, act, controller)
     init_state_dict = pruning.init_lth()
     act.compute_correlations()
-    act.gradient_flow()
+    # act.gradient_flow()
 
     for imp_iter in tqdm(range(ITERATION)):
         if imp_iter != 0:
             pruning.prune_once(init_state_dict)
             act.compute_correlations()
-            act.gradient_flow()
+            # act.gradient_flow()
             # similarity.cosine_similarity(model, imp_iter)
 
         logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
@@ -866,17 +866,16 @@ def effic_lth(logger, device, args, controller):
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
                               args.net_train_per_epoch, device)
             act.compute_correlations()
-            act.gradient_flow()
+            # act.gradient_flow()
             # similarity.cosine_similarity(model, imp_iter)
 
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
             pruning.all_acc[imp_iter, train_iter] = accuracy
-            train_iter += 1
-            if (network.trained_enough(act.get_correlations(),
-                                       act.get_gradient())):
+            if (network.trained_enough(act.get_correlations())):
+                                       # act.get_gradient())):
                 break
-
+            train_iter += 1
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
