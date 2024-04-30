@@ -966,7 +966,7 @@ def giap(logger, device, args):
 
 
 def experiment(logger, args, device, run_dir):
-    logger.debug("####### In performance experiment #######")
+    logger.debug(f"####### In {args.prune_method} experiment #######")
     acc_list = []
     conns = []
     comp_list = []
@@ -976,7 +976,6 @@ def experiment(logger, args, device, run_dir):
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
         acc, sim, conn, grad, comp = eval(args.prune_method)(logger, device, args)
-
         acc_list.append(acc)
         comp_list.append(comp)
         similarity.append(sim)
