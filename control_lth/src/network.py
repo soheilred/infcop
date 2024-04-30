@@ -133,26 +133,28 @@ class Network():
             for param in self.model.parameters():
                 param.requires_grad = False
 
-    def trained_enough(self, correlation, grads=None):
+    def trained_enough(self, correlation=None, grads=None):
         # log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
-        method = "grads"
-
-        if method == "grads":
+        if grads:
             opt_grad = torch.Tensor(grads[0][0])
             cur_grad = torch.Tensor(grads[-1][-1])
             log.debug(f"Grad diff {(cur_grad - opt_grad).norm().item()}")
             return (cur_grad - opt_grad).norm().item() < .5
 
-        cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
-        opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
-        # if there are nans in correlation
-        log.debug(f"Nan in correlations?: {any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]])}")
-        if any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]]):
-            return False
+        elif correlation:
+            cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
+            opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
+            # if there are nans in correlation
+            log.debug(f"Nan in correlations?: {any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]])}")
+            if any([torch.isnan(corr.view(-1)).any().item() for corr in correlation[-1]]):
+                return False
 
-        # if the norm difference is less than a threshold
-        log.debug(f"Correlation norm diff: {(cur_corr - opt_corr).norm().item()}")
-        return (cur_corr - opt_corr).norm().item() < .11
+            # if the norm difference is less than a threshold
+            log.debug(f"Correlation norm diff: {(cur_corr - opt_corr).norm().item()}")
+            return (cur_corr - opt_corr).norm().item() < .11
+
+        else:
+            sys.exit("error in trained_enough")
 
     def add_dataset(self, dataset, num_outputs):
         """Adds a new dataset to the classifier."""

@@ -51,10 +51,10 @@ def save_vars(**variables):
     
 def load_checkpoints(args):
     save_prefix = C.CHPT_DIR + str(args.dataset) +\
-                str(args.prune_perc_per_layer) + str(args.run_id) +\
+                str(args.prune_ratio) + str(args.run_id) +\
                 str(args.task_num) 
     previoustaskpath = C.CHPT_DIR + str(args.dataset) +\
-                        str(args.prune_perc_per_layer) + str(args.run_id) +\
+                        str(args.prune_ratio) + str(args.run_id) +\
                         str(args.task_num-1) 
     os.makedirs(save_prefix, exist_ok = True)
     os.makedirs(previoustaskpath, exist_ok = True)
@@ -69,8 +69,8 @@ def load_checkpoints(args):
     if os.path.isfile(os.path.join(previoustaskpath,"final.pt")) == True and (args.mode == "t" or args.mode == "all"):
         ckpt = torch.load(os.path.join(previoustaskpath,"final.pt"))
 
-    elif os.path.isfile(os.path.join("../checkpoints/",str(args.dataset),str(args.prune_perc_per_layer),str(args.run_id),str((len(taskset)-1)), "final.pt")) == True and args.mode == "e":
-        ckpt = torch.load(os.path.join("../checkpoints/", str(args.dataset), str(args.prune_perc_per_layer), str(args.run_id), str((len(taskset)-1)), "final.pt"))
+    elif os.path.isfile(os.path.join("../checkpoints/",str(args.dataset),str(args.prune_ratio),str(args.run_id),str((len(taskset)-1)), "final.pt")) == True and args.mode == "e":
+        ckpt = torch.load(os.path.join("../checkpoints/", str(args.dataset), str(args.prune_ratio), str(args.run_id), str((len(taskset)-1)), "final.pt"))
 
     elif os.path.isfile(trainedpath) == True and (args.mode == "p" or args.mode == "c"):
         ckpt = torch.load(trainedpath)
@@ -182,12 +182,13 @@ def get_stability(in_measure):
                            in_measure[i]) for i in range(in_measure.shape[0] - 1)]
     return stability
 
+
 def get_run_dir(args):
-    control = "no_cntr/" if args.control_on == 0 else "cntr" + "/" +\
-                ("").join([str(layer) for layer in args.control_layer]) + "/"
+    # control = "no_cntr/" if args.control_on == 0 else "cntr" + "/" +\
+    #             ("").join([str(layer) for layer in args.control_layer]) + "/"
     cur_folder = (C.cur_time + "/" if C.cur_time != "" else "")
-    run_dir = C.MODEL_ROOT_DIR + args.exper_type + "/" + args.net_arch + "/" +\
-              args.net_dataset + "/" + control + cur_folder
+    run_dir = C.MODEL_ROOT_DIR + args.prune_method + "/" + args.net_arch + "/" +\
+              args.net_dataset + "/" + cur_folder
     checkdir(run_dir)
     return run_dir
 
@@ -257,22 +258,20 @@ def get_args():
     parser.add_argument('--exper_acc_thrd', type=int, default=95,
                       help='Threshold accuracy to stop the training loop')
 
-    parser.add_argument('--exper_type', type=str, default="performance",
-                        choices=["performance", "test", "efficiency"],
-                        help='What type of LTH experiment you are running?')
-
     parser.add_argument('--exper_gpu_id', type=int, default=0,
                         help='gpu number to use')
 
     # Pruning options.
-    parser.add_argument('--prune_perc_per_layer', type=float, default=0.1,
-                      help='% of neurons to prune per layer')
-
+    parser.add_argument('--prune_ratio', type=float, default=0.2,
+                        help='% of neurons to prune per layer')
     parser.add_argument('--prune_p', type=float, default=0.5)
     parser.add_argument('--prune_q', type=float, default=1.0)
+    parser.add_argument('--prune_type', type=str, default="percentile",
+                        help='% of neurons to prune per layer')
+    parser.add_argument('--prune_method', type=str, default="lth",
+                        choices=["lth", "sap", "giap", "ciap"],
+                        help='What type of LTH experiment you are running?')
 
-    parser.add_argument('--prune_method', type=str, default="percentile",
-                      help='% of neurons to prune per layer')
     # parser.add_argument('--yaml_config', type=str, default="config.ini",
     #                     help="Address to the config file")
     args = parser.parse_args()
@@ -314,7 +313,7 @@ def get_yaml_args(args):
     args.control_at_iter = control_conf["control_at_iter"]
     args.control_at_epoch = int(control_conf["control_at_epoch"])
     args.control_at_layer = control_conf["control_at_layer"]
-    args.prune_perc_per_layer = float(exper_conf["prune_perc_per_layer"])
+    args.prune_ratio = float(exper_conf["prune_ratio"])
     args.acc_thrd = int(exper_conf["acc_thrd"])
     args.imp_total_iter = int(exper_conf["imp_total_iter"])
     args.experiment_type = exper_conf["type"]

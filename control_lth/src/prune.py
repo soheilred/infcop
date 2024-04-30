@@ -52,7 +52,7 @@ class Pruner:
         self.model = model
         self.mask = {}
         self.args = args
-        self.prune_perc = args.prune_perc_per_layer
+        self.prune_perc = args.prune_ratio
         self.corrs = []
         self.act = act
         self.controller = controller
@@ -519,20 +519,17 @@ class Pruner:
     def prune_once(self, initial_state_dict):
 
         log.debug(f"Prunning using {self.args.prune_method}")
-        if self.args.prune_method == "percentile":
+        if self.args.prune_method == "lth":
             self.prune_by_percentile()
 
         elif self.args.prune_method == "sap":
             self.prune_by_sap()
 
-        elif self.args.prune_method == "corr":
-            self.prune_by_correlation()
+        elif self.args.prune_method == "ciap":
+            self.prune_by_sap()
 
-        elif self.args.prune_method == "grad":
-            self.prune_by_grads()
-
-        elif self.args.prune_method == "corr_sap":
-            self.prune_by_corr_sap()
+        elif self.args.prune_method == "giap":
+            self.prune_by_sap()
 
         else:
             sys.exit("Wrong pruning method!")
@@ -671,7 +668,7 @@ class Pruner:
         return weights
 
 
-def perf_lth(logger, device, args, controller):
+def lth(logger, device, args):
     ITERATION = args.exper_imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
     data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
@@ -687,7 +684,7 @@ def perf_lth(logger, device, args, controller):
 
     similarity = Similarity(args, test_dl, device, run_dir, num_classes)
     act = Activations(model, train_dl, device, args.net_batch_size)
-    pruning = Pruner(args, model, act, controller)
+    pruning = Pruner(args, model, act)
     init_state_dict = pruning.init_lth()
     # act.compute_correlations()
 
@@ -744,7 +741,11 @@ def perf_lth(logger, device, args, controller):
     return output
 
 
-def perf_test_lth(logger, device, args, controller):
+def sap(logger, device, args):
+    return lth(logger, device, args)
+
+
+def test_lth(logger, device, args):
     ITERATION = args.exper_imp_total_iter               # 35 was the default
     run_dir = utils.get_run_dir(args)
     data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
@@ -761,7 +762,7 @@ def perf_test_lth(logger, device, args, controller):
 
     similarity = Similarity(args, test_dl, device, run_dir, num_classes)
     act = Activations(model, train_dl, device, args.net_batch_size)
-    pruning = Pruner(args, model, act, controller)
+    pruning = Pruner(args, model, act)
     init_state_dict = pruning.init_lth()
     act.compute_correlations()
     act.gradient_flow()
@@ -820,7 +821,7 @@ def perf_test_lth(logger, device, args, controller):
     return output
 
 
-def effic_lth(logger, device, args, controller):
+def ciap(logger, device, args):
     ITERATION = args.exper_imp_total_iter
     run_dir = utils.get_run_dir(args)
     data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
@@ -838,7 +839,79 @@ def effic_lth(logger, device, args, controller):
 
     similarity = Similarity(args, test_dl, device, run_dir, num_classes)
     act = Activations(model, train_dl, device, args.net_batch_size)
-    pruning = Pruner(args, model, act, controller)
+    pruning = Pruner(args, model, act)
+    init_state_dict = pruning.init_lth()
+    act.compute_correlations()
+    # act.gradient_flow()
+
+    for imp_iter in tqdm(range(ITERATION)):
+        if imp_iter != 0:
+            pruning.prune_once(init_state_dict)
+            act.compute_correlations()
+            # act.gradient_flow()
+            # similarity.cosine_similarity(model, imp_iter)
+
+        logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
+
+        # Print the table of Nonzeros in each layer
+        comp_level = utils.count_nonzeros(model)
+        pruning.comp_level[imp_iter] = comp_level
+        logger.debug(f"Compression level: {comp_level}")
+
+        # Training loop
+        # for train_iter in range(args.net_train_epochs):
+        train_iter, accuracy = 0, 0
+        while (train_iter < args.net_train_epochs and accuracy < max_acc):
+            # Training
+            logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
+            acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
+                              args.net_train_per_epoch, device)
+            act.compute_correlations()
+            # act.gradient_flow()
+            # similarity.cosine_similarity(model, imp_iter)
+
+            # Test and save the most accurate model
+            accuracy = test(model, test_dl, loss_fn, device)
+            pruning.all_acc[imp_iter, train_iter] = accuracy
+            if (network.trained_enough(correlation=act.get_correlations())):
+                break
+            train_iter += 1
+
+        # Save model
+        utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
+
+        # Calculate the connectivity
+        # act.compute_correlations()
+        # logger.debug(f"similarities: {similarity.get_similarity()}")
+
+    output = [pruning.all_acc,
+              similarity.get_similarity(),
+              act.get_conns(),
+              act.get_gradient(),
+              pruning.comp_level]
+
+    return output
+
+
+def giap(logger, device, args):
+    ITERATION = args.exper_imp_total_iter
+    run_dir = utils.get_run_dir(args)
+    data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
+    train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    num_classes = data.get_num_classes()
+
+    network = Network(device, args.net_arch, num_classes, args.net_pretrained)
+    model = network.set_model()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
+                                weight_decay=args.net_weight_decay)
+    # warm up the pretrained model
+    logger.debug("Pretraining warm-up")
+    max_acc = warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device)
+
+    similarity = Similarity(args, test_dl, device, run_dir, num_classes)
+    act = Activations(model, train_dl, device, args.net_batch_size)
+    pruning = Pruner(args, model, act)
     init_state_dict = pruning.init_lth()
     # act.compute_correlations()
     act.gradient_flow()
@@ -872,8 +945,7 @@ def effic_lth(logger, device, args, controller):
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
             pruning.all_acc[imp_iter, train_iter] = accuracy
-            if (network.trained_enough(act.get_correlations(),
-                                       act.get_gradient())):
+            if (network.trained_enough(grads=act.get_gradient())):
                 break
             train_iter += 1
 
@@ -893,46 +965,26 @@ def effic_lth(logger, device, args, controller):
     return output
 
 
-def perf_exper(logger, args, device, run_dir):
+def experiment(logger, args, device, run_dir):
     logger.debug("####### In performance experiment #######")
-    controller = Controller(args)
     acc_list = []
-    conn_list = []
-    comp_list = []
-
-    for i in range(args.exper_num_trial):
-        logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, conn, grad, comp = perf_lth(logger, device, args, controller)
-        acc_list.append(all_acc)
-        conn_list.append(conn)
-        comp_list.append(comp)
-        utils.save_vars(save_dir=run_dir+str(i)+"_", conn=conn,
-                        accuracies=all_acc, comp_level=comp)
-
-    utils.save_vars(save_dir=run_dir, conn=conn_list, accuracies=acc_list,
-                    comp_levels=comp_list)
-    # ptool.plot_similarity(run_dir, acc_list, comp_list, conn_list)
-
-
-def effic_exper(logger, args, device, run_dir):
-    logger.debug("####### In efficiency experiemnt #######")
-    controller = Controller(args)
-    similarity = []
-    acc_list = []
-    grads = []
     conns = []
     comp_list = []
+    similarity = []
+    grads = []
 
     for i in range(args.exper_num_trial):
         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        all_acc, sim, conn, grad, comp = effic_lth(logger, device, args, controller)
-        acc_list.append(all_acc)
+        acc, sim, conn, grad, comp = eval(args.prune_method)(logger, device, args)
+
+        acc_list.append(acc)
+        comp_list.append(comp)
         similarity.append(sim)
         conns.append(conn)
         grads.append(grad)
-        comp_list.append(comp)
+
         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        accuracies=all_acc, conn=conn,
+                        accuracy=acc, conn=conn,
                         grad=grad, comp_level=comp)
 
     utils.save_vars(save_dir=run_dir, similarity=similarity,
@@ -941,35 +993,64 @@ def effic_exper(logger, args, device, run_dir):
                     grads=grads,
                     comp_levels=comp_list)
 
+    # ptool.plot_similarity(run_dir, acc_list, comp_list, conn_list)
 
-def test_exper(logger, args, device, run_dir):
-    logger.debug("####### In efficiency experiemnt #######")
-    controller = Controller(args)
-    acc_list = []
-    similarity = []
-    conns = []
-    grads = []
-    comp_list = []
+# def effic_exper(logger, args, device, run_dir):
+#     logger.debug("####### In efficiency experiemnt #######")
+#     controller = Controller(args)
+#     similarity = []
+#     acc_list = []
+#     grads = []
+#     conns = []
+#     comp_list = []
 
-    for i in range(args.exper_num_trial):
-        logger.debug(f"In experiment {i} / {args.exper_num_trial}")
-        results = perf_test_lth(logger, device, args, controller)
-        all_acc, sim, conn, grad, comp = results
-        acc_list.append(all_acc)
-        similarity.append(sim)
-        conns.append(conn)
-        grads.append(grad)
-        comp_list.append(comp)
-        utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
-                        accuracies=all_acc, conn=conn,
-                        grad=grad, comp_level=comp)
+#     for i in range(args.exper_num_trial):
+#         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
+#         all_acc, sim, conn, grad, comp = effic_lth(logger, device, args, controller)
+#         acc_list.append(all_acc)
+#         similarity.append(sim)
+#         conns.append(conn)
+#         grads.append(grad)
+#         comp_list.append(comp)
+#         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
+#                         accuracies=all_acc, conn=conn,
+#                         grad=grad, comp_level=comp)
 
-    # Save the variables
-    utils.save_vars(save_dir=run_dir, similarity=similarity,
-                    accuracies=acc_list,
-                    corrs=conns,
-                    grads=grads,
-                    comp_levels=comp_list)
+#     utils.save_vars(save_dir=run_dir, similarity=similarity,
+#                     accuracies=acc_list,
+#                     conns=conns,
+#                     grads=grads,
+#                     comp_levels=comp_list)
+
+
+# def test_exper(logger, args, device, run_dir):
+#     logger.debug("####### In efficiency experiemnt #######")
+#     controller = Controller(args)
+#     acc_list = []
+#     similarity = []
+#     conns = []
+#     grads = []
+#     comp_list = []
+
+#     for i in range(args.exper_num_trial):
+#         logger.debug(f"In experiment {i} / {args.exper_num_trial}")
+#         results = perf_test_lth(logger, device, args, controller)
+#         all_acc, sim, conn, grad, comp = results
+#         acc_list.append(all_acc)
+#         similarity.append(sim)
+#         conns.append(conn)
+#         grads.append(grad)
+#         comp_list.append(comp)
+#         utils.save_vars(save_dir=run_dir+str(i)+"_", similarity=sim,
+#                         accuracies=all_acc, conn=conn,
+#                         grad=grad, comp_level=comp)
+
+#     # Save the variables
+#     utils.save_vars(save_dir=run_dir, similarity=similarity,
+#                     accuracies=acc_list,
+#                     corrs=conns,
+#                     grads=grads,
+#                     comp_levels=comp_list)
 
     # Plot
     # ptool.plot_similarity(run_dir, acc_list, comp_list, similarity, corrs, grads)
@@ -980,19 +1061,8 @@ def main():
     logger = utils.setup_logger_dir(args)
     # args = utils.get_yaml_args(args)
     device = utils.get_device(args)
-
     run_dir = utils.get_run_dir(args)
-    if args.exper_type == "performance":
-        perf_exper(logger, args, device, run_dir)
-
-    elif args.exper_type == "efficiency":
-        effic_exper(logger, args, device, run_dir)
-
-    elif args.exper_type == "test":
-        test_exper(logger, args, device, run_dir)
-
-    else:
-        sys.exit("Wrong experiment type")
+    experiment(logger, args, device, run_dir)
 
 
 if __name__ == '__main__':
