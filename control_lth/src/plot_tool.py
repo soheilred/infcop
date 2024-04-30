@@ -255,65 +255,91 @@ def plot_correlations(filename):
         #     color = greys[30]
 
 
-def plot_accuracy(cc_dir, sap_dir):
-    # accuracy of CC-LTH
-    cc_acc = pickle.load(open(cc_dir + "accuracies.pkl", "rb"))
-    cc_acc = np.mean(cc_acc, axis=0)
-    end_inds = np.zeros(cc_acc.shape[0])
-    cc_accuracy = np.zeros(cc_acc.shape[0])
-    cc_comp = np.mean(pickle.load(open(cc_dir + "comp_levels.pkl", "rb")), axis=0)
+def plot_accuracy(exper_dirs):
+    labels = ["LTH", "SAP(1, 2)", "SAP(0.5, 1)", "CIAP(1, 2)", "CIAP(0.5, 1)",
+              "CIAP(1, 2)", "CIAP(0.5, 1)"]
+    acc_dict = {}
+    last_acc_dict = {}
+    comp_dict = {}
+    last_inds_dict = {}
 
-    for i in range(cc_acc.shape[0]):
-        for j in range(cc_acc.shape[1]):
-            if abs(cc_acc[i][j]) < .001:
-                break
-            end_inds[i] = j+1
-            cc_accuracy[i] = cc_acc[i][j]
+    c_colors = plt.get_cmap("coolwarm")
+    values = np.linspace(0, 1, len(exper_dirs))
+    colors = c_colors(values)
 
-    # accuracy of SAP
-    sap_acc = np.mean(pickle.load(open(sap_dir + "accuracies.pkl", "rb")), axis=0)
-    sap_len = sap_acc.shape[1]
-    sap_acc = np.array([acc[-1] for acc in sap_acc])
-    sap_comp = np.mean(pickle.load(open(sap_dir + "comp_levels.pkl", "rb")), axis=0)
+    fig, axs = plt.subplots(1, 3, figsize=(8, 4))
+    x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
 
-    fig, axs = plt.subplots(3, 1, figsize=(4, 8))
-    x_acc = np.arange(1, len(cc_comp) + 1)
+    # read the accuracies array for all experiments
+    for exp_ind, exp_dir in enumerate(exper_dirs):
+        acc = pickle.load(open(exp_dir + "accuracies.pkl", "rb"))
+        acc_dict[labels[exp_ind]] = np.mean(acc, axis=0)
+        comp_dict[labels[exp_ind]] = np.mean(pickle.load(open(exp_dir + "comp_levels.pkl", "rb")), axis=0)
 
-    # plot the performance vs. remaining weights
-    axs[0].plot(x_acc, cc_accuracy, label="CC-LTH", c="tab:red", marker='o')
-    axs[0].plot(x_acc, sap_acc, label="SAP", c="tab:blue", marker='o')
-    # axs[0].set_xscale('log')
-    # axs[0].set_xticks(cc_comp)
+    # process the ciap and giap experiments
+    for acc in acc_dict:
+        if "ciap" in acc.lower() or "giap" in acc.lower():
+            # accuracy of giap and ciap is the last non-zero element
+            last_inds_dict[acc] = np.zeros(acc_dict[acc].shape[0])
+            last_acc_dict[acc] = np.zeros(acc_dict[acc].shape[0])
+
+            for i in range(acc_dict[acc].shape[0]):
+                for j in range(acc_dict[acc].shape[1]):
+                    if abs(acc_dict[acc][i][j]) < .001:
+                        break
+                    last_inds_dict[acc][i] = j+1
+                    last_acc_dict[acc][i] = acc_dict[acc][i][j]
+
+        else:
+            # accuracy of SAP and lth is the last element
+            sap_len = acc_dict[acc].shape[1]
+            last_acc_dict[acc] = np.array([accur[-1] for accur in acc_dict[acc]])
+            comp_dict[acc] = np.mean(pickle.load(open(exp_dir + "comp_levels.pkl", "rb")), axis=0)
+            last_inds_dict[acc] = [sap_len] * acc_dict[acc].shape[0]
+
+    # plot the performance vs. iteration
+    for acc in last_acc_dict:
+        axs[0].plot(x_acc, last_acc_dict[acc], label=acc, c=colors.pop(),
+                    marker='o')
+
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
-    axs[0].set_title("CIAP vs. SAP")
+    axs[0].set_title("Performance Comparison")
     axs[0].legend()
 
-    # plot number of epochs vs. remaining weights
-    axs[1].plot(x_acc, end_inds, label="CC-LTH", c="tab:red", marker='o')
-    axs[1].plot(x_acc, [sap_len] * sap_acc.shape[0], label="SAP",
-                c="tab:blue", marker='o')
+    colors = c_colors(values)
+
+    # plot number of epochs vs. iteration
+    for ind in last_inds_dict:
+        axs[1].plot(x_acc, last_inds_dict[ind], label=ind, c=colors.pop(),
+                    marker='o')
+
     axs[1].set(xlabel="Iteration", ylabel="Epochs")
-    axs[1].set_title("Epochs in each iterations")
+    axs[1].set_title("# Training epochs in each iterations")
     axs[1].legend()
 
-    # plot the remaining weight
-    axs[2].plot(x_acc, cc_comp, label="SAP & CIAP", c="tab:purple", marker='o')
+    colors = c_colors(values)
+
+    # plot the remaining weight vs iteration
+    for comp in comp_dict:
+        axs[2].plot(x_acc, comp_dict[comp], label=comp, c=colors.pop(), marker='o')
+
     axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
-    # axs[2].set_title("Epochs in each iterations")
+    axs[2].set_title("Remaining weights")
     axs[2].legend()
+
+    axs[0].grid()
+    axs[1].grid()
+    axs[2].grid()
+    fig.tight_layout(pad=2.0)
+    out_dir = "../output/figures/" + "-".join(exp_dir[0].split("/")[2, 3])
+    print("saved in:", out_dir)
+    plt.savefig(out_dir + ".png")
 
     # axs[0, 1].set_xticks(major_ticks)
     # axs[0, 1].set_title(f"Iter {i}")
     # axs[0, 1].set_ylim(bottom=-0.05, top=.4)
     # axs[0, 1].set_xlim(left=1, right=len(similarity[0][0]))
     # axs[0, 1].set(xlabel="Layer index", ylabel="Connectivity")
-    axs[0].grid()
-    axs[1].grid()
-    axs[2].grid()
-    fig.tight_layout(pad=2.0)
-    print("saved in:", sap_dir)
-    plt.savefig(sap_dir + "accuracy.png")
-
 
 def read_variables(exper_dir):
     all_accuracy = pickle.load(open(exper_dir + "accuracies.pkl", "rb"))
