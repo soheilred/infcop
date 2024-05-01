@@ -139,7 +139,7 @@ class Network():
             opt_grad = torch.Tensor(grads[0][0])
             cur_grad = torch.Tensor(grads[-1][-1])
             log.debug(f"Grad diff {(cur_grad - opt_grad).norm().item()}")
-            return (cur_grad - opt_grad).norm().item() < .2
+            return (cur_grad - opt_grad).norm().item() < .5
 
         elif correlation:
             cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])

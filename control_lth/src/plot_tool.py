@@ -243,8 +243,8 @@ def plot_accuracy(exper_dirs):
     last_inds_dict = {}
 
     c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, len(exper_dirs))
-    colors = c_colors(values)
+    values = np.linspace(0, 1, len(exper_dirs) + 6)
+    colors = c_colors(values[:len(values) - 3] + values[len(values) + 3:])
 
     fig, axs = plt.subplots(3, 1, figsize=(4, 8))
 
