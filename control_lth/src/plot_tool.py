@@ -263,8 +263,8 @@ def plot_accuracy(exper_dirs):
             last_acc_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
 
             for trial in range(len(acc_dict[acc])):
-                for iteration in range(acc_dict[acc].shape[1]):
-                    for epoch in range(acc_dict[acc].shape[2]):
+                for iteration in range(acc_dict[acc][trial].shape[0]):
+                    for epoch in range(acc_dict[acc][trial][iteration].shape[0]):
                         if abs(acc_dict[acc][trial][iteration][epoch]) < .001:
                             break
                         last_inds_dict[acc][trial][iteration] = epoch+1
