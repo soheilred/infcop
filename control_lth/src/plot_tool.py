@@ -244,9 +244,9 @@ def plot_accuracy(exper_dirs):
 
     c_colors = plt.get_cmap("coolwarm")
     values = np.linspace(0, 1, len(exper_dirs) + 8)
+    remove_i = np.arange(len(values)//2 - 4, len(values) // 2 + 4)
+    values = np.delete(values, remove_i)
     import ipdb; ipdb.set_trace()
-    values = np.concatenate(values[:(len(values) - 4)//2],
-                            values[(len(values) + 4)//2:])
     colors = c_colors(values)
 
     fig, axs = plt.subplots(3, 1, figsize=(4, 8))
