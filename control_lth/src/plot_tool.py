@@ -259,6 +259,7 @@ def plot_accuracy(exper_dirs):
     for acc in acc_dict:
         if "ciap" in acc.lower() or "giap" in acc.lower():
             # accuracy of giap and ciap is the last non-zero element
+            import ipdb; ipdb.set_trace()
             last_inds_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
             last_acc_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
 
@@ -280,7 +281,7 @@ def plot_accuracy(exper_dirs):
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
     pprint.pprint(last_acc_dict)
-    # print(last_inds_dict)
+    pprint.pprint(last_inds_dict)
     pprint.pprint(comp_dict)
 
     # plot the performance vs. iteration
