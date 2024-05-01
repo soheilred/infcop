@@ -259,16 +259,16 @@ def plot_accuracy(exper_dirs):
     for acc in acc_dict:
         if "ciap" in acc.lower() or "giap" in acc.lower():
             # accuracy of giap and ciap is the last non-zero element
-            last_inds_dict[acc] = np.zeros(acc_dict[acc].shape[0:2])
-            last_acc_dict[acc] = np.zeros(acc_dict[acc].shape[0:2])
+            last_inds_dict[acc] = np.zeros(len(acc_dict[acc]), acc_dict[acc][0].shape[0])
+            last_acc_dict[acc] = np.zeros(len(acc_dict[acc]), acc_dict[acc][0].shape[0])
 
             for trial in range(acc_dict[acc].shape[0]):
                 for iteration in range(acc_dict[acc].shape[1]):
                     for epoch in range(acc_dict[acc].shape[2]):
-                        if abs(acc_dict[acc][trail][iteration][epoch]) < .001:
+                        if abs(acc_dict[acc][trial][iteration][epoch]) < .001:
                             break
-                        last_inds_dict[acc][trail][iteration] = epoch+1
-                        last_acc_dict[acc][trail][iteration] = acc_dict[acc][trial][iteration][epoch]
+                        last_inds_dict[acc][trial][iteration] = epoch+1
+                        last_acc_dict[acc][trial][iteration] = acc_dict[acc][trial][iteration][epoch]
 
         else:
             # accuracy of SAP and lth is the last element
