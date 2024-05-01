@@ -25,7 +25,7 @@ plt.rcParams.update({
     # "ytick.labelsize": "large",
     # "legend.loc": "upper right",
     # "axes.labelweight": "bold",
-    "text.usetex": True,
+    # "text.usetex": True,
     # "savefig.dpi": 100,     # higher resolution output.
     # "pgf.rcfonts": True,
     # "pgf.texsystem": 'pdflatex', # default is xetex
