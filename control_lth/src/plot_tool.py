@@ -19,13 +19,13 @@ np.set_printoptions(precision=2)
 plt.rcParams.update({
     "font.family": "serif",
     # "font.sans-serif": "Liberation Sans",
-    # "font.size": 20.0,
+    "font.size": 10.0,
     # "font.weight": "bold",
     # "xtick.labelsize": "large",
     # "ytick.labelsize": "large",
     # "legend.loc": "upper right",
     # "axes.labelweight": "bold",
-    # "text.usetex": True,
+    "text.usetex": True,
     # "savefig.dpi": 100,     # higher resolution output.
     # "pgf.rcfonts": True,
     # "pgf.texsystem": 'pdflatex', # default is xetex
@@ -243,8 +243,8 @@ def plot_accuracy(exper_dirs):
     last_inds_dict = {}
 
     c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, len(exper_dirs) + 6)
-    colors = c_colors(values[:len(values) - 3] + values[len(values) + 3:])
+    values = np.linspace(0, 1, len(exper_dirs) + 8)
+    colors = c_colors(values[:(len(values) - 4)//2] + values[(len(values) + 4)//2:])
 
     fig, axs = plt.subplots(3, 1, figsize=(4, 8))
 
