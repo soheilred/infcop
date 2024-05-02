@@ -296,7 +296,7 @@ def plot_accuracy(exper_dirs):
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
     axs[0].set_title("Performance Comparison")
     axs[0].legend()
-    axs[0].set_ylim(bottom=80., top=100.)
+    axs[0].set_ylim(bottom=95., top=100.)
 
     # plot number of epochs vs. iteration
     for ind, inds in enumerate(last_inds_dict):
