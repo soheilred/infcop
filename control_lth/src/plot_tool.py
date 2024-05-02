@@ -248,7 +248,7 @@ def plot_accuracy(exper_dirs):
     values = np.delete(values, remove_i)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(3, 1, figsize=(4, 8))
+    fig, axs = plt.subplots(3, 1, figsize=(6, 12))
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
@@ -320,7 +320,7 @@ def plot_accuracy(exper_dirs):
     axs[1].grid()
     axs[2].grid()
     fig.tight_layout(pad=2.0)
-    out_dir = "../output/figures/" + "-".join(exper_dirs[0].split("/")[2:4])
+    out_dir = "../output/figures/" + "-".join(exper_dirs[0].split("/")[3:5])
     print("saved in:", out_dir)
     plt.savefig(out_dir + ".png")
 
