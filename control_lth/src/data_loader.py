@@ -84,7 +84,6 @@ class Data:
                                                 transform=self.transform)
             test_data = datasets.ImageFolder(test_dir, transform=self.transform)
 
-
         elif dataset == "MNIST":
             self.transform = transforms.Compose([
                 transforms.Grayscale(num_output_channels=3),
@@ -105,9 +104,10 @@ class Data:
                 transform=self.transform
                 )
 
-        elif dataset == "FashinMNIST":
+        elif dataset == "FashionMNIST":
             self.transform = transforms.Compose([
                 transforms.Grayscale(num_output_channels=3),
+                transforms.Resize((224, 224)),
                 transforms.ToTensor(),
             ])
             training_data = datasets.FashionMNIST(
