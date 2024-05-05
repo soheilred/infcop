@@ -20,13 +20,13 @@ plt.rcParams.update({
     "font.family": "serif",
     # "font.sans-serif": "Liberation Sans",
     "font.size": 10.0,
-    # "font.weight": "bold",
-    # "xtick.labelsize": "large",
-    # "ytick.labelsize": "large",
+    "font.weight": "bold",
+    "xtick.labelsize": "large",
+    "ytick.labelsize": "large",
     # "legend.loc": "upper right",
-    # "axes.labelweight": "bold",
+    "axes.labelweight": "bold",
     # "text.usetex": True,
-    # "savefig.dpi": 100,     # higher resolution output.
+    "savefig.dpi": 100,     # higher resolution output.
     # "pgf.rcfonts": True,
     # "pgf.texsystem": 'pdflatex', # default is xetex
     # "pgf.preamble": [
