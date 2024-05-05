@@ -274,11 +274,12 @@ def plot_accuracy(exper_dirs):
                         last_inds_dict[acc][trial][iteration] = epoch+1
                         last_acc_dict[acc][trial][iteration] = acc_dict[acc][trial][iteration][epoch]
 
+            last_acc_error_dict[acc] = np.std(last_acc_dict[acc], axis=0)
+            last_inds_error_dict[acc] = np.std(last_inds_dict[acc], axis=0)
+
             last_acc_dict[acc] = np.mean(last_acc_dict[acc], axis=0)
             last_inds_dict[acc] = np.mean(last_inds_dict[acc], axis=0)
 
-            last_acc_error_dict[acc] = np.std(last_acc_dict[acc], axis=0)
-            last_inds_error_dict[acc] = np.std(last_inds_dict[acc], axis=0)
         else:
             # accuracy of SAP and lth is the last element
             acc_dict[acc] = np.mean(acc_dict[acc], axis=0)
