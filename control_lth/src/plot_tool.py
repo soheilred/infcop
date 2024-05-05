@@ -318,12 +318,10 @@ def plot_accuracy(exper_dirs):
     axs[1].set_title("# Training epochs in each iterations")
     axs[1].legend()
 
-    colors = c_colors(values)
-
     # plot the remaining weight vs. iteration
     # for ind, comp in enumerate(comp_dict):
     axs[2].plot(x_acc, comp_dict["SAP(1, 2)"], label="(p, q)=(1, 2)", c="purple", marker='o')
-    axs[2].plot(x_acc, comp_dict[labels[2]], label="(p, q)=(0.5, 1)", c="yellow", marker='o')
+    axs[2].plot(x_acc, comp_dict[labels[2]], label="(p, q)=(0.5, 1)", c="green", marker='o')
     axs[2].plot(x_acc, comp_dict["LTH"], label="LTH", c="cyan", marker='o')
 
     axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
