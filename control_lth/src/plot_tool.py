@@ -250,7 +250,7 @@ def plot_accuracy(exper_dirs):
     values = np.delete(values, remove_i)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(3, 1, figsize=(6, 12))
+    fig, axs = plt.subplots(1, 3, figsize=(12, 6))
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
