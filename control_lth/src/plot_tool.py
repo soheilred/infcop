@@ -290,9 +290,9 @@ def plot_accuracy(exper_dirs):
             last_inds_error_dict[acc] = [0] * acc_dict[acc].shape[0]
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
-    # pprint.pprint(last_acc_dict)
-    # pprint.pprint(last_inds_dict)
-    # pprint.pprint(comp_dict)
+    pprint.pprint(last_acc_dict)
+    pprint.pprint(last_inds_dict)
+    pprint.pprint(comp_dict)
 
     # plot the performance vs. iteration
     for ind, acc in enumerate(last_acc_dict):
@@ -320,7 +320,7 @@ def plot_accuracy(exper_dirs):
     # plot the remaining weight vs. iteration
     # for ind, comp in enumerate(comp_dict):
     axs[2].plot(x_acc, comp_dict["SAP(1, 2)"], label="(p, q)=(1, 2)", c="purple", marker='o')
-    axs[2].plot(x_acc, comp_dict["SAP(.5, 1)"], label="(p, q)=(0.5, 1)", c="yellow", marker='o')
+    axs[2].plot(x_acc, comp_dict[labels[2]], label="(p, q)=(0.5, 1)", c="yellow", marker='o')
     axs[2].plot(x_acc, comp_dict["LTH"], label="LTH", c="cyan", marker='o')
 
     axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
