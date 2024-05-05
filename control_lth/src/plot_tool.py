@@ -311,7 +311,7 @@ def plot_accuracy(exper_dirs):
     # plot number of epochs vs. iteration
     for ind, inds in enumerate(last_inds_dict):
         axs[1].errorbar(x_acc, last_inds_dict[inds],
-                        yerr=last_acc_error_dict[inds], label=inds,
+                        yerr=last_inds_error_dict[inds], label=inds,
                         c=colors[ind], marker='o')
 
     axs[1].set(xlabel="Iteration", ylabel="Epochs")
