@@ -250,7 +250,7 @@ def plot_accuracy(exper_dirs):
     values = np.delete(values, remove_i)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(1, 3, figsize=(12, 4))
+    fig, axs = plt.subplots(1, 3, figsize=(18, 6))
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
@@ -292,9 +292,9 @@ def plot_accuracy(exper_dirs):
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
     # pprint.pprint(last_acc_dict)
-    pprint.pprint(last_acc_error_dict)
+    # pprint.pprint(last_acc_error_dict)
     # pprint.pprint(last_inds_dict)
-    pprint.pprint(last_inds_error_dict)
+    # pprint.pprint(last_inds_error_dict)
     # pprint.pprint(comp_dict)
 
     # plot the performance vs. iteration
