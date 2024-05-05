@@ -239,8 +239,10 @@ def plot_accuracy(exper_dirs):
               "GIAP(1, 2)", "GIAP(0.5, 1)"]
     acc_dict = {}
     last_acc_dict = {}
+    last_acc_error_dict = {}
     comp_dict = {}
     last_inds_dict = {}
+    last_inds_error_dict = {}
 
     c_colors = plt.get_cmap("coolwarm")
     values = np.linspace(0, 1, len(exper_dirs) + 4)
@@ -275,23 +277,28 @@ def plot_accuracy(exper_dirs):
             last_acc_dict[acc] = np.mean(last_acc_dict[acc], axis=0)
             last_inds_dict[acc] = np.mean(last_inds_dict[acc], axis=0)
 
+            last_acc_error_dict[acc] = np.std(last_acc_dict[acc], axis=0)
+            last_inds_error_dict[acc] = np.std(last_inds_dict[acc], axis=0)
         else:
             # accuracy of SAP and lth is the last element
             acc_dict[acc] = np.mean(acc_dict[acc], axis=0)
             sap_len = acc_dict[acc].shape[1]
             last_acc_dict[acc] = np.array([accur[-1] for accur in acc_dict[acc]])
-            # comp_dict[acc] = np.mean(pickle.load(open(exp_dir + "comp_levels.pkl", "rb")), axis=0)
             last_inds_dict[acc] = [sap_len] * acc_dict[acc].shape[0]
+            # comp_dict[acc] = np.mean(pickle.load(open(exp_dir + "comp_levels.pkl", "rb")), axis=0)
+            last_acc_error_dict[acc] = np.array([0. for accur in acc_dict[acc]])
+            last_inds_error_dict[acc] = [0] * acc_dict[acc].shape[0]
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
-    pprint.pprint(last_acc_dict)
-    pprint.pprint(last_inds_dict)
-    pprint.pprint(comp_dict)
+    # pprint.pprint(last_acc_dict)
+    # pprint.pprint(last_inds_dict)
+    # pprint.pprint(comp_dict)
 
     # plot the performance vs. iteration
     for ind, acc in enumerate(last_acc_dict):
-        axs[0].plot(x_acc, last_acc_dict[acc], label=acc, c=colors[ind],
-                    marker='o')
+        axs[0].errorbar(x_acc, last_acc_dict[acc],
+                        yerr=last_acc_error_dict[acc],
+                        label=acc, c=colors[ind], marker='o')
 
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
     axs[0].set_title("Performance Comparison")
@@ -300,8 +307,9 @@ def plot_accuracy(exper_dirs):
 
     # plot number of epochs vs. iteration
     for ind, inds in enumerate(last_inds_dict):
-        axs[1].plot(x_acc, last_inds_dict[inds], label=inds, c=colors[ind],
-                    marker='o')
+        axs[1].errorbar(x_acc, last_inds_dict[inds],
+                        yerr=last_acc_error_dict[inds], label=inds,
+                        c=colors[ind], marker='o')
 
     axs[1].set(xlabel="Iteration", ylabel="Epochs")
     axs[1].set_title("# Training epochs in each iterations")
@@ -309,9 +317,11 @@ def plot_accuracy(exper_dirs):
 
     colors = c_colors(values)
 
-    # plot the remaining weight vs iteration
-    for ind, comp in enumerate(comp_dict):
-        axs[2].plot(x_acc, comp_dict[comp], label=comp, c=colors[ind], marker='o')
+    # plot the remaining weight vs. iteration
+    # for ind, comp in enumerate(comp_dict):
+    axs[2].plot(x_acc, comp_dict["SAP(1, 2)"], label="(p, q)=(1, 2)", c="purple", marker='o')
+    axs[2].plot(x_acc, comp_dict["SAP(.5, 1)"], label="(p, q)=(0.5, 1)", c="yellow", marker='o')
+    axs[2].plot(x_acc, comp_dict["LTH"], label="LTH", c="cyan", marker='o')
 
     axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
     axs[2].set_title("Remaining weights")
