@@ -266,6 +266,7 @@ def get_args():
                         help='% of neurons to prune per layer')
     parser.add_argument('--prune_p', type=float, default=0.5)
     parser.add_argument('--prune_q', type=float, default=1.0)
+    parser.add_argument('--prune_epsilon', type=float, default=1.0)
     parser.add_argument('--prune_type', type=str, default="percentile",
                         help='% of neurons to prune per layer')
     parser.add_argument('--prune_method', type=str, default="lth",

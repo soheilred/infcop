@@ -873,7 +873,8 @@ def ciap(logger, device, args):
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
             pruning.all_acc[imp_iter, train_iter] = accuracy
-            if (network.trained_enough(correlation=act.get_correlations())):
+            if (network.trained_enough(correlation=act.get_correlations(),
+                                       epsilon=args.prune_epsilon)):
                 break
             train_iter += 1
 
@@ -945,7 +946,8 @@ def giap(logger, device, args):
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
             pruning.all_acc[imp_iter, train_iter] = accuracy
-            if (network.trained_enough(grads=act.get_gradient())):
+            if (network.trained_enough(grads=act.get_gradient(),
+                                       epsilon=args.prune.epsilon)):
                 break
             train_iter += 1
 

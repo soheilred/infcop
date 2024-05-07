@@ -133,13 +133,13 @@ class Network():
             for param in self.model.parameters():
                 param.requires_grad = False
 
-    def trained_enough(self, correlation=None, grads=None):
+    def trained_enough(self, correlation=None, grads=None, epsilon=.1):
         # log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
         if grads:
             opt_grad = torch.Tensor(grads[0][0])
             cur_grad = torch.Tensor(grads[-1][-1])
             log.debug(f"Grad diff {(cur_grad - opt_grad).norm().item()}")
-            return (cur_grad - opt_grad).norm().item() < .5
+            return (cur_grad - opt_grad).norm().item() < epsilon
 
         elif correlation:
             cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
@@ -151,7 +151,7 @@ class Network():
 
             # if the norm difference is less than a threshold
             log.debug(f"Correlation norm diff: {(cur_corr - opt_corr).norm().item()}")
-            return (cur_corr - opt_corr).norm().item() < .11
+            return (cur_corr - opt_corr).norm().item() < epsilon
 
         else:
             sys.exit("error in trained_enough")
