@@ -19,7 +19,7 @@ np.set_printoptions(precision=2)
 plt.rcParams.update({
     "font.family": "serif",
     # "font.sans-serif": "Liberation Sans",
-    "font.size": 10.0,
+    "font.size": 12.0,
     "font.weight": "bold",
     "xtick.labelsize": "large",
     "ytick.labelsize": "large",
@@ -202,7 +202,7 @@ def plot_correlations(filename):
     values = np.linspace(0, 1, 31)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(5, figsize=(12, 20))
+    fig, axs = plt.subplots(5, figsize=(10, 18))
     xdata = np.arange(1, len(corrs[0][0]) + 1)
     major_ticks = np.arange(1, len(corrs[0][0]) + 1)
 
