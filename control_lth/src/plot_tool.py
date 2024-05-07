@@ -19,7 +19,7 @@ np.set_printoptions(precision=2)
 plt.rcParams.update({
     "font.family": "serif",
     # "font.sans-serif": "Liberation Sans",
-    "font.size": 12.0,
+    "font.size": 18.0,
     "font.weight": "bold",
     "xtick.labelsize": "large",
     "ytick.labelsize": "large",
@@ -244,14 +244,13 @@ def plot_accuracy(exper_dirs):
     last_inds_dict = {}
     last_inds_error_dict = {}
 
-    c_colors = plt.get_cmap("Dark2")
-    values = np.linspace(0, 1, len(exper_dirs))
-    # values = np.linspace(0, 1, len(exper_dirs) + 6)
-    # remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
-    # values = np.delete(values, remove_i)
+    c_colors = plt.get_cmap("coolwarm")
+    values = np.linspace(0, 1, len(exper_dirs) + 8)
+    remove_i = np.arange(len(values)//2 - 4, len(values) // 2 + 4)
+    values = np.delete(values, remove_i)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(1, 3, figsize=(15, 6))
+    fig, axs = plt.subplots(1, 3, figsize=(18, 6))
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
