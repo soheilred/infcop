@@ -19,7 +19,7 @@ np.set_printoptions(precision=2)
 plt.rcParams.update({
     "font.family": "serif",
     # "font.sans-serif": "Liberation Sans",
-    "font.size": 18.0,
+    "font.size": 14.0,
     "font.weight": "bold",
     "xtick.labelsize": "large",
     "ytick.labelsize": "large",
