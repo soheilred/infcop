@@ -133,15 +133,19 @@ class Network():
             for param in self.model.parameters():
                 param.requires_grad = False
 
-    def trained_enough(self, correlation=None, grads=None, epsilon=.1):
+    def trained_enough(self, correlation=None, grads=None, epsilon=None):
         # log.debug(f"{i} epoch extra training, accuracy: {100 * accuracy}")
         if grads:
+            if epsilon is None:
+                epsilon = 0.5
             opt_grad = torch.Tensor(grads[0][0])
             cur_grad = torch.Tensor(grads[-1][-1])
             log.debug(f"Grad diff {(cur_grad - opt_grad).norm().item()}")
             return (cur_grad - opt_grad).norm().item() < epsilon
 
         elif correlation:
+            if epsilon is None:
+                epsilon = 0.11
             cur_corr = torch.Tensor([elem.mean() for elem in correlation[-1]])
             opt_corr = torch.Tensor([elem.mean() for elem in correlation[0]])
             # if there are nans in correlation

@@ -947,7 +947,7 @@ def giap(logger, device, args):
             accuracy = test(model, test_dl, loss_fn, device)
             pruning.all_acc[imp_iter, train_iter] = accuracy
             if (network.trained_enough(grads=act.get_gradient(),
-                                       epsilon=args.prune.epsilon)):
+                                       epsilon=args.prune_epsilon)):
                 break
             train_iter += 1
 
