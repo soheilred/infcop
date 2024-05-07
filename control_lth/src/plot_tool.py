@@ -244,10 +244,11 @@ def plot_accuracy(exper_dirs):
     last_inds_dict = {}
     last_inds_error_dict = {}
 
-    c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, len(exper_dirs) + 6)
-    remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
-    values = np.delete(values, remove_i)
+    c_colors = plt.get_cmap("Set1")
+    values = np.linspace(0, 1, len(exper_dirs))
+    # values = np.linspace(0, 1, len(exper_dirs) + 6)
+    # remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
+    # values = np.delete(values, remove_i)
     colors = c_colors(values)
 
     fig, axs = plt.subplots(1, 3, figsize=(18, 6))
@@ -291,9 +292,9 @@ def plot_accuracy(exper_dirs):
             last_inds_error_dict[acc] = [0] * acc_dict[acc].shape[0]
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
-    pprint.pprint(last_acc_dict)
-    pprint.pprint(last_inds_dict)
-    pprint.pprint(comp_dict)
+    # pprint.pprint(last_acc_dict)
+    # pprint.pprint(last_inds_dict)
+    # pprint.pprint(comp_dict)
     # pprint.pprint(last_acc_error_dict)
     # pprint.pprint(last_inds_error_dict)
 
