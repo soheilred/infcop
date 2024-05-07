@@ -244,10 +244,11 @@ def plot_accuracy(exper_dirs):
     last_inds_dict = {}
     last_inds_error_dict = {}
 
-    c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, len(exper_dirs) + 6)
-    remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
-    values = np.delete(values, remove_i)
+    c_colors = plt.get_cmap("Paired")
+    values = np.linspace(0, 1, len(exper_dirs))
+    # values = np.linspace(0, 1, len(exper_dirs) + 6)
+    # remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
+    # values = np.delete(values, remove_i)
     colors = c_colors(values)
 
     fig, axs = plt.subplots(1, 3, figsize=(15, 6))
