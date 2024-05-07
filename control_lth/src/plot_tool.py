@@ -245,8 +245,8 @@ def plot_accuracy(exper_dirs):
     last_inds_error_dict = {}
 
     c_colors = plt.get_cmap("coolwarm")
-    values = np.linspace(0, 1, len(exper_dirs) + 8)
-    remove_i = np.arange(len(values)//2 - 4, len(values) // 2 + 4)
+    values = np.linspace(0, 1, len(exper_dirs) + 6)
+    remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
     values = np.delete(values, remove_i)
     colors = c_colors(values)
 
