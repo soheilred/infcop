@@ -234,6 +234,118 @@ def plot_correlations(filename):
     # c_reds(values), c_purples(values), c_greys(values)
 
 
+def plot_ablation(exper_dirs):
+    # GIAP
+    labels = ["0.3-(1, 2)", ".4-(1, 2)", ".5-(1, 2)", ".6-(1, 2)", ".7-(1, 2)",
+              ".3-(0.5, 1)", ".4-(0.5, 1)", ".5-(0.5, 1)", ".6-(0.5, 1)",
+              ".7-(0.5, 1)"]
+    acc_dict = {}
+    last_acc_dict = {}
+    # last_acc_error_dict = {}
+    comp_dict = {}
+    last_inds_dict = {}
+    # last_inds_error_dict = {}
+
+    c_colors = plt.get_cmap("Set1")
+    values = np.linspace(0, 1, len(exper_dirs))
+    # values = np.linspace(0, 1, len(exper_dirs) + 6)
+    # remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
+    # values = np.delete(values, remove_i)
+    colors = c_colors(values)
+
+    fig, axs = plt.subplots(1, 3, figsize=(18, 6))
+
+    # read the accuracies array for all experiments
+    for exp_ind, exp_dir in enumerate(exper_dirs):
+        acc_dict[labels[exp_ind]] = pickle.load(open(exp_dir + "accuracies.pkl", "rb"))
+        comp_dict[labels[exp_ind]] = np.mean(pickle.load(open(exp_dir +
+                                                              "comp_levels.pkl",
+                                                              "rb")), axis=0)
+
+    # process the ciap and giap experiments
+    for acc in acc_dict:
+        if "ciap" in acc.lower() or "giap" in acc.lower():
+            # accuracy of giap and ciap is the last non-zero element
+            last_inds_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
+            last_acc_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
+
+            for trial in range(len(acc_dict[acc])):
+                for iteration in range(acc_dict[acc][trial].shape[0]):
+                    for epoch in range(acc_dict[acc][trial][iteration].shape[0]):
+                        if abs(acc_dict[acc][trial][iteration][epoch]) < .001:
+                            break
+                        last_inds_dict[acc][trial][iteration] = epoch+1
+                        last_acc_dict[acc][trial][iteration] = acc_dict[acc][trial][iteration][epoch]
+
+            # last_acc_error_dict[acc] = np.std(last_acc_dict[acc], axis=0)
+            # last_inds_error_dict[acc] = np.std(last_inds_dict[acc], axis=0)
+
+            last_acc_dict[acc] = np.mean(last_acc_dict[acc], axis=0)
+            last_inds_dict[acc] = np.mean(last_inds_dict[acc], axis=0)
+
+        else:
+            # accuracy of SAP and lth is the last element
+            acc_dict[acc] = np.mean(acc_dict[acc], axis=0)
+            sap_len = acc_dict[acc].shape[1]
+            last_acc_dict[acc] = np.array([accur[-1] for accur in acc_dict[acc]])
+            last_inds_dict[acc] = [sap_len] * acc_dict[acc].shape[0]
+            # comp_dict[acc] = np.mean(pickle.load(open(exp_dir + "comp_levels.pkl", "rb")), axis=0)
+            # last_acc_error_dict[acc] = np.array([0. for accur in acc_dict[acc]])
+            # last_inds_error_dict[acc] = [0] * acc_dict[acc].shape[0]
+
+    x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
+    # pprint.pprint(last_acc_dict)
+    # pprint.pprint(last_inds_dict)
+    # pprint.pprint(comp_dict)
+    # pprint.pprint(last_acc_error_dict)
+    # pprint.pprint(last_inds_error_dict)
+
+    # plot the performance vs. iteration
+    for ind, acc in enumerate(last_acc_dict):
+        axs[0].plot(x_acc, last_acc_dict[acc],
+                        # yerr=last_acc_error_dict[acc],
+                        label=acc, c=colors[ind], marker='o')
+
+    axs[0].set(xlabel="Iteration", ylabel="Accuracy")
+    axs[0].set_title("Performance Comparison")
+    axs[0].legend()
+    # axs[0].set_ylim(bottom=98., top=100.)
+
+    # plot number of epochs vs. iteration
+    for ind, inds in enumerate(last_inds_dict):
+        axs[1].plot(x_acc, last_inds_dict[inds],
+                        # yerr=last_inds_error_dict[inds], label=inds,
+                        c=colors[ind], marker='o')
+
+    axs[1].set(xlabel="Iteration", ylabel="Epochs")
+    axs[1].set_title("# Training epochs in each iterations")
+    axs[1].legend()
+
+    # plot the remaining weight vs. iteration
+    # for ind, comp in enumerate(comp_dict):
+    axs[2].plot(x_acc, comp_dict[labels[0]], label="(p, q)=(1, 2)", c="purple", marker='o')
+    axs[2].plot(x_acc, comp_dict[labels[6]], label="(p, q)=(0.5, 1)", c="green", marker='o')
+    # axs[2].plot(x_acc, comp_dict["LTH"], label="LTH", c="cyan", marker='o')
+
+    axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
+    axs[2].set_title("Remaining weights")
+    axs[2].legend()
+
+    axs[0].grid()
+    axs[1].grid()
+    axs[2].grid()
+    fig.tight_layout(pad=2.0)
+    out_dir = "../output/figures/" + "-".join(exper_dirs[0].split("/")[3:5])
+    print("saved in:", out_dir)
+    plt.savefig(out_dir + ".png")
+
+    # axs[0, 1].set_xticks(major_ticks)
+    # axs[0, 1].set_title(f"Iter {i}")
+    # axs[0, 1].set_ylim(bottom=-0.05, top=.4)
+    # axs[0, 1].set_xlim(left=1, right=len(similarity[0][0]))
+    # axs[0, 1].set(xlabel="Layer index", ylabel="Connectivity")
+
+
 def plot_accuracy(exper_dirs):
     labels = ["LTH", "SAP(1, 2)", "SAP(0.5, 1)", "CIAP(1, 2)", "CIAP(0.5, 1)",
               "GIAP(1, 2)", "GIAP(0.5, 1)"]
@@ -484,7 +596,8 @@ def main():
     # plot_accuracy()
     # plot_correlations(sys.argv[1])
     # plot_similarity(sys.argv[1])
-    plot_accuracy(sys.argv[1:])
+    # plot_accuracy(sys.argv[1:])
+    plot_ablation(sys.argv[1:])
 
 
 if __name__ == '__main__':
