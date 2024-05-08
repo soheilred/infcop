@@ -294,9 +294,9 @@ def plot_ablation(exper_dirs):
             # last_inds_error_dict[acc] = [0] * acc_dict[acc].shape[0]
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
-    # pprint.pprint(last_acc_dict)
-    # pprint.pprint(last_inds_dict)
-    # pprint.pprint(comp_dict)
+    pprint.pprint(last_acc_dict)
+    pprint.pprint(last_inds_dict)
+    pprint.pprint(comp_dict)
     # pprint.pprint(last_acc_error_dict)
     # pprint.pprint(last_inds_error_dict)
 
