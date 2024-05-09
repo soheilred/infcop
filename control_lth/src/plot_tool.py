@@ -264,47 +264,35 @@ def plot_ablation(exper_dirs):
 
     # process the ciap and giap experiments
     for acc in acc_dict:
-        if "ciap" in acc.lower() or "giap" in acc.lower():
-            # accuracy of giap and ciap is the last non-zero element
-            last_inds_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
-            last_acc_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
+        # accuracy of giap and ciap is the last non-zero element
+        last_inds_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
+        last_acc_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
 
-            for trial in range(len(acc_dict[acc])):
-                for iteration in range(acc_dict[acc][trial].shape[0]):
-                    for epoch in range(acc_dict[acc][trial][iteration].shape[0]):
-                        if abs(acc_dict[acc][trial][iteration][epoch]) < .001:
-                            break
-                        last_inds_dict[acc][trial][iteration] = epoch+1
-                        last_acc_dict[acc][trial][iteration] = acc_dict[acc][trial][iteration][epoch]
+        for trial in range(len(acc_dict[acc])):
+            for iteration in range(acc_dict[acc][trial].shape[0]):
+                for epoch in range(acc_dict[acc][trial][iteration].shape[0]):
+                    if abs(acc_dict[acc][trial][iteration][epoch]) < .001:
+                        break
+                    last_inds_dict[acc][trial][iteration] = epoch+1
+                    last_acc_dict[acc][trial][iteration] = acc_dict[acc][trial][iteration][epoch]
 
-            # last_acc_error_dict[acc] = np.std(last_acc_dict[acc], axis=0)
-            # last_inds_error_dict[acc] = np.std(last_inds_dict[acc], axis=0)
+        # last_acc_error_dict[acc] = np.std(last_acc_dict[acc], axis=0)
+        # last_inds_error_dict[acc] = np.std(last_inds_dict[acc], axis=0)
 
-            last_acc_dict[acc] = np.mean(last_acc_dict[acc], axis=0)
-            last_inds_dict[acc] = np.mean(last_inds_dict[acc], axis=0)
-
-        else:
-            # accuracy of SAP and lth is the last element
-            acc_dict[acc] = np.mean(acc_dict[acc], axis=0)
-            sap_len = acc_dict[acc].shape[1]
-            last_acc_dict[acc] = np.array([accur[-1] for accur in acc_dict[acc]])
-            last_inds_dict[acc] = [sap_len] * acc_dict[acc].shape[0]
-            # comp_dict[acc] = np.mean(pickle.load(open(exp_dir + "comp_levels.pkl", "rb")), axis=0)
-            # last_acc_error_dict[acc] = np.array([0. for accur in acc_dict[acc]])
-            # last_inds_error_dict[acc] = [0] * acc_dict[acc].shape[0]
+        last_acc_dict[acc] = np.mean(last_acc_dict[acc], axis=0)
+        last_inds_dict[acc] = np.mean(last_inds_dict[acc], axis=0)
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
-    pprint.pprint(last_acc_dict)
-    pprint.pprint(last_inds_dict)
-    pprint.pprint(comp_dict)
+    pprint.pprint("accuracy\n", last_acc_dict)
+    pprint.pprint("last index\n", last_inds_dict)
+    pprint.pprint("remaining weights\n", comp_dict)
     # pprint.pprint(last_acc_error_dict)
     # pprint.pprint(last_inds_error_dict)
 
     # plot the performance vs. iteration
     for ind, acc in enumerate(last_acc_dict):
-        axs[0].plot(x_acc, last_acc_dict[acc],
-                        # yerr=last_acc_error_dict[acc],
-                        label=acc, c=colors[ind], marker='o')
+        axs[0].plot(x_acc, last_acc_dict[acc], label=acc, c=colors[ind],
+                    marker='o')
 
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
     axs[0].set_title("Performance Comparison")
@@ -313,9 +301,7 @@ def plot_ablation(exper_dirs):
 
     # plot number of epochs vs. iteration
     for ind, inds in enumerate(last_inds_dict):
-        axs[1].plot(x_acc, last_inds_dict[inds],
-                        # yerr=last_inds_error_dict[inds], label=inds,
-                        c=colors[ind], marker='o')
+        axs[1].plot(x_acc, last_inds_dict[inds], c=colors[ind], marker='o')
 
     axs[1].set(xlabel="Iteration", ylabel="Epochs")
     axs[1].set_title("# Training epochs in each iterations")
