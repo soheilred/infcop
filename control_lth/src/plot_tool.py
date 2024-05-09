@@ -236,7 +236,7 @@ def plot_correlations(filename):
 
 def plot_ablation(exper_dirs):
     # GIAP
-    labels = ["0.3-(1, 2)", ".4-(1, 2)", ".5-(1, 2)", ".6-(1, 2)", ".7-(1, 2)",
+    labels = ["eps-(p, q)", "0.3-(1, 2)", ".4-(1, 2)", ".5-(1, 2)", ".6-(1, 2)", ".7-(1, 2)",
               ".3-(0.5, 1)", ".4-(0.5, 1)", ".5-(0.5, 1)", ".6-(0.5, 1)",
               ".7-(0.5, 1)"]
     acc_dict = {}
@@ -246,19 +246,19 @@ def plot_ablation(exper_dirs):
     last_inds_dict = {}
     # last_inds_error_dict = {}
 
-    c_colors = plt.get_cmap("Set1")
-    values = np.linspace(0, 1, len(exper_dirs))
-    # values = np.linspace(0, 1, len(exper_dirs) + 6)
-    # remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
-    # values = np.delete(values, remove_i)
+    c_colors = plt.get_cmap("bwr")
+    # values = np.linspace(0, 1, len(exper_dirs))
+    values = np.linspace(0, 1, len(exper_dirs) + 6)
+    remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
+    values = np.delete(values, remove_i)
     colors = c_colors(values)
 
     fig, axs = plt.subplots(1, 3, figsize=(18, 6))
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
-        acc_dict[labels[exp_ind]] = pickle.load(open(exp_dir + "accuracies.pkl", "rb"))
-        comp_dict[labels[exp_ind]] = np.mean(pickle.load(open(exp_dir +
+        acc_dict[labels[exp_ind + 1]] = pickle.load(open(exp_dir + "accuracies.pkl", "rb"))
+        comp_dict[labels[exp_ind + 1]] = np.mean(pickle.load(open(exp_dir +
                                                               "comp_levels.pkl",
                                                               "rb")), axis=0)
 
