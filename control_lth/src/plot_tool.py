@@ -329,7 +329,7 @@ def plot_ablation(exper_dirs):
     axs[1].grid()
     axs[2].grid()
     fig.tight_layout(pad=2.0)
-    fig.subtitle(" with ".join(exper_dirs[0].split("/")[3:5]), fontsize=15)
+    fig.suptitle(" with ".join(exper_dirs[0].split("/")[3:5]), fontsize=15)
     out_dir = "../output/figures/ablation-" + "-".join(exper_dirs[0].split("/")[3:5])
     print("saved in:", out_dir)
     plt.savefig(out_dir + ".png")
