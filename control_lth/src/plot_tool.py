@@ -247,10 +247,10 @@ def plot_ablation(exper_dirs):
     # last_inds_error_dict = {}
 
     c_colors = plt.get_cmap("Accent")
-    # values = np.linspace(0, 1, len(exper_dirs))
-    values = np.linspace(0, 1, len(exper_dirs) + 6)
-    remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
-    values = np.delete(values, remove_i)
+    values = np.linspace(0, 1, len(exper_dirs))
+    # values = np.linspace(0, 1, len(exper_dirs) + 6)
+    # remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
+    # values = np.delete(values, remove_i)
     colors = c_colors(values)
 
     fig, axs = plt.subplots(1, 3, figsize=(18, 6))
