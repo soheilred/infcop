@@ -427,9 +427,9 @@ def plot_accuracy(exper_dirs):
 
     # plot the remaining weight vs. iteration
     # for ind, comp in enumerate(comp_dict):
-    axs[2].plot(x_acc, comp_dict["SAP(1, 2)"], label="(p, q)=(1, 2)", c="purple", marker='o')
-    axs[2].plot(x_acc, comp_dict[labels[2]], label="(p, q)=(0.5, 1)", c="green", marker='o')
-    axs[2].plot(x_acc, comp_dict["LTH"], label="LTH", c="cyan", marker='o')
+    axs[2].plot(x_acc, comp_dict[labels[0]], label="LTH", c="cyan", marker='o')
+    axs[2].plot(x_acc, comp_dict[labels[3]], label="(p, q)=(1, 2)", c="purple", marker='o')
+    axs[2].plot(x_acc, comp_dict[labels[4]], label="(p, q)=(0.5, 1)", c="green", marker='o')
 
     axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
     axs[2].set_title("Remaining weights")
