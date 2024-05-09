@@ -246,7 +246,7 @@ def plot_ablation(exper_dirs):
     last_inds_dict = {}
     # last_inds_error_dict = {}
 
-    c_colors = plt.get_cmap("tab20")
+    c_colors = plt.get_cmap("tab10")
     # values = np.linspace(0, 1, len(exper_dirs))
     values = np.linspace(0, 1, len(exper_dirs) + 6)
     remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
