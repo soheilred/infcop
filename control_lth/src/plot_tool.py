@@ -246,7 +246,7 @@ def plot_ablation(exper_dirs):
     last_inds_dict = {}
     # last_inds_error_dict = {}
 
-    c_colors = plt.get_cmap("Dark2")
+    c_colors = plt.get_cmap("turbo")
     values = np.linspace(0, 1, len(exper_dirs))
     # values = np.linspace(0, 1, len(exper_dirs) + 6)
     # remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
@@ -300,7 +300,7 @@ def plot_ablation(exper_dirs):
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
     axs[0].set_title("Performance Comparison")
     axs[0].legend(title="epsilon-(p, q)")
-    axs[0].set_ylim(bottom=88., top=95.)
+    axs[0].set_ylim(bottom=89., top=95.)
 
     # plot number of epochs vs. iteration
     for ind, inds in enumerate(last_inds_dict):
