@@ -257,8 +257,8 @@ def plot_ablation(exper_dirs):
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
-        acc_dict[labels[exp_ind + 1]] = pickle.load(open(exp_dir + "accuracies.pkl", "rb"))
-        comp_dict[labels[exp_ind + 1]] = np.mean(pickle.load(open(exp_dir +
+        acc_dict[labels[exp_ind]] = pickle.load(open(exp_dir + "accuracies.pkl", "rb"))
+        comp_dict[labels[exp_ind]] = np.mean(pickle.load(open(exp_dir +
                                                               "comp_levels.pkl",
                                                               "rb")), axis=0)
 
