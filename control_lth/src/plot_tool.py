@@ -236,9 +236,9 @@ def plot_correlations(filename):
 
 def plot_ablation(exper_dirs):
     # GIAP
-    labels = ["0.3-(1, 2)", ".4-(1, 2)", ".5-(1, 2)", ".6-(1, 2)", ".7-(1, 2)",
-              ".3-(0.5, 1)", ".4-(0.5, 1)", ".5-(0.5, 1)", ".6-(0.5, 1)",
-              ".7-(0.5, 1)"]
+    labels = ["0.3-(1, 2)", "0.4-(1, 2)", "0.5-(1, 2)", "0.6-(1, 2)", "0.7-(1, 2)",
+              "0.3-(0.5, 1)", "0.4-(0.5, 1)", "0.5-(0.5, 1)", "0.6-(0.5, 1)",
+              "0.7-(0.5, 1)"]
     acc_dict = {}
     last_acc_dict = {}
     # last_acc_error_dict = {}
@@ -246,7 +246,7 @@ def plot_ablation(exper_dirs):
     last_inds_dict = {}
     # last_inds_error_dict = {}
 
-    c_colors = plt.get_cmap("bwr")
+    c_colors = plt.get_cmap("seismic")
     # values = np.linspace(0, 1, len(exper_dirs))
     values = np.linspace(0, 1, len(exper_dirs) + 6)
     remove_i = np.arange(len(values)//2 - 3, len(values) // 2 + 3)
@@ -299,7 +299,7 @@ def plot_ablation(exper_dirs):
 
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
     axs[0].set_title("Performance Comparison")
-    axs[0].legend(title="eps-(p, q)")
+    axs[0].legend(title="epsilon-(p, q)")
     # axs[0].set_ylim(bottom=98., top=100.)
 
     # plot number of epochs vs. iteration
