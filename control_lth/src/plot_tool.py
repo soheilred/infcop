@@ -329,7 +329,6 @@ def plot_ablation(exper_dirs):
     axs[1].grid()
     axs[2].grid()
     fig.tight_layout(pad=2.0)
-    fig.suptitle((" with ".join(exper_dirs[0].split("/")[3:5])).title(), fontsize=15)
     out_dir = "../output/figures/ablation-" + "-".join(exper_dirs[0].split("/")[3:5])
     print("saved in:", out_dir)
     plt.savefig(out_dir + ".png")
@@ -440,6 +439,7 @@ def plot_accuracy(exper_dirs):
     axs[1].grid()
     axs[2].grid()
     fig.tight_layout(pad=2.0)
+    # fig.suptitle((" with ".join(exper_dirs[0].split("/")[3:5])).title(), fontsize=20)
     out_dir = "../output/figures/" + "-".join(exper_dirs[0].split("/")[3:5])
     print("saved in:", out_dir)
     plt.savefig(out_dir + ".png")
@@ -591,8 +591,8 @@ def main():
     # plot_accuracy()
     # plot_correlations(sys.argv[1])
     # plot_similarity(sys.argv[1])
-    # plot_accuracy(sys.argv[1:])
-    plot_ablation(sys.argv[1:])
+    plot_accuracy(sys.argv[1:])
+    # plot_ablation(sys.argv[1:])
 
 
 if __name__ == '__main__':
