@@ -283,9 +283,12 @@ def plot_ablation(exper_dirs):
         last_inds_dict[acc] = np.mean(last_inds_dict[acc], axis=0)
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
-    pprint.pprint("accuracy\n", last_acc_dict)
-    pprint.pprint("last index\n", last_inds_dict)
-    pprint.pprint("remaining weights\n", comp_dict)
+    print("accuracy")
+    pprint.pprint(last_acc_dict)
+    print("last index")
+    pprint.pprint(last_inds_dict)
+    print("remaining weights")
+    pprint.pprint(comp_dict)
     # pprint.pprint(last_acc_error_dict)
     # pprint.pprint(last_inds_error_dict)
 
