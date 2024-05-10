@@ -423,7 +423,7 @@ def plot_accuracy(exper_dirs):
 
     axs[1].set(xlabel="Iteration", ylabel="Epochs")
     axs[1].set_title("# Training epochs in each iterations")
-    axs[1].legend()
+    # axs[1].legend()
 
     # plot the remaining weight vs. iteration
     # for ind, comp in enumerate(comp_dict):
