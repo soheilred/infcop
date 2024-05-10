@@ -341,8 +341,8 @@ def plot_ablation(exper_dirs):
 
 
 def plot_accuracy(exper_dirs):
-    labels = ["LTH", "SAP(1, 2)", "SAP(0.5, 1)", "CIAP(1, 2)", "CIAP(0.5, 1)",
-              "GIAP(1, 2)", "GIAP(0.5, 1)"]
+    labels = ["LTH", "SAP(1, 2)", "SAP(0.5, 1)", "InCoP-IF(1, 2)", "InCoP-IF(0.5, 1)",
+              "InCoP-GF(1, 2)", "InCoP-GF(0.5, 1)"]
     acc_dict = {}
     last_acc_dict = {}
     last_acc_error_dict = {}
@@ -368,7 +368,7 @@ def plot_accuracy(exper_dirs):
 
     # process the ciap and giap experiments
     for acc in acc_dict:
-        if "ciap" in acc.lower() or "giap" in acc.lower():
+        if "incop" in acc.lower():
             # accuracy of giap and ciap is the last non-zero element
             last_inds_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
             last_acc_dict[acc] = np.zeros([len(acc_dict[acc]), acc_dict[acc][0].shape[0]])
