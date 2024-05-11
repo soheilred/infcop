@@ -209,7 +209,7 @@ def get_args():
                         help='Start with a pretrained network?')
 
     parser.add_argument('--net_dataset', type=str,
-                        choices=['CIFAR10', 'MNIST', 'IMAGENET', 'FashionMNIST', '6splitcifar', '11splitcifar'],
+                        choices=['CIFAR10', 'MNIST', 'IMAGENET', 'FashionMNIST', 'CIFAR100'],
                         default='CIFAR10', help='Name of dataset')
 
     # Training options.
