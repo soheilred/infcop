@@ -75,6 +75,15 @@ class Network():
             num_ftrs = self.model.fc.in_features
             self.model.fc = nn.Linear(num_ftrs, self.num_classes)
 
+        elif self.arch == "resnet50":
+            if self.pretrained == 1:
+                self.model = models.resnet50(weights=ResNet50_Weights.IMAGENET1K_V1)
+                self.set_parameter_requires_grad()
+            else:
+                self.model = models.resnet50(weights=None)
+            num_ftrs = self.model.fc.in_features
+            self.model.fc = nn.Linear(num_ftrs, self.num_classes)
+
         elif self.arch == "alexnet":
             if self.pretrained == 1:
                 self.model = models.alexnet(weights=AlexNet_Weights.IMAGENET1K_V1)

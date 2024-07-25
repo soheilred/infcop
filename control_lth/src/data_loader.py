@@ -1,11 +1,12 @@
 import torch
 import sys
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 import os
 import constants as C
 
 # from torchvision.transforms import ToTensor
+
 
 class Data:
     def __init__(self, batch_size, data_dir, dataset, transform=None):
@@ -68,21 +69,28 @@ class Data:
                 )
 
         elif dataset == "IMAGENET":
-            data_dir = C.DATA_DIR + 'tiny-imagenet-200' 
-            train_dir = os.path.join(data_dir, 'train')
-            test_dir = os.path.join(data_dir, 'test')
+            data_dir = "/home/soheil/data/" + 'imagenet1k'
+            # train_dir = os.path.join(data_dir, 'train')
+            # test_dir = os.path.join(data_dir, 'test')
 
             self.transform = transforms.Compose([
-                    transforms.RandomResizedCrop(224),
-                    transforms.RandomHorizontalFlip(),
+                    # transforms.RandomResizedCrop(224),
+                    # transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
-                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                            std=[0.229, 0.224, 0.225])
+                    # transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                    #                      std=[0.229, 0.224, 0.225])
                 ])
 
-            training_data = datasets.ImageFolder(train_dir,
-                                                transform=self.transform)
-            test_data = datasets.ImageFolder(test_dir, transform=self.transform)
+            dataset = datasets.ImageFolder(data_dir, transform=self.transform)
+            lengths = [int(len(dataset)*0.8),
+                       len(dataset) - int(len(dataset)*0.8)]
+            training_data, test_data = random_split(dataset, lengths)
+            # test_data = datasets.ImageFolder(test_dir, transform=self.transform)
+
+            self.num_classes = 1000
+            self.train_dataloader = DataLoader(training_data, **self.train_kwargs)
+            self.test_dataloader = DataLoader(test_data, **self.test_kwargs)
+            return
 
         elif dataset == "MNIST":
             self.transform = transforms.Compose([
