@@ -69,7 +69,7 @@ class Data:
                 )
 
         elif dataset == "IMAGENET":
-            data_dir = "/home/soheil/data/" + 'imagenet1k'
+            data_dir = "/home/gharatappeh/data/" + 'imagenet1k'
             # train_dir = os.path.join(data_dir, 'train')
             # test_dir = os.path.join(data_dir, 'test')
 
