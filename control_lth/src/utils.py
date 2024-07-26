@@ -200,7 +200,7 @@ def get_args():
     #                         )
     # net = parser.add_argument_group("net")
     parser.add_argument('--net_arch',
-                        choices=['vgg11', 'vgg16', 'resnet18', 'alexnet',
+                        choices=['vgg11', 'vgg16', 'resnet18', 'resnet50', 'alexnet',
                                  'densenet', 'googlenet'],
                         default='resnet18',
                         help='Architectures')
