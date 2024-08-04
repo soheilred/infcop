@@ -10,6 +10,12 @@ import json
 import sys
 import pprint
 import constants as C
+import matplotlib.font_manager as font_manager
+font_dirs = ['/home/gharatappeh/.fonts/Crimson-Roman.otf']
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+font_list = font_manager.createFontList(font_files)
+font_manager.fontManager.ttflist.extend(font_list)
+
 np.set_printoptions(precision=2)
 # from tueplots import figsizes, fonts
 # rc('font',**{'family':'serif','serif':['Times']})
@@ -17,7 +23,10 @@ np.set_printoptions(precision=2)
 # rc('text', usetex=True)
 # plt.rcParams.update(fonts.jmlr2001_tex(family="serif"))
 plt.rcParams.update({
-    "font.family": "serif",
+    "font.family": "Crimson Roman",
+    # "font.family": "serif",
+    # "font.serif": "Times",
+    # "text.usetex": True,
     # "font.sans-serif": "Liberation Sans",
     "font.size": 14.0,
     "font.weight": "bold",
@@ -25,7 +34,6 @@ plt.rcParams.update({
     "ytick.labelsize": "large",
     # "legend.loc": "upper right",
     "axes.labelweight": "bold",
-    # "text.usetex": True,
     "savefig.dpi": 100,     # higher resolution output.
     # "pgf.rcfonts": True,
     # "pgf.texsystem": 'pdflatex', # default is xetex
