@@ -11,7 +11,7 @@ import sys
 import pprint
 import constants as C
 import matplotlib.font_manager as font_manager
-font_dirs = ['/home/gharatappeh/.fonts/Crimson-Roman.ttf']
+font_dirs = ['/home/gharatappeh/.fonts/']
 font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
 
 for font_file in font_files:
