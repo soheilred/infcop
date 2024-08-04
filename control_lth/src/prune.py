@@ -531,6 +531,8 @@ class Pruner:
         elif self.args.prune_method == "giap":
             self.prune_by_sap()
 
+        elif self.args.prune_method == "inf_cop":
+            self.prune_by_sap()
         else:
             sys.exit("Wrong pruning method!")
 
