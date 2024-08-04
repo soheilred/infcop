@@ -479,7 +479,7 @@ def plot_similarity(exper_dir, vars=None):
         acc, comp_level, sim, corrs, grads = read_variables(exper_dir)
 
     exper_len = np.arange(1, len(acc[0][0]) + 1)
-    fig, axs = plt.subplots(imp_num, 5, figsize=(16, 9))
+    fig, axs = plt.subplots(imp_num, 3, figsize=(16, 9))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
     network_len = len(sim[0][0])
     net_layers = np.arange(1, network_len + 1)
@@ -513,13 +513,13 @@ def plot_similarity(exper_dir, vars=None):
     #                                            c=colors[i % (train_epochs)])
 
     # axs[0, 0].axis("off")
-    for i in range(imp_num):
+    # for i in range(imp_num):
         # axs[i, 0].set_xticks(major_ticks)
-        axs[i, 0].set_title(f"Iter {i}")
+        # axs[i, 0].set_title(f"Iter {i}")
         # axs[i + 1, 0].set_ylim(bottom=0.01, top=.02)
         # axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
         # axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
-        axs[i, 0].grid()
+        # axs[i, 0].grid()
 
     # connectivity
     print("connectivity:", len(corrs[0]))
@@ -602,8 +602,8 @@ def plot_similarity(exper_dir, vars=None):
 def main():
     # plot_accuracy()
     # plot_correlations(sys.argv[1])
-    # plot_similarity(sys.argv[1])
-    plot_accuracy(sys.argv[1:])
+    plot_similarity(sys.argv[1])
+    # plot_accuracy(sys.argv[1:])
     # plot_ablation(sys.argv[1:])
 
 
