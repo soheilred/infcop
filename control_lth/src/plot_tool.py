@@ -16,6 +16,7 @@ font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
 
 for font_file in font_files:
     font_manager.fontManager.addfont(font_file)
+    print(font_file)
 print(font_manager.get_font_names())
 # font_list = font_manager.createFontList(font_files)
 # font_manager.fontManager.ttflist.extend(font_list)
@@ -27,8 +28,8 @@ np.set_printoptions(precision=2)
 # rc('text', usetex=True)
 # plt.rcParams.update(fonts.jmlr2001_tex(family="serif"))
 plt.rcParams.update({
-    "font.family": "Crimson Roman",
-    # "font.family": "serif",
+    # "font.family": "Crimson Roman",
+    "font.family": "Nimbus Roman",
     # "font.serif": "Times",
     # "text.usetex": True,
     # "font.sans-serif": "Liberation Sans",
