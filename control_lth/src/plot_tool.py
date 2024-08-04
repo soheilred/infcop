@@ -481,6 +481,7 @@ def plot_similarity(exper_dir, vars=None):
     exper_len = np.arange(1, len(acc[0][0]) + 1)
     fig, axs = plt.subplots(imp_num, 3, figsize=(16, 9))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
+    import ipdb; ipdb.set_trace()
     network_len = len(sim[0][0])
     net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
@@ -497,7 +498,6 @@ def plot_similarity(exper_dir, vars=None):
     # tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
     #         - rho_opt).norm().item() for j in range(train_epochs)]
 
-    import ipdb; ipdb.set_trace()
 
 
     for i in range(imp_num):
