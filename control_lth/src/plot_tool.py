@@ -13,8 +13,11 @@ import constants as C
 import matplotlib.font_manager as font_manager
 font_dirs = ['/home/gharatappeh/.fonts/Crimson-Roman.otf']
 font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-font_list = font_manager.createFontList(font_files)
-font_manager.fontManager.ttflist.extend(font_list)
+
+for font_file in font_files:
+    font_manager.fontManager.addfont(font_file)
+# font_list = font_manager.createFontList(font_files)
+# font_manager.fontManager.ttflist.extend(font_list)
 
 np.set_printoptions(precision=2)
 # from tueplots import figsizes, fonts
