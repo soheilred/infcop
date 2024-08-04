@@ -28,8 +28,8 @@ np.set_printoptions(precision=2)
 # rc('text', usetex=True)
 # plt.rcParams.update(fonts.jmlr2001_tex(family="serif"))
 plt.rcParams.update({
-    # "font.family": "Crimson Roman",
-    "font.family": "Nimbus Roman",
+    "font.family": "Crimson",
+    # "font.family": "Nimbus Roman",
     # "font.serif": "Times",
     # "text.usetex": True,
     # "font.sans-serif": "Liberation Sans",
