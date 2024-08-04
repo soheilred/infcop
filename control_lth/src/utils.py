@@ -270,7 +270,7 @@ def get_args():
     parser.add_argument('--prune_type', type=str, default="percentile",
                         help='% of neurons to prune per layer')
     parser.add_argument('--prune_method', type=str, default="lth",
-                        choices=["lth", "sap", "giap", "ciap"],
+                        choices=["lth", "sap", "giap", "ciap", "inf_cop"],
                         help='What type of LTH experiment you are running?')
 
     # parser.add_argument('--yaml_config', type=str, default="config.ini",

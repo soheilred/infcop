@@ -967,6 +967,80 @@ def giap(logger, device, args):
     return output
 
 
+
+def inf_cop(logger, device, args):
+    ITERATION = args.exper_imp_total_iter
+    run_dir = utils.get_run_dir(args)
+    data = Data(args.net_batch_size, C.DATA_DIR, args.net_dataset)
+    train_dl, test_dl = data.train_dataloader, data.test_dataloader
+    num_classes = data.get_num_classes()
+
+    network = Network(device, args.net_arch, num_classes, args.net_pretrained)
+    model = network.set_model()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.net_lr,
+                                weight_decay=args.net_weight_decay)
+    # warm up the pretrained model
+    logger.debug("Pretraining warm-up")
+    max_acc = warm_up(model, train_dl, test_dl, loss_fn, optimizer, args, device)
+
+    similarity = Similarity(args, test_dl, device, run_dir, num_classes)
+    act = Activations(model, train_dl, device, args.net_batch_size)
+    pruning = Pruner(args, model, act)
+    init_state_dict = pruning.init_lth()
+    act.compute_correlations()
+    act.gradient_flow()
+
+    for imp_iter in tqdm(range(ITERATION)):
+        if imp_iter != 0:
+            pruning.prune_once(init_state_dict)
+            act.compute_correlations()
+            act.gradient_flow()
+            # similarity.cosine_similarity(model, imp_iter)
+
+        logger.debug(f"[{imp_iter + 1}/{ITERATION}] " + "IMP loop")
+
+        # Print the table of Nonzeros in each layer
+        comp_level = utils.count_nonzeros(model)
+        pruning.comp_level[imp_iter] = comp_level
+        logger.debug(f"Compression level: {comp_level}")
+
+        # Training loop
+        # for train_iter in range(args.net_train_epochs):
+        train_iter, accuracy = 0, 0
+        while (train_iter < args.net_train_epochs and accuracy < max_acc):
+            # Training
+            logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
+            acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
+                              args.net_train_per_epoch, device)
+            act.compute_correlations()
+            act.gradient_flow()
+            # similarity.cosine_similarity(model, imp_iter)
+
+            # Test and save the most accurate model
+            accuracy = test(model, test_dl, loss_fn, device)
+            pruning.all_acc[imp_iter, train_iter] = accuracy
+            if (network.trained_enough(grads=act.get_gradient(),
+                                       epsilon=args.prune_epsilon)):
+                break
+            train_iter += 1
+
+        # Save model
+        utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
+
+        # Calculate the connectivity
+        # act.compute_correlations()
+        # logger.debug(f"similarities: {similarity.get_similarity()}")
+
+    output = [pruning.all_acc,
+              similarity.get_similarity(),
+              act.get_conns(),
+              act.get_gradient(),
+              pruning.comp_level]
+
+    return output
+
+
 def experiment(logger, args, device, run_dir):
     logger.debug(f"####### In {args.prune_method} experiment #######")
     acc_list = []
