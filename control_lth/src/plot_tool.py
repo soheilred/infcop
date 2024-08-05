@@ -494,8 +494,8 @@ def plot_similarity(exper_dir, vars=None):
     # cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
     # rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs - 1]])
-    opt_conn = conns[0][train_epochs - 1]
-    opt_grad = grads[0][train_epochs - 1][0]
+    opt_conn = conns[0][train_epochs - 2]
+    opt_grad = grads[0][train_epochs - 2][0]
     # import ipdb; ipdb.set_trace()
     # tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
     #         - rho_opt).norm().item() for j in range(train_epochs)]
