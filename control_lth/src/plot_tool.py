@@ -596,7 +596,7 @@ def plot_similarity(exper_dir, vars=None):
         # cbar.ax.set_xticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
         cbar = fig.colorbar(cmap, cax=cax, ticks=[0, 1])
-        # cbar.ax.set_xticklabels([0, 21])
+        cbar.ax.set_yticklabels([0, 21])
     # y
     print("y: ", len(acc[0][0]))
     for i in range(imp_iter):
