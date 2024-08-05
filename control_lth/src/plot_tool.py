@@ -472,6 +472,7 @@ def read_variables(exper_dir):
 
 
 def plot_similarity(exper_dir, vars=None):
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
     args = json.loads(open(exper_dir + "exper.json", "rb").read())
     train_epochs = args["net_train_epochs"] + 1
     imp_iter = args["exper_imp_total_iter"]
@@ -479,7 +480,7 @@ def plot_similarity(exper_dir, vars=None):
         acc, comp_level, sim, conns, grads = read_variables(exper_dir)
 
     exper_len = np.arange(1, len(acc[0][0]) + 1)
-    fig, axs = plt.subplots(imp_iter, 3, figsize=(16, 9), constrained_layout=True)
+    fig, axs = plt.subplots(imp_iter, 3, figsize=(16, 9))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
     network_len = len(conns[0][0])
     net_layers = np.arange(1, network_len + 1)
@@ -532,6 +533,8 @@ def plot_similarity(exper_dir, vars=None):
     #                    label=f"Iter {(i+1 % train_epochs)}",
     #                    c=colors[i % (train_epochs + 2)])
 
+    divider = make_axes_locatable(axs[0, 0])
+    cax = divider.append_axes('right', size='5%', pad=0.05)
 
     for i in range(len(conns[0])):
         axs[(i // (train_epochs)), 0].plot(net_layers,
@@ -541,7 +544,7 @@ def plot_similarity(exper_dir, vars=None):
                                                c=colors[i % train_epochs])
 
     for i in range(imp_iter):
-        conn_fig = axs[i, 0].plot(net_layers, opt_conn, linewidth=3, linestyle='--', c="lawngreen")
+        conn_plt = axs[i, 0].plot(net_layers, opt_conn, linewidth=3, linestyle='--', c="lawngreen")
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
@@ -550,8 +553,8 @@ def plot_similarity(exper_dir, vars=None):
 
         axs[i, 0].grid()
 
+    fig.colorbar(conn_plt, cax=cax, orientation='vertical').set_label("Epochs")
     # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
-    # fig.colorbar(colors, ax=axs[0, 0]).set_label("Epochs")
 
     # Gradient flow
     print("gradient:", len(grads[0]))
@@ -596,7 +599,7 @@ def plot_similarity(exper_dir, vars=None):
     # for i in range(1, 4):
     #     axs[i, 2].axis("off")
 
-    # fig.tight_layout(pad=2.0)
+    fig.tight_layout(pad=2.0)
 
     # axs.set_title("y of network in training")
     plt.savefig(exper_dir + "similarity.png")
