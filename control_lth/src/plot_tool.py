@@ -561,8 +561,7 @@ def plot_similarity(exper_dir, vars=None):
 
         divider = make_axes_locatable(axs[i, 0])
         cax = divider.append_axes('right', size='5%', pad=0.05)
-        fig.colorbar(cmap, cax=cax, ticks=np.arange(1, train_epochs,
-                                                    train_epochs // 5))
+        fig.colorbar(cmap, cax=cax, ticks=np.arange(0, 1, train_epochs // 5))
 
     # Gradient flow
     print("gradient:", len(grads[0]))
@@ -592,7 +591,7 @@ def plot_similarity(exper_dir, vars=None):
 
         divider = make_axes_locatable(axs[i, 1])
         cax = divider.append_axes('right', size='5%', pad=0.05)
-        fig.colorbar(cmap, cax=cax, ticks=np.arange(1, train_epochs))
+        fig.colorbar(cmap, cax=cax, ticks=np.linspace(0, 1, train_epochs // 5))
     # y
     print("y: ", len(acc[0][0]))
     for i in range(imp_iter):
