@@ -479,7 +479,7 @@ def plot_similarity(exper_dir, vars=None):
         acc, comp_level, sim, conns, grads = read_variables(exper_dir)
 
     exper_len = np.arange(1, len(acc[0][0]) + 1)
-    fig, axs = plt.subplots(imp_iter, 3, figsize=(16, 9))
+    fig, axs = plt.subplots(imp_iter, 3, figsize=(16, 9), constrained_layout=True)
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
     network_len = len(conns[0][0])
     net_layers = np.arange(1, network_len + 1)
@@ -539,10 +539,9 @@ def plot_similarity(exper_dir, vars=None):
                                                conns[0][i],
                                                label=f"Iter {(i+1 % train_epochs)}",
                                                c=colors[i % train_epochs])
-    fig.colorbar(colors).set_label("Epochs")
 
     for i in range(imp_iter):
-        axs[i, 0].plot(net_layers, opt_conn, linewidth=3, linestyle='--', c="lawngreen")
+        conn_fig = axs[i, 0].plot(net_layers, opt_conn, linewidth=3, linestyle='--', c="lawngreen")
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
@@ -550,6 +549,9 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 0].set(xlabel="Layer index", ylabel="Connectivity")
 
         axs[i, 0].grid()
+
+    # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
+    fig.colorbar(colors, ax=axs[0, 0]).set_label("Epochs")
 
     # Gradient flow
     print("gradient:", len(grads[0]))
