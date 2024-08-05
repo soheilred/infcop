@@ -495,7 +495,7 @@ def plot_similarity(exper_dir, vars=None):
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
     # rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs - 1]])
     opt_conn = conns[0][train_epochs - 2]
-    opt_grad = grads[0][train_epochs - 2][0]
+    opt_grad = grads[0][train_epochs - 2][1]
     # import ipdb; ipdb.set_trace()
     # tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
     #         - rho_opt).norm().item() for j in range(train_epochs)]
@@ -568,11 +568,11 @@ def plot_similarity(exper_dir, vars=None):
 
     # Gradient flow
     print("gradient:", len(grads[0]))
-    grad_network_len = len(grads[0][0][0])
+    grad_network_len = len(grads[0][0][1])
     net_layers = np.arange(1, grad_network_len + 1)
     for i in range(len(grads[0])):
         axs[(i // (train_epochs)), 1].plot(net_layers,
-                                           grads[0][i][0][:len(net_layers)],
+                                           grads[0][i][1][:len(net_layers)],
                                            # [elem.abs().mean() for elem in grads[0][i].values()],
                                            label=f"Iter {(i+1 % train_epochs)}",
                                            c=colors[i % train_epochs])
