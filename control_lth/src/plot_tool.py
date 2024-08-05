@@ -494,6 +494,7 @@ def plot_similarity(exper_dir, vars=None):
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
     # rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs - 1]])
     opt_conn = conns[0][train_epochs - 1]
+    opt_grad = conns[0][train_epochs - 1]
     # import ipdb; ipdb.set_trace()
     # tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
     #         - rho_opt).norm().item() for j in range(train_epochs)]
@@ -531,6 +532,7 @@ def plot_similarity(exper_dir, vars=None):
     #                    label=f"Iter {(i+1 % train_epochs)}",
     #                    c=colors[i % (train_epochs + 2)])
 
+
     for i in range(len(conns[0])):
         axs[(i // (train_epochs)), 0].plot(net_layers,
                                                # corrs[0][i],
@@ -539,11 +541,13 @@ def plot_similarity(exper_dir, vars=None):
                                                c=colors[i % train_epochs])
 
     for i in range(imp_iter):
+        axs[i, 0].plot(net_layers, opt_conn, linewidth=4, c=colors[0])
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
         # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
         axs[i, 0].set(xlabel="Layer index", ylabel="Connectivity")
+
         axs[i, 0].grid()
 
     # Gradient flow
@@ -566,6 +570,7 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_iter):
         # axs[i, 2].set_xticks(major_ticks)
         # axs[i, 2].set_ylim(bottom=0.0001, top=.02)
+        axs[i, 0].plot(net_layers, opt_grad, linewidth=4, c=colors[0])
         axs[i, 1].set_title(f"Iter {i}")
         axs[i, 1].set_xlim(left=1, right=grad_network_len)
         axs[i, 1].set(xlabel="Layer index", ylabel="Gradient Mean")
@@ -576,8 +581,8 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_iter):
         axs[i, 2].plot(exper_len, acc[0][i], 'k')
         axs[i, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
-        axs[i, 2].set_ylim(bottom=93, top=95)
-        axs[i, 2].set(xlabel="Training Epoch", ylabel="Accuracy")
+        axs[i, 2].set_ylim(bottom=93.5, top=95)
+        axs[i, 2].set(xlabel="Training Epoch", ylabel="Test Accuracy")
         axs[i, 2].grid()
         # axs[i, 1].set_xticks(major_ticks)
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
