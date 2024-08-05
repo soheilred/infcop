@@ -592,8 +592,7 @@ def plot_similarity(exper_dir, vars=None):
 
         divider = make_axes_locatable(axs[i, 1])
         cax = divider.append_axes('right', size='5%', pad=0.05)
-        fig.colorbar(cmap, cax=cax, ticks=np.arange(1, train_epochs,
-                                                    train_epochs // 5))
+        fig.colorbar(cmap, cax=cax, ticks=np.arange(1, train_epochs))
     # y
     print("y: ", len(acc[0][0]))
     for i in range(imp_iter):
