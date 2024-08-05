@@ -1023,10 +1023,10 @@ def inf_cop(logger, device, args):
             # Test and save the most accurate model
             accuracy = test(model, test_dl, loss_fn, device)
             pruning.all_acc[imp_iter, train_iter] = accuracy
-            if (network.trained_enough(grads=act.get_gradient(),
-                                       epsilon=args.prune_epsilon)):
-                break
-            train_iter += 1
+            # if (network.trained_enough(grads=act.get_gradient(),
+            #                            epsilon=args.prune_epsilon)):
+            #     break
+            # train_iter += 1
 
         # Save model
         utils.save_model(model, run_dir, f"{imp_iter + 1}_model.pth.tar")
