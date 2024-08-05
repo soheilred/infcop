@@ -534,7 +534,7 @@ def plot_similarity(exper_dir, vars=None):
     #                    c=colors[i % (train_epochs + 2)])
 
     import matplotlib as mpl
-    norm = mpl.colors.Normalize(vmin=c_colors.min(), vmax=c_colors.max())
+    norm = mpl.colors.Normalize(vmin=values.min(), vmax=values.max())
     cmap = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.jet)
     cmap.set_array([])
 
