@@ -552,10 +552,10 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 0].set(xlabel="Layer index", ylabel="Connectivity")
 
         axs[i, 0].grid()
-        # fig.colorbar(colors, ax=conn_plt)
 
     # fig.colorbar(conn_plt, cax=cax, orientation='vertical')#.set_label("Epochs")
     # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
+    fig.colorbar(conn_plt)
 
     # Gradient flow
     print("gradient:", len(grads[0]))
@@ -588,7 +588,7 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_iter):
         axs[i, 2].plot(exper_len, acc[0][i], 'k')
         axs[i, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
-        axs[i, 2].set_ylim(bottom=93.5, top=95)
+        axs[i, 2].set_ylim(bottom=85, top=95)
         axs[i, 2].set(xlabel="Training Epoch", ylabel="Test y")
         axs[i, 2].grid()
         # axs[i, 1].set_xticks(major_ticks)
