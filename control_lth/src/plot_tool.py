@@ -541,7 +541,7 @@ def plot_similarity(exper_dir, vars=None):
                                                c=colors[i % train_epochs])
 
     for i in range(imp_iter):
-        axs[i, 0].plot(net_layers, opt_conn, linewidth=2, linestyle='dashdot')#, c=colors[0])
+        axs[i, 0].plot(net_layers, opt_conn, linewidth=3, linestyle='dashdot', c="b")
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
@@ -570,19 +570,19 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_iter):
         # axs[i, 2].set_xticks(major_ticks)
         # axs[i, 2].set_ylim(bottom=0.0001, top=.02)
-        axs[i, 1].plot(net_layers, opt_grad, linewidth=2, linestyle='dashdot')#, c=colors[0])
+        axs[i, 1].plot(net_layers, opt_grad, linewidth=3, linestyle='dashdot', c="b")
         axs[i, 1].set_title(f"Iter {i}")
         axs[i, 1].set_xlim(left=1, right=grad_network_len)
         axs[i, 1].set(xlabel="Layer index", ylabel="Gradient Mean")
         axs[i, 1].grid()
 
-    # Accuracy
-    print("accuracy: ", len(acc[0][0]))
+    # y
+    print("y: ", len(acc[0][0]))
     for i in range(imp_iter):
         axs[i, 2].plot(exper_len, acc[0][i], 'k')
         axs[i, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
         axs[i, 2].set_ylim(bottom=93.5, top=95)
-        axs[i, 2].set(xlabel="Training Epoch", ylabel="Test Accuracy")
+        axs[i, 2].set(xlabel="Training Epoch", ylabel="Test y")
         axs[i, 2].grid()
         # axs[i, 1].set_xticks(major_ticks)
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
@@ -595,15 +595,15 @@ def plot_similarity(exper_dir, vars=None):
 
     fig.tight_layout(pad=2.0)
 
-    # axs.set_title("Accuracy of network in training")
+    # axs.set_title("y of network in training")
     plt.savefig(exper_dir + "similarity.png")
 
 
 def main():
-    # plot_accuracy()
+    # plot_y()
     # plot_correlations(sys.argv[1])
     plot_similarity(sys.argv[1])
-    # plot_accuracy(sys.argv[1:])
+    # plot_y(sys.argv[1:])
     # plot_ablation(sys.argv[1:])
 
 
