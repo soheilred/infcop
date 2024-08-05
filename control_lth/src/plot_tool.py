@@ -474,12 +474,12 @@ def read_variables(exper_dir):
 def plot_similarity(exper_dir, vars=None):
     args = json.loads(open(exper_dir + "exper.json", "rb").read())
     train_epochs = args["net_train_epochs"] + 1
-    imp_num = args["exper_imp_total_iter"]
+    imp_iter = args["exper_imp_total_iter"]
     if vars is None:
         acc, comp_level, sim, conns, grads = read_variables(exper_dir)
 
     exper_len = np.arange(1, len(acc[0][0]) + 1)
-    fig, axs = plt.subplots(imp_num, 3, figsize=(16, 9))
+    fig, axs = plt.subplots(imp_iter, 3, figsize=(16, 9))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
     import ipdb; ipdb.set_trace()
     network_len = len(conns[0][0])
@@ -493,20 +493,20 @@ def plot_similarity(exper_dir, vars=None):
     # cmap = ListedColormap(colors)
     # cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
-    rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs - 1]])
+    # rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs - 1]])
+    opt_conn = conns[0][train_epochs - 1]
     # import ipdb; ipdb.set_trace()
     # tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
     #         - rho_opt).norm().item() for j in range(train_epochs)]
 
 
 
-    for i in range(imp_num):
+    # for i in range(imp_iter):
         # print([torch.Tensor([elem.mean()
         #                      for elem in corrs[0][i * train_epochs + j]
         #                      ]).norm().item() for j in range(train_epochs)])
-        axs[i, 0].plot(np.arange(train_epochs), [(torch.Tensor(
-            [elem.mean() for elem in corrs[0][i * train_epochs + j]]) - rho_opt
-                                 ).norm().item() for j in range(train_epochs)])
+        # axs[i, 0].plot(np.arange(train_epochs), corrs[0][i * train_epochs + j] - rho_opt
+        #                          ).norm().item() for j in range(train_epochs)])
 
     # similarities
     # print("similarity:", len(sim[0]))
@@ -516,7 +516,7 @@ def plot_similarity(exper_dir, vars=None):
     #                                            c=colors[i % (train_epochs)])
 
     # axs[0, 0].axis("off")
-    # for i in range(imp_num):
+    # for i in range(imp_iter):
         # axs[i, 0].set_xticks(major_ticks)
         # axs[i, 0].set_title(f"Iter {i}")
         # axs[i + 1, 0].set_ylim(bottom=0.01, top=.02)
@@ -532,14 +532,14 @@ def plot_similarity(exper_dir, vars=None):
     #                    label=f"Iter {(i+1 % train_epochs)}",
     #                    c=colors[i % (train_epochs + 2)])
 
-    for i in range(len(corrs[0])):
+    for i in range(len(conns[0])):
         axs[(i // (train_epochs)), 0].plot(net_layers[:-1],
                                                # corrs[0][i],
-                                               corrs[0][i],
+                                               conns[0][i],
                                                label=f"Iter {(i+1 % train_epochs)}",
                                                c=colors[i % train_epochs])
 
-    for i in range(imp_num):
+    for i in range(imp_iter):
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
@@ -564,7 +564,7 @@ def plot_similarity(exper_dir, vars=None):
                                            label=f"Iter {(i+1 % train_epochs)}",
                                            c=colors[i % train_epochs])
 
-    for i in range(imp_num):
+    for i in range(imp_iter):
         # axs[i, 2].set_xticks(major_ticks)
         axs[i, 2].set_title(f"Iter {i}")
         # axs[i, 2].set_ylim(bottom=0.0001, top=.02)
@@ -574,7 +574,7 @@ def plot_similarity(exper_dir, vars=None):
 
     # Accuracy
     print("accuracy: ", len(acc[0][0]))
-    for i in range(imp_num):
+    for i in range(imp_iter):
         axs[i, 4].plot(exper_len, acc[0][i], 'k')
         axs[i, 4].set_title(f"Rem. Weights {comp_level[0][i]}")
         axs[i, 4].set_ylim(bottom=70, top=100)
