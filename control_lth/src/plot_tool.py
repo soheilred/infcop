@@ -547,6 +547,7 @@ def plot_similarity(exper_dir, vars=None):
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
         # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
         axs[i, 0].set(xlabel="Layer index", ylabel="Connectivity")
+        axs[i, 0].colorbar(colors).set_label("Epochs")
 
         axs[i, 0].grid()
 
@@ -573,7 +574,7 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 1].plot(net_layers, opt_grad, linewidth=3, linestyle='--', c="lawngreen")
         axs[i, 1].set_title(f"Iter {i}")
         axs[i, 1].set_xlim(left=1, right=grad_network_len)
-        axs[i, 1].set(xlabel="Layer index", ylabel="Gradient Mean")
+        axs[i, 1].set(xlabel="Layer index", ylabel="Gradient Flow")
         axs[i, 1].grid()
 
     # y
