@@ -621,10 +621,11 @@ def plot_similarity(exper_dir, vars=None):
 
 
 def main():
+    eval(sys.argv[1])(sys.argv[2:])
     # plot_y()
     # plot_correlations(sys.argv[1])
-    plot_similarity(sys.argv[1])
-    # plot_y(sys.argv[1:])
+    # plot_similarity(sys.argv[1])
+    # plot_accuracy(sys.argv[1:])
     # plot_ablation(sys.argv[1:])
 
 
