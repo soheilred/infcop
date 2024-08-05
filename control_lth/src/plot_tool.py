@@ -541,7 +541,7 @@ def plot_similarity(exper_dir, vars=None):
                                                c=colors[i % train_epochs])
 
     for i in range(imp_iter):
-        axs[i, 0].plot(net_layers, opt_conn, linewidth=4, c=colors[0])
+        axs[i, 0].plot(net_layers, opt_conn, linewidth=2, linestyles='dashdot')#, c=colors[0])
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
@@ -570,7 +570,7 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_iter):
         # axs[i, 2].set_xticks(major_ticks)
         # axs[i, 2].set_ylim(bottom=0.0001, top=.02)
-        axs[i, 1].plot(net_layers, opt_grad, linewidth=4, c=colors[0])
+        axs[i, 1].plot(net_layers, opt_grad, linewidth=2, linestyles='dashdot')#, c=colors[0])
         axs[i, 1].set_title(f"Iter {i}")
         axs[i, 1].set_xlim(left=1, right=grad_network_len)
         axs[i, 1].set(xlabel="Layer index", ylabel="Gradient Mean")
