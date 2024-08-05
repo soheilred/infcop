@@ -10,6 +10,7 @@ import json
 import sys
 import pprint
 import constants as C
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.font_manager as font_manager
 font_dirs = ['/home/gharatappeh/.fonts/']
 font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
@@ -472,8 +473,7 @@ def read_variables(exper_dir):
 
 
 def plot_similarity(exper_dir, vars=None):
-    from mpl_toolkits.axes_grid1 import make_axes_locatable
-    args = json.loads(open(exper_dir + "exper.json", "rb").read())
+    args = json.loads(open(exper_dir[0] + "exper.json", "rb").read())
     train_epochs = args["net_train_epochs"] + 1
     imp_iter = args["exper_imp_total_iter"]
     if vars is None:
