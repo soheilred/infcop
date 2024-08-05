@@ -538,8 +538,6 @@ def plot_similarity(exper_dir, vars=None):
     cmap = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.jet)
     cmap.set_array([])
 
-    divider = make_axes_locatable(axs[0, 0])
-    cax = divider.append_axes('right', size='5%', pad=0.05)
 
     for i in range(len(conns[0])):
         axs[(i // (train_epochs)), 0].plot(net_layers,
@@ -560,8 +558,11 @@ def plot_similarity(exper_dir, vars=None):
 
     # fig.colorbar(conn_plt, cax=cax, orientation='vertical')#.set_label("Epochs")
     # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
-    fig.colorbar(cmap, cax=cax, ticks=np.arange(1, train_epochs, train_epochs //
-                                                5))
+
+        divider = make_axes_locatable(axs[i, 0])
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        fig.colorbar(cmap, cax=cax, ticks=np.arange(1, train_epochs,
+                                                    train_epochs // 5))
 
     # Gradient flow
     print("gradient:", len(grads[0]))
@@ -589,6 +590,10 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 1].set(xlabel="Layer index", ylabel="Gradient Flow")
         axs[i, 1].grid()
 
+        divider = make_axes_locatable(axs[i, 1])
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        fig.colorbar(cmap, cax=cax, ticks=np.arange(1, train_epochs,
+                                                    train_epochs // 5))
     # y
     print("y: ", len(acc[0][0]))
     for i in range(imp_iter):
