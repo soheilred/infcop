@@ -550,8 +550,8 @@ def plot_similarity(exper_dir, vars=None):
 
         axs[i, 0].grid()
 
-    # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
-    fig.colorbar(colors, ax=axs[0, 0]).set_label("Epochs")
+    fig.colorbar(conn_fig[3], colors).set_label("Epochs")
+    # fig.colorbar(colors, ax=axs[0, 0]).set_label("Epochs")
 
     # Gradient flow
     print("gradient:", len(grads[0]))
@@ -596,7 +596,7 @@ def plot_similarity(exper_dir, vars=None):
     # for i in range(1, 4):
     #     axs[i, 2].axis("off")
 
-    fig.tight_layout(pad=2.0)
+    # fig.tight_layout(pad=2.0)
 
     # axs.set_title("y of network in training")
     plt.savefig(exper_dir + "similarity.png")
