@@ -481,7 +481,6 @@ def plot_similarity(exper_dir, vars=None):
     exper_len = np.arange(1, len(acc[0][0]) + 1)
     fig, axs = plt.subplots(imp_iter, 3, figsize=(16, 9))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
-    import ipdb; ipdb.set_trace()
     network_len = len(conns[0][0])
     net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
@@ -525,7 +524,7 @@ def plot_similarity(exper_dir, vars=None):
         # axs[i, 0].grid()
 
     # connectivity
-    print("connectivity:", len(corrs[0]))
+    print("connectivity:", len(conns[0]))
     # for i in range(train_epochs + 1):
     #     axs[0, 1].plot(net_layers[:-1],
     #                    [elem.mean() for elem in corrs[0][i]],
