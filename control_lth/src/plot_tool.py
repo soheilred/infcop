@@ -560,7 +560,8 @@ def plot_similarity(exper_dir, vars=None):
 
     # fig.colorbar(conn_plt, cax=cax, orientation='vertical')#.set_label("Epochs")
     # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
-    fig.colorbar(cmap, cax=cax)#, ticks=values)
+    fig.colorbar(cmap, cax=cax, ticks=np.arange(1, train_epochs, train_epochs //
+                                                5))
 
     # Gradient flow
     print("gradient:", len(grads[0]))
