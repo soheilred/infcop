@@ -550,7 +550,7 @@ def plot_similarity(exper_dir, vars=None):
 
         axs[i, 0].grid()
 
-    fig.colorbar(conn_fig[3], colors).set_label("Epochs")
+    # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
     # fig.colorbar(colors, ax=axs[0, 0]).set_label("Epochs")
 
     # Gradient flow
