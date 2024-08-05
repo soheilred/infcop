@@ -602,7 +602,7 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_iter):
         axs[i, 2].plot(exper_len, acc[0][i], 'k')
         axs[i, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
-        axs[i, 2].set_ylim(bottom=92, top=95)
+        axs[i, 2].set_ylim(bottom=85, top=95)
         axs[i, 2].set(xlabel="Training Epoch", ylabel="Test Accuracy")
         axs[i, 2].grid()
         # axs[i, 1].set_xticks(major_ticks)
