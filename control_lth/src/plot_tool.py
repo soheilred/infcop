@@ -539,6 +539,7 @@ def plot_similarity(exper_dir, vars=None):
                                                conns[0][i],
                                                label=f"Iter {(i+1 % train_epochs)}",
                                                c=colors[i % train_epochs])
+    fig.colorbar(colors).set_label("Epochs")
 
     for i in range(imp_iter):
         axs[i, 0].plot(net_layers, opt_conn, linewidth=3, linestyle='--', c="lawngreen")
@@ -547,7 +548,6 @@ def plot_similarity(exper_dir, vars=None):
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
         # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
         axs[i, 0].set(xlabel="Layer index", ylabel="Connectivity")
-        axs[i, 0].colorbar(colors).set_label("Epochs")
 
         axs[i, 0].grid()
 
