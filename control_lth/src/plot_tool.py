@@ -552,8 +552,9 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 0].set(xlabel="Layer index", ylabel="Connectivity")
 
         axs[i, 0].grid()
+        fig.colorbar(colors, ax=axs[i, 0])
 
-    fig.colorbar(conn_plt, cax=cax, orientation='vertical').set_label("Epochs")
+    fig.colorbar(conn_plt, cax=cax, orientation='vertical')#.set_label("Epochs")
     # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
 
     # Gradient flow
