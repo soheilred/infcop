@@ -482,7 +482,7 @@ def plot_similarity(exper_dir, vars=None):
     fig, axs = plt.subplots(imp_num, 3, figsize=(16, 9))
                             # gridspec_kw={'width_ratios': [10, 10, 10]})
     import ipdb; ipdb.set_trace()
-    network_len = len(sim[0][0])
+    network_len = len(conns[0][0])
     net_layers = np.arange(1, network_len + 1)
     c_colors = plt.get_cmap("coolwarm")
     values = np.linspace(0, 1, train_epochs)  # len(sim[0]))

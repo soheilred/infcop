@@ -1010,7 +1010,8 @@ def inf_cop(logger, device, args):
         # Training loop
         # for train_iter in range(args.net_train_epochs):
         train_iter, accuracy = 0, 0
-        while (train_iter < args.net_train_epochs and accuracy < max_acc):
+        for train_iter in range(args.net_train_epochs):
+        # while (train_iter < args.net_train_epochs and accuracy < max_acc):
             # Training
             logger.debug(f"Training iteration {train_iter} / {args.net_train_epochs}")
             acc, loss = train(model, train_dl, loss_fn, optimizer, pruning.mask,
