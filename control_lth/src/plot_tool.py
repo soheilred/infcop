@@ -477,7 +477,7 @@ def plot_similarity(exper_dir, vars=None):
     train_epochs = args["net_train_epochs"] + 1
     imp_iter = args["exper_imp_total_iter"]
     if vars is None:
-        acc, comp_level, sim, conns, grads = read_variables(exper_dir)
+        acc, comp_level, sim, conns, grads = read_variables(exper_dir[0])
 
     exper_len = np.arange(1, len(acc[0][0]) + 1)
     fig, axs = plt.subplots(imp_iter, 3, figsize=(16, 9))
@@ -617,7 +617,7 @@ def plot_similarity(exper_dir, vars=None):
     fig.tight_layout(pad=2.0)
 
     # axs.set_title("y of network in training")
-    plt.savefig(exper_dir + "similarity.png")
+    plt.savefig(exper_dir[0] + "similarity.png")
 
 
 def main():
