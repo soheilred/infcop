@@ -584,7 +584,10 @@ def plot_similarity(exper_dir, vars=None):
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
 
         axs[i, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
-        axs[i, 2].set(xlabel="Training Epoch", ylabel="Test Accuracy")
+        axs[i, 2].set_ylabel("Test Accuracy")
+
+    axs[2, 2].set_xlabel("Training Epoch")
+
     # plt.legend()
     # cbar.set_label()
 
