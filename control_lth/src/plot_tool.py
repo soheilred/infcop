@@ -196,7 +196,7 @@ def plot_connectivity(conns, filename):
     for i in range(len(conns)):
         axs.plot(xdata, conns[i], marker=filled_markers[i],
                  linestyle=linestyles[i % len(linestyles)],
-                 label=f"Iter {i}",
+                 label=f"Iteration {i}",
                  alpha=.5) 
     fig.tight_layout(pad=2.0)
     plt.legend()
@@ -592,7 +592,7 @@ def plot_similarity(exper_dir, vars=None):
     # for i in range(1, 4):
     #     axs[i, 2].axis("off")
 
-    fig.tight_layout(pad=2.0)
+    fig.tight_layout(pad=1.0)
 
     # axs.set_title("y of network in training")
     plt.savefig(exper_dir[0] + "similarity.png")
