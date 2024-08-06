@@ -575,7 +575,7 @@ def plot_similarity(exper_dir, vars=None):
     axs[2, 1].set_xlabel("Layer index")
 
     # Accuracy
-    print("y: ", len(acc[0][0]))
+    print("accuracy: ", len(acc[0][0]))
     for i in range(imp_iter):
         axs[i, 2].plot(exper_len, acc[0][i], 'k')
         axs[i, 2].set_ylim(bottom=90, top=95)
@@ -583,8 +583,8 @@ def plot_similarity(exper_dir, vars=None):
         # axs[i, 1].set_xticks(major_ticks)
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
 
-    axs[2, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
-    axs[2, 2].set(xlabel="Training Epoch", ylabel="Test Accuracy")
+        axs[i, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
+        axs[i, 2].set(xlabel="Training Epoch", ylabel="Test Accuracy")
     # plt.legend()
     # cbar.set_label()
 
