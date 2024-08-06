@@ -496,34 +496,7 @@ def plot_similarity(exper_dir, vars=None):
     # rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs - 1]])
     opt_conn = conns[0][train_epochs - 2]
     opt_grad = grads[0][train_epochs - 2][1]
-    # import ipdb; ipdb.set_trace()
-    # tmp = [(torch.Tensor([elem.mean() for elem in corrs[0][0 * train_epochs + j]])
-    #         - rho_opt).norm().item() for j in range(train_epochs)]
 
-
-
-    # for i in range(imp_iter):
-        # print([torch.Tensor([elem.mean()
-        #                      for elem in corrs[0][i * train_epochs + j]
-        #                      ]).norm().item() for j in range(train_epochs)])
-        # axs[i, 0].plot(np.arange(train_epochs), corrs[0][i * train_epochs + j] - rho_opt
-        #                          ).norm().item() for j in range(train_epochs)])
-
-    # similarities
-    # print("similarity:", len(sim[0]))
-    # for i in range(len(sim[0])):
-    #     axs[(i // train_epochs) + 1, 0].plot(net_layers, sim[0][i],
-    #                                            label=f"Iter {(i+1 % train_epochs)}",
-    #                                            c=colors[i % (train_epochs)])
-
-    # axs[0, 0].axis("off")
-    # for i in range(imp_iter):
-        # axs[i, 0].set_xticks(major_ticks)
-        # axs[i, 0].set_title(f"Iter {i}")
-        # axs[i + 1, 0].set_ylim(bottom=0.01, top=.02)
-        # axs[i + 1, 0].set_xlim(left=1, right=len(sim[0][0]))
-        # axs[i + 1, 0].set(xlabel="Layer index", ylabel="Similarity")
-        # axs[i, 0].grid()
 
     # connectivity
     print("connectivity:", len(conns[0]))
@@ -544,7 +517,7 @@ def plot_similarity(exper_dir, vars=None):
         axs[(i // (train_epochs)), 0].plot(net_layers,
                                                # corrs[0][i],
                                                conns[0][i],
-                                               label=f"Iter {(i+1 % train_epochs)}",
+                                               # label=f"Iter {(i+1 % train_epochs)}",
                                                c=colors[i % train_epochs])
 
     for i in range(imp_iter):
@@ -554,8 +527,10 @@ def plot_similarity(exper_dir, vars=None):
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
         # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
         axs[i, 0].set(xlabel="Layer index", ylabel="Connectivity")
-
         axs[i, 0].grid()
+        if i == 0:
+            axs[i, 0].set_title("Fine Tuning")
+            
 
     # fig.colorbar(conn_plt, cax=cax, orientation='vertical')#.set_label("Epochs")
     # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
@@ -591,6 +566,8 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 1].set_xlim(left=1, right=grad_network_len)
         axs[i, 1].set(xlabel="Layer index", ylabel="Gradient Flow")
         axs[i, 1].grid()
+        if i == 0:
+            axs[i, 1].set_title("Fine Tuning")
 
         divider = make_axes_locatable(axs[i, 1])
         cax = divider.append_axes('right', size='5%', pad=0.05)
