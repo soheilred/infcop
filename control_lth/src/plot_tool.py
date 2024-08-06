@@ -527,20 +527,16 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 0].set_title(f"Iter {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
         # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
-        axs[i, 0].set(xlabel="Layer index", ylabel="Connectivity")
         axs[i, 0].grid()
         if i == 0:
             axs[i, 0].set_title("Fine Tuning")
-            
-
-    # fig.colorbar(conn_plt, cax=cax, orientation='vertical')#.set_label("Epochs")
-    # fig.colorbar(conn_fig[3], colors).set_label("Epochs")
 
         divider = make_axes_locatable(axs[i, 0])
         cax = divider.append_axes('right', size='5%', pad=0.05)
         fig.colorbar(cmap, cax=cax, ticks=np.arange(0, 1, train_epochs // 5))
         cbar = fig.colorbar(cmap, cax=cax, ticks=np.linspace(0, 1, 6))
         cbar.ax.set_yticklabels(np.arange(0, train_epochs, train_epochs // 5))
+    axs[2, 0].set(xlabel="Layer index", ylabel="Connectivity")
 
     # Gradient flow
     print("gradient:", len(grads[0]))
@@ -565,7 +561,6 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 1].plot(net_layers, opt_grad, linewidth=3, linestyle='--', c="lawngreen")
         axs[i, 1].set_title(f"Iteration {i}")
         axs[i, 1].set_xlim(left=1, right=grad_network_len)
-        axs[i, 1].set(xlabel="Layer index", ylabel="Gradient Flow")
         axs[i, 1].grid()
         if i == 0:
             axs[i, 1].set_title("Fine Tuning")
@@ -575,17 +570,19 @@ def plot_similarity(exper_dir, vars=None):
         cbar = fig.colorbar(cmap, cax=cax, ticks=np.linspace(0, 1, 6))
         cbar.ax.set_yticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
+    axs[2, 1].set(xlabel="Layer index", ylabel="Gradient Flow")
+
     # Accuracy
     print("y: ", len(acc[0][0]))
     for i in range(imp_iter):
         axs[i, 2].plot(exper_len, acc[0][i], 'k')
-        axs[i, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
         axs[i, 2].set_ylim(bottom=90, top=95)
-        axs[i, 2].set(xlabel="Training Epoch", ylabel="Test Accuracy")
         axs[i, 2].grid()
         # axs[i, 1].set_xticks(major_ticks)
         # axs[i, 1].set_xlim(left=1, right=len(similarity[0][0]))
 
+    axs[2, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
+    axs[2, 2].set(xlabel="Training Epoch", ylabel="Test Accuracy")
     # plt.legend()
     # cbar.set_label()
 
