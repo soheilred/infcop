@@ -11,6 +11,7 @@ import sys
 import pprint
 import constants as C
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+import matplotlib as mpl
 import matplotlib.font_manager as font_manager
 font_dirs = ['/home/gharatappeh/.fonts/']
 font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
@@ -324,8 +325,8 @@ def plot_ablation(exper_dirs):
     for ind, inds in enumerate(last_inds_dict):
         axs[1].plot(x_acc, last_inds_dict[inds], c=colors[ind], marker='o')
 
-    axs[1].set(xlabel="Iteration", ylabel="Epochs")
-    axs[1].set_title("# Training epochs in each iterations")
+    axs[1].set(xlabel="Iteration", ylabel="# Epochs")
+    # axs[1].set_title("# Training epochs in each iterations")
     axs[1].legend()
 
     # plot the remaining weight vs. iteration
@@ -370,7 +371,8 @@ def plot_accuracy(exper_dirs):
     # values = np.delete(values, remove_i)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(1, 3, figsize=(18, 6))
+    fig, axs = plt.subplots(1, 3, figsize=(18, 6)
+                            gridspec_kw={'width_ratios': [10, 10, 6]})
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
@@ -411,9 +413,9 @@ def plot_accuracy(exper_dirs):
             last_inds_error_dict[acc] = [0] * acc_dict[acc].shape[0]
 
     x_acc = np.arange(1, len(comp_dict[labels[0]]) + 1)
-    pprint.pprint(last_acc_dict)
-    pprint.pprint(last_inds_dict)
-    pprint.pprint(comp_dict)
+    # pprint.pprint(last_acc_dict)
+    # pprint.pprint(last_inds_dict)
+    # pprint.pprint(comp_dict)
     # pprint.pprint(last_acc_error_dict)
     # pprint.pprint(last_inds_error_dict)
 
@@ -424,7 +426,7 @@ def plot_accuracy(exper_dirs):
                         label=acc, c=colors[ind], marker='o')
 
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
-    axs[0].set_title("Performance Comparison")
+    # axs[0].set_title("Performance Comparison")
     axs[0].legend()
     # axs[0].set_ylim(bottom=98., top=100.)
 
@@ -445,13 +447,13 @@ def plot_accuracy(exper_dirs):
     axs[2].plot(x_acc, comp_dict[labels[4]], label="(p, q)=(0.5, 1)", c="green", marker='o')
 
     axs[2].set(xlabel="Iteration", ylabel="Remaining Weights %")
-    axs[2].set_title("Remaining weights")
+    # axs[2].set_title("Remaining weights")
     axs[2].legend()
 
     axs[0].grid()
     axs[1].grid()
     axs[2].grid()
-    fig.tight_layout(pad=2.0)
+    fig.tight_layout(pad=1.0)
     # fig.suptitle((" with ".join(exper_dirs[0].split("/")[3:5])).title(), fontsize=20)
     out_dir = "../output/figures/" + "-".join(exper_dirs[0].split("/")[3:5])
     print("saved in:", out_dir)
@@ -506,7 +508,6 @@ def plot_similarity(exper_dir, vars=None):
     #                    label=f"Iter {(i+1 % train_epochs)}",
     #                    c=colors[i % (train_epochs + 2)])
 
-    import matplotlib as mpl
     norm = mpl.colors.Normalize(vmin=values.min(), vmax=values.max())
     # cmap = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.jet)
     cmap = mpl.cm.ScalarMappable(norm=norm, cmap=c_colors)
