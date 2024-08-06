@@ -436,8 +436,8 @@ def plot_accuracy(exper_dirs):
                         yerr=last_inds_error_dict[inds], label=inds,
                         c=colors[ind], marker='o')
 
-    axs[1].set(xlabel="Iteration", ylabel="Epochs")
-    axs[1].set_title("# Training epochs in each iterations")
+    axs[1].set(xlabel="Iteration", ylabel="# Epochs")
+    # axs[1].set_title("# Training epochs in each iterations")
     axs[1].legend()
 
     # plot the remaining weight vs. iteration
