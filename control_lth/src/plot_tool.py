@@ -524,10 +524,11 @@ def plot_similarity(exper_dir, vars=None):
     for i in range(imp_iter):
         axs[i, 0].plot(net_layers, opt_conn, linewidth=3, linestyle='--', c="lawngreen")
         # axs[i, 1].set_xticks(major_ticks)
-        axs[i, 0].set_title(f"Iter {i}")
+        axs[i, 0].set_title(f"Iteration {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
         # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
         axs[i, 0].grid()
+        axs[i, 0].set_ylabel("Connectivity")
         if i == 0:
             axs[i, 0].set_title("Fine Tuning")
 
@@ -536,7 +537,7 @@ def plot_similarity(exper_dir, vars=None):
         fig.colorbar(cmap, cax=cax, ticks=np.arange(0, 1, train_epochs // 5))
         cbar = fig.colorbar(cmap, cax=cax, ticks=np.linspace(0, 1, 6))
         cbar.ax.set_yticklabels(np.arange(0, train_epochs, train_epochs // 5))
-    axs[2, 0].set(xlabel="Layer index", ylabel="Connectivity")
+    axs[2, 0].set_xlabel("Layer index")
 
     # Gradient flow
     print("gradient:", len(grads[0]))
@@ -546,7 +547,7 @@ def plot_similarity(exper_dir, vars=None):
         axs[(i // (train_epochs)), 1].plot(net_layers,
                                            grads[0][i][1][:len(net_layers)],
                                            # [elem.abs().mean() for elem in grads[0][i].values()],
-                                           label=f"Iter {(i+1 % train_epochs)}",
+                                           # label=f"Iteration {(i+1 % train_epochs)}",
                                            c=colors[i % train_epochs])
 
         # axs[(i // (train_epochs)), 1].plot(net_layers,
@@ -562,6 +563,7 @@ def plot_similarity(exper_dir, vars=None):
         axs[i, 1].set_title(f"Iteration {i}")
         axs[i, 1].set_xlim(left=1, right=grad_network_len)
         axs[i, 1].grid()
+        axs[i, 1].set_ylabel("Gradient Flow")
         if i == 0:
             axs[i, 1].set_title("Fine Tuning")
 
@@ -570,7 +572,7 @@ def plot_similarity(exper_dir, vars=None):
         cbar = fig.colorbar(cmap, cax=cax, ticks=np.linspace(0, 1, 6))
         cbar.ax.set_yticklabels(np.arange(0, train_epochs, train_epochs // 5))
 
-    axs[2, 1].set(xlabel="Layer index", ylabel="Gradient Flow")
+    axs[2, 1].set_xlabel("Layer index")
 
     # Accuracy
     print("y: ", len(acc[0][0]))
