@@ -592,7 +592,7 @@ def plot_similarity(exper_dir, vars=None):
     # for i in range(1, 4):
     #     axs[i, 2].axis("off")
 
-    fig.tight_layout(pad=1.0)
+    fig.tight_layout(pad=0.5)
 
     # axs.set_title("y of network in training")
     plt.savefig(exper_dir[0] + "similarity.png")
