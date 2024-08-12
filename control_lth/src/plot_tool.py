@@ -326,7 +326,7 @@ def plot_ablation(exper_dirs):
     for ind, inds in enumerate(last_inds_dict):
         axs[1].plot(x_acc, last_inds_dict[inds], c=colors[ind], marker='o')
 
-    axs[1].set(xlabel="Iteration", ylabel="# Epochs")
+    axs[1].set(xlabel="Iteration", ylabel="Num. Epochs")
     # axs[1].set_title("# Training epochs in each iterations")
     axs[1].legend()
 
@@ -437,7 +437,7 @@ def plot_accuracy(exper_dirs):
                         yerr=last_inds_error_dict[inds], label=inds,
                         c=colors[ind], marker='o')
 
-    axs[1].set(xlabel="Iteration", ylabel="# Epochs")
+    axs[1].set(xlabel="Iteration", ylabel="Num. Epochs")
     # axs[1].set_title("# Training epochs in each iterations")
     axs[1].legend()
 
