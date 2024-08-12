@@ -33,7 +33,7 @@ plt.rcParams.update({
     "font.family": "Crimson",
     # "font.family": "Nimbus Roman",
     # "font.serif": "Times",
-    "text.usetex": True,
+    # "text.usetex": True,
     # "font.sans-serif": "Liberation Sans",
     "font.size": 18.0,
     "font.weight": "bold",
