@@ -372,7 +372,7 @@ def plot_accuracy(exper_dirs):
     # values = np.delete(values, remove_i)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(1, 3, figsize=(18, 8),
+    fig, axs = plt.subplots(1, 3, figsize=(18, 12),
                             gridspec_kw={'width_ratios': [10, 10, 10]})
 
     # read the accuracies array for all experiments
