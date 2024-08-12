@@ -532,6 +532,7 @@ class Pruner:
             self.prune_by_sap()
 
         elif self.args.prune_method == "inf_cop":
+            # self.prune_by_percentile()
             self.prune_by_sap()
         else:
             sys.exit("Wrong pruning method!")

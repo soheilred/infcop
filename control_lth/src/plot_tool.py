@@ -1,5 +1,6 @@
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.ticker as tck
 from matplotlib.colorbar import ColorbarBase
 from matplotlib.colors import ListedColormap
 from matplotlib import rc
@@ -13,7 +14,7 @@ import constants as C
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib as mpl
 import matplotlib.font_manager as font_manager
-font_dirs = ['/home/gharatappeh/.fonts/']
+font_dirs = ['/home/gharatappeh/.fonts/', '/home/soheil/.local/share/fonts/']
 font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
 
 for font_file in font_files:
@@ -32,7 +33,7 @@ plt.rcParams.update({
     "font.family": "Crimson",
     # "font.family": "Nimbus Roman",
     # "font.serif": "Times",
-    # "text.usetex": True,
+    "text.usetex": True,
     # "font.sans-serif": "Liberation Sans",
     "font.size": 18.0,
     "font.weight": "bold",
@@ -61,7 +62,7 @@ def plot_all_accuracy(accuracies, filename):
     fig, axs = plt.subplots(1, figsize=(8,4))
     xdata = np.arange(0, 2 * len(accuracy_list) + 0, 2)
     axs.set_title("Accuracy of network in IMP")
-    axs.set(xlabel="Training epochs", ylabel="Accuracy(\%)")
+    axs.set(xlabel="Training epochs", ylabel="Accuracy(%)")
 
     axs.plot(xdata, accuracy_list, 'k')
     fig.tight_layout(pad=2.0)
@@ -81,7 +82,7 @@ def plot_multi_all_accuracy(accuracies, labels, args, filename):
     xdata = np.arange(0, args['net_train_per_epoch'] * args['net_train_epochs'] *
                       len(accuracies[0]), args['net_train_per_epoch'])
     axs.set_title("Accuracy of network in IMP")
-    axs.set(xlabel="Training epochs", ylabel="Accuracy(\%)")
+    axs.set(xlabel="Training epochs", ylabel="Accuracy(%)")
     for i in range(len(accuracies)):
         axs.plot(xdata, accuracies[i].flatten(),
                  linestyle=linestyles[i % len(linestyles)],
@@ -132,7 +133,7 @@ def plot_max_accuracy(accuracies, labels, filename):
     fig, axs = plt.subplots(1, figsize=(5,5))
     xdata = np.arange(1, len(accuracies[0]) + 1)
     # axs.set_title("Accuracy of network in IMP")
-    axs.set(xlabel="Iteration", ylabel="Accuracy(\%)")
+    axs.set(xlabel="Iteration", ylabel="Accuracy(%)")
 
     for i in range(len(accuracies)):
         axs.plot(xdata, accuracies[i], marker=filled_markers[i],
@@ -371,8 +372,8 @@ def plot_accuracy(exper_dirs):
     # values = np.delete(values, remove_i)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(1, 3, figsize=(18, 6),
-                            gridspec_kw={'width_ratios': [10, 10, 6]})
+    fig, axs = plt.subplots(1, 3, figsize=(18, 8),
+                            gridspec_kw={'width_ratios': [10, 10, 10]})
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
@@ -490,14 +491,17 @@ def plot_similarity(exper_dir, vars=None):
     values = np.linspace(0, 1, train_epochs)  # len(sim[0]))
     colors = c_colors(values)
     major_ticks = np.arange(1, network_len + 1)
+    width = .7
 
     # axs[0, 0].axis("off")
     # cmap = ListedColormap(colors)
     # cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
     # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
     # rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs - 1]])
+
+    grad_ind_plot = 1
     opt_conn = conns[0][train_epochs - 2]
-    opt_grad = grads[0][train_epochs - 2][0]
+    opt_grad = grads[0][train_epochs - 2][grad_ind_plot]
 
 
     # connectivity
@@ -514,15 +518,20 @@ def plot_similarity(exper_dir, vars=None):
     cmap.set_array([])
 
 
-    for i in range(len(conns[0])):
-        axs[(i // (train_epochs)), 0].plot(net_layers,
-                                               # corrs[0][i],
-                                               conns[0][i],
-                                               # label=f"Iter {(i+1 % train_epochs)}",
-                                               c=colors[i % train_epochs])
+    for i in range(1, len(conns[0])):
+        if (i % train_epochs):
+            axs[(i // (train_epochs)), 0].plot(net_layers,
+                                                conns[0][i],
+                                                c=colors[i % train_epochs],
+                                               linewidth=width)
+        else:
+            axs[(i // (train_epochs)), 0].plot(net_layers, conns[0][i],
+                                               c="black", marker="1",
+                                               linewidth=width)
 
     for i in range(imp_iter):
-        axs[i, 0].plot(net_layers, opt_conn, linewidth=3, linestyle='--', c="lawngreen")
+        axs[i, 0].plot(net_layers, opt_conn, marker="*", c="lawngreen",
+                       linewidth=width+1)
         # axs[i, 1].set_xticks(major_ticks)
         axs[i, 0].set_title(f"Iteration {i}")
         # axs[i, 1].set_ylim(bottom=-0.05, top=.4)
@@ -541,25 +550,14 @@ def plot_similarity(exper_dir, vars=None):
 
     # Gradient flow
     print("gradient:", len(grads[0]))
-    grad_network_len = len(grads[0][0][1])
+    grad_network_len = len(grads[0][0][grad_ind_plot])
     net_layers = np.arange(1, grad_network_len + 1)
-    for i in range(len(grads[0])):
-        axs[(i // (train_epochs)), 1].plot(net_layers,
-                                           grads[0][i][0][:len(net_layers)],
-                                           # [elem.abs().mean() for elem in grads[0][i].values()],
-                                           # label=f"Iteration {(i+1 % train_epochs)}",
-                                           c=colors[i % train_epochs])
-
-        # axs[(i // (train_epochs)), 1].plot(net_layers,
-        #                                    # [elem.abs().norm() for elem in grads[0][i].values()],
-        #                                    grads[0][i][1],
-        #                                    label=f"Iter {(i+1 % train_epochs)}",
-        #                                    c=colors[i % train_epochs])
 
     for i in range(imp_iter):
         # axs[i, 2].set_xticks(major_ticks)
         # axs[i, 2].set_ylim(bottom=0.0001, top=.02)
-        axs[i, 1].plot(net_layers, opt_grad, linewidth=3, linestyle='--', c="lawngreen")
+        axs[i, 1].plot(net_layers, opt_grad, marker="*", c="lawngreen",
+                       linewidth=width+1)
         axs[i, 1].set_title(f"Iteration {i}")
         axs[i, 1].set_xlim(left=1, right=grad_network_len)
         axs[i, 1].grid()
@@ -571,6 +569,22 @@ def plot_similarity(exper_dir, vars=None):
         cax = divider.append_axes('right', size='5%', pad=0.05)
         cbar = fig.colorbar(cmap, cax=cax, ticks=np.linspace(0, 1, 6))
         cbar.ax.set_yticklabels(np.arange(0, train_epochs, train_epochs // 5))
+
+    for i in range(1, len(grads[0])):
+        if i % train_epochs:
+            axs[(i // (train_epochs)), 1].plot(net_layers,
+                                            grads[0][i][grad_ind_plot][:len(net_layers)],
+                                               c=colors[i % train_epochs],
+                                               linewidth=width)
+        else:
+            axs[(i // (train_epochs)), 1].plot(net_layers,
+                                               grads[0][i][grad_ind_plot][:len(net_layers)],
+                                               c="black", marker="1",
+                                               linewidth=width)
+
+        # print(i, i // train_epochs, len(grads[0]))
+        # plt.show(block=False)
+        # plt.pause(1)
 
     axs[2, 1].set_xlabel("Layer index")
 
@@ -593,6 +607,93 @@ def plot_similarity(exper_dir, vars=None):
 
     # for i in range(1, 4):
     #     axs[i, 2].axis("off")
+
+    fig.tight_layout(pad=0.5)
+
+    # axs.set_title("y of network in training")
+    plt.savefig(exper_dir[0] + "similarity.png")
+
+
+def plot_norm_diffs(exper_dir, vars=None):
+    args = json.loads(open(exper_dir[0] + "exper.json", "rb").read())
+    train_epochs = args["net_train_epochs"] + 1
+    imp_iter = 5 # args["exper_imp_total_iter"]
+    if vars is None:
+        acc, comp_level, sim, conns, grads = read_variables(exper_dir[0])
+
+    exper_len = np.arange(1, len(acc[0][0]) + 1 + 1) # second +1 for pruning
+    fig, axs = plt.subplots(imp_iter-1, 3, figsize=(16, 10))
+                            # gridspec_kw={'width_ratios': [10, 10, 10]})
+    width = .7
+
+    # axs[0, 0].axis("off")
+    # cmap = ListedColormap(colors)
+    # cbar = ColorbarBase(ax=axs[0, 0], cmap=cmap, ticks=np.arange(0, 1.1, .2))
+    # cbar.set_ticklabels(np.arange(0, train_epochs, train_epochs // 5))
+    # rho_opt = torch.Tensor([elem.mean() for elem in corrs[0][train_epochs - 1]])
+
+    grad_ind_plot = 0
+    conns = torch.nan_to_num(torch.Tensor(conns))
+    opt_conn = torch.Tensor(conns[0][train_epochs - 1])
+    opt_grad = torch.Tensor(grads[0][train_epochs - 1][grad_ind_plot])
+
+    conn_diff = [(torch.Tensor(conn) - opt_conn).norm().item() for conn in conns[0]]
+    grad_diff = [(torch.Tensor(grad[:][grad_ind_plot]) - opt_grad).norm().item()
+                 for grad in grads[0]]
+    # cos = torch.nn.CosineSimilarity(dim=0, eps=1e-6)
+    # grad_diff = [cos(torch.Tensor(grad[:][grad_ind_plot]), opt_grad).item()
+    #              for grad in grads[0]]
+
+    # connectivity
+    for i in range(1, imp_iter):
+        axs[i-1, 0].plot(exper_len[:-1],
+                       conn_diff[i*train_epochs:(i+1)*train_epochs-1], 'k')
+        # axs[i, 1].set_xticks(major_ticks)
+        # axs[i, 0].set_title(f"Iteration {i}")
+        axs[i-1, 0].set_ylim(bottom=0.0, top=.2)
+        # axs[i + 1, 1].set_xlim(left=1, right=len(similarity[0][0]))
+        axs[i-1, 0].grid()
+        axs[i-1, 0].xaxis.set_major_locator(tck.MultipleLocator(2))
+        # axs[i, 0].set_ylabel("Connectivity")
+        axs[i-1, 0].set_ylabel(r'$\| \Delta_{w_{i}} - \Delta_{w}^*\| $')
+        if i == 0:
+            axs[i, 0].set_title("Fine Tuning")
+
+
+    # Gradient flow
+    print("gradient:", len(grads[0]))
+
+    for i in range(1, imp_iter):
+        axs[i-1, 1].plot(exper_len[:-1],
+                       grad_diff[i*train_epochs:(i+1)*train_epochs-1], 'k')
+        axs[i-1, 1].set_ylim(bottom=0., top=.03)
+        axs[i-1, 1].set_title(f"Iteration {i}")
+        # axs[i, 2].set_xticks(major_ticks)
+        # axs[i, 1].set_xlim(left=1, right=grad_network_len)
+        axs[i-1, 1].grid()
+        axs[i-1, 1].xaxis.set_major_locator(tck.MultipleLocator(2))
+        axs[i-1, 1].set_ylabel(r'$\| \mathbf{g}_{w_{i}} - \mathbf{g}_{w}^* \| $')
+        # axs[i, 1].set_ylabel("Gradient Flow")
+        if i == 0:
+            axs[i, 1].set_title("Fine Tuning")
+
+
+    # Accuracy
+    print("accuracy: ", len(acc[0][0]))
+    for i in range(1, imp_iter):
+        axs[i-1, 2].plot(exper_len[:-1], acc[0][i], 'k',
+                       label=f"Rem. Weights {comp_level[0][i]}")
+        # axs[i, 2].set_ylim(bottom=90, top=95)
+        axs[i-1, 2].grid()
+        axs[i-1, 2].xaxis.set_major_locator(tck.MultipleLocator(2))
+
+        # axs[i, 2].set_title(f"Rem. Weights {comp_level[0][i]}")
+        axs[i-1, 2].set_ylabel("Test Accuracy")
+        axs[i-1, 2].legend()
+
+    axs[imp_iter-2, 0].set_xlabel("Training Epoch")
+    axs[imp_iter-2, 1].set_xlabel("Training Epoch")
+    axs[imp_iter-2, 2].set_xlabel("Training Epoch")
 
     fig.tight_layout(pad=0.5)
 
