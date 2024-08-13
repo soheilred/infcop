@@ -273,7 +273,7 @@ def plot_ablation(exper_dirs):
     # values = np.delete(values, remove_i)
     colors = c_colors(values)
 
-    fig, axs = plt.subplots(1, 3, figsize=(18, 6))
+    fig, axs = plt.subplots(1, 3, figsize=(23, 6))
 
     # read the accuracies array for all experiments
     for exp_ind, exp_dir in enumerate(exper_dirs):
@@ -319,7 +319,7 @@ def plot_ablation(exper_dirs):
 
     axs[0].set(xlabel="Iteration", ylabel="Accuracy")
     axs[0].set_title("Performance Comparison")
-    axs[0].legend(title="epsilon-(p, q)")
+    axs[0].legend(title="epsilon-(p, q)", ncol=2)
     axs[0].set_ylim(bottom=89., top=95.)
 
     # plot number of epochs vs. iteration
