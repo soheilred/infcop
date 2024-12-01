@@ -75,7 +75,7 @@ python plot_tool.py $dir
 *** ciap
 **** (p, q) = (1, 2)
 
-#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=ciap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
++call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=ciap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
 
 #+RESULTS:
 : Submitted batch job 1903488
@@ -87,7 +87,7 @@ python plot_tool.py $dir
 
 **** (p, q) = (.5, 1)
 
-#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10  --prune_method=ciap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3")
++call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10  --prune_method=ciap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3")
 
 #+RESULTS:
 : Submitted batch job 1897115
