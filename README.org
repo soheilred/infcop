@@ -35,45 +35,6 @@ sbatch pytorch.slurm ../src/prune.py $flags
 #+RESULTS:
 : Submitted batch job 1832978
 
-**** Submitting job to gpu/lab
-#+begin_src sh :dir /ssh:lab-ip:/home/soheil/Sync/umaine/bnn/code/control_lth/src :results output
-
-PID=$(echo $$)
-echo "main process: $PID"
-
-CNTLOG="../output/errors/cnt-${PID}.out"
-NOCNTLOG="../output/errors/nocnt-${PID}.out"
-# echo "#############################" >> $CNTLOG
-echo "#############################" >> $NOCNTLOG
-# date >> $CNTLOG
-date >> $NOCNTLOG
-# echo "$@" >> $CNTLOG
-echo "$@" >> $NOCNTLOG
-
-# conda activate ib
-source /home/soheil/anaconda3/bin/activate torch
-# python prune.py $@ --exper_gpu_id=0 --control_on=1 &>> $CNTLOG &
-# CNTPID=$(echo $!)
-# python prune.py $@ --exper_gpu_id=1 --control_on=0 &>> $NOCNTLOG &
-python prune.py  --net_train_epochs=2 --net_warmup=1 --control_on=0 --exper_type=test --exper_num_trial=1 &>> $NOCNTLOG &
-
-NOCNTPID=$(echo $!)
-# echo $CNTPID >> $CNTLOG
-echo $NOCNTPID >> $NOCNTLOG
-# echo $CNTPID
-echo $NOCNTPID
-# done; done;
-#+end_src
-
-#+begin_src sh :dir /ssh:lab-ip:/home/gharatappeh/efficient_pruning/control_lth :results output
-echo "hello"
-#+end_src
-
-#+RESULTS:
-: hello
-
-In dir: /home/soheil/Sync/umaine/bnn/code/control_lth/output/test/resnet18/CIFAR10/no_cntr/11-36/
-
 *** Getting directory of experiment
 #+name: get_exp_dir
 #+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/output/errors :results output :var pid="1986619"
@@ -82,17 +43,9 @@ grep -i "In dir:" tbst_$pid.log | awk '{print $3}' | cut -d '/' -f 6-
 
 #+end_src
 
-#+RESULTS: get_exp_dir
-: output/sap/resnet50/FashionMNIST/10-27-51/
-
-
 #+name: get_status
 #+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/output/errors :results output :var pid="1894119"
 cat error_$pid
-# cntr=$(grep -i "In dir:" output/errors/tbst_$pid_cntr.log | awk '{print $6}')
-# no_cntr=$(grep -i "In dir:" output/errors/tbst_$pid_wo_cntr.log | awk '{print $6}')
-# echo $cntr
-# echo $no_cntr
 #+end_src
 
 *** Plotting the results
