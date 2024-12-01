@@ -1,0 +1,2866 @@
+#############################
+Tue 05 Mar 2024 01:50:03 PM EST
+--net_train_epochs=30 --net_warmup=10
+955521
+2024-03-05 13:50:07,107 - Using cuda:0 device
+2024-03-05 13:50:07,146 - Name of the Cuda Device: NVIDIA RTX A6000
+2024-03-05 13:50:07,147 - ####### In performance experiment #######
+2024-03-05 13:50:07,147 - In experiment 0 / 3
+Files already downloaded and verified
+Files already downloaded and verified
+2024-03-05 13:50:12,182 - Warming up the pretrained model
+2024-03-05 13:50:12,183 - Training...
+2024-03-05 13:52:17,609 - Epoch 1 accuracy: 79.1%
+2024-03-05 13:54:19,548 - Epoch 2 accuracy: 93.5%
+2024-03-05 13:56:20,009 - Epoch 3 accuracy: 96.6%
+2024-03-05 13:58:20,649 - Epoch 4 accuracy: 97.7%
+2024-03-05 14:00:22,100 - Epoch 5 accuracy: 98.5%
+2024-03-05 14:02:24,073 - Epoch 6 accuracy: 98.8%
+2024-03-05 14:04:26,042 - Epoch 7 accuracy: 99.3%
+2024-03-05 14:06:26,768 - Epoch 8 accuracy: 99.3%
+2024-03-05 14:08:27,850 - Epoch 9 accuracy: 99.4%
+2024-03-05 14:10:29,718 - Epoch 10 accuracy: 99.5%
+  0%|          | 0/5 [00:00<?, ?it/s]2024-03-05 14:10:29,874 - [1/5] IMP loop
+2024-03-05 14:10:30,114 - Compression level: 100.0
+2024-03-05 14:10:30,114 - Training iteration 0 / 30
+2024-03-05 14:10:30,115 - Training...
+2024-03-05 14:12:31,706 - Epoch 1 accuracy: 99.4%
+2024-03-05 14:14:33,561 - Epoch 2 accuracy: 99.7%
+2024-03-05 14:14:33,562 - Testing
+2024-03-05 14:14:58,800 - Test accuracy: 94.3%, Avg loss: 0.24
+2024-03-05 14:14:58,803 - Training iteration 1 / 30
+2024-03-05 14:14:58,804 - Training...
+2024-03-05 14:16:59,800 - Epoch 1 accuracy: 99.8%
+2024-03-05 14:19:00,287 - Epoch 2 accuracy: 99.9%
+2024-03-05 14:19:00,288 - Testing
+2024-03-05 14:19:25,231 - Test accuracy: 94.9%, Avg loss: 0.22
+2024-03-05 14:19:25,233 - Training iteration 2 / 30
+2024-03-05 14:19:25,234 - Training...
+2024-03-05 14:21:30,915 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:23:32,849 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:23:32,849 - Testing
+2024-03-05 14:23:57,943 - Test accuracy: 95.2%, Avg loss: 0.23
+2024-03-05 14:23:57,945 - Training iteration 3 / 30
+2024-03-05 14:23:57,946 - Training...
+2024-03-05 14:26:00,259 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:28:01,894 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:28:01,895 - Testing
+2024-03-05 14:28:26,756 - Test accuracy: 95.3%, Avg loss: 0.22
+2024-03-05 14:28:26,757 - Training iteration 4 / 30
+2024-03-05 14:28:26,758 - Training...
+2024-03-05 14:30:27,461 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:32:28,309 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:32:28,310 - Testing
+2024-03-05 14:32:53,377 - Test accuracy: 94.9%, Avg loss: 0.25
+2024-03-05 14:32:53,379 - Training iteration 5 / 30
+2024-03-05 14:32:53,380 - Training...
+2024-03-05 14:34:54,841 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:36:57,843 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:36:57,843 - Testing
+2024-03-05 14:37:23,108 - Test accuracy: 95.4%, Avg loss: 0.22
+2024-03-05 14:37:23,110 - Training iteration 6 / 30
+2024-03-05 14:37:23,111 - Training...
+2024-03-05 14:39:24,496 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:41:25,113 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:41:25,113 - Testing
+2024-03-05 14:41:49,994 - Test accuracy: 95.5%, Avg loss: 0.21
+2024-03-05 14:41:49,996 - Training iteration 7 / 30
+2024-03-05 14:41:49,997 - Training...
+2024-03-05 14:43:52,274 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:45:54,219 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:45:54,220 - Testing
+2024-03-05 14:46:19,381 - Test accuracy: 95.5%, Avg loss: 0.22
+2024-03-05 14:46:19,383 - Training iteration 8 / 30
+2024-03-05 14:46:19,383 - Training...
+2024-03-05 14:48:21,134 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:50:22,617 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:50:22,618 - Testing
+2024-03-05 14:50:48,171 - Test accuracy: 95.5%, Avg loss: 0.21
+2024-03-05 14:50:48,173 - Training iteration 9 / 30
+2024-03-05 14:50:48,174 - Training...
+2024-03-05 14:52:49,867 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:54:51,569 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:54:51,570 - Testing
+2024-03-05 14:55:17,488 - Test accuracy: 95.6%, Avg loss: 0.21
+2024-03-05 14:55:17,490 - Training iteration 10 / 30
+2024-03-05 14:55:17,491 - Training...
+2024-03-05 14:57:19,170 - Epoch 1 accuracy: 100.0%
+2024-03-05 14:59:21,097 - Epoch 2 accuracy: 100.0%
+2024-03-05 14:59:21,098 - Testing
+2024-03-05 14:59:46,391 - Test accuracy: 95.7%, Avg loss: 0.21
+2024-03-05 14:59:46,393 - Training iteration 11 / 30
+2024-03-05 14:59:46,394 - Training...
+2024-03-05 15:01:47,911 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:03:49,163 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:03:49,164 - Testing
+2024-03-05 15:04:13,954 - Test accuracy: 95.7%, Avg loss: 0.21
+2024-03-05 15:04:13,956 - Training iteration 12 / 30
+2024-03-05 15:04:13,956 - Training...
+2024-03-05 15:06:15,028 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:08:16,478 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:08:16,479 - Testing
+2024-03-05 15:08:41,159 - Test accuracy: 95.6%, Avg loss: 0.21
+2024-03-05 15:08:41,161 - Training iteration 13 / 30
+2024-03-05 15:08:41,162 - Training...
+2024-03-05 15:10:43,455 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:12:45,193 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:12:45,194 - Testing
+2024-03-05 15:13:09,881 - Test accuracy: 95.3%, Avg loss: 0.22
+2024-03-05 15:13:09,883 - Training iteration 14 / 30
+2024-03-05 15:13:09,884 - Training...
+2024-03-05 15:15:12,437 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:17:14,325 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:17:14,326 - Testing
+2024-03-05 15:17:40,032 - Test accuracy: 95.6%, Avg loss: 0.21
+2024-03-05 15:17:40,034 - Training iteration 15 / 30
+2024-03-05 15:17:40,035 - Training...
+2024-03-05 15:19:41,950 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:21:43,742 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:21:43,743 - Testing
+2024-03-05 15:22:08,731 - Test accuracy: 95.6%, Avg loss: 0.22
+2024-03-05 15:22:08,733 - Training iteration 16 / 30
+2024-03-05 15:22:08,734 - Training...
+2024-03-05 15:24:11,167 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:26:13,355 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:26:13,357 - Testing
+2024-03-05 15:26:38,232 - Test accuracy: 95.5%, Avg loss: 0.22
+2024-03-05 15:26:38,234 - Training iteration 17 / 30
+2024-03-05 15:26:38,235 - Training...
+2024-03-05 15:28:40,498 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:30:42,948 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:30:42,949 - Testing
+2024-03-05 15:31:08,285 - Test accuracy: 95.5%, Avg loss: 0.22
+2024-03-05 15:31:08,287 - Training iteration 18 / 30
+2024-03-05 15:31:08,288 - Training...
+2024-03-05 15:33:10,076 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:35:11,488 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:35:11,489 - Testing
+2024-03-05 15:35:36,698 - Test accuracy: 95.6%, Avg loss: 0.22
+2024-03-05 15:35:36,700 - Training iteration 19 / 30
+2024-03-05 15:35:36,701 - Training...
+2024-03-05 15:37:39,300 - Epoch 1 accuracy: 100.0%
+2024-03-05 15:39:41,228 - Epoch 2 accuracy: 99.3%
+2024-03-05 15:39:41,229 - Testing
+2024-03-05 15:40:06,173 - Test accuracy: 94.3%, Avg loss: 0.26
+2024-03-05 15:40:06,174 - Training iteration 20 / 30
+2024-03-05 15:40:06,175 - Training...
+2024-03-05 15:42:08,552 - Epoch 1 accuracy: 99.7%
+2024-03-05 15:44:11,031 - Epoch 2 accuracy: 99.9%
+2024-03-05 15:44:11,032 - Testing
+2024-03-05 15:44:36,069 - Test accuracy: 95.1%, Avg loss: 0.24
+2024-03-05 15:44:36,072 - Training iteration 21 / 30
+2024-03-05 15:44:36,072 - Training...
+2024-03-05 15:46:38,170 - Epoch 1 accuracy: 99.9%
+2024-03-05 15:48:41,093 - Epoch 2 accuracy: 99.9%
+2024-03-05 15:48:41,095 - Testing
+2024-03-05 15:49:06,464 - Test accuracy: 91.5%, Avg loss: 0.42
+2024-03-05 15:49:06,466 - Training iteration 22 / 30
+2024-03-05 15:49:06,467 - Training...
+2024-03-05 15:51:08,971 - Epoch 1 accuracy: 99.8%
+2024-03-05 15:53:11,553 - Epoch 2 accuracy: 99.9%
+2024-03-05 15:53:11,554 - Testing
+2024-03-05 15:53:36,859 - Test accuracy: 92.5%, Avg loss: 0.37
+2024-03-05 15:53:36,861 - Training iteration 23 / 30
+2024-03-05 15:53:36,862 - Training...
+2024-03-05 15:55:38,402 - Epoch 1 accuracy: 99.9%
+2024-03-05 15:57:39,965 - Epoch 2 accuracy: 100.0%
+2024-03-05 15:57:39,966 - Testing
+2024-03-05 15:58:04,876 - Test accuracy: 95.0%, Avg loss: 0.24
+2024-03-05 15:58:04,878 - Training iteration 24 / 30
+2024-03-05 15:58:04,879 - Training...
+2024-03-05 16:00:07,583 - Epoch 1 accuracy: 100.0%
+2024-03-05 16:02:09,793 - Epoch 2 accuracy: 100.0%
+2024-03-05 16:02:09,793 - Testing
+2024-03-05 16:02:35,220 - Test accuracy: 95.2%, Avg loss: 0.23
+2024-03-05 16:02:35,222 - Training iteration 25 / 30
+2024-03-05 16:02:35,223 - Training...
+2024-03-05 16:04:36,607 - Epoch 1 accuracy: 100.0%
+2024-03-05 16:06:38,179 - Epoch 2 accuracy: 100.0%
+2024-03-05 16:06:38,180 - Testing
+2024-03-05 16:07:03,391 - Test accuracy: 92.8%, Avg loss: 0.38
+2024-03-05 16:07:03,393 - Training iteration 26 / 30
+2024-03-05 16:07:03,394 - Training...
+2024-03-05 16:09:05,639 - Epoch 1 accuracy: 100.0%
+2024-03-05 16:11:07,860 - Epoch 2 accuracy: 100.0%
+2024-03-05 16:11:07,861 - Testing
+2024-03-05 16:11:33,004 - Test accuracy: 95.3%, Avg loss: 0.23
+2024-03-05 16:11:33,006 - Training iteration 27 / 30
+2024-03-05 16:11:33,007 - Training...
+2024-03-05 16:13:35,102 - Epoch 1 accuracy: 100.0%
+2024-03-05 16:15:40,012 - Epoch 2 accuracy: 100.0%
+2024-03-05 16:15:40,012 - Testing
+2024-03-05 16:16:07,372 - Test accuracy: 95.5%, Avg loss: 0.23
+2024-03-05 16:16:07,374 - Training iteration 28 / 30
+2024-03-05 16:16:07,374 - Training...
+2024-03-05 16:18:12,705 - Epoch 1 accuracy: 100.0%
+2024-03-05 16:20:15,558 - Epoch 2 accuracy: 100.0%
+2024-03-05 16:20:15,559 - Testing
+2024-03-05 16:20:40,644 - Test accuracy: 95.5%, Avg loss: 0.22
+2024-03-05 16:20:40,646 - Training iteration 29 / 30
+2024-03-05 16:20:40,647 - Training...
+2024-03-05 16:22:51,777 - Epoch 1 accuracy: 100.0%
+2024-03-05 16:24:53,738 - Epoch 2 accuracy: 100.0%
+2024-03-05 16:24:53,739 - Testing
+2024-03-05 16:25:18,865 - Test accuracy: 95.6%, Avg loss: 0.22
+2024-03-05 16:25:19,879 - Compute the mean and sd of activations
+ 20%|██        | 1/5 [2:26:15<9:45:00, 8775.02s/it]2024-03-05 16:36:45,014 - [2/5] IMP loop
+2024-03-05 16:36:45,451 - Compression level: 81.2
+2024-03-05 16:36:45,460 - Training iteration 0 / 30
+2024-03-05 16:36:45,461 - Training...
+2024-03-05 16:39:24,381 - Epoch 1 accuracy: 100.0%
+2024-03-05 16:41:36,661 - Epoch 2 accuracy: 100.0%
+2024-03-05 16:41:36,662 - Testing
+2024-03-05 16:42:01,859 - Test accuracy: 95.4%, Avg loss: 0.18
+2024-03-05 16:42:01,860 - Training iteration 1 / 30
+2024-03-05 16:42:01,861 - Training...
+2024-03-05 16:44:04,134 - Epoch 1 accuracy: 100.0%
+2024-03-05 16:46:13,177 - Epoch 2 accuracy: 100.0%
+2024-03-05 16:46:13,177 - Testing
+2024-03-05 16:46:39,584 - Test accuracy: 95.7%, Avg loss: 0.16
+2024-03-05 16:46:40,467 - Compute the mean and sd of activations
+2024-03-05 16:59:11,885 - apply controller at layer [1, 2, 3, 4, 5]
+network's weight shape layer1.0.conv1 torch.Size([64, 64, 3, 3])
+control weight tensor(112.797691, device='cuda:0')
+old weight tensor(9.203873, device='cuda:0')
+new weight tensor(5.561903, device='cuda:0')
+network's weight shape layer1.0.conv2 torch.Size([64, 64, 3, 3])
+control weight tensor(102.338097, device='cuda:0')
+old weight tensor(7.899811, device='cuda:0')
+new weight tensor(4.279274, device='cuda:0')
+network's weight shape layer1.1.conv1 torch.Size([64, 64, 3, 3])
+control weight tensor(78.175629, device='cuda:0')
+old weight tensor(8.856925, device='cuda:0')
+new weight tensor(3.668101, device='cuda:0')
+network's weight shape layer1.1.conv2 torch.Size([64, 64, 3, 3])
+control weight tensor(71.697586, device='cuda:0')
+old weight tensor(7.655225, device='cuda:0')
+new weight tensor(3.023109, device='cuda:0')
+network's weight shape layer2.0.conv1 torch.Size([128, 64, 3, 3])
+control weight tensor(91.241341, device='cuda:0')
+old weight tensor(10.283283, device='cuda:0')
+new weight tensor(3.517840, device='cuda:0')
+2024-03-05 16:59:12,668 - Training iteration 2 / 30
+2024-03-05 16:59:12,668 - Training...
+2024-03-05 17:01:51,701 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:03:55,137 - Epoch 2 accuracy: 100.0%
+2024-03-05 17:03:55,138 - Testing
+2024-03-05 17:04:20,017 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-05 17:04:20,019 - Training iteration 3 / 30
+2024-03-05 17:04:20,020 - Training...
+2024-03-05 17:06:26,003 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:08:32,349 - Epoch 2 accuracy: 100.0%
+2024-03-05 17:08:32,350 - Testing
+2024-03-05 17:08:57,306 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-05 17:08:57,308 - Training iteration 4 / 30
+2024-03-05 17:08:57,309 - Training...
+2024-03-05 17:11:00,014 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:13:08,923 - Epoch 2 accuracy: 100.0%
+2024-03-05 17:13:08,923 - Testing
+2024-03-05 17:13:35,549 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-05 17:13:35,551 - Training iteration 5 / 30
+2024-03-05 17:13:35,552 - Training...
+2024-03-05 17:15:37,693 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:17:40,131 - Epoch 2 accuracy: 100.0%
+2024-03-05 17:17:40,132 - Testing
+2024-03-05 17:18:05,073 - Test accuracy: 95.9%, Avg loss: 0.14
+2024-03-05 17:18:05,075 - Training iteration 6 / 30
+2024-03-05 17:18:05,075 - Training...
+2024-03-05 17:20:14,267 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:22:15,979 - Epoch 2 accuracy: 100.0%
+2024-03-05 17:22:15,980 - Testing
+2024-03-05 17:22:40,881 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-05 17:22:40,883 - Training iteration 7 / 30
+2024-03-05 17:22:40,884 - Training...
+2024-03-05 17:24:44,325 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:26:57,716 - Epoch 2 accuracy: 100.0%
+2024-03-05 17:26:57,717 - Testing
+2024-03-05 17:27:25,238 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-05 17:27:25,239 - Training iteration 8 / 30
+2024-03-05 17:27:25,239 - Training...
+2024-03-05 17:29:40,074 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:31:44,363 - Epoch 2 accuracy: 100.0%
+2024-03-05 17:31:44,364 - Testing
+2024-03-05 17:32:10,126 - Test accuracy: 95.7%, Avg loss: 0.15
+2024-03-05 17:32:10,128 - Training iteration 9 / 30
+2024-03-05 17:32:10,129 - Training...
+2024-03-05 17:34:16,716 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:36:25,359 - Epoch 2 accuracy: 100.0%
+2024-03-05 17:36:25,359 - Testing
+2024-03-05 17:36:50,521 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-05 17:36:50,523 - Training iteration 10 / 30
+2024-03-05 17:36:50,524 - Training...
+2024-03-05 17:38:52,085 - Epoch 1 accuracy: 100.0%
+2024-03-05 17:40:57,178 - Epoch 2 accuracy: 98.7%
+2024-03-05 17:40:57,178 - Testing
+2024-03-05 17:41:25,353 - Test accuracy: 32.6%, Avg loss: 3.17
+2024-03-05 17:41:25,354 - Training iteration 11 / 30
+2024-03-05 17:41:25,354 - Training...
+2024-03-05 17:43:30,139 - Epoch 1 accuracy: 91.5%
+2024-03-05 17:45:32,524 - Epoch 2 accuracy: 95.4%
+2024-03-05 17:45:32,525 - Testing
+2024-03-05 17:45:57,800 - Test accuracy: 75.7%, Avg loss: 0.98
+2024-03-05 17:45:57,802 - Training iteration 12 / 30
+2024-03-05 17:45:57,803 - Training...
+2024-03-05 17:48:07,989 - Epoch 1 accuracy: 96.6%
+2024-03-05 17:50:10,261 - Epoch 2 accuracy: 97.9%
+2024-03-05 17:50:10,262 - Testing
+2024-03-05 17:50:35,809 - Test accuracy: 68.5%, Avg loss: 1.68
+2024-03-05 17:50:35,810 - Training iteration 13 / 30
+2024-03-05 17:50:35,811 - Training...
+2024-03-05 17:52:38,357 - Epoch 1 accuracy: 98.9%
+2024-03-05 17:54:49,309 - Epoch 2 accuracy: 98.8%
+2024-03-05 17:54:49,310 - Testing
+2024-03-05 17:55:14,651 - Test accuracy: 78.4%, Avg loss: 0.92
+2024-03-05 17:55:14,653 - Training iteration 14 / 30
+2024-03-05 17:55:14,654 - Training...
+2024-03-05 17:57:16,646 - Epoch 1 accuracy: 98.7%
+2024-03-05 17:59:19,108 - Epoch 2 accuracy: 99.0%
+2024-03-05 17:59:19,109 - Testing
+2024-03-05 17:59:46,732 - Test accuracy: 86.6%, Avg loss: 0.46
+2024-03-05 17:59:46,733 - Training iteration 15 / 30
+2024-03-05 17:59:46,734 - Training...
+2024-03-05 18:01:57,823 - Epoch 1 accuracy: 98.6%
+2024-03-05 18:04:12,979 - Epoch 2 accuracy: 98.8%
+2024-03-05 18:04:12,979 - Testing
+2024-03-05 18:04:40,902 - Test accuracy: 89.0%, Avg loss: 0.40
+2024-03-05 18:04:40,904 - Training iteration 16 / 30
+2024-03-05 18:04:40,905 - Training...
+2024-03-05 18:06:46,674 - Epoch 1 accuracy: 99.4%
+2024-03-05 18:08:48,582 - Epoch 2 accuracy: 99.4%
+2024-03-05 18:08:48,583 - Testing
+2024-03-05 18:09:15,575 - Test accuracy: 91.0%, Avg loss: 0.30
+2024-03-05 18:09:15,576 - Training iteration 17 / 30
+2024-03-05 18:09:15,577 - Training...
+2024-03-05 18:11:25,031 - Epoch 1 accuracy: 99.0%
+2024-03-05 18:13:27,096 - Epoch 2 accuracy: 98.7%
+2024-03-05 18:13:27,097 - Testing
+2024-03-05 18:13:52,340 - Test accuracy: 48.9%, Avg loss: 4.01
+2024-03-05 18:13:52,341 - Training iteration 18 / 30
+2024-03-05 18:13:52,342 - Training...
+2024-03-05 18:15:59,901 - Epoch 1 accuracy: 99.0%
+2024-03-05 18:18:06,335 - Epoch 2 accuracy: 98.8%
+2024-03-05 18:18:06,336 - Testing
+2024-03-05 18:18:31,427 - Test accuracy: 91.9%, Avg loss: 0.26
+2024-03-05 18:18:31,429 - Training iteration 19 / 30
+2024-03-05 18:18:31,430 - Training...
+2024-03-05 18:20:33,940 - Epoch 1 accuracy: 99.6%
+2024-03-05 18:22:42,389 - Epoch 2 accuracy: 99.9%
+2024-03-05 18:22:42,390 - Testing
+2024-03-05 18:23:10,131 - Test accuracy: 94.6%, Avg loss: 0.18
+2024-03-05 18:23:10,132 - Training iteration 20 / 30
+2024-03-05 18:23:10,133 - Training...
+2024-03-05 18:25:12,780 - Epoch 1 accuracy: 100.0%
+2024-03-05 18:27:14,665 - Epoch 2 accuracy: 100.0%
+2024-03-05 18:27:14,666 - Testing
+2024-03-05 18:27:39,819 - Test accuracy: 95.1%, Avg loss: 0.16
+2024-03-05 18:27:39,821 - Training iteration 21 / 30
+2024-03-05 18:27:39,822 - Training...
+2024-03-05 18:29:52,269 - Epoch 1 accuracy: 100.0%
+2024-03-05 18:31:54,500 - Epoch 2 accuracy: 100.0%
+2024-03-05 18:31:54,501 - Testing
+2024-03-05 18:32:19,483 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-05 18:32:19,485 - Training iteration 22 / 30
+2024-03-05 18:32:19,486 - Training...
+2024-03-05 18:34:23,214 - Epoch 1 accuracy: 100.0%
+2024-03-05 18:36:34,956 - Epoch 2 accuracy: 100.0%
+2024-03-05 18:36:34,957 - Testing
+2024-03-05 18:37:03,214 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-05 18:37:03,215 - Training iteration 23 / 30
+2024-03-05 18:37:03,216 - Training...
+2024-03-05 18:39:17,649 - Epoch 1 accuracy: 100.0%
+2024-03-05 18:41:20,617 - Epoch 2 accuracy: 100.0%
+2024-03-05 18:41:20,618 - Testing
+2024-03-05 18:41:45,574 - Test accuracy: 95.5%, Avg loss: 0.14
+2024-03-05 18:41:45,576 - Training iteration 24 / 30
+2024-03-05 18:41:45,577 - Training...
+2024-03-05 18:43:48,452 - Epoch 1 accuracy: 100.0%
+2024-03-05 18:45:57,846 - Epoch 2 accuracy: 100.0%
+2024-03-05 18:45:57,847 - Testing
+2024-03-05 18:46:23,353 - Test accuracy: 95.5%, Avg loss: 0.14
+2024-03-05 18:46:23,354 - Training iteration 25 / 30
+2024-03-05 18:46:23,355 - Training...
+2024-03-05 18:48:25,387 - Epoch 1 accuracy: 100.0%
+2024-03-05 18:50:31,011 - Epoch 2 accuracy: 100.0%
+2024-03-05 18:50:31,012 - Testing
+2024-03-05 18:50:58,599 - Test accuracy: 95.5%, Avg loss: 0.14
+2024-03-05 18:50:58,600 - Training iteration 26 / 30
+2024-03-05 18:50:58,601 - Training...
+2024-03-05 18:53:05,319 - Epoch 1 accuracy: 100.0%
+2024-03-05 18:55:08,737 - Epoch 2 accuracy: 84.4%
+2024-03-05 18:55:08,738 - Testing
+2024-03-05 18:55:34,482 - Test accuracy: 44.3%, Avg loss: 2.08
+2024-03-05 18:55:34,484 - Training iteration 27 / 30
+2024-03-05 18:55:34,485 - Training...
+2024-03-05 18:57:46,499 - Epoch 1 accuracy: 95.1%
+2024-03-05 18:59:49,687 - Epoch 2 accuracy: 97.1%
+2024-03-05 18:59:49,688 - Testing
+2024-03-05 19:00:14,514 - Test accuracy: 32.0%, Avg loss: 4.14
+2024-03-05 19:00:14,516 - Training iteration 28 / 30
+2024-03-05 19:00:14,516 - Training...
+2024-03-05 19:02:17,591 - Epoch 1 accuracy: 98.0%
+2024-03-05 19:04:28,743 - Epoch 2 accuracy: 98.7%
+2024-03-05 19:04:28,744 - Testing
+2024-03-05 19:04:53,671 - Test accuracy: 83.3%, Avg loss: 0.56
+2024-03-05 19:04:53,672 - Training iteration 29 / 30
+2024-03-05 19:04:53,673 - Training...
+2024-03-05 19:06:56,511 - Epoch 1 accuracy: 99.3%
+2024-03-05 19:09:00,637 - Epoch 2 accuracy: 99.8%
+2024-03-05 19:09:00,637 - Testing
+2024-03-05 19:09:28,106 - Test accuracy: 92.8%, Avg loss: 0.24
+2024-03-05 19:09:32,938 - Compute the mean and sd of activations
+ 40%|████      | 2/5 [5:08:43<7:47:23, 9347.71s/it]2024-03-05 19:19:13,602 - [3/5] IMP loop
+2024-03-05 19:19:14,013 - Compression level: 62.9
+2024-03-05 19:19:14,014 - Training iteration 0 / 30
+2024-03-05 19:19:14,015 - Training...
+2024-03-05 19:21:28,655 - Epoch 1 accuracy: 99.9%
+2024-03-05 19:24:16,737 - Epoch 2 accuracy: 100.0%
+2024-03-05 19:24:16,738 - Testing
+2024-03-05 19:24:43,697 - Test accuracy: 95.8%, Avg loss: 0.13
+2024-03-05 19:24:43,698 - Training iteration 1 / 30
+2024-03-05 19:24:43,699 - Training...
+2024-03-05 19:26:54,005 - Epoch 1 accuracy: 100.0%
+2024-03-05 19:28:58,719 - Epoch 2 accuracy: 100.0%
+2024-03-05 19:28:58,720 - Testing
+2024-03-05 19:29:26,446 - Test accuracy: 95.8%, Avg loss: 0.13
+2024-03-05 19:29:26,447 - Training iteration 2 / 30
+2024-03-05 19:29:26,448 - Training...
+2024-03-05 19:31:33,346 - Epoch 1 accuracy: 100.0%
+2024-03-05 19:33:35,994 - Epoch 2 accuracy: 100.0%
+2024-03-05 19:33:35,994 - Testing
+2024-03-05 19:34:01,073 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-05 19:34:01,075 - Training iteration 3 / 30
+2024-03-05 19:34:01,076 - Training...
+2024-03-05 19:36:10,679 - Epoch 1 accuracy: 100.0%
+2024-03-05 19:38:14,891 - Epoch 2 accuracy: 100.0%
+2024-03-05 19:38:14,892 - Testing
+2024-03-05 19:38:40,516 - Test accuracy: 95.8%, Avg loss: 0.13
+2024-03-05 19:38:40,518 - Training iteration 4 / 30
+2024-03-05 19:38:40,519 - Training...
+2024-03-05 19:40:43,824 - Epoch 1 accuracy: 100.0%
+2024-03-05 19:42:55,682 - Epoch 2 accuracy: 100.0%
+2024-03-05 19:42:55,683 - Testing
+2024-03-05 19:43:20,865 - Test accuracy: 65.8%, Avg loss: 2.37
+2024-03-05 19:43:20,867 - Training iteration 5 / 30
+2024-03-05 19:43:20,868 - Training...
+2024-03-05 19:45:23,601 - Epoch 1 accuracy: 100.0%
+2024-03-05 19:47:26,593 - Epoch 2 accuracy: 100.0%
+2024-03-05 19:47:26,594 - Testing
+2024-03-05 19:47:53,865 - Test accuracy: 50.9%, Avg loss: 3.94
+2024-03-05 19:47:53,866 - Training iteration 6 / 30
+2024-03-05 19:47:53,867 - Training...
+2024-03-05 19:50:07,041 - Epoch 1 accuracy: 97.5%
+2024-03-05 19:52:20,402 - Epoch 2 accuracy: 98.8%
+2024-03-05 19:52:20,403 - Testing
+2024-03-05 19:52:47,506 - Test accuracy: 75.3%, Avg loss: 1.11
+2024-03-05 19:52:47,507 - Training iteration 7 / 30
+2024-03-05 19:52:47,508 - Training...
+2024-03-05 19:54:50,171 - Epoch 1 accuracy: 98.7%
+2024-03-05 19:56:52,251 - Epoch 2 accuracy: 99.6%
+2024-03-05 19:56:52,251 - Testing
+2024-03-05 19:57:18,618 - Test accuracy: 91.7%, Avg loss: 0.27
+2024-03-05 19:57:18,619 - Training iteration 8 / 30
+2024-03-05 19:57:18,620 - Training...
+2024-03-05 19:59:29,123 - Epoch 1 accuracy: 99.6%
+2024-03-05 20:01:31,769 - Epoch 2 accuracy: 98.9%
+2024-03-05 20:01:31,770 - Testing
+2024-03-05 20:01:57,231 - Test accuracy: 60.6%, Avg loss: 1.57
+2024-03-05 20:01:57,240 - Training iteration 9 / 30
+2024-03-05 20:01:57,241 - Training...
+2024-03-05 20:04:03,488 - Epoch 1 accuracy: 98.2%
+2024-03-05 20:06:10,962 - Epoch 2 accuracy: 99.1%
+2024-03-05 20:06:10,963 - Testing
+2024-03-05 20:06:36,141 - Test accuracy: 50.8%, Avg loss: 2.54
+2024-03-05 20:06:36,143 - Training iteration 10 / 30
+2024-03-05 20:06:36,143 - Training...
+2024-03-05 20:08:39,262 - Epoch 1 accuracy: 99.1%
+2024-03-05 20:10:48,807 - Epoch 2 accuracy: 99.1%
+2024-03-05 20:10:48,807 - Testing
+2024-03-05 20:11:15,664 - Test accuracy: 61.4%, Avg loss: 2.09
+2024-03-05 20:11:15,666 - Training iteration 11 / 30
+2024-03-05 20:11:15,667 - Training...
+2024-03-05 20:13:18,688 - Epoch 1 accuracy: 99.5%
+2024-03-05 20:15:21,456 - Epoch 2 accuracy: 99.5%
+2024-03-05 20:15:21,457 - Testing
+2024-03-05 20:15:46,747 - Test accuracy: 87.9%, Avg loss: 0.41
+2024-03-05 20:15:46,749 - Training iteration 12 / 30
+2024-03-05 20:15:46,750 - Training...
+2024-03-05 20:17:56,506 - Epoch 1 accuracy: 99.7%
+2024-03-05 20:19:59,254 - Epoch 2 accuracy: 99.1%
+2024-03-05 20:19:59,255 - Testing
+2024-03-05 20:20:24,207 - Test accuracy: 32.0%, Avg loss: 4.61
+2024-03-05 20:20:24,209 - Training iteration 13 / 30
+2024-03-05 20:20:24,210 - Training...
+2024-03-05 20:22:27,937 - Epoch 1 accuracy: 98.3%
+2024-03-05 20:24:39,092 - Epoch 2 accuracy: 98.2%
+2024-03-05 20:24:39,093 - Testing
+2024-03-05 20:25:06,417 - Test accuracy: 88.6%, Avg loss: 0.38
+2024-03-05 20:25:06,419 - Training iteration 14 / 30
+2024-03-05 20:25:06,419 - Training...
+2024-03-05 20:27:19,686 - Epoch 1 accuracy: 99.0%
+2024-03-05 20:29:22,464 - Epoch 2 accuracy: 99.5%
+2024-03-05 20:29:22,465 - Testing
+2024-03-05 20:29:47,667 - Test accuracy: 71.3%, Avg loss: 1.54
+2024-03-05 20:29:47,669 - Training iteration 15 / 30
+2024-03-05 20:29:47,670 - Training...
+2024-03-05 20:31:50,406 - Epoch 1 accuracy: 99.5%
+2024-03-05 20:34:00,565 - Epoch 2 accuracy: 99.9%
+2024-03-05 20:34:00,566 - Testing
+2024-03-05 20:34:25,547 - Test accuracy: 89.5%, Avg loss: 0.37
+2024-03-05 20:34:25,548 - Training iteration 16 / 30
+2024-03-05 20:34:25,549 - Training...
+2024-03-05 20:36:27,284 - Epoch 1 accuracy: 99.9%
+2024-03-05 20:38:33,076 - Epoch 2 accuracy: 100.0%
+2024-03-05 20:38:33,077 - Testing
+2024-03-05 20:39:00,480 - Test accuracy: 95.1%, Avg loss: 0.16
+2024-03-05 20:39:00,481 - Training iteration 17 / 30
+2024-03-05 20:39:00,482 - Training...
+2024-03-05 20:41:07,283 - Epoch 1 accuracy: 100.0%
+2024-03-05 20:43:09,539 - Epoch 2 accuracy: 100.0%
+2024-03-05 20:43:09,540 - Testing
+2024-03-05 20:43:34,542 - Test accuracy: 95.1%, Avg loss: 0.16
+2024-03-05 20:43:34,543 - Training iteration 18 / 30
+2024-03-05 20:43:34,544 - Training...
+2024-03-05 20:45:43,526 - Epoch 1 accuracy: 100.0%
+2024-03-05 20:47:47,480 - Epoch 2 accuracy: 100.0%
+2024-03-05 20:47:47,481 - Testing
+2024-03-05 20:48:12,421 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-05 20:48:12,423 - Training iteration 19 / 30
+2024-03-05 20:48:12,424 - Training...
+2024-03-05 20:50:14,532 - Epoch 1 accuracy: 100.0%
+2024-03-05 20:52:24,211 - Epoch 2 accuracy: 100.0%
+2024-03-05 20:52:24,212 - Testing
+2024-03-05 20:52:49,785 - Test accuracy: 94.8%, Avg loss: 0.17
+2024-03-05 20:52:49,786 - Training iteration 20 / 30
+2024-03-05 20:52:49,787 - Training...
+2024-03-05 20:54:56,026 - Epoch 1 accuracy: 100.0%
+2024-03-05 20:56:58,082 - Epoch 2 accuracy: 100.0%
+2024-03-05 20:56:58,083 - Testing
+2024-03-05 20:57:24,736 - Test accuracy: 88.7%, Avg loss: 0.42
+2024-03-05 20:57:24,737 - Training iteration 21 / 30
+2024-03-05 20:57:24,737 - Training...
+2024-03-05 20:59:35,255 - Epoch 1 accuracy: 90.9%
+2024-03-05 21:01:48,802 - Epoch 2 accuracy: 95.8%
+2024-03-05 21:01:48,803 - Testing
+2024-03-05 21:02:15,608 - Test accuracy: 72.6%, Avg loss: 0.97
+2024-03-05 21:02:15,610 - Training iteration 22 / 30
+2024-03-05 21:02:15,611 - Training...
+2024-03-05 21:04:17,850 - Epoch 1 accuracy: 97.5%
+2024-03-05 21:06:20,009 - Epoch 2 accuracy: 98.8%
+2024-03-05 21:06:20,010 - Testing
+2024-03-05 21:06:46,053 - Test accuracy: 76.6%, Avg loss: 0.86
+2024-03-05 21:06:46,054 - Training iteration 23 / 30
+2024-03-05 21:06:46,055 - Training...
+2024-03-05 21:08:56,445 - Epoch 1 accuracy: 98.7%
+2024-03-05 21:10:59,960 - Epoch 2 accuracy: 98.9%
+2024-03-05 21:10:59,961 - Testing
+2024-03-05 21:11:24,819 - Test accuracy: 91.2%, Avg loss: 0.30
+2024-03-05 21:11:24,820 - Training iteration 24 / 30
+2024-03-05 21:11:24,821 - Training...
+2024-03-05 21:13:29,590 - Epoch 1 accuracy: 99.8%
+2024-03-05 21:15:36,422 - Epoch 2 accuracy: 99.6%
+2024-03-05 21:15:36,423 - Testing
+2024-03-05 21:16:02,246 - Test accuracy: 92.8%, Avg loss: 0.25
+2024-03-05 21:16:02,247 - Training iteration 25 / 30
+2024-03-05 21:16:02,248 - Training...
+2024-03-05 21:18:05,039 - Epoch 1 accuracy: 99.9%
+2024-03-05 21:20:13,095 - Epoch 2 accuracy: 100.0%
+2024-03-05 21:20:13,095 - Testing
+2024-03-05 21:20:40,114 - Test accuracy: 94.8%, Avg loss: 0.17
+2024-03-05 21:20:40,115 - Training iteration 26 / 30
+2024-03-05 21:20:40,115 - Training...
+2024-03-05 21:22:43,040 - Epoch 1 accuracy: 100.0%
+2024-03-05 21:24:44,792 - Epoch 2 accuracy: 100.0%
+2024-03-05 21:24:44,793 - Testing
+2024-03-05 21:25:10,627 - Test accuracy: 95.1%, Avg loss: 0.16
+2024-03-05 21:25:10,629 - Training iteration 27 / 30
+2024-03-05 21:25:10,630 - Training...
+2024-03-05 21:27:20,232 - Epoch 1 accuracy: 100.0%
+2024-03-05 21:29:22,162 - Epoch 2 accuracy: 100.0%
+2024-03-05 21:29:22,163 - Testing
+2024-03-05 21:29:47,300 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-05 21:29:47,302 - Training iteration 28 / 30
+2024-03-05 21:29:47,303 - Training...
+2024-03-05 21:31:49,403 - Epoch 1 accuracy: 100.0%
+2024-03-05 21:34:01,866 - Epoch 2 accuracy: 100.0%
+2024-03-05 21:34:01,867 - Testing
+2024-03-05 21:34:29,291 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-05 21:34:29,292 - Training iteration 29 / 30
+2024-03-05 21:34:29,293 - Training...
+2024-03-05 21:36:42,945 - Epoch 1 accuracy: 100.0%
+2024-03-05 21:38:47,693 - Epoch 2 accuracy: 100.0%
+2024-03-05 21:38:47,694 - Testing
+2024-03-05 21:39:12,483 - Test accuracy: 95.1%, Avg loss: 0.16
+2024-03-05 21:39:17,039 - Compute the mean and sd of activations
+ 60%|██████    | 3/5 [7:37:27<5:05:08, 9154.06s/it]2024-03-05 21:47:57,211 - [4/5] IMP loop
+2024-03-05 21:47:57,515 - Compression level: 50.5
+2024-03-05 21:47:57,515 - Training iteration 0 / 30
+2024-03-05 21:47:57,516 - Training...
+2024-03-05 21:50:03,917 - Epoch 1 accuracy: 99.7%
+2024-03-05 21:52:23,742 - Epoch 2 accuracy: 100.0%
+2024-03-05 21:52:23,742 - Testing
+2024-03-05 21:52:51,142 - Test accuracy: 94.6%, Avg loss: 0.17
+2024-03-05 21:52:51,144 - Training iteration 1 / 30
+2024-03-05 21:52:51,144 - Training...
+2024-03-05 21:55:03,585 - Epoch 1 accuracy: 100.0%
+2024-03-05 21:57:46,413 - Epoch 2 accuracy: 100.0%
+2024-03-05 21:57:46,413 - Testing
+2024-03-05 21:58:22,138 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-05 21:58:22,139 - Training iteration 2 / 30
+2024-03-05 21:58:22,140 - Training...
+2024-03-05 22:00:29,472 - Epoch 1 accuracy: 100.0%
+2024-03-05 22:02:31,430 - Epoch 2 accuracy: 100.0%
+2024-03-05 22:02:31,431 - Testing
+2024-03-05 22:02:56,331 - Test accuracy: 73.0%, Avg loss: 1.35
+2024-03-05 22:02:56,333 - Training iteration 3 / 30
+2024-03-05 22:02:56,334 - Training...
+2024-03-05 22:05:07,357 - Epoch 1 accuracy: 99.6%
+2024-03-05 22:07:09,763 - Epoch 2 accuracy: 100.0%
+2024-03-05 22:07:09,764 - Testing
+2024-03-05 22:07:34,997 - Test accuracy: 93.9%, Avg loss: 0.19
+2024-03-05 22:07:34,999 - Training iteration 4 / 30
+2024-03-05 22:07:35,000 - Training...
+2024-03-05 22:09:38,393 - Epoch 1 accuracy: 100.0%
+2024-03-05 22:11:49,487 - Epoch 2 accuracy: 100.0%
+2024-03-05 22:11:49,488 - Testing
+2024-03-05 22:12:17,932 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-05 22:12:17,933 - Training iteration 5 / 30
+2024-03-05 22:12:17,933 - Training...
+2024-03-05 22:14:24,587 - Epoch 1 accuracy: 100.0%
+2024-03-05 22:16:26,737 - Epoch 2 accuracy: 100.0%
+2024-03-05 22:16:26,738 - Testing
+2024-03-05 22:16:51,943 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-05 22:16:51,944 - Training iteration 6 / 30
+2024-03-05 22:16:51,945 - Training...
+2024-03-05 22:18:54,520 - Epoch 1 accuracy: 100.0%
+2024-03-05 22:21:04,812 - Epoch 2 accuracy: 100.0%
+2024-03-05 22:21:04,813 - Testing
+2024-03-05 22:21:30,716 - Test accuracy: 73.9%, Avg loss: 1.11
+2024-03-05 22:21:30,718 - Training iteration 7 / 30
+2024-03-05 22:21:30,719 - Training...
+2024-03-05 22:23:33,473 - Epoch 1 accuracy: 99.6%
+2024-03-05 22:25:35,826 - Epoch 2 accuracy: 96.6%
+2024-03-05 22:25:35,827 - Testing
+2024-03-05 22:26:01,330 - Test accuracy: 76.5%, Avg loss: 0.86
+2024-03-05 22:26:01,331 - Training iteration 8 / 30
+2024-03-05 22:26:01,332 - Training...
+2024-03-05 22:28:10,957 - Epoch 1 accuracy: 98.5%
+2024-03-05 22:30:12,615 - Epoch 2 accuracy: 98.8%
+2024-03-05 22:30:12,616 - Testing
+2024-03-05 22:30:37,996 - Test accuracy: 90.5%, Avg loss: 0.32
+2024-03-05 22:30:37,997 - Training iteration 9 / 30
+2024-03-05 22:30:37,998 - Training...
+2024-03-05 22:32:42,529 - Epoch 1 accuracy: 99.4%
+2024-03-05 22:34:51,964 - Epoch 2 accuracy: 99.6%
+2024-03-05 22:34:51,965 - Testing
+2024-03-05 22:35:17,110 - Test accuracy: 91.2%, Avg loss: 0.29
+2024-03-05 22:35:17,111 - Training iteration 10 / 30
+2024-03-05 22:35:17,111 - Training...
+2024-03-05 22:37:18,911 - Epoch 1 accuracy: 99.6%
+2024-03-05 22:39:25,189 - Epoch 2 accuracy: 99.0%
+2024-03-05 22:39:25,190 - Testing
+2024-03-05 22:39:53,604 - Test accuracy: 75.0%, Avg loss: 0.98
+2024-03-05 22:39:53,605 - Training iteration 11 / 30
+2024-03-05 22:39:53,606 - Training...
+2024-03-05 22:41:58,045 - Epoch 1 accuracy: 98.8%
+2024-03-05 22:44:00,182 - Epoch 2 accuracy: 99.1%
+2024-03-05 22:44:00,183 - Testing
+2024-03-05 22:44:26,467 - Test accuracy: 90.8%, Avg loss: 0.30
+2024-03-05 22:44:26,469 - Training iteration 12 / 30
+2024-03-05 22:44:26,470 - Training...
+2024-03-05 22:46:39,464 - Epoch 1 accuracy: 99.3%
+2024-03-05 22:48:52,045 - Epoch 2 accuracy: 99.6%
+2024-03-05 22:48:52,045 - Testing
+2024-03-05 22:49:19,723 - Test accuracy: 92.4%, Avg loss: 0.25
+2024-03-05 22:49:19,724 - Training iteration 13 / 30
+2024-03-05 22:49:19,724 - Training...
+2024-03-05 22:51:26,633 - Epoch 1 accuracy: 99.1%
+2024-03-05 22:53:29,278 - Epoch 2 accuracy: 98.7%
+2024-03-05 22:53:29,279 - Testing
+2024-03-05 22:53:54,282 - Test accuracy: 81.5%, Avg loss: 0.70
+2024-03-05 22:53:54,284 - Training iteration 14 / 30
+2024-03-05 22:53:54,285 - Training...
+2024-03-05 22:56:06,120 - Epoch 1 accuracy: 99.6%
+2024-03-05 22:58:07,916 - Epoch 2 accuracy: 99.8%
+2024-03-05 22:58:07,917 - Testing
+2024-03-05 22:58:32,669 - Test accuracy: 94.4%, Avg loss: 0.19
+2024-03-05 22:58:32,671 - Training iteration 15 / 30
+2024-03-05 22:58:32,672 - Training...
+2024-03-05 23:00:35,376 - Epoch 1 accuracy: 100.0%
+2024-03-05 23:02:45,703 - Epoch 2 accuracy: 100.0%
+2024-03-05 23:02:45,704 - Testing
+2024-03-05 23:03:10,644 - Test accuracy: 95.6%, Avg loss: 0.15
+2024-03-05 23:03:10,646 - Training iteration 16 / 30
+2024-03-05 23:03:10,647 - Training...
+2024-03-05 23:05:12,820 - Epoch 1 accuracy: 100.0%
+2024-03-05 23:07:15,412 - Epoch 2 accuracy: 100.0%
+2024-03-05 23:07:15,412 - Testing
+2024-03-05 23:07:43,069 - Test accuracy: 95.0%, Avg loss: 0.17
+2024-03-05 23:07:43,070 - Training iteration 17 / 30
+2024-03-05 23:07:43,071 - Training...
+2024-03-05 23:09:51,980 - Epoch 1 accuracy: 100.0%
+2024-03-05 23:11:55,390 - Epoch 2 accuracy: 100.0%
+2024-03-05 23:11:55,391 - Testing
+2024-03-05 23:12:20,724 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-05 23:12:20,726 - Training iteration 18 / 30
+2024-03-05 23:12:20,727 - Training...
+2024-03-05 23:14:27,576 - Epoch 1 accuracy: 100.0%
+2024-03-05 23:16:32,984 - Epoch 2 accuracy: 100.0%
+2024-03-05 23:16:32,985 - Testing
+2024-03-05 23:16:58,168 - Test accuracy: 28.0%, Avg loss: 4.49
+2024-03-05 23:16:58,169 - Training iteration 19 / 30
+2024-03-05 23:16:58,170 - Training...
+2024-03-05 23:19:00,755 - Epoch 1 accuracy: 93.2%
+2024-03-05 23:21:10,304 - Epoch 2 accuracy: 97.3%
+2024-03-05 23:21:10,305 - Testing
+2024-03-05 23:21:37,589 - Test accuracy: 87.6%, Avg loss: 0.39
+2024-03-05 23:21:37,591 - Training iteration 20 / 30
+2024-03-05 23:21:37,592 - Training...
+2024-03-05 23:23:48,537 - Epoch 1 accuracy: 98.5%
+2024-03-05 23:25:56,757 - Epoch 2 accuracy: 99.1%
+2024-03-05 23:25:56,758 - Testing
+2024-03-05 23:26:21,923 - Test accuracy: 86.3%, Avg loss: 0.51
+2024-03-05 23:26:21,924 - Training iteration 21 / 30
+2024-03-05 23:26:21,925 - Training...
+2024-03-05 23:28:24,712 - Epoch 1 accuracy: 99.0%
+2024-03-05 23:30:33,892 - Epoch 2 accuracy: 99.4%
+2024-03-05 23:30:33,893 - Testing
+2024-03-05 23:31:00,790 - Test accuracy: 85.3%, Avg loss: 0.53
+2024-03-05 23:31:00,792 - Training iteration 22 / 30
+2024-03-05 23:31:00,793 - Training...
+2024-03-05 23:33:04,459 - Epoch 1 accuracy: 99.3%
+2024-03-05 23:35:07,184 - Epoch 2 accuracy: 99.2%
+2024-03-05 23:35:07,185 - Testing
+2024-03-05 23:35:32,384 - Test accuracy: 89.7%, Avg loss: 0.37
+2024-03-05 23:35:32,386 - Training iteration 23 / 30
+2024-03-05 23:35:32,387 - Training...
+2024-03-05 23:37:43,186 - Epoch 1 accuracy: 99.5%
+2024-03-05 23:39:46,344 - Epoch 2 accuracy: 99.9%
+2024-03-05 23:39:46,345 - Testing
+2024-03-05 23:40:11,484 - Test accuracy: 93.2%, Avg loss: 0.23
+2024-03-05 23:40:11,485 - Training iteration 24 / 30
+2024-03-05 23:40:11,486 - Training...
+2024-03-05 23:42:14,707 - Epoch 1 accuracy: 99.9%
+2024-03-05 23:44:26,214 - Epoch 2 accuracy: 99.9%
+2024-03-05 23:44:26,215 - Testing
+2024-03-05 23:44:51,635 - Test accuracy: 94.5%, Avg loss: 0.18
+2024-03-05 23:44:51,637 - Training iteration 25 / 30
+2024-03-05 23:44:51,638 - Training...
+2024-03-05 23:46:53,686 - Epoch 1 accuracy: 100.0%
+2024-03-05 23:48:58,250 - Epoch 2 accuracy: 100.0%
+2024-03-05 23:48:58,251 - Testing
+2024-03-05 23:49:25,116 - Test accuracy: 95.1%, Avg loss: 0.17
+2024-03-05 23:49:25,117 - Training iteration 26 / 30
+2024-03-05 23:49:25,117 - Training...
+2024-03-05 23:51:30,671 - Epoch 1 accuracy: 100.0%
+2024-03-05 23:53:32,839 - Epoch 2 accuracy: 100.0%
+2024-03-05 23:53:32,840 - Testing
+2024-03-05 23:53:57,681 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-05 23:53:57,682 - Training iteration 27 / 30
+2024-03-05 23:53:57,683 - Training...
+2024-03-05 23:56:06,498 - Epoch 1 accuracy: 100.0%
+2024-03-05 23:58:17,848 - Epoch 2 accuracy: 100.0%
+2024-03-05 23:58:17,849 - Testing
+2024-03-05 23:58:44,981 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-05 23:58:44,982 - Training iteration 28 / 30
+2024-03-05 23:58:44,983 - Training...
+2024-03-06 00:00:54,839 - Epoch 1 accuracy: 100.0%
+2024-03-06 00:02:58,119 - Epoch 2 accuracy: 100.0%
+2024-03-06 00:02:58,119 - Testing
+2024-03-06 00:03:23,404 - Test accuracy: 95.2%, Avg loss: 0.15
+2024-03-06 00:03:23,406 - Training iteration 29 / 30
+2024-03-06 00:03:23,407 - Training...
+2024-03-06 00:05:31,972 - Epoch 1 accuracy: 100.0%
+2024-03-06 00:07:36,616 - Epoch 2 accuracy: 100.0%
+2024-03-06 00:07:36,617 - Testing
+2024-03-06 00:08:01,639 - Test accuracy: 95.2%, Avg loss: 0.15
+2024-03-06 00:08:06,138 - Compute the mean and sd of activations
+ 80%|████████  | 4/5 [10:06:19<2:31:06, 9066.55s/it]2024-03-06 00:16:49,619 - [5/5] IMP loop
+2024-03-06 00:16:49,922 - Compression level: 41.5
+2024-03-06 00:16:49,922 - Training iteration 0 / 30
+2024-03-06 00:16:49,923 - Training...
+2024-03-06 00:18:55,700 - Epoch 1 accuracy: 99.7%
+2024-03-06 00:21:03,542 - Epoch 2 accuracy: 99.9%
+2024-03-06 00:21:03,543 - Testing
+2024-03-06 00:21:28,538 - Test accuracy: 90.8%, Avg loss: 0.31
+2024-03-06 00:21:28,539 - Training iteration 1 / 30
+2024-03-06 00:21:28,540 - Training...
+2024-03-06 00:23:34,865 - Epoch 1 accuracy: 100.0%
+2024-03-06 00:26:13,371 - Epoch 2 accuracy: 100.0%
+2024-03-06 00:26:13,371 - Testing
+2024-03-06 00:26:49,625 - Test accuracy: 56.3%, Avg loss: 2.86
+2024-03-06 00:26:49,627 - Training iteration 2 / 30
+2024-03-06 00:26:49,627 - Training...
+2024-03-06 00:29:10,161 - Epoch 1 accuracy: 99.9%
+2024-03-06 00:31:24,287 - Epoch 2 accuracy: 100.0%
+2024-03-06 00:31:24,288 - Testing
+2024-03-06 00:31:51,254 - Test accuracy: 95.1%, Avg loss: 0.15
+2024-03-06 00:31:51,256 - Training iteration 3 / 30
+2024-03-06 00:31:51,257 - Training...
+2024-03-06 00:34:05,103 - Epoch 1 accuracy: 100.0%
+2024-03-06 00:36:18,484 - Epoch 2 accuracy: 100.0%
+2024-03-06 00:36:18,485 - Testing
+2024-03-06 00:36:45,941 - Test accuracy: 95.1%, Avg loss: 0.16
+2024-03-06 00:36:45,942 - Training iteration 4 / 30
+2024-03-06 00:36:45,943 - Training...
+2024-03-06 00:38:55,070 - Epoch 1 accuracy: 100.0%
+2024-03-06 00:41:00,800 - Epoch 2 accuracy: 100.0%
+2024-03-06 00:41:00,801 - Testing
+2024-03-06 00:41:26,304 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-06 00:41:26,306 - Training iteration 5 / 30
+2024-03-06 00:41:26,307 - Training...
+2024-03-06 00:43:37,991 - Epoch 1 accuracy: 100.0%
+2024-03-06 00:45:43,809 - Epoch 2 accuracy: 99.7%
+2024-03-06 00:45:43,810 - Testing
+2024-03-06 00:46:10,098 - Test accuracy: 16.0%, Avg loss: 6.28
+2024-03-06 00:46:10,100 - Training iteration 6 / 30
+2024-03-06 00:46:10,101 - Training...
+2024-03-06 00:48:15,908 - Epoch 1 accuracy: 98.4%
+2024-03-06 00:50:28,533 - Epoch 2 accuracy: 99.5%
+2024-03-06 00:50:28,534 - Testing
+2024-03-06 00:50:54,419 - Test accuracy: 93.8%, Avg loss: 0.20
+2024-03-06 00:50:54,421 - Training iteration 7 / 30
+2024-03-06 00:50:54,422 - Training...
+2024-03-06 00:52:58,705 - Epoch 1 accuracy: 99.8%
+2024-03-06 00:55:10,079 - Epoch 2 accuracy: 98.9%
+2024-03-06 00:55:10,080 - Testing
+2024-03-06 00:55:37,884 - Test accuracy: 93.0%, Avg loss: 0.23
+2024-03-06 00:55:37,886 - Training iteration 8 / 30
+2024-03-06 00:55:37,887 - Training...
+2024-03-06 00:57:47,925 - Epoch 1 accuracy: 99.5%
+2024-03-06 00:59:55,694 - Epoch 2 accuracy: 99.1%
+2024-03-06 00:59:55,695 - Testing
+2024-03-06 01:00:22,770 - Test accuracy: 91.1%, Avg loss: 0.30
+2024-03-06 01:00:22,771 - Training iteration 9 / 30
+2024-03-06 01:00:22,772 - Training...
+2024-03-06 01:02:34,066 - Epoch 1 accuracy: 99.9%
+2024-03-06 01:04:39,131 - Epoch 2 accuracy: 100.0%
+2024-03-06 01:04:39,132 - Testing
+2024-03-06 01:05:05,022 - Test accuracy: 95.6%, Avg loss: 0.15
+2024-03-06 01:05:05,023 - Training iteration 10 / 30
+2024-03-06 01:05:05,024 - Training...
+2024-03-06 01:07:12,819 - Epoch 1 accuracy: 100.0%
+2024-03-06 01:09:24,930 - Epoch 2 accuracy: 100.0%
+2024-03-06 01:09:24,931 - Testing
+2024-03-06 01:09:52,737 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-06 01:09:52,738 - Training iteration 11 / 30
+2024-03-06 01:09:52,738 - Training...
+2024-03-06 01:11:58,289 - Epoch 1 accuracy: 100.0%
+2024-03-06 01:14:06,991 - Epoch 2 accuracy: 97.9%
+2024-03-06 01:14:06,991 - Testing
+2024-03-06 01:14:32,487 - Test accuracy: 80.7%, Avg loss: 0.64
+2024-03-06 01:14:32,489 - Training iteration 12 / 30
+2024-03-06 01:14:32,489 - Training...
+2024-03-06 01:16:37,668 - Epoch 1 accuracy: 97.9%
+2024-03-06 01:18:44,036 - Epoch 2 accuracy: 99.0%
+2024-03-06 01:18:44,037 - Testing
+2024-03-06 01:19:10,131 - Test accuracy: 41.0%, Avg loss: 3.78
+2024-03-06 01:19:10,133 - Training iteration 13 / 30
+2024-03-06 01:19:10,134 - Training...
+2024-03-06 01:21:15,524 - Epoch 1 accuracy: 99.5%
+2024-03-06 01:23:25,438 - Epoch 2 accuracy: 99.1%
+2024-03-06 01:23:25,438 - Testing
+2024-03-06 01:23:51,962 - Test accuracy: 92.5%, Avg loss: 0.24
+2024-03-06 01:23:51,964 - Training iteration 14 / 30
+2024-03-06 01:23:51,965 - Training...
+2024-03-06 01:25:57,266 - Epoch 1 accuracy: 99.3%
+2024-03-06 01:28:03,068 - Epoch 2 accuracy: 99.5%
+2024-03-06 01:28:03,069 - Testing
+2024-03-06 01:28:28,428 - Test accuracy: 84.9%, Avg loss: 0.56
+2024-03-06 01:28:28,430 - Training iteration 15 / 30
+2024-03-06 01:28:28,431 - Training...
+2024-03-06 01:30:36,714 - Epoch 1 accuracy: 99.7%
+2024-03-06 01:32:42,650 - Epoch 2 accuracy: 99.2%
+2024-03-06 01:32:42,651 - Testing
+2024-03-06 01:33:08,062 - Test accuracy: 43.1%, Avg loss: 2.29
+2024-03-06 01:33:08,064 - Training iteration 16 / 30
+2024-03-06 01:33:08,065 - Training...
+2024-03-06 01:35:13,145 - Epoch 1 accuracy: 98.6%
+2024-03-06 01:37:22,118 - Epoch 2 accuracy: 99.5%
+2024-03-06 01:37:22,119 - Testing
+2024-03-06 01:37:48,538 - Test accuracy: 92.1%, Avg loss: 0.26
+2024-03-06 01:37:48,539 - Training iteration 17 / 30
+2024-03-06 01:37:48,540 - Training...
+2024-03-06 01:39:57,124 - Epoch 1 accuracy: 99.8%
+2024-03-06 01:42:05,432 - Epoch 2 accuracy: 99.8%
+2024-03-06 01:42:05,433 - Testing
+2024-03-06 01:42:30,615 - Test accuracy: 93.2%, Avg loss: 0.23
+2024-03-06 01:42:30,617 - Training iteration 18 / 30
+2024-03-06 01:42:30,618 - Training...
+2024-03-06 01:44:36,243 - Epoch 1 accuracy: 100.0%
+2024-03-06 01:46:42,105 - Epoch 2 accuracy: 100.0%
+2024-03-06 01:46:42,106 - Testing
+2024-03-06 01:47:07,440 - Test accuracy: 95.3%, Avg loss: 0.16
+2024-03-06 01:47:07,442 - Training iteration 19 / 30
+2024-03-06 01:47:07,443 - Training...
+2024-03-06 01:49:13,334 - Epoch 1 accuracy: 100.0%
+2024-03-06 01:51:21,674 - Epoch 2 accuracy: 100.0%
+2024-03-06 01:51:21,675 - Testing
+2024-03-06 01:51:47,860 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-06 01:51:47,862 - Training iteration 20 / 30
+2024-03-06 01:51:47,863 - Training...
+2024-03-06 01:53:56,330 - Epoch 1 accuracy: 100.0%
+2024-03-06 01:56:04,733 - Epoch 2 accuracy: 100.0%
+2024-03-06 01:56:04,733 - Testing
+2024-03-06 01:56:30,122 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-06 01:56:30,123 - Training iteration 21 / 30
+2024-03-06 01:56:30,124 - Training...
+2024-03-06 01:58:32,362 - Epoch 1 accuracy: 100.0%
+2024-03-06 02:00:38,113 - Epoch 2 accuracy: 100.0%
+2024-03-06 02:00:38,114 - Testing
+2024-03-06 02:01:04,639 - Test accuracy: 10.0%, Avg loss: 96.64
+2024-03-06 02:01:04,641 - Training iteration 22 / 30
+2024-03-06 02:01:04,642 - Training...
+2024-03-06 02:03:07,941 - Epoch 1 accuracy: 92.8%
+2024-03-06 02:05:13,019 - Epoch 2 accuracy: 97.6%
+2024-03-06 02:05:13,020 - Testing
+2024-03-06 02:05:38,287 - Test accuracy: 70.3%, Avg loss: 1.48
+2024-03-06 02:05:38,289 - Training iteration 23 / 30
+2024-03-06 02:05:38,290 - Training...
+2024-03-06 02:07:43,632 - Epoch 1 accuracy: 98.7%
+2024-03-06 02:09:51,460 - Epoch 2 accuracy: 99.3%
+2024-03-06 02:09:51,461 - Testing
+2024-03-06 02:10:17,971 - Test accuracy: 42.4%, Avg loss: 4.25
+2024-03-06 02:10:17,973 - Training iteration 24 / 30
+2024-03-06 02:10:17,974 - Training...
+2024-03-06 02:12:26,723 - Epoch 1 accuracy: 98.9%
+2024-03-06 02:14:32,590 - Epoch 2 accuracy: 99.5%
+2024-03-06 02:14:32,591 - Testing
+2024-03-06 02:14:58,180 - Test accuracy: 85.4%, Avg loss: 0.52
+2024-03-06 02:14:58,182 - Training iteration 25 / 30
+2024-03-06 02:14:58,183 - Training...
+2024-03-06 02:17:02,153 - Epoch 1 accuracy: 99.5%
+2024-03-06 02:19:04,288 - Epoch 2 accuracy: 99.8%
+2024-03-06 02:19:04,289 - Testing
+2024-03-06 02:19:29,311 - Test accuracy: 82.1%, Avg loss: 0.78
+2024-03-06 02:19:29,313 - Training iteration 26 / 30
+2024-03-06 02:19:29,314 - Training...
+2024-03-06 02:21:33,322 - Epoch 1 accuracy: 99.9%
+2024-03-06 02:23:36,278 - Epoch 2 accuracy: 98.9%
+2024-03-06 02:23:36,278 - Testing
+2024-03-06 02:24:01,402 - Test accuracy: 20.2%, Avg loss: 7.60
+2024-03-06 02:24:01,404 - Training iteration 27 / 30
+2024-03-06 02:24:01,405 - Training...
+2024-03-06 02:26:03,611 - Epoch 1 accuracy: 98.2%
+2024-03-06 02:28:05,387 - Epoch 2 accuracy: 98.8%
+2024-03-06 02:28:05,388 - Testing
+2024-03-06 02:28:30,363 - Test accuracy: 87.2%, Avg loss: 0.45
+2024-03-06 02:28:30,365 - Training iteration 28 / 30
+2024-03-06 02:28:30,365 - Training...
+2024-03-06 02:30:33,445 - Epoch 1 accuracy: 99.3%
+2024-03-06 02:32:38,225 - Epoch 2 accuracy: 99.9%
+2024-03-06 02:32:38,225 - Testing
+2024-03-06 02:33:04,027 - Test accuracy: 94.2%, Avg loss: 0.20
+2024-03-06 02:33:04,029 - Training iteration 29 / 30
+2024-03-06 02:33:04,030 - Training...
+2024-03-06 02:35:08,522 - Epoch 1 accuracy: 100.0%
+2024-03-06 02:37:13,880 - Epoch 2 accuracy: 100.0%
+2024-03-06 02:37:13,881 - Testing
+2024-03-06 02:37:39,141 - Test accuracy: 93.7%, Avg loss: 0.21
+2024-03-06 02:37:43,820 - Compute the mean and sd of activations
+100%|██████████| 5/5 [12:34:49<00:00, 9010.10s/it]  100%|██████████| 5/5 [12:34:49<00:00, 9057.93s/it]
+2024-03-06 02:45:19,516 - In experiment 1 / 3
+Files already downloaded and verified
+Files already downloaded and verified
+2024-03-06 02:45:22,627 - Warming up the pretrained model
+2024-03-06 02:45:22,628 - Training...
+2024-03-06 02:47:24,945 - Epoch 1 accuracy: 67.9%
+2024-03-06 02:49:27,529 - Epoch 2 accuracy: 92.3%
+2024-03-06 02:51:33,621 - Epoch 3 accuracy: 95.6%
+2024-03-06 02:53:46,731 - Epoch 4 accuracy: 97.2%
+2024-03-06 02:55:57,904 - Epoch 5 accuracy: 98.1%
+2024-03-06 02:58:11,981 - Epoch 6 accuracy: 98.5%
+2024-03-06 03:00:19,729 - Epoch 7 accuracy: 99.0%
+2024-03-06 03:02:21,941 - Epoch 8 accuracy: 99.1%
+2024-03-06 03:04:23,744 - Epoch 9 accuracy: 99.5%
+2024-03-06 03:06:28,105 - Epoch 10 accuracy: 99.7%
+  0%|          | 0/5 [00:00<?, ?it/s]2024-03-06 03:06:28,301 - [1/5] IMP loop
+2024-03-06 03:06:28,586 - Compression level: 100.0
+2024-03-06 03:06:28,586 - Training iteration 0 / 30
+2024-03-06 03:06:28,587 - Training...
+2024-03-06 03:08:31,392 - Epoch 1 accuracy: 99.7%
+2024-03-06 03:10:37,357 - Epoch 2 accuracy: 99.8%
+2024-03-06 03:10:37,358 - Testing
+2024-03-06 03:11:02,743 - Test accuracy: 93.3%, Avg loss: 0.29
+2024-03-06 03:11:02,744 - Training iteration 1 / 30
+2024-03-06 03:11:02,745 - Training...
+2024-03-06 03:13:04,157 - Epoch 1 accuracy: 99.7%
+2024-03-06 03:15:06,549 - Epoch 2 accuracy: 99.8%
+2024-03-06 03:15:06,550 - Testing
+2024-03-06 03:15:32,895 - Test accuracy: 94.1%, Avg loss: 0.26
+2024-03-06 03:15:32,897 - Training iteration 2 / 30
+2024-03-06 03:15:32,898 - Training...
+2024-03-06 03:17:35,295 - Epoch 1 accuracy: 99.9%
+2024-03-06 03:19:37,198 - Epoch 2 accuracy: 99.9%
+2024-03-06 03:19:37,199 - Testing
+2024-03-06 03:20:03,485 - Test accuracy: 94.3%, Avg loss: 0.27
+2024-03-06 03:20:03,487 - Training iteration 3 / 30
+2024-03-06 03:20:03,488 - Training...
+2024-03-06 03:22:07,587 - Epoch 1 accuracy: 99.9%
+2024-03-06 03:24:15,270 - Epoch 2 accuracy: 99.9%
+2024-03-06 03:24:15,271 - Testing
+2024-03-06 03:24:40,456 - Test accuracy: 94.1%, Avg loss: 0.28
+2024-03-06 03:24:40,457 - Training iteration 4 / 30
+2024-03-06 03:24:40,458 - Training...
+2024-03-06 03:26:42,579 - Epoch 1 accuracy: 99.8%
+2024-03-06 03:28:45,373 - Epoch 2 accuracy: 99.7%
+2024-03-06 03:28:45,374 - Testing
+2024-03-06 03:29:10,587 - Test accuracy: 94.1%, Avg loss: 0.27
+2024-03-06 03:29:10,589 - Training iteration 5 / 30
+2024-03-06 03:29:10,590 - Training...
+2024-03-06 03:31:13,803 - Epoch 1 accuracy: 99.9%
+2024-03-06 03:33:18,130 - Epoch 2 accuracy: 99.9%
+2024-03-06 03:33:18,131 - Testing
+2024-03-06 03:33:44,651 - Test accuracy: 94.7%, Avg loss: 0.26
+2024-03-06 03:33:44,653 - Training iteration 6 / 30
+2024-03-06 03:33:44,654 - Training...
+2024-03-06 03:35:46,611 - Epoch 1 accuracy: 100.0%
+2024-03-06 03:37:49,653 - Epoch 2 accuracy: 100.0%
+2024-03-06 03:37:49,654 - Testing
+2024-03-06 03:38:14,915 - Test accuracy: 95.2%, Avg loss: 0.23
+2024-03-06 03:38:14,917 - Training iteration 7 / 30
+2024-03-06 03:38:14,918 - Training...
+2024-03-06 03:40:17,684 - Epoch 1 accuracy: 100.0%
+2024-03-06 03:42:20,714 - Epoch 2 accuracy: 100.0%
+2024-03-06 03:42:20,715 - Testing
+2024-03-06 03:42:46,163 - Test accuracy: 95.2%, Avg loss: 0.25
+2024-03-06 03:42:46,165 - Training iteration 8 / 30
+2024-03-06 03:42:46,166 - Training...
+2024-03-06 03:44:48,548 - Epoch 1 accuracy: 100.0%
+2024-03-06 03:46:56,295 - Epoch 2 accuracy: 100.0%
+2024-03-06 03:46:56,296 - Testing
+2024-03-06 03:47:21,546 - Test accuracy: 95.3%, Avg loss: 0.23
+2024-03-06 03:47:21,548 - Training iteration 9 / 30
+2024-03-06 03:47:21,549 - Training...
+2024-03-06 03:49:22,986 - Epoch 1 accuracy: 100.0%
+2024-03-06 03:51:25,033 - Epoch 2 accuracy: 100.0%
+2024-03-06 03:51:25,034 - Testing
+2024-03-06 03:51:50,188 - Test accuracy: 95.0%, Avg loss: 0.26
+2024-03-06 03:51:50,189 - Training iteration 10 / 30
+2024-03-06 03:51:50,190 - Training...
+2024-03-06 03:53:52,166 - Epoch 1 accuracy: 100.0%
+2024-03-06 03:55:59,512 - Epoch 2 accuracy: 100.0%
+2024-03-06 03:55:59,513 - Testing
+2024-03-06 03:56:25,709 - Test accuracy: 95.3%, Avg loss: 0.24
+2024-03-06 03:56:25,711 - Training iteration 11 / 30
+2024-03-06 03:56:25,712 - Training...
+2024-03-06 03:58:27,703 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:00:29,765 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:00:29,766 - Testing
+2024-03-06 04:00:56,315 - Test accuracy: 95.5%, Avg loss: 0.24
+2024-03-06 04:00:56,317 - Training iteration 12 / 30
+2024-03-06 04:00:56,318 - Training...
+2024-03-06 04:02:58,564 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:05:00,973 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:05:00,974 - Testing
+2024-03-06 04:05:27,315 - Test accuracy: 95.5%, Avg loss: 0.24
+2024-03-06 04:05:27,316 - Training iteration 13 / 30
+2024-03-06 04:05:27,317 - Training...
+2024-03-06 04:07:29,567 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:09:36,900 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:09:36,901 - Testing
+2024-03-06 04:10:01,809 - Test accuracy: 95.5%, Avg loss: 0.24
+2024-03-06 04:10:01,811 - Training iteration 14 / 30
+2024-03-06 04:10:01,812 - Training...
+2024-03-06 04:12:04,417 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:14:06,575 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:14:06,576 - Testing
+2024-03-06 04:14:32,045 - Test accuracy: 95.5%, Avg loss: 0.23
+2024-03-06 04:14:32,047 - Training iteration 15 / 30
+2024-03-06 04:14:32,048 - Training...
+2024-03-06 04:16:33,888 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:18:36,004 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:18:36,005 - Testing
+2024-03-06 04:19:02,377 - Test accuracy: 95.3%, Avg loss: 0.25
+2024-03-06 04:19:02,379 - Training iteration 16 / 30
+2024-03-06 04:19:02,380 - Training...
+2024-03-06 04:21:05,840 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:23:08,923 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:23:08,924 - Testing
+2024-03-06 04:23:34,218 - Test accuracy: 95.5%, Avg loss: 0.23
+2024-03-06 04:23:34,220 - Training iteration 17 / 30
+2024-03-06 04:23:34,220 - Training...
+2024-03-06 04:25:35,636 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:27:38,113 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:27:38,114 - Testing
+2024-03-06 04:28:04,483 - Test accuracy: 94.8%, Avg loss: 0.27
+2024-03-06 04:28:04,485 - Training iteration 18 / 30
+2024-03-06 04:28:04,486 - Training...
+2024-03-06 04:30:08,533 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:32:15,782 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:32:15,783 - Testing
+2024-03-06 04:32:41,071 - Test accuracy: 95.2%, Avg loss: 0.25
+2024-03-06 04:32:41,073 - Training iteration 19 / 30
+2024-03-06 04:32:41,074 - Training...
+2024-03-06 04:34:47,589 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:36:54,611 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:36:54,612 - Testing
+2024-03-06 04:37:20,391 - Test accuracy: 95.3%, Avg loss: 0.24
+2024-03-06 04:37:20,393 - Training iteration 20 / 30
+2024-03-06 04:37:20,394 - Training...
+2024-03-06 04:39:22,890 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:41:25,935 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:41:25,936 - Testing
+2024-03-06 04:41:50,845 - Test accuracy: 95.5%, Avg loss: 0.24
+2024-03-06 04:41:50,847 - Training iteration 21 / 30
+2024-03-06 04:41:50,848 - Training...
+2024-03-06 04:43:53,850 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:45:55,693 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:45:55,694 - Testing
+2024-03-06 04:46:20,740 - Test accuracy: 92.7%, Avg loss: 0.43
+2024-03-06 04:46:20,742 - Training iteration 22 / 30
+2024-03-06 04:46:20,743 - Training...
+2024-03-06 04:48:23,359 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:50:26,199 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:50:26,200 - Testing
+2024-03-06 04:50:51,501 - Test accuracy: 95.4%, Avg loss: 0.26
+2024-03-06 04:50:51,503 - Training iteration 23 / 30
+2024-03-06 04:50:51,504 - Training...
+2024-03-06 04:52:54,635 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:54:56,806 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:54:56,807 - Testing
+2024-03-06 04:55:22,984 - Test accuracy: 95.5%, Avg loss: 0.25
+2024-03-06 04:55:22,986 - Training iteration 24 / 30
+2024-03-06 04:55:22,987 - Training...
+2024-03-06 04:57:26,070 - Epoch 1 accuracy: 100.0%
+2024-03-06 04:59:32,507 - Epoch 2 accuracy: 100.0%
+2024-03-06 04:59:32,508 - Testing
+2024-03-06 04:59:57,624 - Test accuracy: 91.9%, Avg loss: 0.44
+2024-03-06 04:59:57,626 - Training iteration 25 / 30
+2024-03-06 04:59:57,627 - Training...
+2024-03-06 05:02:03,785 - Epoch 1 accuracy: 99.9%
+2024-03-06 05:04:09,582 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:04:09,583 - Testing
+2024-03-06 05:04:34,769 - Test accuracy: 94.7%, Avg loss: 0.28
+2024-03-06 05:04:34,771 - Training iteration 26 / 30
+2024-03-06 05:04:34,772 - Training...
+2024-03-06 05:06:38,123 - Epoch 1 accuracy: 100.0%
+2024-03-06 05:08:39,441 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:08:39,442 - Testing
+2024-03-06 05:09:04,756 - Test accuracy: 93.5%, Avg loss: 0.36
+2024-03-06 05:09:04,758 - Training iteration 27 / 30
+2024-03-06 05:09:04,758 - Training...
+2024-03-06 05:11:07,099 - Epoch 1 accuracy: 100.0%
+2024-03-06 05:13:09,988 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:13:09,989 - Testing
+2024-03-06 05:13:35,689 - Test accuracy: 94.8%, Avg loss: 0.27
+2024-03-06 05:13:35,691 - Training iteration 28 / 30
+2024-03-06 05:13:35,692 - Training...
+2024-03-06 05:15:41,351 - Epoch 1 accuracy: 100.0%
+2024-03-06 05:17:42,235 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:17:42,236 - Testing
+2024-03-06 05:18:07,422 - Test accuracy: 95.0%, Avg loss: 0.27
+2024-03-06 05:18:07,424 - Training iteration 29 / 30
+2024-03-06 05:18:07,425 - Training...
+2024-03-06 05:20:10,162 - Epoch 1 accuracy: 100.0%
+2024-03-06 05:22:12,281 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:22:12,282 - Testing
+2024-03-06 05:22:37,808 - Test accuracy: 95.1%, Avg loss: 0.25
+2024-03-06 05:22:38,848 - Compute the mean and sd of activations
+ 20%|██        | 1/5 [2:23:29<9:33:56, 8609.03s/it]2024-03-06 05:29:57,453 - [2/5] IMP loop
+2024-03-06 05:29:57,706 - Compression level: 81.2
+2024-03-06 05:29:57,707 - Training iteration 0 / 30
+2024-03-06 05:29:57,707 - Training...
+2024-03-06 05:32:05,256 - Epoch 1 accuracy: 100.0%
+2024-03-06 05:34:13,672 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:34:13,672 - Testing
+2024-03-06 05:34:40,767 - Test accuracy: 95.5%, Avg loss: 0.18
+2024-03-06 05:34:40,768 - Training iteration 1 / 30
+2024-03-06 05:34:40,768 - Training...
+2024-03-06 05:36:52,930 - Epoch 1 accuracy: 100.0%
+2024-03-06 05:39:04,817 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:39:04,817 - Testing
+2024-03-06 05:39:31,636 - Test accuracy: 95.5%, Avg loss: 0.16
+2024-03-06 05:39:32,581 - Compute the mean and sd of activations
+2024-03-06 05:47:34,655 - apply controller at layer [1, 2, 3, 4, 5]
+network's weight shape layer1.0.conv1 torch.Size([64, 64, 3, 3])
+control weight tensor(111.554794, device='cuda:0')
+old weight tensor(9.299859, device='cuda:0')
+new weight tensor(5.412480, device='cuda:0')
+network's weight shape layer1.0.conv2 torch.Size([64, 64, 3, 3])
+control weight tensor(100.190346, device='cuda:0')
+old weight tensor(8.026129, device='cuda:0')
+new weight tensor(4.164467, device='cuda:0')
+network's weight shape layer1.1.conv1 torch.Size([64, 64, 3, 3])
+control weight tensor(90.778595, device='cuda:0')
+old weight tensor(9.008868, device='cuda:0')
+new weight tensor(4.290225, device='cuda:0')
+network's weight shape layer1.1.conv2 torch.Size([64, 64, 3, 3])
+control weight tensor(83.002594, device='cuda:0')
+old weight tensor(7.742851, device='cuda:0')
+new weight tensor(3.530318, device='cuda:0')
+network's weight shape layer2.0.conv1 torch.Size([128, 64, 3, 3])
+control weight tensor(99.538773, device='cuda:0')
+old weight tensor(10.405124, device='cuda:0')
+new weight tensor(3.948019, device='cuda:0')
+2024-03-06 05:47:35,009 - Training iteration 2 / 30
+2024-03-06 05:47:35,010 - Training...
+2024-03-06 05:49:37,858 - Epoch 1 accuracy: 100.0%
+2024-03-06 05:51:43,086 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:51:43,087 - Testing
+2024-03-06 05:52:09,975 - Test accuracy: 95.7%, Avg loss: 0.15
+2024-03-06 05:52:09,976 - Training iteration 3 / 30
+2024-03-06 05:52:09,977 - Training...
+2024-03-06 05:54:21,909 - Epoch 1 accuracy: 100.0%
+2024-03-06 05:56:33,286 - Epoch 2 accuracy: 100.0%
+2024-03-06 05:56:33,287 - Testing
+2024-03-06 05:57:00,646 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-06 05:57:00,646 - Training iteration 4 / 30
+2024-03-06 05:57:00,647 - Training...
+2024-03-06 05:59:09,715 - Epoch 1 accuracy: 100.0%
+2024-03-06 06:01:15,803 - Epoch 2 accuracy: 100.0%
+2024-03-06 06:01:15,804 - Testing
+2024-03-06 06:01:42,361 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-06 06:01:42,363 - Training iteration 5 / 30
+2024-03-06 06:01:42,364 - Training...
+2024-03-06 06:03:45,548 - Epoch 1 accuracy: 100.0%
+2024-03-06 06:05:47,762 - Epoch 2 accuracy: 100.0%
+2024-03-06 06:05:47,763 - Testing
+2024-03-06 06:06:14,145 - Test accuracy: 95.9%, Avg loss: 0.14
+2024-03-06 06:06:14,147 - Training iteration 6 / 30
+2024-03-06 06:06:14,148 - Training...
+2024-03-06 06:08:16,710 - Epoch 1 accuracy: 100.0%
+2024-03-06 06:10:19,853 - Epoch 2 accuracy: 100.0%
+2024-03-06 06:10:19,854 - Testing
+2024-03-06 06:10:45,035 - Test accuracy: 95.9%, Avg loss: 0.14
+2024-03-06 06:10:45,036 - Training iteration 7 / 30
+2024-03-06 06:10:45,037 - Training...
+2024-03-06 06:12:48,325 - Epoch 1 accuracy: 100.0%
+2024-03-06 06:14:51,523 - Epoch 2 accuracy: 100.0%
+2024-03-06 06:14:51,524 - Testing
+2024-03-06 06:15:16,999 - Test accuracy: 95.8%, Avg loss: 0.13
+2024-03-06 06:15:17,001 - Training iteration 8 / 30
+2024-03-06 06:15:17,002 - Training...
+2024-03-06 06:17:24,699 - Epoch 1 accuracy: 100.0%
+2024-03-06 06:19:32,306 - Epoch 2 accuracy: 100.0%
+2024-03-06 06:19:32,306 - Testing
+2024-03-06 06:19:58,751 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-06 06:19:58,753 - Training iteration 9 / 30
+2024-03-06 06:19:58,754 - Training...
+2024-03-06 06:22:00,943 - Epoch 1 accuracy: 100.0%
+2024-03-06 06:24:08,457 - Epoch 2 accuracy: 100.0%
+2024-03-06 06:24:08,458 - Testing
+2024-03-06 06:24:33,580 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-06 06:24:33,582 - Training iteration 10 / 30
+2024-03-06 06:24:33,583 - Training...
+2024-03-06 06:26:36,223 - Epoch 1 accuracy: 100.0%
+2024-03-06 06:28:39,089 - Epoch 2 accuracy: 100.0%
+2024-03-06 06:28:39,090 - Testing
+2024-03-06 06:29:05,623 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-06 06:29:05,625 - Training iteration 11 / 30
+2024-03-06 06:29:05,625 - Training...
+2024-03-06 06:31:12,521 - Epoch 1 accuracy: 98.2%
+2024-03-06 06:33:19,932 - Epoch 2 accuracy: 91.0%
+2024-03-06 06:33:19,933 - Testing
+2024-03-06 06:33:46,407 - Test accuracy: 31.2%, Avg loss: 3.20
+2024-03-06 06:33:46,409 - Training iteration 12 / 30
+2024-03-06 06:33:46,410 - Training...
+2024-03-06 06:35:48,453 - Epoch 1 accuracy: 95.1%
+2024-03-06 06:37:50,677 - Epoch 2 accuracy: 96.7%
+2024-03-06 06:37:50,677 - Testing
+2024-03-06 06:38:15,813 - Test accuracy: 63.2%, Avg loss: 1.84
+2024-03-06 06:38:15,815 - Training iteration 13 / 30
+2024-03-06 06:38:15,816 - Training...
+2024-03-06 06:40:23,580 - Epoch 1 accuracy: 97.9%
+2024-03-06 06:42:31,367 - Epoch 2 accuracy: 98.5%
+2024-03-06 06:42:31,368 - Testing
+2024-03-06 06:42:56,528 - Test accuracy: 91.4%, Avg loss: 0.28
+2024-03-06 06:42:56,530 - Training iteration 14 / 30
+2024-03-06 06:42:56,531 - Training...
+2024-03-06 06:44:58,347 - Epoch 1 accuracy: 98.6%
+2024-03-06 06:47:06,185 - Epoch 2 accuracy: 98.9%
+2024-03-06 06:47:06,186 - Testing
+2024-03-06 06:47:31,606 - Test accuracy: 75.8%, Avg loss: 0.89
+2024-03-06 06:47:31,608 - Training iteration 15 / 30
+2024-03-06 06:47:31,609 - Training...
+2024-03-06 06:49:34,362 - Epoch 1 accuracy: 98.8%
+2024-03-06 06:51:37,346 - Epoch 2 accuracy: 99.3%
+2024-03-06 06:51:37,347 - Testing
+2024-03-06 06:52:02,613 - Test accuracy: 81.0%, Avg loss: 0.86
+2024-03-06 06:52:02,615 - Training iteration 16 / 30
+2024-03-06 06:52:02,616 - Training...
+2024-03-06 06:54:05,313 - Epoch 1 accuracy: 98.8%
+2024-03-06 06:56:07,872 - Epoch 2 accuracy: 98.4%
+2024-03-06 06:56:07,873 - Testing
+2024-03-06 06:56:33,997 - Test accuracy: 82.6%, Avg loss: 0.60
+2024-03-06 06:56:33,999 - Training iteration 17 / 30
+2024-03-06 06:56:34,000 - Training...
+2024-03-06 06:58:38,242 - Epoch 1 accuracy: 99.1%
+2024-03-06 07:00:45,785 - Epoch 2 accuracy: 99.3%
+2024-03-06 07:00:45,786 - Testing
+2024-03-06 07:01:12,250 - Test accuracy: 84.7%, Avg loss: 0.53
+2024-03-06 07:01:12,252 - Training iteration 18 / 30
+2024-03-06 07:01:12,253 - Training...
+2024-03-06 07:03:13,435 - Epoch 1 accuracy: 99.1%
+2024-03-06 07:05:20,799 - Epoch 2 accuracy: 99.4%
+2024-03-06 07:05:20,799 - Testing
+2024-03-06 07:05:47,082 - Test accuracy: 30.4%, Avg loss: 5.93
+2024-03-06 07:05:47,084 - Training iteration 19 / 30
+2024-03-06 07:05:47,085 - Training...
+2024-03-06 07:07:49,145 - Epoch 1 accuracy: 99.0%
+2024-03-06 07:09:51,769 - Epoch 2 accuracy: 99.3%
+2024-03-06 07:09:51,770 - Testing
+2024-03-06 07:10:16,925 - Test accuracy: 88.1%, Avg loss: 0.41
+2024-03-06 07:10:16,927 - Training iteration 20 / 30
+2024-03-06 07:10:16,928 - Training...
+2024-03-06 07:12:20,824 - Epoch 1 accuracy: 99.5%
+2024-03-06 07:14:22,341 - Epoch 2 accuracy: 99.9%
+2024-03-06 07:14:22,342 - Testing
+2024-03-06 07:14:47,464 - Test accuracy: 94.4%, Avg loss: 0.19
+2024-03-06 07:14:47,466 - Training iteration 21 / 30
+2024-03-06 07:14:47,467 - Training...
+2024-03-06 07:16:53,998 - Epoch 1 accuracy: 100.0%
+2024-03-06 07:18:56,268 - Epoch 2 accuracy: 100.0%
+2024-03-06 07:18:56,269 - Testing
+2024-03-06 07:19:21,525 - Test accuracy: 92.8%, Avg loss: 0.23
+2024-03-06 07:19:21,527 - Training iteration 22 / 30
+2024-03-06 07:19:21,528 - Training...
+2024-03-06 07:21:24,298 - Epoch 1 accuracy: 100.0%
+2024-03-06 07:23:26,564 - Epoch 2 accuracy: 100.0%
+2024-03-06 07:23:26,565 - Testing
+2024-03-06 07:23:52,783 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-06 07:23:52,784 - Training iteration 23 / 30
+2024-03-06 07:23:52,785 - Training...
+2024-03-06 07:25:54,196 - Epoch 1 accuracy: 100.0%
+2024-03-06 07:27:56,576 - Epoch 2 accuracy: 100.0%
+2024-03-06 07:27:56,576 - Testing
+2024-03-06 07:28:22,568 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-06 07:28:22,569 - Training iteration 24 / 30
+2024-03-06 07:28:22,570 - Training...
+2024-03-06 07:30:25,103 - Epoch 1 accuracy: 100.0%
+2024-03-06 07:32:28,996 - Epoch 2 accuracy: 100.0%
+2024-03-06 07:32:28,997 - Testing
+2024-03-06 07:32:54,263 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-06 07:32:54,264 - Training iteration 25 / 30
+2024-03-06 07:32:54,265 - Training...
+2024-03-06 07:34:56,782 - Epoch 1 accuracy: 100.0%
+2024-03-06 07:36:59,677 - Epoch 2 accuracy: 100.0%
+2024-03-06 07:36:59,678 - Testing
+2024-03-06 07:37:24,724 - Test accuracy: 92.4%, Avg loss: 0.25
+2024-03-06 07:37:24,727 - Training iteration 26 / 30
+2024-03-06 07:37:24,728 - Training...
+2024-03-06 07:39:27,899 - Epoch 1 accuracy: 100.0%
+2024-03-06 07:41:29,097 - Epoch 2 accuracy: 100.0%
+2024-03-06 07:41:29,098 - Testing
+2024-03-06 07:41:54,655 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-06 07:41:54,657 - Training iteration 27 / 30
+2024-03-06 07:41:54,658 - Training...
+2024-03-06 07:43:58,346 - Epoch 1 accuracy: 100.0%
+2024-03-06 07:46:00,954 - Epoch 2 accuracy: 100.0%
+2024-03-06 07:46:00,955 - Testing
+2024-03-06 07:46:27,524 - Test accuracy: 94.7%, Avg loss: 0.17
+2024-03-06 07:46:27,526 - Training iteration 28 / 30
+2024-03-06 07:46:27,526 - Training...
+2024-03-06 07:48:30,106 - Epoch 1 accuracy: 100.0%
+2024-03-06 07:50:32,884 - Epoch 2 accuracy: 100.0%
+2024-03-06 07:50:32,885 - Testing
+2024-03-06 07:50:58,120 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-06 07:50:58,122 - Training iteration 29 / 30
+2024-03-06 07:50:58,123 - Training...
+2024-03-06 07:53:02,140 - Epoch 1 accuracy: 71.3%
+2024-03-06 07:55:05,600 - Epoch 2 accuracy: 91.3%
+2024-03-06 07:55:05,601 - Testing
+2024-03-06 07:55:31,920 - Test accuracy: 82.6%, Avg loss: 0.58
+2024-03-06 07:55:36,665 - Compute the mean and sd of activations
+ 40%|████      | 2/5 [4:56:35<7:27:26, 8948.79s/it]2024-03-06 08:03:04,080 - [3/5] IMP loop
+2024-03-06 08:03:04,360 - Compression level: 63.0
+2024-03-06 08:03:04,361 - Training iteration 0 / 30
+2024-03-06 08:03:04,361 - Training...
+2024-03-06 08:05:12,564 - Epoch 1 accuracy: 99.7%
+2024-03-06 08:07:24,897 - Epoch 2 accuracy: 100.0%
+2024-03-06 08:07:24,897 - Testing
+2024-03-06 08:07:52,508 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-06 08:07:52,510 - Training iteration 1 / 30
+2024-03-06 08:07:52,510 - Training...
+2024-03-06 08:10:05,000 - Epoch 1 accuracy: 100.0%
+2024-03-06 08:12:15,485 - Epoch 2 accuracy: 100.0%
+2024-03-06 08:12:15,486 - Testing
+2024-03-06 08:12:40,779 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-06 08:12:40,781 - Training iteration 2 / 30
+2024-03-06 08:12:40,782 - Training...
+2024-03-06 08:14:45,371 - Epoch 1 accuracy: 100.0%
+2024-03-06 08:16:53,256 - Epoch 2 accuracy: 100.0%
+2024-03-06 08:16:53,257 - Testing
+2024-03-06 08:17:18,687 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-06 08:17:18,689 - Training iteration 3 / 30
+2024-03-06 08:17:18,690 - Training...
+2024-03-06 08:19:21,844 - Epoch 1 accuracy: 100.0%
+2024-03-06 08:21:24,567 - Epoch 2 accuracy: 99.7%
+2024-03-06 08:21:24,568 - Testing
+2024-03-06 08:21:49,759 - Test accuracy: 93.9%, Avg loss: 0.20
+2024-03-06 08:21:49,761 - Training iteration 4 / 30
+2024-03-06 08:21:49,762 - Training...
+2024-03-06 08:23:51,621 - Epoch 1 accuracy: 100.0%
+2024-03-06 08:25:59,131 - Epoch 2 accuracy: 99.5%
+2024-03-06 08:25:59,132 - Testing
+2024-03-06 08:26:24,372 - Test accuracy: 90.2%, Avg loss: 0.31
+2024-03-06 08:26:24,374 - Training iteration 5 / 30
+2024-03-06 08:26:24,375 - Training...
+2024-03-06 08:28:29,761 - Epoch 1 accuracy: 99.1%
+2024-03-06 08:30:32,086 - Epoch 2 accuracy: 98.9%
+2024-03-06 08:30:32,087 - Testing
+2024-03-06 08:30:58,533 - Test accuracy: 78.5%, Avg loss: 0.92
+2024-03-06 08:30:58,535 - Training iteration 6 / 30
+2024-03-06 08:30:58,536 - Training...
+2024-03-06 08:33:00,690 - Epoch 1 accuracy: 99.3%
+2024-03-06 08:35:08,831 - Epoch 2 accuracy: 99.6%
+2024-03-06 08:35:08,832 - Testing
+2024-03-06 08:35:34,618 - Test accuracy: 94.1%, Avg loss: 0.19
+2024-03-06 08:35:34,620 - Training iteration 7 / 30
+2024-03-06 08:35:34,621 - Training...
+2024-03-06 08:37:37,733 - Epoch 1 accuracy: 99.7%
+2024-03-06 08:39:40,064 - Epoch 2 accuracy: 98.8%
+2024-03-06 08:39:40,065 - Testing
+2024-03-06 08:40:05,203 - Test accuracy: 89.6%, Avg loss: 0.36
+2024-03-06 08:40:05,204 - Training iteration 8 / 30
+2024-03-06 08:40:05,205 - Training...
+2024-03-06 08:42:08,425 - Epoch 1 accuracy: 99.1%
+2024-03-06 08:44:11,255 - Epoch 2 accuracy: 99.1%
+2024-03-06 08:44:11,256 - Testing
+2024-03-06 08:44:36,572 - Test accuracy: 92.6%, Avg loss: 0.24
+2024-03-06 08:44:36,574 - Training iteration 9 / 30
+2024-03-06 08:44:36,575 - Training...
+2024-03-06 08:46:38,556 - Epoch 1 accuracy: 99.4%
+2024-03-06 08:48:41,462 - Epoch 2 accuracy: 99.2%
+2024-03-06 08:48:41,463 - Testing
+2024-03-06 08:49:07,994 - Test accuracy: 90.7%, Avg loss: 0.32
+2024-03-06 08:49:07,996 - Training iteration 10 / 30
+2024-03-06 08:49:07,997 - Training...
+2024-03-06 08:51:11,795 - Epoch 1 accuracy: 98.9%
+2024-03-06 08:53:18,399 - Epoch 2 accuracy: 98.8%
+2024-03-06 08:53:18,399 - Testing
+2024-03-06 08:53:43,562 - Test accuracy: 74.8%, Avg loss: 1.03
+2024-03-06 08:53:43,563 - Training iteration 11 / 30
+2024-03-06 08:53:43,564 - Training...
+2024-03-06 08:55:46,571 - Epoch 1 accuracy: 99.1%
+2024-03-06 08:57:49,969 - Epoch 2 accuracy: 99.7%
+2024-03-06 08:57:49,970 - Testing
+2024-03-06 08:58:15,321 - Test accuracy: 94.4%, Avg loss: 0.18
+2024-03-06 08:58:15,322 - Training iteration 12 / 30
+2024-03-06 08:58:15,323 - Training...
+2024-03-06 09:00:17,991 - Epoch 1 accuracy: 99.9%
+2024-03-06 09:02:25,726 - Epoch 2 accuracy: 100.0%
+2024-03-06 09:02:25,727 - Testing
+2024-03-06 09:02:52,192 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-06 09:02:52,194 - Training iteration 13 / 30
+2024-03-06 09:02:52,195 - Training...
+2024-03-06 09:04:55,598 - Epoch 1 accuracy: 100.0%
+2024-03-06 09:07:01,462 - Epoch 2 accuracy: 100.0%
+2024-03-06 09:07:01,463 - Testing
+2024-03-06 09:07:28,020 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-06 09:07:28,022 - Training iteration 14 / 30
+2024-03-06 09:07:28,023 - Training...
+2024-03-06 09:09:30,295 - Epoch 1 accuracy: 100.0%
+2024-03-06 09:11:32,888 - Epoch 2 accuracy: 100.0%
+2024-03-06 09:11:32,889 - Testing
+2024-03-06 09:11:58,971 - Test accuracy: 49.2%, Avg loss: 2.51
+2024-03-06 09:11:58,973 - Training iteration 15 / 30
+2024-03-06 09:11:58,974 - Training...
+2024-03-06 09:14:01,829 - Epoch 1 accuracy: 100.0%
+2024-03-06 09:16:04,011 - Epoch 2 accuracy: 100.0%
+2024-03-06 09:16:04,012 - Testing
+2024-03-06 09:16:29,263 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-06 09:16:29,265 - Training iteration 16 / 30
+2024-03-06 09:16:29,266 - Training...
+2024-03-06 09:18:36,952 - Epoch 1 accuracy: 100.0%
+2024-03-06 09:20:40,469 - Epoch 2 accuracy: 100.0%
+2024-03-06 09:20:40,470 - Testing
+2024-03-06 09:21:05,434 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-06 09:21:05,435 - Training iteration 17 / 30
+2024-03-06 09:21:05,436 - Training...
+2024-03-06 09:23:07,194 - Epoch 1 accuracy: 100.0%
+2024-03-06 09:25:09,691 - Epoch 2 accuracy: 97.3%
+2024-03-06 09:25:09,692 - Testing
+2024-03-06 09:25:36,160 - Test accuracy: 44.8%, Avg loss: 2.02
+2024-03-06 09:25:36,162 - Training iteration 18 / 30
+2024-03-06 09:25:36,163 - Training...
+2024-03-06 09:27:37,538 - Epoch 1 accuracy: 91.2%
+2024-03-06 09:29:40,320 - Epoch 2 accuracy: 96.1%
+2024-03-06 09:29:40,321 - Testing
+2024-03-06 09:30:06,944 - Test accuracy: 68.0%, Avg loss: 1.23
+2024-03-06 09:30:06,946 - Training iteration 19 / 30
+2024-03-06 09:30:06,947 - Training...
+2024-03-06 09:32:09,565 - Epoch 1 accuracy: 97.4%
+2024-03-06 09:34:13,164 - Epoch 2 accuracy: 98.6%
+2024-03-06 09:34:13,165 - Testing
+2024-03-06 09:34:39,630 - Test accuracy: 89.8%, Avg loss: 0.32
+2024-03-06 09:34:39,631 - Training iteration 20 / 30
+2024-03-06 09:34:39,632 - Training...
+2024-03-06 09:36:41,526 - Epoch 1 accuracy: 99.1%
+2024-03-06 09:38:45,561 - Epoch 2 accuracy: 98.8%
+2024-03-06 09:38:45,562 - Testing
+2024-03-06 09:39:11,008 - Test accuracy: 88.3%, Avg loss: 0.42
+2024-03-06 09:39:11,010 - Training iteration 21 / 30
+2024-03-06 09:39:11,011 - Training...
+2024-03-06 09:41:13,059 - Epoch 1 accuracy: 98.9%
+2024-03-06 09:43:15,656 - Epoch 2 accuracy: 99.3%
+2024-03-06 09:43:15,657 - Testing
+2024-03-06 09:43:42,036 - Test accuracy: 88.8%, Avg loss: 0.38
+2024-03-06 09:43:42,038 - Training iteration 22 / 30
+2024-03-06 09:43:42,039 - Training...
+2024-03-06 09:45:49,978 - Epoch 1 accuracy: 99.5%
+2024-03-06 09:47:57,479 - Epoch 2 accuracy: 99.7%
+2024-03-06 09:47:57,480 - Testing
+2024-03-06 09:48:22,974 - Test accuracy: 69.7%, Avg loss: 1.63
+2024-03-06 09:48:22,976 - Training iteration 23 / 30
+2024-03-06 09:48:22,977 - Training...
+2024-03-06 09:50:24,383 - Epoch 1 accuracy: 98.7%
+2024-03-06 09:52:32,122 - Epoch 2 accuracy: 98.2%
+2024-03-06 09:52:32,123 - Testing
+2024-03-06 09:52:57,576 - Test accuracy: 88.6%, Avg loss: 0.39
+2024-03-06 09:52:57,578 - Training iteration 24 / 30
+2024-03-06 09:52:57,579 - Training...
+2024-03-06 09:54:59,438 - Epoch 1 accuracy: 99.4%
+2024-03-06 09:57:04,851 - Epoch 2 accuracy: 99.6%
+2024-03-06 09:57:04,852 - Testing
+2024-03-06 09:57:31,073 - Test accuracy: 87.8%, Avg loss: 0.43
+2024-03-06 09:57:31,075 - Training iteration 25 / 30
+2024-03-06 09:57:31,076 - Training...
+2024-03-06 09:59:33,330 - Epoch 1 accuracy: 99.4%
+2024-03-06 10:01:35,743 - Epoch 2 accuracy: 98.6%
+2024-03-06 10:01:35,744 - Testing
+2024-03-06 10:02:01,164 - Test accuracy: 84.0%, Avg loss: 0.57
+2024-03-06 10:02:01,166 - Training iteration 26 / 30
+2024-03-06 10:02:01,166 - Training...
+2024-03-06 10:04:03,437 - Epoch 1 accuracy: 98.8%
+2024-03-06 10:06:04,954 - Epoch 2 accuracy: 99.0%
+2024-03-06 10:06:04,955 - Testing
+2024-03-06 10:06:30,392 - Test accuracy: 88.5%, Avg loss: 0.39
+2024-03-06 10:06:30,393 - Training iteration 27 / 30
+2024-03-06 10:06:30,394 - Training...
+2024-03-06 10:08:32,744 - Epoch 1 accuracy: 99.7%
+2024-03-06 10:10:37,383 - Epoch 2 accuracy: 100.0%
+2024-03-06 10:10:37,384 - Testing
+2024-03-06 10:11:03,560 - Test accuracy: 94.5%, Avg loss: 0.18
+2024-03-06 10:11:03,562 - Training iteration 28 / 30
+2024-03-06 10:11:03,563 - Training...
+2024-03-06 10:13:04,951 - Epoch 1 accuracy: 100.0%
+2024-03-06 10:15:08,445 - Epoch 2 accuracy: 100.0%
+2024-03-06 10:15:08,446 - Testing
+2024-03-06 10:15:33,746 - Test accuracy: 95.0%, Avg loss: 0.16
+2024-03-06 10:15:33,748 - Training iteration 29 / 30
+2024-03-06 10:15:33,749 - Training...
+2024-03-06 10:17:35,201 - Epoch 1 accuracy: 100.0%
+2024-03-06 10:19:37,292 - Epoch 2 accuracy: 100.0%
+2024-03-06 10:19:37,293 - Testing
+2024-03-06 10:20:03,637 - Test accuracy: 95.2%, Avg loss: 0.16
+2024-03-06 10:20:08,439 - Compute the mean and sd of activations
+ 60%|██████    | 3/5 [7:21:07<4:54:05, 8822.53s/it]2024-03-06 10:27:36,358 - [4/5] IMP loop
+2024-03-06 10:27:36,754 - Compression level: 50.0
+2024-03-06 10:27:36,754 - Training iteration 0 / 30
+2024-03-06 10:27:36,755 - Training...
+2024-03-06 10:29:48,811 - Epoch 1 accuracy: 99.7%
+2024-03-06 10:32:00,040 - Epoch 2 accuracy: 99.9%
+2024-03-06 10:32:00,041 - Testing
+2024-03-06 10:32:27,011 - Test accuracy: 95.1%, Avg loss: 0.15
+2024-03-06 10:32:27,012 - Training iteration 1 / 30
+2024-03-06 10:32:27,013 - Training...
+2024-03-06 10:34:37,098 - Epoch 1 accuracy: 100.0%
+2024-03-06 10:36:40,022 - Epoch 2 accuracy: 100.0%
+2024-03-06 10:36:40,023 - Testing
+2024-03-06 10:37:05,147 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-06 10:37:05,149 - Training iteration 2 / 30
+2024-03-06 10:37:05,149 - Training...
+2024-03-06 10:39:08,726 - Epoch 1 accuracy: 100.0%
+2024-03-06 10:41:10,812 - Epoch 2 accuracy: 100.0%
+2024-03-06 10:41:10,813 - Testing
+2024-03-06 10:41:36,153 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-06 10:41:36,155 - Training iteration 3 / 30
+2024-03-06 10:41:36,156 - Training...
+2024-03-06 10:43:37,572 - Epoch 1 accuracy: 100.0%
+2024-03-06 10:45:40,088 - Epoch 2 accuracy: 100.0%
+2024-03-06 10:45:40,089 - Testing
+2024-03-06 10:46:05,321 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-06 10:46:05,323 - Training iteration 4 / 30
+2024-03-06 10:46:05,324 - Training...
+2024-03-06 10:48:06,461 - Epoch 1 accuracy: 100.0%
+2024-03-06 10:50:10,165 - Epoch 2 accuracy: 99.8%
+2024-03-06 10:50:10,166 - Testing
+2024-03-06 10:50:35,618 - Test accuracy: 10.0%, Avg loss: 16.87
+2024-03-06 10:50:35,620 - Training iteration 5 / 30
+2024-03-06 10:50:35,621 - Training...
+2024-03-06 10:52:38,336 - Epoch 1 accuracy: 98.0%
+2024-03-06 10:54:46,052 - Epoch 2 accuracy: 99.6%
+2024-03-06 10:54:46,053 - Testing
+2024-03-06 10:55:11,256 - Test accuracy: 91.5%, Avg loss: 0.27
+2024-03-06 10:55:11,258 - Training iteration 6 / 30
+2024-03-06 10:55:11,259 - Training...
+2024-03-06 10:57:15,858 - Epoch 1 accuracy: 99.7%
+2024-03-06 10:59:17,537 - Epoch 2 accuracy: 99.1%
+2024-03-06 10:59:17,538 - Testing
+2024-03-06 10:59:42,714 - Test accuracy: 87.1%, Avg loss: 0.47
+2024-03-06 10:59:42,716 - Training iteration 7 / 30
+2024-03-06 10:59:42,717 - Training...
+2024-03-06 11:01:46,006 - Epoch 1 accuracy: 99.8%
+2024-03-06 11:03:48,000 - Epoch 2 accuracy: 100.0%
+2024-03-06 11:03:48,001 - Testing
+2024-03-06 11:04:13,282 - Test accuracy: 94.0%, Avg loss: 0.20
+2024-03-06 11:04:13,293 - Training iteration 8 / 30
+2024-03-06 11:04:13,294 - Training...
+2024-03-06 11:06:18,581 - Epoch 1 accuracy: 100.0%
+2024-03-06 11:08:21,565 - Epoch 2 accuracy: 100.0%
+2024-03-06 11:08:21,566 - Testing
+2024-03-06 11:08:46,731 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-06 11:08:46,732 - Training iteration 9 / 30
+2024-03-06 11:08:46,733 - Training...
+2024-03-06 11:10:49,507 - Epoch 1 accuracy: 100.0%
+2024-03-06 11:12:52,138 - Epoch 2 accuracy: 100.0%
+2024-03-06 11:12:52,139 - Testing
+2024-03-06 11:13:17,301 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-06 11:13:17,303 - Training iteration 10 / 30
+2024-03-06 11:13:17,304 - Training...
+2024-03-06 11:15:19,725 - Epoch 1 accuracy: 100.0%
+2024-03-06 11:17:27,570 - Epoch 2 accuracy: 100.0%
+2024-03-06 11:17:27,571 - Testing
+2024-03-06 11:17:53,634 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-06 11:17:53,635 - Training iteration 11 / 30
+2024-03-06 11:17:53,636 - Training...
+2024-03-06 11:19:59,641 - Epoch 1 accuracy: 100.0%
+2024-03-06 11:22:02,209 - Epoch 2 accuracy: 100.0%
+2024-03-06 11:22:02,210 - Testing
+2024-03-06 11:22:27,492 - Test accuracy: 86.0%, Avg loss: 0.49
+2024-03-06 11:22:27,494 - Training iteration 12 / 30
+2024-03-06 11:22:27,495 - Training...
+2024-03-06 11:24:29,205 - Epoch 1 accuracy: 100.0%
+2024-03-06 11:26:31,114 - Epoch 2 accuracy: 93.1%
+2024-03-06 11:26:31,122 - Testing
+2024-03-06 11:26:57,383 - Test accuracy: 57.0%, Avg loss: 1.48
+2024-03-06 11:26:57,385 - Training iteration 13 / 30
+2024-03-06 11:26:57,386 - Training...
+2024-03-06 11:29:03,300 - Epoch 1 accuracy: 96.2%
+2024-03-06 11:31:06,346 - Epoch 2 accuracy: 98.1%
+2024-03-06 11:31:06,347 - Testing
+2024-03-06 11:31:31,696 - Test accuracy: 41.0%, Avg loss: 3.56
+2024-03-06 11:31:31,698 - Training iteration 14 / 30
+2024-03-06 11:31:31,699 - Training...
+2024-03-06 11:33:34,006 - Epoch 1 accuracy: 98.5%
+2024-03-06 11:35:38,804 - Epoch 2 accuracy: 98.9%
+2024-03-06 11:35:38,805 - Testing
+2024-03-06 11:36:04,918 - Test accuracy: 90.0%, Avg loss: 0.33
+2024-03-06 11:36:04,920 - Training iteration 15 / 30
+2024-03-06 11:36:04,921 - Training...
+2024-03-06 11:38:07,581 - Epoch 1 accuracy: 99.2%
+2024-03-06 11:40:16,379 - Epoch 2 accuracy: 99.4%
+2024-03-06 11:40:16,380 - Testing
+2024-03-06 11:40:42,402 - Test accuracy: 84.4%, Avg loss: 0.70
+2024-03-06 11:40:42,404 - Training iteration 16 / 30
+2024-03-06 11:40:42,405 - Training...
+2024-03-06 11:42:45,810 - Epoch 1 accuracy: 99.3%
+2024-03-06 11:44:53,603 - Epoch 2 accuracy: 98.7%
+2024-03-06 11:44:53,604 - Testing
+2024-03-06 11:45:19,882 - Test accuracy: 72.5%, Avg loss: 1.05
+2024-03-06 11:45:19,884 - Training iteration 17 / 30
+2024-03-06 11:45:19,885 - Training...
+2024-03-06 11:47:23,107 - Epoch 1 accuracy: 99.1%
+2024-03-06 11:49:25,597 - Epoch 2 accuracy: 99.5%
+2024-03-06 11:49:25,598 - Testing
+2024-03-06 11:49:51,007 - Test accuracy: 73.0%, Avg loss: 1.16
+2024-03-06 11:49:51,009 - Training iteration 18 / 30
+2024-03-06 11:49:51,010 - Training...
+2024-03-06 11:51:53,241 - Epoch 1 accuracy: 99.7%
+2024-03-06 11:53:55,755 - Epoch 2 accuracy: 99.8%
+2024-03-06 11:53:55,756 - Testing
+2024-03-06 11:54:20,645 - Test accuracy: 93.7%, Avg loss: 0.20
+2024-03-06 11:54:20,647 - Training iteration 19 / 30
+2024-03-06 11:54:20,648 - Training...
+2024-03-06 11:56:25,044 - Epoch 1 accuracy: 100.0%
+2024-03-06 11:58:28,358 - Epoch 2 accuracy: 100.0%
+2024-03-06 11:58:28,359 - Testing
+2024-03-06 11:58:54,841 - Test accuracy: 94.9%, Avg loss: 0.17
+2024-03-06 11:58:54,842 - Training iteration 20 / 30
+2024-03-06 11:58:54,843 - Training...
+2024-03-06 12:00:57,684 - Epoch 1 accuracy: 100.0%
+2024-03-06 12:03:00,547 - Epoch 2 accuracy: 100.0%
+2024-03-06 12:03:00,548 - Testing
+2024-03-06 12:03:25,572 - Test accuracy: 21.2%, Avg loss: 5.79
+2024-03-06 12:03:25,574 - Training iteration 21 / 30
+2024-03-06 12:03:25,575 - Training...
+2024-03-06 12:05:28,709 - Epoch 1 accuracy: 100.0%
+2024-03-06 12:07:35,901 - Epoch 2 accuracy: 100.0%
+2024-03-06 12:07:35,902 - Testing
+2024-03-06 12:08:02,369 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-06 12:08:02,371 - Training iteration 22 / 30
+2024-03-06 12:08:02,372 - Training...
+2024-03-06 12:10:05,597 - Epoch 1 accuracy: 100.0%
+2024-03-06 12:12:08,512 - Epoch 2 accuracy: 100.0%
+2024-03-06 12:12:08,513 - Testing
+2024-03-06 12:12:33,688 - Test accuracy: 95.3%, Avg loss: 0.14
+2024-03-06 12:12:33,690 - Training iteration 23 / 30
+2024-03-06 12:12:33,691 - Training...
+2024-03-06 12:14:36,746 - Epoch 1 accuracy: 100.0%
+2024-03-06 12:16:44,984 - Epoch 2 accuracy: 100.0%
+2024-03-06 12:16:44,985 - Testing
+2024-03-06 12:17:09,972 - Test accuracy: 86.5%, Avg loss: 0.45
+2024-03-06 12:17:09,974 - Training iteration 24 / 30
+2024-03-06 12:17:09,975 - Training...
+2024-03-06 12:19:11,968 - Epoch 1 accuracy: 100.0%
+2024-03-06 12:21:14,461 - Epoch 2 accuracy: 100.0%
+2024-03-06 12:21:14,462 - Testing
+2024-03-06 12:21:39,412 - Test accuracy: 71.7%, Avg loss: 1.05
+2024-03-06 12:21:39,414 - Training iteration 25 / 30
+2024-03-06 12:21:39,415 - Training...
+2024-03-06 12:23:43,353 - Epoch 1 accuracy: 89.7%
+2024-03-06 12:25:50,181 - Epoch 2 accuracy: 95.4%
+2024-03-06 12:25:50,182 - Testing
+2024-03-06 12:26:15,726 - Test accuracy: 28.9%, Avg loss: 5.70
+2024-03-06 12:26:15,728 - Training iteration 26 / 30
+2024-03-06 12:26:15,729 - Training...
+2024-03-06 12:28:20,404 - Epoch 1 accuracy: 97.5%
+2024-03-06 12:30:26,042 - Epoch 2 accuracy: 98.7%
+2024-03-06 12:30:26,043 - Testing
+2024-03-06 12:30:50,928 - Test accuracy: 57.6%, Avg loss: 1.60
+2024-03-06 12:30:50,930 - Training iteration 27 / 30
+2024-03-06 12:30:50,931 - Training...
+2024-03-06 12:32:53,694 - Epoch 1 accuracy: 98.8%
+2024-03-06 12:34:57,524 - Epoch 2 accuracy: 99.5%
+2024-03-06 12:34:57,525 - Testing
+2024-03-06 12:35:22,935 - Test accuracy: 90.6%, Avg loss: 0.33
+2024-03-06 12:35:22,937 - Training iteration 28 / 30
+2024-03-06 12:35:22,938 - Training...
+2024-03-06 12:37:29,827 - Epoch 1 accuracy: 99.5%
+2024-03-06 12:39:32,718 - Epoch 2 accuracy: 99.0%
+2024-03-06 12:39:32,719 - Testing
+2024-03-06 12:39:58,977 - Test accuracy: 79.7%, Avg loss: 0.91
+2024-03-06 12:39:58,979 - Training iteration 29 / 30
+2024-03-06 12:39:58,980 - Training...
+2024-03-06 12:42:01,340 - Epoch 1 accuracy: 99.1%
+2024-03-06 12:44:05,730 - Epoch 2 accuracy: 99.1%
+2024-03-06 12:44:05,731 - Testing
+2024-03-06 12:44:30,743 - Test accuracy: 41.9%, Avg loss: 3.19
+2024-03-06 12:44:35,566 - Compute the mean and sd of activations
+ 80%|████████  | 4/5 [9:46:13<2:26:16, 8776.37s/it]2024-03-06 12:52:41,943 - [5/5] IMP loop
+2024-03-06 12:52:42,335 - Compression level: 40.3
+2024-03-06 12:52:42,336 - Training iteration 0 / 30
+2024-03-06 12:52:42,336 - Training...
+2024-03-06 12:54:54,645 - Epoch 1 accuracy: 99.7%
+2024-03-06 12:57:07,204 - Epoch 2 accuracy: 100.0%
+2024-03-06 12:57:07,205 - Testing
+2024-03-06 12:57:34,197 - Test accuracy: 95.5%, Avg loss: 0.14
+2024-03-06 12:57:34,198 - Training iteration 1 / 30
+2024-03-06 12:57:34,198 - Training...
+2024-03-06 12:59:41,876 - Epoch 1 accuracy: 100.0%
+2024-03-06 13:01:50,249 - Epoch 2 accuracy: 100.0%
+2024-03-06 13:01:50,250 - Testing
+2024-03-06 13:02:16,391 - Test accuracy: 94.8%, Avg loss: 0.16
+2024-03-06 13:02:16,393 - Training iteration 2 / 30
+2024-03-06 13:02:16,393 - Training...
+2024-03-06 13:04:21,893 - Epoch 1 accuracy: 100.0%
+2024-03-06 13:06:24,454 - Epoch 2 accuracy: 100.0%
+2024-03-06 13:06:24,455 - Testing
+2024-03-06 13:06:49,851 - Test accuracy: 71.8%, Avg loss: 1.03
+2024-03-06 13:06:49,853 - Training iteration 3 / 30
+2024-03-06 13:06:49,854 - Training...
+2024-03-06 13:08:52,892 - Epoch 1 accuracy: 99.9%
+2024-03-06 13:10:55,414 - Epoch 2 accuracy: 100.0%
+2024-03-06 13:10:55,415 - Testing
+2024-03-06 13:11:21,915 - Test accuracy: 95.4%, Avg loss: 0.14
+2024-03-06 13:11:21,917 - Training iteration 4 / 30
+2024-03-06 13:11:21,918 - Training...
+2024-03-06 13:13:25,994 - Epoch 1 accuracy: 100.0%
+2024-03-06 13:15:31,245 - Epoch 2 accuracy: 100.0%
+2024-03-06 13:15:31,246 - Testing
+2024-03-06 13:15:56,547 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-06 13:15:56,549 - Training iteration 5 / 30
+2024-03-06 13:15:56,550 - Training...
+2024-03-06 13:18:00,996 - Epoch 1 accuracy: 100.0%
+2024-03-06 13:20:03,606 - Epoch 2 accuracy: 100.0%
+2024-03-06 13:20:03,606 - Testing
+2024-03-06 13:20:28,705 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-06 13:20:28,706 - Training iteration 6 / 30
+2024-03-06 13:20:28,707 - Training...
+2024-03-06 13:22:30,912 - Epoch 1 accuracy: 100.0%
+2024-03-06 13:24:35,103 - Epoch 2 accuracy: 100.0%
+2024-03-06 13:24:35,104 - Testing
+2024-03-06 13:25:01,159 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-06 13:25:01,160 - Training iteration 7 / 30
+2024-03-06 13:25:01,161 - Training...
+2024-03-06 13:27:09,234 - Epoch 1 accuracy: 100.0%
+2024-03-06 13:29:16,031 - Epoch 2 accuracy: 100.0%
+2024-03-06 13:29:16,032 - Testing
+2024-03-06 13:29:42,336 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-06 13:29:42,338 - Training iteration 8 / 30
+2024-03-06 13:29:42,339 - Training...
+2024-03-06 13:31:44,550 - Epoch 1 accuracy: 100.0%
+2024-03-06 13:33:49,284 - Epoch 2 accuracy: 98.7%
+2024-03-06 13:33:49,284 - Testing
+2024-03-06 13:34:14,584 - Test accuracy: 10.0%, Avg loss: 15.11
+2024-03-06 13:34:14,586 - Training iteration 9 / 30
+2024-03-06 13:34:14,587 - Training...
+2024-03-06 13:36:22,749 - Epoch 1 accuracy: 95.3%
+2024-03-06 13:38:26,382 - Epoch 2 accuracy: 97.9%
+2024-03-06 13:38:26,383 - Testing
+2024-03-06 13:38:51,401 - Test accuracy: 85.4%, Avg loss: 0.48
+2024-03-06 13:38:51,403 - Training iteration 10 / 30
+2024-03-06 13:38:51,404 - Training...
+2024-03-06 13:40:53,797 - Epoch 1 accuracy: 99.0%
+2024-03-06 13:43:01,819 - Epoch 2 accuracy: 99.2%
+2024-03-06 13:43:01,820 - Testing
+2024-03-06 13:43:27,914 - Test accuracy: 35.9%, Avg loss: 4.28
+2024-03-06 13:43:27,916 - Training iteration 11 / 30
+2024-03-06 13:43:27,917 - Training...
+2024-03-06 13:45:30,601 - Epoch 1 accuracy: 99.3%
+2024-03-06 13:47:33,870 - Epoch 2 accuracy: 99.5%
+2024-03-06 13:47:33,871 - Testing
+2024-03-06 13:47:59,055 - Test accuracy: 57.2%, Avg loss: 1.73
+2024-03-06 13:47:59,057 - Training iteration 12 / 30
+2024-03-06 13:47:59,058 - Training...
+2024-03-06 13:50:01,720 - Epoch 1 accuracy: 99.2%
+2024-03-06 13:52:04,131 - Epoch 2 accuracy: 98.8%
+2024-03-06 13:52:04,132 - Testing
+2024-03-06 13:52:30,369 - Test accuracy: 58.8%, Avg loss: 1.94
+2024-03-06 13:52:30,371 - Training iteration 13 / 30
+2024-03-06 13:52:30,372 - Training...
+2024-03-06 13:54:34,480 - Epoch 1 accuracy: 99.0%
+2024-03-06 13:56:42,360 - Epoch 2 accuracy: 99.5%
+2024-03-06 13:56:42,361 - Testing
+2024-03-06 13:57:07,468 - Test accuracy: 67.6%, Avg loss: 1.52
+2024-03-06 13:57:07,470 - Training iteration 14 / 30
+2024-03-06 13:57:07,471 - Training...
+2024-03-06 13:59:10,230 - Epoch 1 accuracy: 99.7%
+2024-03-06 14:01:12,623 - Epoch 2 accuracy: 99.9%
+2024-03-06 14:01:12,624 - Testing
+2024-03-06 14:01:37,828 - Test accuracy: 93.5%, Avg loss: 0.22
+2024-03-06 14:01:37,830 - Training iteration 15 / 30
+2024-03-06 14:01:37,831 - Training...
+2024-03-06 14:03:46,398 - Epoch 1 accuracy: 100.0%
+2024-03-06 14:05:53,668 - Epoch 2 accuracy: 100.0%
+2024-03-06 14:05:53,669 - Testing
+2024-03-06 14:06:19,992 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-06 14:06:19,994 - Training iteration 16 / 30
+2024-03-06 14:06:19,994 - Training...
+2024-03-06 14:08:22,548 - Epoch 1 accuracy: 100.0%
+2024-03-06 14:10:24,723 - Epoch 2 accuracy: 100.0%
+2024-03-06 14:10:24,724 - Testing
+2024-03-06 14:10:50,169 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-06 14:10:50,171 - Training iteration 17 / 30
+2024-03-06 14:10:50,172 - Training...
+2024-03-06 14:12:52,568 - Epoch 1 accuracy: 100.0%
+2024-03-06 14:15:00,717 - Epoch 2 accuracy: 100.0%
+2024-03-06 14:15:00,718 - Testing
+2024-03-06 14:15:27,345 - Test accuracy: 95.2%, Avg loss: 0.15
+2024-03-06 14:15:27,346 - Training iteration 18 / 30
+2024-03-06 14:15:27,347 - Training...
+2024-03-06 14:17:35,663 - Epoch 1 accuracy: 100.0%
+2024-03-06 14:19:38,069 - Epoch 2 accuracy: 100.0%
+2024-03-06 14:19:38,070 - Testing
+2024-03-06 14:20:04,091 - Test accuracy: 95.4%, Avg loss: 0.14
+2024-03-06 14:20:04,093 - Training iteration 19 / 30
+2024-03-06 14:20:04,094 - Training...
+2024-03-06 14:22:05,893 - Epoch 1 accuracy: 100.0%
+2024-03-06 14:24:08,903 - Epoch 2 accuracy: 100.0%
+2024-03-06 14:24:08,904 - Testing
+2024-03-06 14:24:34,197 - Test accuracy: 95.3%, Avg loss: 0.15
+2024-03-06 14:24:34,199 - Training iteration 20 / 30
+2024-03-06 14:24:34,200 - Training...
+2024-03-06 14:26:38,975 - Epoch 1 accuracy: 100.0%
+2024-03-06 14:28:42,797 - Epoch 2 accuracy: 91.3%
+2024-03-06 14:28:42,798 - Testing
+2024-03-06 14:29:08,181 - Test accuracy: 33.2%, Avg loss: 7.75
+2024-03-06 14:29:08,183 - Training iteration 21 / 30
+2024-03-06 14:29:08,184 - Training...
+2024-03-06 14:31:12,711 - Epoch 1 accuracy: 96.3%
+2024-03-06 14:33:14,500 - Epoch 2 accuracy: 98.1%
+2024-03-06 14:33:14,501 - Testing
+2024-03-06 14:33:39,717 - Test accuracy: 41.0%, Avg loss: 3.57
+2024-03-06 14:33:39,719 - Training iteration 22 / 30
+2024-03-06 14:33:39,720 - Training...
+2024-03-06 14:35:41,757 - Epoch 1 accuracy: 98.6%
+2024-03-06 14:37:43,910 - Epoch 2 accuracy: 99.2%
+2024-03-06 14:37:43,911 - Testing
+2024-03-06 14:38:08,877 - Test accuracy: 90.5%, Avg loss: 0.33
+2024-03-06 14:38:08,879 - Training iteration 23 / 30
+2024-03-06 14:38:08,880 - Training...
+2024-03-06 14:40:17,218 - Epoch 1 accuracy: 99.6%
+2024-03-06 14:42:20,960 - Epoch 2 accuracy: 99.8%
+2024-03-06 14:42:20,961 - Testing
+2024-03-06 14:42:46,614 - Test accuracy: 93.0%, Avg loss: 0.24
+2024-03-06 14:42:46,616 - Training iteration 24 / 30
+2024-03-06 14:42:46,617 - Training...
+2024-03-06 14:44:49,498 - Epoch 1 accuracy: 99.8%
+2024-03-06 14:46:52,624 - Epoch 2 accuracy: 98.4%
+2024-03-06 14:46:52,625 - Testing
+2024-03-06 14:47:18,222 - Test accuracy: 86.4%, Avg loss: 0.46
+2024-03-06 14:47:18,224 - Training iteration 25 / 30
+2024-03-06 14:47:18,224 - Training...
+2024-03-06 14:49:20,412 - Epoch 1 accuracy: 98.8%
+2024-03-06 14:51:23,453 - Epoch 2 accuracy: 99.2%
+2024-03-06 14:51:23,454 - Testing
+2024-03-06 14:51:49,792 - Test accuracy: 87.8%, Avg loss: 0.47
+2024-03-06 14:51:49,794 - Training iteration 26 / 30
+2024-03-06 14:51:49,795 - Training...
+2024-03-06 14:53:58,203 - Epoch 1 accuracy: 99.7%
+2024-03-06 14:56:01,395 - Epoch 2 accuracy: 99.9%
+2024-03-06 14:56:01,396 - Testing
+2024-03-06 14:56:27,712 - Test accuracy: 93.3%, Avg loss: 0.22
+2024-03-06 14:56:27,713 - Training iteration 27 / 30
+2024-03-06 14:56:27,715 - Training...
+2024-03-06 14:58:30,095 - Epoch 1 accuracy: 100.0%
+2024-03-06 15:00:33,711 - Epoch 2 accuracy: 100.0%
+2024-03-06 15:00:33,712 - Testing
+2024-03-06 15:01:00,145 - Test accuracy: 94.3%, Avg loss: 0.19
+2024-03-06 15:01:00,147 - Training iteration 28 / 30
+2024-03-06 15:01:00,148 - Training...
+2024-03-06 15:03:03,488 - Epoch 1 accuracy: 100.0%
+2024-03-06 15:05:06,924 - Epoch 2 accuracy: 100.0%
+2024-03-06 15:05:06,925 - Testing
+2024-03-06 15:05:32,005 - Test accuracy: 94.8%, Avg loss: 0.17
+2024-03-06 15:05:32,007 - Training iteration 29 / 30
+2024-03-06 15:05:32,008 - Training...
+2024-03-06 15:07:35,401 - Epoch 1 accuracy: 100.0%
+2024-03-06 15:09:41,722 - Epoch 2 accuracy: 100.0%
+2024-03-06 15:09:41,723 - Testing
+2024-03-06 15:10:08,046 - Test accuracy: 88.9%, Avg loss: 0.39
+2024-03-06 15:10:12,856 - Compute the mean and sd of activations
+100%|██████████| 5/5 [12:12:38<00:00, 8779.55s/it] 100%|██████████| 5/5 [12:12:38<00:00, 8791.74s/it]
+2024-03-06 15:19:07,034 - In experiment 2 / 3
+Files already downloaded and verified
+Files already downloaded and verified
+2024-03-06 15:19:10,372 - Warming up the pretrained model
+2024-03-06 15:19:10,373 - Training...
+2024-03-06 15:21:22,780 - Epoch 1 accuracy: 81.1%
+2024-03-06 15:23:32,015 - Epoch 2 accuracy: 93.7%
+2024-03-06 15:25:36,686 - Epoch 3 accuracy: 96.7%
+2024-03-06 15:27:39,744 - Epoch 4 accuracy: 98.1%
+2024-03-06 15:29:42,924 - Epoch 5 accuracy: 98.6%
+2024-03-06 15:31:47,467 - Epoch 6 accuracy: 99.1%
+2024-03-06 15:33:50,530 - Epoch 7 accuracy: 99.2%
+2024-03-06 15:35:57,710 - Epoch 8 accuracy: 99.6%
+2024-03-06 15:38:02,998 - Epoch 9 accuracy: 99.7%
+2024-03-06 15:40:11,829 - Epoch 10 accuracy: 99.6%
+  0%|          | 0/5 [00:00<?, ?it/s]2024-03-06 15:40:12,029 - [1/5] IMP loop
+2024-03-06 15:40:12,305 - Compression level: 100.0
+2024-03-06 15:40:12,305 - Training iteration 0 / 30
+2024-03-06 15:40:12,305 - Training...
+2024-03-06 15:42:15,325 - Epoch 1 accuracy: 99.7%
+2024-03-06 15:44:20,532 - Epoch 2 accuracy: 99.6%
+2024-03-06 15:44:20,533 - Testing
+2024-03-06 15:44:46,688 - Test accuracy: 94.1%, Avg loss: 0.26
+2024-03-06 15:44:46,690 - Training iteration 1 / 30
+2024-03-06 15:44:46,691 - Training...
+2024-03-06 15:46:49,733 - Epoch 1 accuracy: 99.8%
+2024-03-06 15:48:55,036 - Epoch 2 accuracy: 99.8%
+2024-03-06 15:48:55,037 - Testing
+2024-03-06 15:49:20,367 - Test accuracy: 94.6%, Avg loss: 0.26
+2024-03-06 15:49:20,369 - Training iteration 2 / 30
+2024-03-06 15:49:20,370 - Training...
+2024-03-06 15:51:23,785 - Epoch 1 accuracy: 99.9%
+2024-03-06 15:53:31,959 - Epoch 2 accuracy: 100.0%
+2024-03-06 15:53:31,960 - Testing
+2024-03-06 15:53:57,817 - Test accuracy: 95.0%, Avg loss: 0.23
+2024-03-06 15:53:57,819 - Training iteration 3 / 30
+2024-03-06 15:53:57,820 - Training...
+2024-03-06 15:56:00,554 - Epoch 1 accuracy: 99.9%
+2024-03-06 15:58:08,114 - Epoch 2 accuracy: 100.0%
+2024-03-06 15:58:08,114 - Testing
+2024-03-06 15:58:34,431 - Test accuracy: 95.1%, Avg loss: 0.23
+2024-03-06 15:58:34,433 - Training iteration 4 / 30
+2024-03-06 15:58:34,434 - Training...
+2024-03-06 16:00:36,152 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:02:39,302 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:02:39,303 - Testing
+2024-03-06 16:03:04,575 - Test accuracy: 95.4%, Avg loss: 0.23
+2024-03-06 16:03:04,577 - Training iteration 5 / 30
+2024-03-06 16:03:04,578 - Training...
+2024-03-06 16:05:07,670 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:07:10,189 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:07:10,190 - Testing
+2024-03-06 16:07:36,145 - Test accuracy: 95.5%, Avg loss: 0.23
+2024-03-06 16:07:36,147 - Training iteration 6 / 30
+2024-03-06 16:07:36,148 - Training...
+2024-03-06 16:09:39,843 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:11:47,067 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:11:47,068 - Testing
+2024-03-06 16:12:13,156 - Test accuracy: 95.4%, Avg loss: 0.22
+2024-03-06 16:12:13,158 - Training iteration 7 / 30
+2024-03-06 16:12:13,159 - Training...
+2024-03-06 16:14:14,700 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:16:22,504 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:16:22,505 - Testing
+2024-03-06 16:16:49,082 - Test accuracy: 95.4%, Avg loss: 0.23
+2024-03-06 16:16:49,084 - Training iteration 8 / 30
+2024-03-06 16:16:49,085 - Training...
+2024-03-06 16:18:51,617 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:20:54,622 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:20:54,623 - Testing
+2024-03-06 16:21:20,132 - Test accuracy: 95.5%, Avg loss: 0.22
+2024-03-06 16:21:20,134 - Training iteration 9 / 30
+2024-03-06 16:21:20,135 - Training...
+2024-03-06 16:23:23,504 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:25:30,485 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:25:30,486 - Testing
+2024-03-06 16:25:57,031 - Test accuracy: 95.5%, Avg loss: 0.22
+2024-03-06 16:25:57,033 - Training iteration 10 / 30
+2024-03-06 16:25:57,034 - Training...
+2024-03-06 16:28:04,836 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:30:07,404 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:30:07,405 - Testing
+2024-03-06 16:30:32,600 - Test accuracy: 95.6%, Avg loss: 0.22
+2024-03-06 16:30:32,602 - Training iteration 11 / 30
+2024-03-06 16:30:32,603 - Training...
+2024-03-06 16:32:35,369 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:34:38,142 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:34:38,143 - Testing
+2024-03-06 16:35:03,487 - Test accuracy: 95.6%, Avg loss: 0.22
+2024-03-06 16:35:03,489 - Training iteration 12 / 30
+2024-03-06 16:35:03,490 - Training...
+2024-03-06 16:37:05,998 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:39:08,783 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:39:08,784 - Testing
+2024-03-06 16:39:34,447 - Test accuracy: 95.7%, Avg loss: 0.22
+2024-03-06 16:39:34,449 - Training iteration 13 / 30
+2024-03-06 16:39:34,450 - Training...
+2024-03-06 16:41:36,919 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:43:40,738 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:43:40,739 - Testing
+2024-03-06 16:44:05,949 - Test accuracy: 95.7%, Avg loss: 0.22
+2024-03-06 16:44:05,951 - Training iteration 14 / 30
+2024-03-06 16:44:05,952 - Training...
+2024-03-06 16:46:09,450 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:48:13,754 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:48:13,755 - Testing
+2024-03-06 16:48:39,827 - Test accuracy: 95.7%, Avg loss: 0.22
+2024-03-06 16:48:39,829 - Training iteration 15 / 30
+2024-03-06 16:48:39,830 - Training...
+2024-03-06 16:50:43,042 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:52:44,944 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:52:44,945 - Testing
+2024-03-06 16:53:11,506 - Test accuracy: 95.8%, Avg loss: 0.21
+2024-03-06 16:53:11,508 - Training iteration 16 / 30
+2024-03-06 16:53:11,508 - Training...
+2024-03-06 16:55:17,677 - Epoch 1 accuracy: 100.0%
+2024-03-06 16:57:21,084 - Epoch 2 accuracy: 100.0%
+2024-03-06 16:57:21,085 - Testing
+2024-03-06 16:57:46,564 - Test accuracy: 95.7%, Avg loss: 0.22
+2024-03-06 16:57:46,565 - Training iteration 17 / 30
+2024-03-06 16:57:46,566 - Training...
+2024-03-06 16:59:49,887 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:01:52,333 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:01:52,334 - Testing
+2024-03-06 17:02:17,504 - Test accuracy: 95.7%, Avg loss: 0.22
+2024-03-06 17:02:17,506 - Training iteration 18 / 30
+2024-03-06 17:02:17,506 - Training...
+2024-03-06 17:04:21,237 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:06:23,261 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:06:23,262 - Testing
+2024-03-06 17:06:49,024 - Test accuracy: 95.7%, Avg loss: 0.22
+2024-03-06 17:06:49,026 - Training iteration 19 / 30
+2024-03-06 17:06:49,027 - Training...
+2024-03-06 17:08:52,049 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:10:58,782 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:10:58,782 - Testing
+2024-03-06 17:11:24,018 - Test accuracy: 95.7%, Avg loss: 0.22
+2024-03-06 17:11:24,020 - Training iteration 20 / 30
+2024-03-06 17:11:24,020 - Training...
+2024-03-06 17:13:27,621 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:15:30,423 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:15:30,424 - Testing
+2024-03-06 17:15:56,182 - Test accuracy: 95.7%, Avg loss: 0.22
+2024-03-06 17:15:56,184 - Training iteration 21 / 30
+2024-03-06 17:15:56,184 - Training...
+2024-03-06 17:17:59,721 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:20:02,250 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:20:02,251 - Testing
+2024-03-06 17:20:28,048 - Test accuracy: 95.8%, Avg loss: 0.22
+2024-03-06 17:20:28,050 - Training iteration 22 / 30
+2024-03-06 17:20:28,051 - Training...
+2024-03-06 17:22:30,791 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:24:35,735 - Epoch 2 accuracy: 99.9%
+2024-03-06 17:24:35,736 - Testing
+2024-03-06 17:25:02,085 - Test accuracy: 94.4%, Avg loss: 0.27
+2024-03-06 17:25:02,086 - Training iteration 23 / 30
+2024-03-06 17:25:02,087 - Training...
+2024-03-06 17:27:08,593 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:29:15,990 - Epoch 2 accuracy: 99.7%
+2024-03-06 17:29:15,991 - Testing
+2024-03-06 17:29:42,291 - Test accuracy: 93.0%, Avg loss: 0.35
+2024-03-06 17:29:42,293 - Training iteration 24 / 30
+2024-03-06 17:29:42,294 - Training...
+2024-03-06 17:31:46,137 - Epoch 1 accuracy: 99.5%
+2024-03-06 17:33:49,168 - Epoch 2 accuracy: 99.6%
+2024-03-06 17:33:49,169 - Testing
+2024-03-06 17:34:14,497 - Test accuracy: 92.9%, Avg loss: 0.32
+2024-03-06 17:34:14,499 - Training iteration 25 / 30
+2024-03-06 17:34:14,500 - Training...
+2024-03-06 17:36:17,864 - Epoch 1 accuracy: 99.6%
+2024-03-06 17:38:21,446 - Epoch 2 accuracy: 99.9%
+2024-03-06 17:38:21,447 - Testing
+2024-03-06 17:38:47,960 - Test accuracy: 95.0%, Avg loss: 0.24
+2024-03-06 17:38:47,962 - Training iteration 26 / 30
+2024-03-06 17:38:47,963 - Training...
+2024-03-06 17:40:50,778 - Epoch 1 accuracy: 99.9%
+2024-03-06 17:42:55,928 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:42:55,929 - Testing
+2024-03-06 17:43:21,364 - Test accuracy: 95.0%, Avg loss: 0.25
+2024-03-06 17:43:21,366 - Training iteration 27 / 30
+2024-03-06 17:43:21,367 - Training...
+2024-03-06 17:45:29,789 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:47:37,159 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:47:37,159 - Testing
+2024-03-06 17:48:03,751 - Test accuracy: 95.5%, Avg loss: 0.23
+2024-03-06 17:48:03,753 - Training iteration 28 / 30
+2024-03-06 17:48:03,754 - Training...
+2024-03-06 17:50:07,009 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:52:15,637 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:52:15,638 - Testing
+2024-03-06 17:52:42,090 - Test accuracy: 95.2%, Avg loss: 0.23
+2024-03-06 17:52:42,092 - Training iteration 29 / 30
+2024-03-06 17:52:42,093 - Training...
+2024-03-06 17:54:48,291 - Epoch 1 accuracy: 100.0%
+2024-03-06 17:56:51,961 - Epoch 2 accuracy: 100.0%
+2024-03-06 17:56:51,962 - Testing
+2024-03-06 17:57:17,170 - Test accuracy: 95.4%, Avg loss: 0.22
+2024-03-06 17:57:18,236 - Compute the mean and sd of activations
+ 20%|██        | 1/5 [2:26:56<9:47:45, 8816.47s/it]2024-03-06 18:07:08,620 - [2/5] IMP loop
+2024-03-06 18:07:09,031 - Compression level: 81.2
+2024-03-06 18:07:09,032 - Training iteration 0 / 30
+2024-03-06 18:07:09,032 - Training...
+2024-03-06 18:09:17,781 - Epoch 1 accuracy: 100.0%
+2024-03-06 18:11:21,696 - Epoch 2 accuracy: 100.0%
+2024-03-06 18:11:21,697 - Testing
+2024-03-06 18:11:47,076 - Test accuracy: 95.6%, Avg loss: 0.17
+2024-03-06 18:11:47,078 - Training iteration 1 / 30
+2024-03-06 18:11:47,079 - Training...
+2024-03-06 18:13:49,460 - Epoch 1 accuracy: 100.0%
+2024-03-06 18:15:52,820 - Epoch 2 accuracy: 100.0%
+2024-03-06 18:15:52,821 - Testing
+2024-03-06 18:16:19,406 - Test accuracy: 95.8%, Avg loss: 0.16
+2024-03-06 18:16:20,302 - Compute the mean and sd of activations
+2024-03-06 18:26:12,739 - apply controller at layer [1, 2, 3, 4, 5]
+network's weight shape layer1.0.conv1 torch.Size([64, 64, 3, 3])
+control weight tensor(116.527534, device='cuda:0')
+old weight tensor(9.164800, device='cuda:0')
+new weight tensor(5.749662, device='cuda:0')
+network's weight shape layer1.0.conv2 torch.Size([64, 64, 3, 3])
+control weight tensor(110.260010, device='cuda:0')
+old weight tensor(7.879010, device='cuda:0')
+new weight tensor(4.568777, device='cuda:0')
+network's weight shape layer1.1.conv1 torch.Size([64, 64, 3, 3])
+control weight tensor(87.874786, device='cuda:0')
+old weight tensor(8.841593, device='cuda:0')
+new weight tensor(4.050367, device='cuda:0')
+network's weight shape layer1.1.conv2 torch.Size([64, 64, 3, 3])
+control weight tensor(76.364746, device='cuda:0')
+old weight tensor(7.666634, device='cuda:0')
+new weight tensor(3.155750, device='cuda:0')
+network's weight shape layer2.0.conv1 torch.Size([128, 64, 3, 3])
+control weight tensor(95.710457, device='cuda:0')
+old weight tensor(10.289334, device='cuda:0')
+new weight tensor(3.636005, device='cuda:0')
+2024-03-06 18:26:13,160 - Training iteration 2 / 30
+2024-03-06 18:26:13,161 - Training...
+2024-03-06 18:28:21,320 - Epoch 1 accuracy: 100.0%
+2024-03-06 18:30:29,552 - Epoch 2 accuracy: 100.0%
+2024-03-06 18:30:29,553 - Testing
+2024-03-06 18:30:55,879 - Test accuracy: 95.9%, Avg loss: 0.15
+2024-03-06 18:30:55,881 - Training iteration 3 / 30
+2024-03-06 18:30:55,882 - Training...
+2024-03-06 18:32:59,849 - Epoch 1 accuracy: 100.0%
+2024-03-06 18:35:02,490 - Epoch 2 accuracy: 100.0%
+2024-03-06 18:35:02,491 - Testing
+2024-03-06 18:35:27,795 - Test accuracy: 95.7%, Avg loss: 0.15
+2024-03-06 18:35:27,797 - Training iteration 4 / 30
+2024-03-06 18:35:27,798 - Training...
+2024-03-06 18:37:31,800 - Epoch 1 accuracy: 100.0%
+2024-03-06 18:39:34,600 - Epoch 2 accuracy: 100.0%
+2024-03-06 18:39:34,601 - Testing
+2024-03-06 18:39:59,938 - Test accuracy: 95.9%, Avg loss: 0.14
+2024-03-06 18:39:59,940 - Training iteration 5 / 30
+2024-03-06 18:39:59,941 - Training...
+2024-03-06 18:42:03,115 - Epoch 1 accuracy: 100.0%
+2024-03-06 18:44:05,637 - Epoch 2 accuracy: 100.0%
+2024-03-06 18:44:05,638 - Testing
+2024-03-06 18:44:31,015 - Test accuracy: 95.9%, Avg loss: 0.14
+2024-03-06 18:44:31,017 - Training iteration 6 / 30
+2024-03-06 18:44:31,017 - Training...
+2024-03-06 18:46:32,758 - Epoch 1 accuracy: 100.0%
+2024-03-06 18:48:35,353 - Epoch 2 accuracy: 100.0%
+2024-03-06 18:48:35,354 - Testing
+2024-03-06 18:49:01,669 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-06 18:49:01,671 - Training iteration 7 / 30
+2024-03-06 18:49:01,672 - Training...
+2024-03-06 18:51:03,765 - Epoch 1 accuracy: 100.0%
+2024-03-06 18:53:06,114 - Epoch 2 accuracy: 95.9%
+2024-03-06 18:53:06,115 - Testing
+2024-03-06 18:53:32,545 - Test accuracy: 76.0%, Avg loss: 1.14
+2024-03-06 18:53:32,547 - Training iteration 8 / 30
+2024-03-06 18:53:32,548 - Training...
+2024-03-06 18:55:36,561 - Epoch 1 accuracy: 96.8%
+2024-03-06 18:57:43,996 - Epoch 2 accuracy: 97.8%
+2024-03-06 18:57:43,997 - Testing
+2024-03-06 18:58:09,091 - Test accuracy: 92.1%, Avg loss: 0.26
+2024-03-06 18:58:09,093 - Training iteration 9 / 30
+2024-03-06 18:58:09,094 - Training...
+2024-03-06 19:00:13,406 - Epoch 1 accuracy: 98.8%
+2024-03-06 19:02:16,251 - Epoch 2 accuracy: 98.3%
+2024-03-06 19:02:16,252 - Testing
+2024-03-06 19:02:41,966 - Test accuracy: 80.5%, Avg loss: 0.72
+2024-03-06 19:02:41,968 - Training iteration 10 / 30
+2024-03-06 19:02:41,969 - Training...
+2024-03-06 19:04:44,270 - Epoch 1 accuracy: 98.9%
+2024-03-06 19:06:47,072 - Epoch 2 accuracy: 98.9%
+2024-03-06 19:06:47,073 - Testing
+2024-03-06 19:07:13,334 - Test accuracy: 92.0%, Avg loss: 0.27
+2024-03-06 19:07:13,336 - Training iteration 11 / 30
+2024-03-06 19:07:13,337 - Training...
+2024-03-06 19:09:15,464 - Epoch 1 accuracy: 98.9%
+2024-03-06 19:11:17,796 - Epoch 2 accuracy: 98.9%
+2024-03-06 19:11:17,797 - Testing
+2024-03-06 19:11:43,516 - Test accuracy: 89.3%, Avg loss: 0.38
+2024-03-06 19:11:43,518 - Training iteration 12 / 30
+2024-03-06 19:11:43,519 - Training...
+2024-03-06 19:13:45,598 - Epoch 1 accuracy: 99.4%
+2024-03-06 19:15:54,000 - Epoch 2 accuracy: 99.0%
+2024-03-06 19:15:54,001 - Testing
+2024-03-06 19:16:19,267 - Test accuracy: 90.1%, Avg loss: 0.36
+2024-03-06 19:16:19,269 - Training iteration 13 / 30
+2024-03-06 19:16:19,270 - Training...
+2024-03-06 19:18:24,377 - Epoch 1 accuracy: 98.9%
+2024-03-06 19:20:30,759 - Epoch 2 accuracy: 99.0%
+2024-03-06 19:20:30,760 - Testing
+2024-03-06 19:20:56,078 - Test accuracy: 88.9%, Avg loss: 0.39
+2024-03-06 19:20:56,080 - Training iteration 14 / 30
+2024-03-06 19:20:56,081 - Training...
+2024-03-06 19:23:04,466 - Epoch 1 accuracy: 99.1%
+2024-03-06 19:25:06,729 - Epoch 2 accuracy: 99.6%
+2024-03-06 19:25:06,730 - Testing
+2024-03-06 19:25:33,135 - Test accuracy: 91.7%, Avg loss: 0.28
+2024-03-06 19:25:33,137 - Training iteration 15 / 30
+2024-03-06 19:25:33,138 - Training...
+2024-03-06 19:27:34,299 - Epoch 1 accuracy: 99.7%
+2024-03-06 19:29:36,238 - Epoch 2 accuracy: 99.9%
+2024-03-06 19:29:36,239 - Testing
+2024-03-06 19:30:01,099 - Test accuracy: 41.4%, Avg loss: 5.63
+2024-03-06 19:30:01,101 - Training iteration 16 / 30
+2024-03-06 19:30:01,102 - Training...
+2024-03-06 19:32:03,759 - Epoch 1 accuracy: 99.7%
+2024-03-06 19:34:05,718 - Epoch 2 accuracy: 98.0%
+2024-03-06 19:34:05,719 - Testing
+2024-03-06 19:34:31,517 - Test accuracy: 72.7%, Avg loss: 1.11
+2024-03-06 19:34:31,518 - Training iteration 17 / 30
+2024-03-06 19:34:31,519 - Training...
+2024-03-06 19:36:32,663 - Epoch 1 accuracy: 97.9%
+2024-03-06 19:38:34,957 - Epoch 2 accuracy: 98.5%
+2024-03-06 19:38:34,958 - Testing
+2024-03-06 19:39:00,007 - Test accuracy: 91.3%, Avg loss: 0.28
+2024-03-06 19:39:00,008 - Training iteration 18 / 30
+2024-03-06 19:39:00,009 - Training...
+2024-03-06 19:41:02,762 - Epoch 1 accuracy: 99.6%
+2024-03-06 19:43:04,990 - Epoch 2 accuracy: 100.0%
+2024-03-06 19:43:04,991 - Testing
+2024-03-06 19:43:30,135 - Test accuracy: 94.6%, Avg loss: 0.18
+2024-03-06 19:43:30,137 - Training iteration 19 / 30
+2024-03-06 19:43:30,138 - Training...
+2024-03-06 19:45:32,669 - Epoch 1 accuracy: 100.0%
+2024-03-06 19:47:36,944 - Epoch 2 accuracy: 100.0%
+2024-03-06 19:47:36,945 - Testing
+2024-03-06 19:48:03,571 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-06 19:48:03,572 - Training iteration 20 / 30
+2024-03-06 19:48:03,573 - Training...
+2024-03-06 19:50:06,139 - Epoch 1 accuracy: 100.0%
+2024-03-06 19:52:08,640 - Epoch 2 accuracy: 100.0%
+2024-03-06 19:52:08,641 - Testing
+2024-03-06 19:52:33,848 - Test accuracy: 91.9%, Avg loss: 0.26
+2024-03-06 19:52:33,850 - Training iteration 21 / 30
+2024-03-06 19:52:33,851 - Training...
+2024-03-06 19:54:36,026 - Epoch 1 accuracy: 100.0%
+2024-03-06 19:56:43,832 - Epoch 2 accuracy: 100.0%
+2024-03-06 19:56:43,833 - Testing
+2024-03-06 19:57:08,964 - Test accuracy: 90.9%, Avg loss: 0.30
+2024-03-06 19:57:08,966 - Training iteration 22 / 30
+2024-03-06 19:57:08,966 - Training...
+2024-03-06 19:59:18,570 - Epoch 1 accuracy: 100.0%
+2024-03-06 20:01:25,002 - Epoch 2 accuracy: 100.0%
+2024-03-06 20:01:25,003 - Testing
+2024-03-06 20:01:50,512 - Test accuracy: 95.5%, Avg loss: 0.14
+2024-03-06 20:01:50,514 - Training iteration 23 / 30
+2024-03-06 20:01:50,515 - Training...
+2024-03-06 20:03:53,684 - Epoch 1 accuracy: 100.0%
+2024-03-06 20:05:54,909 - Epoch 2 accuracy: 100.0%
+2024-03-06 20:05:54,910 - Testing
+2024-03-06 20:06:21,409 - Test accuracy: 95.5%, Avg loss: 0.14
+2024-03-06 20:06:21,411 - Training iteration 24 / 30
+2024-03-06 20:06:21,412 - Training...
+2024-03-06 20:08:22,925 - Epoch 1 accuracy: 100.0%
+2024-03-06 20:10:26,506 - Epoch 2 accuracy: 100.0%
+2024-03-06 20:10:26,507 - Testing
+2024-03-06 20:10:53,081 - Test accuracy: 40.6%, Avg loss: 2.12
+2024-03-06 20:10:53,083 - Training iteration 25 / 30
+2024-03-06 20:10:53,084 - Training...
+2024-03-06 20:12:57,042 - Epoch 1 accuracy: 88.6%
+2024-03-06 20:15:00,261 - Epoch 2 accuracy: 95.5%
+2024-03-06 20:15:00,262 - Testing
+2024-03-06 20:15:25,997 - Test accuracy: 48.4%, Avg loss: 2.66
+2024-03-06 20:15:25,999 - Training iteration 26 / 30
+2024-03-06 20:15:26,000 - Training...
+2024-03-06 20:17:32,876 - Epoch 1 accuracy: 97.5%
+2024-03-06 20:19:34,583 - Epoch 2 accuracy: 98.6%
+2024-03-06 20:19:34,584 - Testing
+2024-03-06 20:19:59,889 - Test accuracy: 88.2%, Avg loss: 0.40
+2024-03-06 20:19:59,891 - Training iteration 27 / 30
+2024-03-06 20:19:59,892 - Training...
+2024-03-06 20:22:08,407 - Epoch 1 accuracy: 98.8%
+2024-03-06 20:24:11,592 - Epoch 2 accuracy: 99.0%
+2024-03-06 20:24:11,593 - Testing
+2024-03-06 20:24:37,145 - Test accuracy: 86.8%, Avg loss: 0.46
+2024-03-06 20:24:37,146 - Training iteration 28 / 30
+2024-03-06 20:24:37,147 - Training...
+2024-03-06 20:26:39,630 - Epoch 1 accuracy: 99.3%
+2024-03-06 20:28:42,692 - Epoch 2 accuracy: 99.1%
+2024-03-06 20:28:42,693 - Testing
+2024-03-06 20:29:07,808 - Test accuracy: 86.2%, Avg loss: 0.49
+2024-03-06 20:29:07,810 - Training iteration 29 / 30
+2024-03-06 20:29:07,811 - Training...
+2024-03-06 20:31:09,911 - Epoch 1 accuracy: 99.5%
+2024-03-06 20:33:12,718 - Epoch 2 accuracy: 98.9%
+2024-03-06 20:33:12,719 - Testing
+2024-03-06 20:33:39,248 - Test accuracy: 54.2%, Avg loss: 3.20
+2024-03-06 20:33:44,213 - Compute the mean and sd of activations
+ 40%|████      | 2/5 [5:03:37<7:38:01, 9160.59s/it]2024-03-06 20:43:50,088 - [3/5] IMP loop
+2024-03-06 20:43:50,360 - Compression level: 62.9
+2024-03-06 20:43:50,360 - Training iteration 0 / 30
+2024-03-06 20:43:50,361 - Training...
+2024-03-06 20:45:53,224 - Epoch 1 accuracy: 99.9%
+2024-03-06 20:47:56,254 - Epoch 2 accuracy: 100.0%
+2024-03-06 20:47:56,255 - Testing
+2024-03-06 20:48:22,897 - Test accuracy: 95.2%, Avg loss: 0.15
+2024-03-06 20:48:22,899 - Training iteration 1 / 30
+2024-03-06 20:48:22,900 - Training...
+2024-03-06 20:50:26,686 - Epoch 1 accuracy: 100.0%
+2024-03-06 20:52:30,165 - Epoch 2 accuracy: 100.0%
+2024-03-06 20:52:30,166 - Testing
+2024-03-06 20:52:55,840 - Test accuracy: 96.1%, Avg loss: 0.13
+2024-03-06 20:52:55,842 - Training iteration 2 / 30
+2024-03-06 20:52:55,843 - Training...
+2024-03-06 20:54:59,366 - Epoch 1 accuracy: 100.0%
+2024-03-06 20:57:01,912 - Epoch 2 accuracy: 100.0%
+2024-03-06 20:57:01,913 - Testing
+2024-03-06 20:57:28,458 - Test accuracy: 96.0%, Avg loss: 0.13
+2024-03-06 20:57:28,460 - Training iteration 3 / 30
+2024-03-06 20:57:28,461 - Training...
+2024-03-06 20:59:30,926 - Epoch 1 accuracy: 100.0%
+2024-03-06 21:01:34,808 - Epoch 2 accuracy: 99.9%
+2024-03-06 21:01:34,809 - Testing
+2024-03-06 21:02:00,286 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-06 21:02:00,287 - Training iteration 4 / 30
+2024-03-06 21:02:00,288 - Training...
+2024-03-06 21:04:02,278 - Epoch 1 accuracy: 100.0%
+2024-03-06 21:06:09,695 - Epoch 2 accuracy: 100.0%
+2024-03-06 21:06:09,696 - Testing
+2024-03-06 21:06:35,436 - Test accuracy: 96.0%, Avg loss: 0.13
+2024-03-06 21:06:35,439 - Training iteration 5 / 30
+2024-03-06 21:06:35,440 - Training...
+2024-03-06 21:08:38,508 - Epoch 1 accuracy: 100.0%
+2024-03-06 21:10:40,817 - Epoch 2 accuracy: 100.0%
+2024-03-06 21:10:40,818 - Testing
+2024-03-06 21:11:06,277 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-06 21:11:06,279 - Training iteration 6 / 30
+2024-03-06 21:11:06,280 - Training...
+2024-03-06 21:13:08,538 - Epoch 1 accuracy: 100.0%
+2024-03-06 21:15:12,022 - Epoch 2 accuracy: 100.0%
+2024-03-06 21:15:12,023 - Testing
+2024-03-06 21:15:37,716 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-06 21:15:37,719 - Training iteration 7 / 30
+2024-03-06 21:15:37,719 - Training...
+2024-03-06 21:17:40,010 - Epoch 1 accuracy: 100.0%
+2024-03-06 21:19:42,220 - Epoch 2 accuracy: 96.6%
+2024-03-06 21:19:42,221 - Testing
+2024-03-06 21:20:07,414 - Test accuracy: 86.9%, Avg loss: 0.41
+2024-03-06 21:20:07,416 - Training iteration 8 / 30
+2024-03-06 21:20:07,417 - Training...
+2024-03-06 21:22:10,845 - Epoch 1 accuracy: 96.8%
+2024-03-06 21:24:15,531 - Epoch 2 accuracy: 98.4%
+2024-03-06 21:24:15,532 - Testing
+2024-03-06 21:24:40,734 - Test accuracy: 74.5%, Avg loss: 1.06
+2024-03-06 21:24:40,736 - Training iteration 9 / 30
+2024-03-06 21:24:40,737 - Training...
+2024-03-06 21:26:42,879 - Epoch 1 accuracy: 98.8%
+2024-03-06 21:28:46,699 - Epoch 2 accuracy: 99.0%
+2024-03-06 21:28:46,700 - Testing
+2024-03-06 21:29:13,250 - Test accuracy: 92.0%, Avg loss: 0.26
+2024-03-06 21:29:13,252 - Training iteration 10 / 30
+2024-03-06 21:29:13,253 - Training...
+2024-03-06 21:31:15,838 - Epoch 1 accuracy: 99.3%
+2024-03-06 21:33:19,014 - Epoch 2 accuracy: 99.0%
+2024-03-06 21:33:19,015 - Testing
+2024-03-06 21:33:44,294 - Test accuracy: 50.1%, Avg loss: 3.27
+2024-03-06 21:33:44,296 - Training iteration 11 / 30
+2024-03-06 21:33:44,297 - Training...
+2024-03-06 21:35:46,644 - Epoch 1 accuracy: 99.1%
+2024-03-06 21:37:49,452 - Epoch 2 accuracy: 99.1%
+2024-03-06 21:37:49,453 - Testing
+2024-03-06 21:38:15,653 - Test accuracy: 67.4%, Avg loss: 1.65
+2024-03-06 21:38:15,655 - Training iteration 12 / 30
+2024-03-06 21:38:15,656 - Training...
+2024-03-06 21:40:23,854 - Epoch 1 accuracy: 99.4%
+2024-03-06 21:42:26,333 - Epoch 2 accuracy: 98.7%
+2024-03-06 21:42:26,334 - Testing
+2024-03-06 21:42:52,625 - Test accuracy: 92.7%, Avg loss: 0.23
+2024-03-06 21:42:52,627 - Training iteration 13 / 30
+2024-03-06 21:42:52,628 - Training...
+2024-03-06 21:44:55,287 - Epoch 1 accuracy: 99.3%
+2024-03-06 21:46:58,395 - Epoch 2 accuracy: 99.4%
+2024-03-06 21:46:58,395 - Testing
+2024-03-06 21:47:23,458 - Test accuracy: 88.2%, Avg loss: 0.40
+2024-03-06 21:47:23,460 - Training iteration 14 / 30
+2024-03-06 21:47:23,460 - Training...
+2024-03-06 21:49:27,795 - Epoch 1 accuracy: 98.6%
+2024-03-06 21:51:31,077 - Epoch 2 accuracy: 98.9%
+2024-03-06 21:51:31,078 - Testing
+2024-03-06 21:51:56,064 - Test accuracy: 71.6%, Avg loss: 1.20
+2024-03-06 21:51:56,066 - Training iteration 15 / 30
+2024-03-06 21:51:56,067 - Training...
+2024-03-06 21:54:00,038 - Epoch 1 accuracy: 99.0%
+2024-03-06 21:56:06,702 - Epoch 2 accuracy: 99.8%
+2024-03-06 21:56:06,703 - Testing
+2024-03-06 21:56:32,023 - Test accuracy: 93.8%, Avg loss: 0.20
+2024-03-06 21:56:32,025 - Training iteration 16 / 30
+2024-03-06 21:56:32,026 - Training...
+2024-03-06 21:58:35,672 - Epoch 1 accuracy: 100.0%
+2024-03-06 22:00:41,125 - Epoch 2 accuracy: 100.0%
+2024-03-06 22:00:41,126 - Testing
+2024-03-06 22:01:07,695 - Test accuracy: 95.2%, Avg loss: 0.15
+2024-03-06 22:01:07,697 - Training iteration 17 / 30
+2024-03-06 22:01:07,698 - Training...
+2024-03-06 22:03:11,276 - Epoch 1 accuracy: 100.0%
+2024-03-06 22:05:13,937 - Epoch 2 accuracy: 100.0%
+2024-03-06 22:05:13,938 - Testing
+2024-03-06 22:05:39,198 - Test accuracy: 95.2%, Avg loss: 0.15
+2024-03-06 22:05:39,200 - Training iteration 18 / 30
+2024-03-06 22:05:39,200 - Training...
+2024-03-06 22:07:40,598 - Epoch 1 accuracy: 100.0%
+2024-03-06 22:09:43,881 - Epoch 2 accuracy: 100.0%
+2024-03-06 22:09:43,881 - Testing
+2024-03-06 22:10:09,171 - Test accuracy: 95.4%, Avg loss: 0.14
+2024-03-06 22:10:09,173 - Training iteration 19 / 30
+2024-03-06 22:10:09,173 - Training...
+2024-03-06 22:12:12,304 - Epoch 1 accuracy: 100.0%
+2024-03-06 22:14:14,203 - Epoch 2 accuracy: 100.0%
+2024-03-06 22:14:14,204 - Testing
+2024-03-06 22:14:40,668 - Test accuracy: 95.0%, Avg loss: 0.16
+2024-03-06 22:14:40,670 - Training iteration 20 / 30
+2024-03-06 22:14:40,671 - Training...
+2024-03-06 22:16:42,891 - Epoch 1 accuracy: 100.0%
+2024-03-06 22:18:45,224 - Epoch 2 accuracy: 100.0%
+2024-03-06 22:18:45,225 - Testing
+2024-03-06 22:19:10,407 - Test accuracy: 93.3%, Avg loss: 0.22
+2024-03-06 22:19:10,408 - Training iteration 21 / 30
+2024-03-06 22:19:10,409 - Training...
+2024-03-06 22:21:11,864 - Epoch 1 accuracy: 100.0%
+2024-03-06 22:23:16,334 - Epoch 2 accuracy: 97.7%
+2024-03-06 22:23:16,335 - Testing
+2024-03-06 22:23:41,696 - Test accuracy: 42.5%, Avg loss: 2.86
+2024-03-06 22:23:41,698 - Training iteration 22 / 30
+2024-03-06 22:23:41,699 - Training...
+2024-03-06 22:25:45,435 - Epoch 1 accuracy: 91.8%
+2024-03-06 22:27:47,573 - Epoch 2 accuracy: 96.5%
+2024-03-06 22:27:47,574 - Testing
+2024-03-06 22:28:13,947 - Test accuracy: 59.4%, Avg loss: 1.85
+2024-03-06 22:28:13,949 - Training iteration 23 / 30
+2024-03-06 22:28:13,950 - Training...
+2024-03-06 22:30:17,691 - Epoch 1 accuracy: 97.8%
+2024-03-06 22:32:20,091 - Epoch 2 accuracy: 98.6%
+2024-03-06 22:32:20,092 - Testing
+2024-03-06 22:32:45,535 - Test accuracy: 66.7%, Avg loss: 1.62
+2024-03-06 22:32:45,537 - Training iteration 24 / 30
+2024-03-06 22:32:45,538 - Training...
+2024-03-06 22:34:47,537 - Epoch 1 accuracy: 99.0%
+2024-03-06 22:36:49,865 - Epoch 2 accuracy: 99.4%
+2024-03-06 22:36:49,866 - Testing
+2024-03-06 22:37:16,499 - Test accuracy: 89.6%, Avg loss: 0.35
+2024-03-06 22:37:16,500 - Training iteration 25 / 30
+2024-03-06 22:37:16,501 - Training...
+2024-03-06 22:39:18,505 - Epoch 1 accuracy: 99.3%
+2024-03-06 22:41:26,549 - Epoch 2 accuracy: 99.2%
+2024-03-06 22:41:26,550 - Testing
+2024-03-06 22:41:53,168 - Test accuracy: 80.0%, Avg loss: 0.83
+2024-03-06 22:41:53,170 - Training iteration 26 / 30
+2024-03-06 22:41:53,171 - Training...
+2024-03-06 22:43:55,166 - Epoch 1 accuracy: 98.8%
+2024-03-06 22:46:03,470 - Epoch 2 accuracy: 98.9%
+2024-03-06 22:46:03,471 - Testing
+2024-03-06 22:46:30,177 - Test accuracy: 90.3%, Avg loss: 0.33
+2024-03-06 22:46:30,179 - Training iteration 27 / 30
+2024-03-06 22:46:30,179 - Training...
+2024-03-06 22:48:33,077 - Epoch 1 accuracy: 99.4%
+2024-03-06 22:50:36,213 - Epoch 2 accuracy: 99.8%
+2024-03-06 22:50:36,214 - Testing
+2024-03-06 22:51:01,483 - Test accuracy: 86.5%, Avg loss: 0.53
+2024-03-06 22:51:01,485 - Training iteration 28 / 30
+2024-03-06 22:51:01,486 - Training...
+2024-03-06 22:53:04,033 - Epoch 1 accuracy: 99.9%
+2024-03-06 22:55:06,234 - Epoch 2 accuracy: 100.0%
+2024-03-06 22:55:06,235 - Testing
+2024-03-06 22:55:31,744 - Test accuracy: 88.6%, Avg loss: 0.42
+2024-03-06 22:55:31,753 - Training iteration 29 / 30
+2024-03-06 22:55:31,754 - Training...
+2024-03-06 22:57:34,297 - Epoch 1 accuracy: 100.0%
+2024-03-06 22:59:44,169 - Epoch 2 accuracy: 100.0%
+2024-03-06 22:59:44,169 - Testing
+2024-03-06 23:00:11,494 - Test accuracy: 94.5%, Avg loss: 0.18
+2024-03-06 23:00:16,433 - Compute the mean and sd of activations
+ 60%|██████    | 3/5 [7:29:36<4:59:13, 8976.82s/it]2024-03-06 23:09:48,241 - [4/5] IMP loop
+2024-03-06 23:09:48,521 - Compression level: 50.3
+2024-03-06 23:09:48,521 - Training iteration 0 / 30
+2024-03-06 23:09:48,522 - Training...
+2024-03-06 23:11:51,770 - Epoch 1 accuracy: 99.8%
+2024-03-06 23:13:53,873 - Epoch 2 accuracy: 100.0%
+2024-03-06 23:13:53,874 - Testing
+2024-03-06 23:14:19,149 - Test accuracy: 95.6%, Avg loss: 0.14
+2024-03-06 23:14:19,151 - Training iteration 1 / 30
+2024-03-06 23:14:19,152 - Training...
+2024-03-06 23:16:20,370 - Epoch 1 accuracy: 100.0%
+2024-03-06 23:18:22,805 - Epoch 2 accuracy: 100.0%
+2024-03-06 23:18:22,806 - Testing
+2024-03-06 23:18:49,623 - Test accuracy: 95.9%, Avg loss: 0.13
+2024-03-06 23:18:49,625 - Training iteration 2 / 30
+2024-03-06 23:18:49,626 - Training...
+2024-03-06 23:20:53,712 - Epoch 1 accuracy: 100.0%
+2024-03-06 23:22:57,208 - Epoch 2 accuracy: 100.0%
+2024-03-06 23:22:57,209 - Testing
+2024-03-06 23:23:22,686 - Test accuracy: 95.8%, Avg loss: 0.13
+2024-03-06 23:23:22,688 - Training iteration 3 / 30
+2024-03-06 23:23:22,689 - Training...
+2024-03-06 23:25:25,435 - Epoch 1 accuracy: 100.0%
+2024-03-06 23:27:27,314 - Epoch 2 accuracy: 100.0%
+2024-03-06 23:27:27,315 - Testing
+2024-03-06 23:27:53,429 - Test accuracy: 96.0%, Avg loss: 0.13
+2024-03-06 23:27:53,431 - Training iteration 4 / 30
+2024-03-06 23:27:53,432 - Training...
+2024-03-06 23:29:57,530 - Epoch 1 accuracy: 100.0%
+2024-03-06 23:31:59,670 - Epoch 2 accuracy: 100.0%
+2024-03-06 23:31:59,671 - Testing
+2024-03-06 23:32:25,156 - Test accuracy: 95.8%, Avg loss: 0.13
+2024-03-06 23:32:25,158 - Training iteration 5 / 30
+2024-03-06 23:32:25,159 - Training...
+2024-03-06 23:34:29,211 - Epoch 1 accuracy: 100.0%
+2024-03-06 23:36:37,069 - Epoch 2 accuracy: 98.1%
+2024-03-06 23:36:37,070 - Testing
+2024-03-06 23:37:02,337 - Test accuracy: 92.1%, Avg loss: 0.25
+2024-03-06 23:37:02,339 - Training iteration 6 / 30
+2024-03-06 23:37:02,340 - Training...
+2024-03-06 23:39:06,439 - Epoch 1 accuracy: 99.2%
+2024-03-06 23:41:12,248 - Epoch 2 accuracy: 99.5%
+2024-03-06 23:41:12,249 - Testing
+2024-03-06 23:41:37,407 - Test accuracy: 92.2%, Avg loss: 0.24
+2024-03-06 23:41:37,409 - Training iteration 7 / 30
+2024-03-06 23:41:37,410 - Training...
+2024-03-06 23:43:40,090 - Epoch 1 accuracy: 99.5%
+2024-03-06 23:45:41,514 - Epoch 2 accuracy: 99.5%
+2024-03-06 23:45:41,515 - Testing
+2024-03-06 23:46:06,618 - Test accuracy: 82.5%, Avg loss: 0.65
+2024-03-06 23:46:06,620 - Training iteration 8 / 30
+2024-03-06 23:46:06,621 - Training...
+2024-03-06 23:48:09,283 - Epoch 1 accuracy: 99.3%
+2024-03-06 23:50:15,456 - Epoch 2 accuracy: 98.9%
+2024-03-06 23:50:15,457 - Testing
+2024-03-06 23:50:41,676 - Test accuracy: 26.9%, Avg loss: 8.18
+2024-03-06 23:50:41,677 - Training iteration 9 / 30
+2024-03-06 23:50:41,678 - Training...
+2024-03-06 23:52:44,663 - Epoch 1 accuracy: 99.0%
+2024-03-06 23:54:52,124 - Epoch 2 accuracy: 99.5%
+2024-03-06 23:54:52,125 - Testing
+2024-03-06 23:55:17,383 - Test accuracy: 64.7%, Avg loss: 2.21
+2024-03-06 23:55:17,385 - Training iteration 10 / 30
+2024-03-06 23:55:17,386 - Training...
+2024-03-06 23:57:20,986 - Epoch 1 accuracy: 99.1%
+2024-03-06 23:59:26,935 - Epoch 2 accuracy: 99.5%
+2024-03-06 23:59:26,936 - Testing
+2024-03-06 23:59:52,138 - Test accuracy: 36.2%, Avg loss: 3.68
+2024-03-06 23:59:52,140 - Training iteration 11 / 30
+2024-03-06 23:59:52,141 - Training...
+2024-03-07 00:01:54,570 - Epoch 1 accuracy: 99.1%
+2024-03-07 00:03:58,200 - Epoch 2 accuracy: 99.1%
+2024-03-07 00:03:58,201 - Testing
+2024-03-07 00:04:24,638 - Test accuracy: 40.9%, Avg loss: 2.63
+2024-03-07 00:04:24,640 - Training iteration 12 / 30
+2024-03-07 00:04:24,641 - Training...
+2024-03-07 00:06:28,186 - Epoch 1 accuracy: 99.2%
+2024-03-07 00:08:31,340 - Epoch 2 accuracy: 99.8%
+2024-03-07 00:08:31,341 - Testing
+2024-03-07 00:08:57,631 - Test accuracy: 94.2%, Avg loss: 0.20
+2024-03-07 00:08:57,633 - Training iteration 13 / 30
+2024-03-07 00:08:57,634 - Training...
+2024-03-07 00:11:00,672 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:13:04,816 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:13:04,817 - Testing
+2024-03-07 00:13:29,976 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-07 00:13:29,978 - Training iteration 14 / 30
+2024-03-07 00:13:29,979 - Training...
+2024-03-07 00:15:33,583 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:17:36,502 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:17:36,503 - Testing
+2024-03-07 00:18:01,623 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-07 00:18:01,625 - Training iteration 15 / 30
+2024-03-07 00:18:01,626 - Training...
+2024-03-07 00:20:05,114 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:22:07,997 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:22:07,998 - Testing
+2024-03-07 00:22:33,179 - Test accuracy: 95.8%, Avg loss: 0.14
+2024-03-07 00:22:33,181 - Training iteration 16 / 30
+2024-03-07 00:22:33,182 - Training...
+2024-03-07 00:24:37,068 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:26:39,179 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:26:39,180 - Testing
+2024-03-07 00:27:04,321 - Test accuracy: 95.7%, Avg loss: 0.13
+2024-03-07 00:27:04,323 - Training iteration 17 / 30
+2024-03-07 00:27:04,324 - Training...
+2024-03-07 00:29:06,932 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:31:13,820 - Epoch 2 accuracy: 92.9%
+2024-03-07 00:31:13,821 - Testing
+2024-03-07 00:31:39,780 - Test accuracy: 42.2%, Avg loss: 3.60
+2024-03-07 00:31:39,782 - Training iteration 18 / 30
+2024-03-07 00:31:39,783 - Training...
+2024-03-07 00:33:43,905 - Epoch 1 accuracy: 97.1%
+2024-03-07 00:35:48,577 - Epoch 2 accuracy: 98.7%
+2024-03-07 00:35:48,578 - Testing
+2024-03-07 00:36:13,983 - Test accuracy: 89.0%, Avg loss: 0.38
+2024-03-07 00:36:13,985 - Training iteration 19 / 30
+2024-03-07 00:36:13,986 - Training...
+2024-03-07 00:38:18,936 - Epoch 1 accuracy: 99.1%
+2024-03-07 00:40:24,560 - Epoch 2 accuracy: 98.9%
+2024-03-07 00:40:24,561 - Testing
+2024-03-07 00:40:51,386 - Test accuracy: 31.0%, Avg loss: 8.11
+2024-03-07 00:40:51,388 - Training iteration 20 / 30
+2024-03-07 00:40:51,389 - Training...
+2024-03-07 00:42:58,555 - Epoch 1 accuracy: 98.9%
+2024-03-07 00:45:58,890 - Epoch 2 accuracy: 99.0%
+2024-03-07 00:45:58,890 - Testing
+2024-03-07 00:46:44,460 - Test accuracy: 49.5%, Avg loss: 2.32
+2024-03-07 00:46:44,461 - Training iteration 21 / 30
+2024-03-07 00:46:44,462 - Training...
+2024-03-07 00:50:08,437 - Epoch 1 accuracy: 99.3%
+2024-03-07 00:53:37,310 - Epoch 2 accuracy: 99.9%
+2024-03-07 00:53:37,311 - Testing
+2024-03-07 00:54:18,672 - Test accuracy: 94.0%, Avg loss: 0.21
+2024-03-07 00:54:18,673 - Training iteration 22 / 30
+2024-03-07 00:54:18,674 - Training...
+2024-03-07 00:57:10,473 - Epoch 1 accuracy: 100.0%
+2024-03-07 00:59:17,437 - Epoch 2 accuracy: 100.0%
+2024-03-07 00:59:17,438 - Testing
+2024-03-07 00:59:43,047 - Test accuracy: 94.7%, Avg loss: 0.17
+2024-03-07 00:59:43,049 - Training iteration 23 / 30
+2024-03-07 00:59:43,049 - Training...
+2024-03-07 01:01:48,048 - Epoch 1 accuracy: 100.0%
+2024-03-07 01:03:52,609 - Epoch 2 accuracy: 100.0%
+2024-03-07 01:03:52,610 - Testing
+2024-03-07 01:04:19,183 - Test accuracy: 95.5%, Avg loss: 0.15
+2024-03-07 01:04:19,185 - Training iteration 24 / 30
+2024-03-07 01:04:19,186 - Training...
+2024-03-07 01:06:28,165 - Epoch 1 accuracy: 100.0%
+2024-03-07 01:08:49,733 - Epoch 2 accuracy: 100.0%
+2024-03-07 01:08:49,734 - Testing
+2024-03-07 01:09:18,974 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-07 01:09:18,975 - Training iteration 25 / 30
+2024-03-07 01:09:18,975 - Training...
+2024-03-07 01:11:41,206 - Epoch 1 accuracy: 100.0%
+2024-03-07 01:14:00,435 - Epoch 2 accuracy: 100.0%
+2024-03-07 01:14:00,435 - Testing
+2024-03-07 01:14:28,585 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-07 01:14:28,587 - Training iteration 26 / 30
+2024-03-07 01:14:28,588 - Training...
+2024-03-07 01:16:40,525 - Epoch 1 accuracy: 100.0%
+2024-03-07 01:19:04,061 - Epoch 2 accuracy: 100.0%
+2024-03-07 01:19:04,062 - Testing
+2024-03-07 01:19:32,819 - Test accuracy: 95.6%, Avg loss: 0.15
+2024-03-07 01:19:32,821 - Training iteration 27 / 30
+2024-03-07 01:19:32,822 - Training...
+2024-03-07 01:21:54,645 - Epoch 1 accuracy: 100.0%
+2024-03-07 01:24:12,710 - Epoch 2 accuracy: 100.0%
+2024-03-07 01:24:12,711 - Testing
+2024-03-07 01:24:39,608 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-07 01:24:39,609 - Training iteration 28 / 30
+2024-03-07 01:24:39,609 - Training...
+2024-03-07 01:27:06,462 - Epoch 1 accuracy: 100.0%
+2024-03-07 01:29:26,223 - Epoch 2 accuracy: 100.0%
+2024-03-07 01:29:26,223 - Testing
+2024-03-07 01:29:55,154 - Test accuracy: 94.7%, Avg loss: 0.17
+2024-03-07 01:29:55,155 - Training iteration 29 / 30
+2024-03-07 01:29:55,156 - Training...
+2024-03-07 01:32:38,118 - Epoch 1 accuracy: 100.0%
+2024-03-07 01:35:16,185 - Epoch 2 accuracy: 100.0%
+2024-03-07 01:35:16,185 - Testing
+2024-03-07 01:35:57,529 - Test accuracy: 95.2%, Avg loss: 0.16
+2024-03-07 01:36:04,698 - Compute the mean and sd of activations
+ 80%|████████  | 4/5 [10:10:47<2:34:11, 9251.13s/it]2024-03-07 01:50:59,865 - [5/5] IMP loop
+2024-03-07 01:51:00,352 - Compression level: 41.4
+2024-03-07 01:51:00,352 - Training iteration 0 / 30
+2024-03-07 01:51:00,353 - Training...
+2024-03-07 01:53:13,282 - Epoch 1 accuracy: 99.5%
+2024-03-07 01:55:27,320 - Epoch 2 accuracy: 99.8%
+2024-03-07 01:55:27,320 - Testing
+2024-03-07 01:55:55,042 - Test accuracy: 94.8%, Avg loss: 0.17
+2024-03-07 01:55:55,043 - Training iteration 1 / 30
+2024-03-07 01:55:55,043 - Training...
+2024-03-07 01:58:10,118 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:00:12,673 - Epoch 2 accuracy: 99.9%
+2024-03-07 02:00:12,674 - Testing
+2024-03-07 02:00:39,334 - Test accuracy: 86.3%, Avg loss: 0.47
+2024-03-07 02:00:39,336 - Training iteration 2 / 30
+2024-03-07 02:00:39,337 - Training...
+2024-03-07 02:02:42,423 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:04:47,264 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:04:47,265 - Testing
+2024-03-07 02:05:12,533 - Test accuracy: 74.2%, Avg loss: 1.30
+2024-03-07 02:05:12,535 - Training iteration 3 / 30
+2024-03-07 02:05:12,536 - Training...
+2024-03-07 02:07:16,710 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:09:31,334 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:09:31,335 - Testing
+2024-03-07 02:09:58,867 - Test accuracy: 96.0%, Avg loss: 0.13
+2024-03-07 02:09:58,869 - Training iteration 4 / 30
+2024-03-07 02:09:58,870 - Training...
+2024-03-07 02:12:13,850 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:14:28,353 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:14:28,355 - Testing
+2024-03-07 02:14:56,427 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-07 02:14:56,428 - Training iteration 5 / 30
+2024-03-07 02:14:56,429 - Training...
+2024-03-07 02:17:05,213 - Epoch 1 accuracy: 99.9%
+2024-03-07 02:19:07,121 - Epoch 2 accuracy: 98.7%
+2024-03-07 02:19:07,122 - Testing
+2024-03-07 02:19:32,319 - Test accuracy: 89.3%, Avg loss: 0.34
+2024-03-07 02:19:32,321 - Training iteration 6 / 30
+2024-03-07 02:19:32,322 - Training...
+2024-03-07 02:21:35,314 - Epoch 1 accuracy: 99.8%
+2024-03-07 02:23:37,329 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:23:37,330 - Testing
+2024-03-07 02:24:02,785 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-07 02:24:02,787 - Training iteration 7 / 30
+2024-03-07 02:24:02,788 - Training...
+2024-03-07 02:26:14,978 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:28:30,550 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:28:30,551 - Testing
+2024-03-07 02:28:58,598 - Test accuracy: 95.7%, Avg loss: 0.14
+2024-03-07 02:28:58,600 - Training iteration 8 / 30
+2024-03-07 02:28:58,600 - Training...
+2024-03-07 02:31:12,923 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:33:24,666 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:33:24,667 - Testing
+2024-03-07 02:33:51,656 - Test accuracy: 96.1%, Avg loss: 0.13
+2024-03-07 02:33:51,658 - Training iteration 9 / 30
+2024-03-07 02:33:51,659 - Training...
+2024-03-07 02:35:58,538 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:38:03,476 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:38:03,477 - Testing
+2024-03-07 02:38:29,346 - Test accuracy: 96.1%, Avg loss: 0.13
+2024-03-07 02:38:29,347 - Training iteration 10 / 30
+2024-03-07 02:38:29,348 - Training...
+2024-03-07 02:40:35,078 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:42:41,693 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:42:41,694 - Testing
+2024-03-07 02:43:09,338 - Test accuracy: 95.6%, Avg loss: 0.15
+2024-03-07 02:43:09,339 - Training iteration 11 / 30
+2024-03-07 02:43:09,339 - Training...
+2024-03-07 02:45:23,447 - Epoch 1 accuracy: 100.0%
+2024-03-07 02:47:38,286 - Epoch 2 accuracy: 100.0%
+2024-03-07 02:47:38,286 - Testing
+2024-03-07 02:48:06,556 - Test accuracy: 70.8%, Avg loss: 1.14
+2024-03-07 02:48:06,558 - Training iteration 12 / 30
+2024-03-07 02:48:06,559 - Training...
+2024-03-07 02:50:18,958 - Epoch 1 accuracy: 94.2%
+2024-03-07 02:52:24,535 - Epoch 2 accuracy: 95.7%
+2024-03-07 02:52:24,536 - Testing
+2024-03-07 02:52:50,159 - Test accuracy: 88.3%, Avg loss: 0.37
+2024-03-07 02:52:50,161 - Training iteration 13 / 30
+2024-03-07 02:52:50,162 - Training...
+2024-03-07 02:54:53,992 - Epoch 1 accuracy: 98.4%
+2024-03-07 02:56:58,263 - Epoch 2 accuracy: 98.8%
+2024-03-07 02:56:58,264 - Testing
+2024-03-07 02:57:23,518 - Test accuracy: 71.7%, Avg loss: 1.07
+2024-03-07 02:57:23,519 - Training iteration 14 / 30
+2024-03-07 02:57:23,520 - Training...
+2024-03-07 02:59:28,959 - Epoch 1 accuracy: 98.7%
+2024-03-07 03:01:33,867 - Epoch 2 accuracy: 99.6%
+2024-03-07 03:01:33,868 - Testing
+2024-03-07 03:02:00,408 - Test accuracy: 91.8%, Avg loss: 0.30
+2024-03-07 03:02:00,409 - Training iteration 15 / 30
+2024-03-07 03:02:00,410 - Training...
+2024-03-07 03:04:16,835 - Epoch 1 accuracy: 99.7%
+2024-03-07 03:06:33,290 - Epoch 2 accuracy: 99.4%
+2024-03-07 03:06:33,291 - Testing
+2024-03-07 03:07:00,762 - Test accuracy: 80.1%, Avg loss: 0.80
+2024-03-07 03:07:00,763 - Training iteration 16 / 30
+2024-03-07 03:07:00,764 - Training...
+2024-03-07 03:09:16,078 - Epoch 1 accuracy: 99.6%
+2024-03-07 03:11:23,963 - Epoch 2 accuracy: 99.8%
+2024-03-07 03:11:23,964 - Testing
+2024-03-07 03:11:50,042 - Test accuracy: 69.2%, Avg loss: 1.47
+2024-03-07 03:11:50,044 - Training iteration 17 / 30
+2024-03-07 03:11:50,045 - Training...
+2024-03-07 03:13:55,053 - Epoch 1 accuracy: 98.3%
+2024-03-07 03:15:59,763 - Epoch 2 accuracy: 98.9%
+2024-03-07 03:15:59,765 - Testing
+2024-03-07 03:16:25,471 - Test accuracy: 30.9%, Avg loss: 3.91
+2024-03-07 03:16:25,473 - Training iteration 18 / 30
+2024-03-07 03:16:25,474 - Training...
+2024-03-07 03:18:29,290 - Epoch 1 accuracy: 98.7%
+2024-03-07 03:20:42,421 - Epoch 2 accuracy: 99.0%
+2024-03-07 03:20:42,421 - Testing
+2024-03-07 03:21:10,641 - Test accuracy: 91.7%, Avg loss: 0.28
+2024-03-07 03:21:10,642 - Training iteration 19 / 30
+2024-03-07 03:21:10,642 - Training...
+2024-03-07 03:23:25,992 - Epoch 1 accuracy: 99.7%
+2024-03-07 03:25:40,891 - Epoch 2 accuracy: 100.0%
+2024-03-07 03:25:40,892 - Testing
+2024-03-07 03:26:08,757 - Test accuracy: 94.7%, Avg loss: 0.17
+2024-03-07 03:26:08,759 - Training iteration 20 / 30
+2024-03-07 03:26:08,760 - Training...
+2024-03-07 03:28:11,105 - Epoch 1 accuracy: 100.0%
+2024-03-07 03:30:15,213 - Epoch 2 accuracy: 100.0%
+2024-03-07 03:30:15,214 - Testing
+2024-03-07 03:30:41,680 - Test accuracy: 95.4%, Avg loss: 0.15
+2024-03-07 03:30:41,682 - Training iteration 21 / 30
+2024-03-07 03:30:41,683 - Training...
+2024-03-07 03:32:47,712 - Epoch 1 accuracy: 100.0%
+2024-03-07 03:34:49,831 - Epoch 2 accuracy: 100.0%
+2024-03-07 03:34:49,832 - Testing
+2024-03-07 03:35:16,078 - Test accuracy: 95.2%, Avg loss: 0.15
+2024-03-07 03:35:16,080 - Training iteration 22 / 30
+2024-03-07 03:35:16,081 - Training...
+2024-03-07 03:37:18,586 - Epoch 1 accuracy: 100.0%
+2024-03-07 03:39:26,883 - Epoch 2 accuracy: 100.0%
+2024-03-07 03:39:26,884 - Testing
+2024-03-07 03:39:52,037 - Test accuracy: 11.4%, Avg loss: 6.34
+2024-03-07 03:39:52,039 - Training iteration 23 / 30
+2024-03-07 03:39:52,040 - Training...
+2024-03-07 03:41:55,491 - Epoch 1 accuracy: 96.1%
+2024-03-07 03:43:58,086 - Epoch 2 accuracy: 97.2%
+2024-03-07 03:43:58,087 - Testing
+2024-03-07 03:44:24,128 - Test accuracy: 78.5%, Avg loss: 0.80
+2024-03-07 03:44:24,130 - Training iteration 24 / 30
+2024-03-07 03:44:24,131 - Training...
+2024-03-07 03:46:26,066 - Epoch 1 accuracy: 98.8%
+2024-03-07 03:48:28,650 - Epoch 2 accuracy: 98.8%
+2024-03-07 03:48:28,651 - Testing
+2024-03-07 03:48:54,822 - Test accuracy: 72.5%, Avg loss: 1.32
+2024-03-07 03:48:54,824 - Training iteration 25 / 30
+2024-03-07 03:48:54,825 - Training...
+2024-03-07 03:50:59,930 - Epoch 1 accuracy: 99.3%
+2024-03-07 03:53:02,770 - Epoch 2 accuracy: 99.7%
+2024-03-07 03:53:02,771 - Testing
+2024-03-07 03:53:27,983 - Test accuracy: 87.3%, Avg loss: 0.46
+2024-03-07 03:53:27,985 - Training iteration 26 / 30
+2024-03-07 03:53:27,986 - Training...
+2024-03-07 03:55:30,155 - Epoch 1 accuracy: 99.9%
+2024-03-07 03:57:31,908 - Epoch 2 accuracy: 100.0%
+2024-03-07 03:57:31,909 - Testing
+2024-03-07 03:57:57,518 - Test accuracy: 94.6%, Avg loss: 0.18
+2024-03-07 03:57:57,520 - Training iteration 27 / 30
+2024-03-07 03:57:57,520 - Training...
+2024-03-07 04:00:02,270 - Epoch 1 accuracy: 100.0%
+2024-03-07 04:02:04,486 - Epoch 2 accuracy: 100.0%
+2024-03-07 04:02:04,487 - Testing
+2024-03-07 04:02:30,950 - Test accuracy: 94.9%, Avg loss: 0.17
+2024-03-07 04:02:30,952 - Training iteration 28 / 30
+2024-03-07 04:02:30,952 - Training...
+2024-03-07 04:04:33,448 - Epoch 1 accuracy: 100.0%
+2024-03-07 04:06:40,875 - Epoch 2 accuracy: 100.0%
+2024-03-07 04:06:40,876 - Testing
+2024-03-07 04:07:07,353 - Test accuracy: 95.0%, Avg loss: 0.16
+2024-03-07 04:07:07,355 - Training iteration 29 / 30
+2024-03-07 04:07:07,356 - Training...
+2024-03-07 04:09:18,605 - Epoch 1 accuracy: 100.0%
+2024-03-07 04:11:30,164 - Epoch 2 accuracy: 100.0%
+2024-03-07 04:11:30,165 - Testing
+2024-03-07 04:11:56,734 - Test accuracy: 95.1%, Avg loss: 0.15
+2024-03-07 04:12:01,696 - Compute the mean and sd of activations
+100%|██████████| 5/5 [12:38:14<00:00, 9105.36s/it]  100%|██████████| 5/5 [12:38:14<00:00, 9098.93s/it]

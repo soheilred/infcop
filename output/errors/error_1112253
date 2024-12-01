@@ -1,0 +1,15 @@
+13:4: not a valid test operator: (
+13:4: not a valid test operator: 525.85.12
+  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [13:58<55:55, 838.99s/it] 20%|██        | 1/5 [21:39<1:26:36, 1299.25s/it]
+Traceback (most recent call last):
+  File "prune.py", line 603, in <module>
+    main()
+  File "prune.py", line 593, in main
+    perf_exper(logger, args, device, run_dir)
+  File "prune.py", line 550, in perf_exper
+    all_acc, conn = perf_lth(logger, device, args, controller)
+  File "prune.py", line 443, in perf_lth
+    pruning.control(corr, act.layers_dim, imp_iter)
+  File "prune.py", line 312, in control
+    control_weights = np.exp(abs(control_weights))
+UnboundLocalError: local variable 'control_weights' referenced before assignment

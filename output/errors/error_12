@@ -1,0 +1,22 @@
+/var/spool/slurmd/job00012/slurm_script: line 22: module: command not found
+/var/spool/slurmd/job00012/slurm_script: line 25: /conda-init: No such file or directory
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+/var/spool/slurmd/job00012/slurm_script: line 28: singularity: command not found

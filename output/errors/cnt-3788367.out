@@ -1,0 +1,42 @@
+#############################
+Thu Mar  7 12:50:16 AM EST 2024
+--net_train_epochs=50 --net_warmup=10
+3788371
+In dir: /home/soheil/Sync/umaine/bnn/code/control_lth/output/performance/resnet18/CIFAR10/cntr/00-50/
+control_epoch: 1
+control_iteration:
+- 1
+control_layer:
+- 1
+- 2
+- 3
+- 4
+- 5
+control_on: 1
+control_type: 1
+exper_acc_thrd: 95
+exper_gpu_id: 0
+exper_imp_total_iter: 5
+exper_num_trial: 3
+exper_prune_perc_per_layer: 0.1
+exper_type: performance
+net_arch: resnet18
+net_batch_size: 64
+net_dataset: CIFAR10
+net_lr: 0.1
+net_pretrained: 1
+net_train_epochs: 50
+net_train_per_epoch: 2
+net_warmup: 10
+net_weight_decay: 0.0005
+
+2024-03-07 00:50:18,395 - Using cuda:0 device
+2024-03-07 00:50:18,436 - Name of the Cuda Device: NVIDIA RTX A5000
+2024-03-07 00:50:18,436 - ####### In performance experiment #######
+2024-03-07 00:50:18,436 - In experiment 0 / 3
+Files already downloaded and verified
+Files already downloaded and verified
+2024-03-07 00:50:19,780 - Warming up the pretrained model
+2024-03-07 00:50:19,781 - Training...
+2024-03-07 00:51:33,150 - Epoch 1 accuracy: 79.9%
+2024-03-07 00:52:57,896 - Epoch 2 accuracy: 94.0%
