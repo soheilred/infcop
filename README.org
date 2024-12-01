@@ -11,17 +11,6 @@ We also provide theoretical insights into the core idea of our algorithm alongsi
 
 * Setup
 * Experiments
-In order to check the connectivity based stopping criteria, I need to experiment
-multiple situations and see how it works under each condition.
-1. percentile with low pruning ratio -> not so important
-2. percentile with high pruning ratio -> important!
-3. sap with aggressive pruning regiment
-
-The reason why I believe regular lth with low pruning ratio is not very
-important at this stage is that what we care about for now is more aggressive
-pruning ratios, the part that is missing from the PQI paper.   
-
-
 ** SLURM Code blocks
 *** Running experiment
 
