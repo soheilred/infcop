@@ -72,30 +72,6 @@ python plot_tool.py $dir
 #+end_src
 
 ** MNIST
-*** Plot
-+ lth: 1893997: ../output/lth/vgg16/MNIST/00-43-42/
-+ sap1: 1890813: ../output/performance/vgg16/MNIST/no_cntr/02-37-35/
-+ sap2: 1898478: ../output/sap/vgg16/MNIST/04-56-18/
-+ ciap1: 1903488: ../output/ciap/vgg16/MNIST/05-39-31/
-+ ciap2: 1897115: ../output/ciap/vgg16/MNIST/22-19-47/
-+ giap1: 1894127: ../output/giap/vgg16/MNIST/00-47-50/
-+ giap2: 1894130: ../output/giap/vgg16/MNIST/05-25-22/
-
-#+call: get_exp_dir(pid="1903488")
-
-#+RESULTS:
-: In dir: /home/gharatappeh/efficient_pruning/control_lth/output/ciap/vgg16/MNIST/05-39-31/
-
-#+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/src :results output
-source ~/.bashrc
-python plot_tool.py ../output/lth/vgg16/MNIST/00-43-42/ ../output/performance/vgg16/MNIST/no_cntr/02-37-35/ ../output/sap/vgg16/MNIST/04-56-18/ ../output/ciap/vgg16/MNIST/05-39-31/ ../output/ciap/vgg16/MNIST/22-19-47/ ../output/giap/vgg16/MNIST/00-47-50/ ../output/giap/vgg16/MNIST/05-25-22/
-
-#+end_src
-
-#+RESULTS:
-
-#+call: get_status(pid="1903488")
-
 *** ciap
 **** (p, q) = (1, 2)
 
