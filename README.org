@@ -75,25 +75,21 @@ python plot_tool.py $dir
 *** ciap
 **** (p, q) = (1, 2)
 
-+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=ciap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+sbatch pytorch.slurm ../src/prune.py --net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=ciap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3
 
 #+RESULTS:
 : Submitted batch job 1903488
-
-#+call: get_exp_dir(pid="1890812")
 
 #+RESULTS:
 : In dir: /home/gharatappeh/efficient_pruning/control_lth/output/efficiency/vgg16/MNIST/no_cntr/02-25-55/
 
 **** (p, q) = (.5, 1)
 
-+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10  --prune_method=ciap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+sbatch pytorch.slurm ../src/prune.py --net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10  --prune_method=ciap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3
 
 #+RESULTS:
 : Submitted batch job 1897115
 17h
-
-#+call: get_exp_dir(pid="1890814")
 
 #+RESULTS:
 : In dir: /home/gharatappeh/efficient_pruning/control_lth/output/efficiency/vgg16/MNIST/no_cntr/08-12-31/
@@ -101,43 +97,37 @@ python plot_tool.py $dir
 *** giap
 **** (p, q) = (1, 2)
 
-#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=giap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+sbatch pytorch.slurm ../src/prune.py --net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=giap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3
 
 #+RESULTS:
 : Submitted batch job 1894127
 
 **** (p, q) = (.5, 1)
 
-#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=giap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+sbatch pytorch.slurm ../src/prune.py --net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=giap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3
 
 #+RESULTS:
 : Submitted batch job 1894130
 17h
 
-#+call: get_exp_dir(pid="1890814")
-
 *** sap
 
 **** (p, q) = (1, 2)
 
-#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --exper_type=performance --prune_method=sap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+sbatch pytorch.slurm ../src/prune.py --net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --exper_type=performance --prune_method=sap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3
 
 #+RESULTS:
 : Submitted batch job 1890813
-#+call: get_exp_dir(pid="1890813")
-
 
 **** (p, q) = (.5, 1)
 
-#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=sap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+sbatch pytorch.slurm ../src/prune.py --net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=sap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3
 
 #+RESULTS:
 : Submitted batch job 1898478
-#+call: get_exp_dir(pid="1890815")
-
 
 *** lth
-#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=lth --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+sbatch pytorch.slurm ../src/prune.py --net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=lth --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3
 
 #+RESULTS:
 : Submitted batch job 1893997
