@@ -1,5 +1,134 @@
 
-*  Information Consistent Pruning: How to Efficiently Search for Sparse Networks? 
+*  Information Consistent Pruning (Inf-CoP): How to Efficiently Search for Sparse Networks? 
+Iterative magnitude pruning methods (IMPs), proven to be successful in reducing the number of insignificant nodes in over-parameterized deep neural networks (DNNs), have been getting an enormous amount of attention with the rapid deployment of DNNs into cutting-edge technologies with computation and memory constraints.
+Despite IMPs popularity in pruning networks, a fundamental limitation of existing IMP algorithms is the significant training time required for each pruning iteration.
+Our paper introduces a novel \textit{stopping criterion} for IMPs that monitors information and gradient flows between networks layers and minimizes the training time.
+Information Consistent Pruning (Inf-CoP) eliminates the need to retrain the network to its original performance during intermediate steps while maintaining overall performance at the end of the pruning process.
+Through our experiments, we demonstrate that our algorithm is more efficient than current IMPs across multiple dataset-DNN combinations.
+We also provide theoretical insights into the core idea of our algorithm alongside mathematical explanations of flow-based IMP.
+
+
+
+* Setup
+* Experiments
+In order to check the connectivity based stopping criteria, I need to experiment
+multiple situations and see how it works under each condition.
+1. percentile with low pruning ratio -> not so important
+2. percentile with high pruning ratio -> important!
+3. sap with aggressive pruning regiment
+
+The reason why I believe regular lth with low pruning ratio is not very
+important at this stage is that what we care about for now is more aggressive
+pruning ratios, the part that is missing from the PQI paper.   
+
+
+** SLURM Code blocks
+*** Running experiment
+
+#+name: run_exper
+#+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/hpc :results output :var flags="--exper_type=performance"
+sbatch pytorch.slurm ../src/prune.py $flags
+#+end_src
+
+#+call: run_exper(flags="--net_train_epochs=50 --net_warmup=10 --control_on=0 --exper_type=test --exper_num_trial=1")
+
+#+RESULTS:
+: Submitted batch job 1832978
+
+**** Submitting job to gpu/lab
+#+begin_src sh :dir /ssh:lab-ip:/home/soheil/Sync/umaine/bnn/code/control_lth/src :results output
+
+PID=$(echo $$)
+echo "main process: $PID"
+
+CNTLOG="../output/errors/cnt-${PID}.out"
+NOCNTLOG="../output/errors/nocnt-${PID}.out"
+# echo "#############################" >> $CNTLOG
+echo "#############################" >> $NOCNTLOG
+# date >> $CNTLOG
+date >> $NOCNTLOG
+# echo "$@" >> $CNTLOG
+echo "$@" >> $NOCNTLOG
+
+# conda activate ib
+source /home/soheil/anaconda3/bin/activate torch
+# python prune.py $@ --exper_gpu_id=0 --control_on=1 &>> $CNTLOG &
+# CNTPID=$(echo $!)
+# python prune.py $@ --exper_gpu_id=1 --control_on=0 &>> $NOCNTLOG &
+python prune.py  --net_train_epochs=2 --net_warmup=1 --control_on=0 --exper_type=test --exper_num_trial=1 &>> $NOCNTLOG &
+
+NOCNTPID=$(echo $!)
+# echo $CNTPID >> $CNTLOG
+echo $NOCNTPID >> $NOCNTLOG
+# echo $CNTPID
+echo $NOCNTPID
+# done; done;
+#+end_src
+
+#+begin_src sh :dir /ssh:lab-ip:/home/gharatappeh/efficient_pruning/control_lth :results output
+echo "hello"
+#+end_src
+
+#+RESULTS:
+: hello
+
+In dir: /home/soheil/Sync/umaine/bnn/code/control_lth/output/test/resnet18/CIFAR10/no_cntr/11-36/
+
+*** Getting directory of experiment
+#+name: get_exp_dir
+#+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/output/errors :results output :var pid="1986619"
+grep -i "In dir:" tbst_$pid.log | awk '{print $3}' | cut -d '/' -f 6-
+# grep -i "In dir:" tbst_$pid.log # | awk '{print $3}' 
+
+#+end_src
+
+#+RESULTS: get_exp_dir
+: output/sap/resnet50/FashionMNIST/10-27-51/
+
+
+#+name: get_status
+#+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/output/errors :results output :var pid="1894119"
+cat error_$pid
+# cntr=$(grep -i "In dir:" output/errors/tbst_$pid_cntr.log | awk '{print $6}')
+# no_cntr=$(grep -i "In dir:" output/errors/tbst_$pid_wo_cntr.log | awk '{print $6}')
+# echo $cntr
+# echo $no_cntr
+#+end_src
+
+*** Plotting the results
+
+#+name: plot_experiment
+#+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/output/errors :results output :var pid="1872291"
+source ~/.bashrc
+exp_dir=$(grep -i "In dir:" tbst_$pid.log | awk '{print $3}' | cut -d '/' -f 6-)
+echo $exp_dir
+cd ../../src
+spytf plot_tool.py ../$exp_dir 2> /dev/null
+#+end_src
+
+#+call: plot_experiment(pid="1872291")
+
+#+RESULTS:
+: output/test/resnet18/CIFAR10/no_cntr/11-21-55/
+: similarity: 24
+: connectivity: 30
+: gradient: 30
+
+#+name: copy_plot
+#+begin_src sh :results output :var exp_dir="output/test/resnet18/CIFAR10/no_cntr/11-21-55/" :var dest="plot"
+scp acg:/home/gharatappeh/efficient_pruning/control_lth/$exp_dir/similarity.png /home/soheil/Sync/umaine/bnn/code/control_lth/output/figures/$dest.png
+#+end_src
+
+#+RESULTS: copy_plot
+
+#+call: copy_plot(exp_dir="output/test/resnet18/CIFAR10/no_cntr/11-21-55/", dest="plot")
+
+
+#+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/src :results output :var dir="../output/test/resnet18/CIFAR10/no_cntr/14-36/"
+source /opt/ohpc/pub/anaconda3/2022.10/bin/activate ib
+python plot_tool.py $dir
+#+end_src
+
 
 * Related Works
 [[PackNet: Adding Multiple Tasks to a Single Network by Iterative Pruning][https://openaccess.thecvf.com/content_cvpr_2018/papers/Mallya_PackNet_Adding_Multiple_CVPR_2018_paper.pdf]]
