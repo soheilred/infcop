@@ -72,9 +72,7 @@ python plot_tool.py $dir
 #+end_src
 
 ** MNIST
-One complete set of experiments using the MNIST dataset looks like the
-following. We can replace the network architecture to observe the results for
-various types of networks.
+One complete set of experiments using the MNIST dataset looks like the following. We can replace the network architecture and dataset to observe the results for various types of networks across different sizes of dataset.
 
 *** ciap
 **** (p, q) = (1, 2)
