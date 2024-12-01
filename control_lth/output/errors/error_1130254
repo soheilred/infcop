@@ -1,9 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 470.129.06
-Traceback (most recent call last):
-  File "prune.py", line 15, in <module>
-    from correlation import Activations
-  File "/home/gharatappeh/nips/src/correlation.py", line 300
-    logging.debug(f"nans in activation sd layer {i}: {torch.nonzero(torch.isnan(act_sd[i].view(-1)}")
-                  ^
-SyntaxError: f-string: closing parenthesis '}' does not match opening parenthesis '('

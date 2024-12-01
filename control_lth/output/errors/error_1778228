@@ -1,7 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 525.85.12
-python: can't open file 'src/prune.py': [Errno 2] No such file or directory
-
-real	0m24.392s
-user	0m0.486s
-sys	0m2.376s

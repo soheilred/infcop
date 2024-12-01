@@ -1,21 +1,0 @@
-13:4: not a valid test operator: (
-13:4: not a valid test operator: 525.85.12
-  0%|          | 0/5 [00:00<?, ?it/s] 20%|██        | 1/5 [59:16<3:57:06, 3556.53s/it] 20%|██        | 1/5 [1:05:49<4:23:18, 3949.68s/it]
-Traceback (most recent call last):
-  File "../src/prune.py", line 766, in <module>
-    main()
-  File "../src/prune.py", line 756, in main
-    perf_exper(logger, args, device, run_dir)
-  File "../src/prune.py", line 709, in perf_exper
-    all_acc, conn, comp = perf_lth(logger, device, args, controller)
-  File "../src/prune.py", line 528, in perf_lth
-    pruning.control(corr, act.layers_dim, imp_iter)
-  File "../src/prune.py", line 418, in control
-    self.apply_controller(control_weights, ind)
-  File "../src/prune.py", line 434, in apply_controller
-    new_weight = (weight * control_weights).type(torch.cuda.FloatTensor)
-RuntimeError: The size of tensor a (128) must match the size of tensor b (256) at non-singleton dimension 0
-
-real	77m52.150s
-user	109m51.485s
-sys	41m55.463s
