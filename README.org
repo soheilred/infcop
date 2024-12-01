@@ -71,6 +71,101 @@ source /opt/ohpc/pub/anaconda3/2022.10/bin/activate ib
 python plot_tool.py $dir
 #+end_src
 
+** MNIST
+*** Plot
++ lth: 1893997: ../output/lth/vgg16/MNIST/00-43-42/
++ sap1: 1890813: ../output/performance/vgg16/MNIST/no_cntr/02-37-35/
++ sap2: 1898478: ../output/sap/vgg16/MNIST/04-56-18/
++ ciap1: 1903488: ../output/ciap/vgg16/MNIST/05-39-31/
++ ciap2: 1897115: ../output/ciap/vgg16/MNIST/22-19-47/
++ giap1: 1894127: ../output/giap/vgg16/MNIST/00-47-50/
++ giap2: 1894130: ../output/giap/vgg16/MNIST/05-25-22/
+
+#+call: get_exp_dir(pid="1903488")
+
+#+RESULTS:
+: In dir: /home/gharatappeh/efficient_pruning/control_lth/output/ciap/vgg16/MNIST/05-39-31/
+
+#+begin_src sh :dir /ssh:acg:/home/gharatappeh/efficient_pruning/control_lth/src :results output
+source ~/.bashrc
+python plot_tool.py ../output/lth/vgg16/MNIST/00-43-42/ ../output/performance/vgg16/MNIST/no_cntr/02-37-35/ ../output/sap/vgg16/MNIST/04-56-18/ ../output/ciap/vgg16/MNIST/05-39-31/ ../output/ciap/vgg16/MNIST/22-19-47/ ../output/giap/vgg16/MNIST/00-47-50/ ../output/giap/vgg16/MNIST/05-25-22/
+
+#+end_src
+
+#+RESULTS:
+
+#+call: get_status(pid="1903488")
+
+*** ciap
+**** (p, q) = (1, 2)
+
+#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=ciap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+
+#+RESULTS:
+: Submitted batch job 1903488
+
+#+call: get_exp_dir(pid="1890812")
+
+#+RESULTS:
+: In dir: /home/gharatappeh/efficient_pruning/control_lth/output/efficiency/vgg16/MNIST/no_cntr/02-25-55/
+
+**** (p, q) = (.5, 1)
+
+#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10  --prune_method=ciap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+
+#+RESULTS:
+: Submitted batch job 1897115
+17h
+
+#+call: get_exp_dir(pid="1890814")
+
+#+RESULTS:
+: In dir: /home/gharatappeh/efficient_pruning/control_lth/output/efficiency/vgg16/MNIST/no_cntr/08-12-31/
+
+*** giap
+**** (p, q) = (1, 2)
+
+#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=giap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+
+#+RESULTS:
+: Submitted batch job 1894127
+
+**** (p, q) = (.5, 1)
+
+#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=giap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+
+#+RESULTS:
+: Submitted batch job 1894130
+17h
+
+#+call: get_exp_dir(pid="1890814")
+
+*** sap
+
+**** (p, q) = (1, 2)
+
+#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --exper_type=performance --prune_method=sap --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+
+#+RESULTS:
+: Submitted batch job 1890813
+#+call: get_exp_dir(pid="1890813")
+
+
+**** (p, q) = (.5, 1)
+
+#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=sap --prune_p=0.5 --prune_q=1.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+
+#+RESULTS:
+: Submitted batch job 1898478
+#+call: get_exp_dir(pid="1890815")
+
+
+*** lth
+#+call: run_exper(flags="--net_arch=vgg16 --net_dataset=MNIST --net_lr=.01 --net_train_epochs=20 --net_warmup=10 --prune_method=lth --prune_p=1.0 --prune_q=2.0 --exper_imp_total_iter=15 --exper_num_trial=3")
+
+#+RESULTS:
+: Submitted batch job 1893997
+
 
 * Related Works
 [[PackNet: Adding Multiple Tasks to a Single Network by Iterative Pruning][https://openaccess.thecvf.com/content_cvpr_2018/papers/Mallya_PackNet_Adding_Multiple_CVPR_2018_paper.pdf]]
